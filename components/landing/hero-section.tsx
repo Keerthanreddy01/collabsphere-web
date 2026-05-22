@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useRef } from "react";
 
-const words = ["BUILD", "CREATE", "SHIP", "SCALE"];
+const words = ["BUILD", "SHIP", "SCALE"];
 
 function BlurWord({ word, trigger }: { word: string; trigger: number }) {
-  const letters = word.split("");
+  const letters = (word || "").split("");
   const STAGGER = 45;      // ms between each letter
   const DURATION = 500;    // blur+opacity fade duration per letter
   const GRADIENT_HOLD = STAGGER * letters.length + DURATION + 200;
