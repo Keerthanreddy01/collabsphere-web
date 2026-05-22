@@ -73,36 +73,7 @@ export function PricingSection() {
   return (
     <section id="pricing" ref={sectionRef} className="relative py-32 lg:py-40">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        {/* Header - Dramatic offset */}
-        <div className="grid lg:grid-cols-12 gap-8 mb-20">
-          <div className="lg:col-span-7">
-            <span className="inline-flex items-center gap-3 text-sm font-mono text-muted-foreground mb-8">
-              <span className="w-12 h-px bg-foreground/30" />
-              Pricing
-            </span>
-            <h2 className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
-              Pay for
-              <br />
-              <span className="text-stroke">results.</span>
-            </h2>
-          </div>
-          
-          <div className="lg:col-span-5 relative p-0 h-96 lg:h-auto">
-            {/* Whale image */}
-            <div className={`absolute inset-0 pointer-events-none transition-all duration-1000 delay-100 ${
-              isVisible ? "opacity-100" : "opacity-0"
-            }`}>
-              <img
-                src="/images/whale.png"
-                alt="Organic whale"
-                className="w-full h-full object-contain object-center"
-              />
-            </div>
 
-          </div>
-        </div>
 
         {/* Pricing cards - Horizontal layout with overlap */}
         <div className="relative">
