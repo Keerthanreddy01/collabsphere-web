@@ -10,6 +10,7 @@ const navLinks = [
   { name: "CASE STUDY",    href: "#case-study"    },
   { name: "SERVICE",       href: "#service"       },
   { name: "PAGE",          href: "#page"          },
+  { name: "BUILDERS",      href: "/builders"      },
 ];
 
 export function Navigation() {
