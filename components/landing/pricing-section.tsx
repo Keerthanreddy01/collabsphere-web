@@ -6,47 +6,47 @@ import { ArrowRight, Check, Zap } from "lucide-react";
 const plans = [
   {
     name: "Explorer",
-    description: "For tinkering and small automations",
+    description: "For solo builders and small side projects",
     price: { monthly: 0, annual: 0 },
     features: [
-      "3 concurrent agents",
-      "1,000 tasks/month",
+      "Browse builder profiles",
+      "Post 1 project",
       "Community support",
-      "Basic logging",
-      "Public integrations",
+      "Basic collab tools",
+      "Public showcase",
     ],
     cta: "Start free",
     highlight: false,
   },
   {
     name: "Builder",
-    description: "For teams shipping with agents",
+    description: "For teams actively shipping together",
     price: { monthly: 79, annual: 65 },
     features: [
-      "25 concurrent agents",
-      "50,000 tasks/month",
-      "Priority support",
-      "Full audit trails",
-      "Private integrations",
+      "Unlimited builder search",
+      "Up to 5 active projects",
+      "Priority matching",
+      "Private collab rooms",
       "Team workspaces",
-      "Custom agent roles",
+      "Progress feed",
+      "Custom team roles",
     ],
     cta: "Start trial",
     highlight: true,
   },
   {
     name: "Scale",
-    description: "For agent-first organizations",
+    description: "For builder-first organizations going big",
     price: { monthly: null, annual: null },
     features: [
-      "Unlimited agents",
-      "Unlimited tasks",
+      "Unlimited projects",
+      "Unlimited team members",
       "24/7 dedicated support",
-      "On-premise deployment",
+      "Custom onboarding",
       "SLA guarantee",
-      "Custom LLM routing",
-      "Advanced security",
-      "Dedicated compute",
+      "White-label rooms",
+      "Advanced analytics",
+      "Dedicated success manager",
     ],
     cta: "Contact sales",
     highlight: false,
@@ -190,15 +190,15 @@ export function PricingSection() {
           <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <Check className="w-4 h-4 text-[#eca8d6]" />
-              Encrypted execution
+              Verified builders
             </span>
             <span className="flex items-center gap-2">
               <Check className="w-4 h-4 text-[#eca8d6]" />
-              Full audit logs
+              Real project history
             </span>
             <span className="flex items-center gap-2">
               <Check className="w-4 h-4 text-[#eca8d6]" />
-              Multi-model routing
+              Stack agnostic teams
             </span>
           </div>
           <a href="#" className="text-sm underline underline-offset-4 hover:text-foreground transition-colors">

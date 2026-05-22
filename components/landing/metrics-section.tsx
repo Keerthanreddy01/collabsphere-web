@@ -4,25 +4,25 @@ import { useEffect, useState, useRef } from "react";
 
 const metrics = [
   { 
-    value: 12847392, 
-    suffix: "", 
+    value: 2400, 
+    suffix: "+", 
     prefix: "",
-    label: "Tasks completed today",
-    sublabel: "by 23,847 active agents",
+    label: "Active Builders",
+    sublabel: "World-class developers and technical founders building the future together.",
   },
   { 
-    value: 99, 
-    suffix: ".99%", 
+    value: 180, 
+    suffix: "+", 
     prefix: "",
-    label: "Availability",
-    sublabel: "across all regions",
+    label: "Projects Launched",
+    sublabel: "across all categories",
   },
   { 
-    value: 340, 
-    suffix: "ms", 
-    prefix: "<",
-    label: "Average execution",
-    sublabel: "p99 latency",
+    value: 94, 
+    suffix: "%", 
+    prefix: "",
+    label: "Collaboration Rate",
+    sublabel: "Avg. team satisfaction",
   },
 ];
 
@@ -259,9 +259,9 @@ export function MetricsSection() {
             <h2 className={`text-6xl md:text-7xl lg:text-[140px] font-display tracking-tight leading-[0.95] transition-all duration-1000 ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}>
-              Real-time
+              BUILT THROUGH
               <br />
-              <span className="text-muted-foreground">agent metrics.</span>
+              <span className="text-muted-foreground">DEEP VISION.</span>
             </h2>
           </div>
         </div>
@@ -328,11 +328,11 @@ export function MetricsSection() {
         <div className={`mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-12 gap-y-4 text-sm font-mono text-muted-foreground transition-all duration-1000 delay-500 ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}>
-          <span>OpenAI GPT-4 Turbo</span>
-          <span>Anthropic Claude 3</span>
-          <span>Mistral Large</span>
-          <span>Llama 3</span>
-          <span className="text-foreground">+12 more models</span>
+          <span>Verified Builders</span>
+          <span>Real Project History</span>
+          <span>Stack Agnostic</span>
+          <span>Async-First</span>
+          <span className="text-foreground">Ship in public</span>
         </div>
       </div>
     </section>

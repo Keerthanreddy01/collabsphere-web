@@ -6,25 +6,25 @@ const features = [
   {
     number: "01",
     title: "Team Matching v4",
-    description: "NEURAL_LINK system matches you with elite builders. Browse verified builders with real project history. No LinkedIn fluff, just world-class code audits.",
+    description: "Browse verified builders with real project history. No LinkedIn fluff, just world-class code audits.",
     stats: { value: "2,400+", label: "verified builders" },
   },
   {
     number: "02",
-    title: "Live Feed",
-    description: "BUILD IN PUBLIC with our community. Share progress and attract high-tier collaborators in real-time.",
+    title: "Build in Public",
+    description: "Share progress with the community and attract high-tier collaborators in real-time.",
     stats: { value: "94%", label: "collaboration rate" },
   },
   {
     number: "03",
     title: "Project Incubator",
-    description: "STARTUP_ENGINE turns projects into startups. Teams formed here are the CEOs of tomorrow. Start small, ship elite-grade software.",
+    description: "The teams formed here are the CEOs of tomorrow. Start small, ship elite-grade software.",
     stats: { value: "180+", label: "projects launched" },
   },
   {
     number: "04",
     title: "Collab Rooms",
-    description: "CORE_SECURE private spaces for core teams. Coordinate without the noise of fragmented platforms.",
+    description: "Private spaces for your core team to coordinate without the noise of fragmented platforms.",
     stats: { value: "100%", label: "team sync" },
   },
 ];
@@ -193,7 +193,7 @@ export function FeaturesSection() {
             <div className="relative flex-1 p-8 lg:p-12 bg-black">
               <ParticleVisualization />
               <div className="relative z-10">
-                <span className="font-mono text-sm text-muted-foreground">{features[0].number} / NEURAL_LINK</span>
+                <span className="font-mono text-sm text-muted-foreground">{features[0].number} / NEURAL_LINK — TEAM MATCHING v4</span>
                 <h3 className="text-3xl lg:text-4xl font-display mt-4 mb-6 group-hover:translate-x-2 transition-transform duration-500">
                   {features[0].title}
                 </h3>

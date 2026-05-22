@@ -39,6 +39,18 @@ await post({
   community: true
 })`,
   },
+  {
+    number: "04",
+    title: "Scale",
+    subtitle: "together",
+    description: "From project to startup. The teams formed here are the CEOs and CTOs of tomorrow. Start small, ship big.",
+    code: `// Scale your team
+await scale({
+  team: 'founding',
+  stage: 'startup',
+  target: 'global'
+})`,
+  },
 ];
 
 export function HowItWorksSection() {
@@ -109,7 +121,7 @@ export function HowItWorksSection() {
         </div>
 
         {/* Horizontal Steps Layout */}
-        <div className="grid lg:grid-cols-3 gap-4">
+        <div className="grid lg:grid-cols-4 gap-4">
           {steps.map((step, index) => (
             <button
               key={step.number}
