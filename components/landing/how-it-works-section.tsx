@@ -5,39 +5,39 @@ import { useEffect, useRef, useState } from "react";
 const steps = [
   {
     number: "01",
-    title: "Define",
-    subtitle: "your agent",
-    description: "Describe what your agent should do. Set its capabilities, constraints, and goals in natural language or code.",
-    code: `const researcher = new Agent({
-  role: 'Research Analyst',
-  capabilities: ['web', 'docs', 'api'],
-  memory: true,
-  autonomy: 'full'
-})`,
+    title: "Draft",
+    subtitle: "your vision",
+    description: "Post your project. Define your stack. From rust-based protocols to simple React frontends, we help you articulate your project for potential teammates.",
+    code: `// Post your project spec
+const project = {
+  title: 'Next-gen Protocol',
+  stack: ['Rust', 'WASM'],
+  looking_for: ['Backend', 'DevOps']
+}`,
   },
   {
     number: "02",
-    title: "Assign",
-    subtitle: "the task",
-    description: "Give your agent a mission. It breaks down complex tasks into steps and executes them autonomously.",
-    code: `await researcher.execute({
-  task: 'Analyze competitor pricing',
-  sources: ['public-data', 'news'],
-  output: 'structured-report',
-  deadline: '2h'
+    title: "Scout",
+    subtitle: "the talent",
+    description: "Find your co-founders. Browse verified builders with real project history. No LinkedIn fluff, just world-class code.",
+    code: `// Browse verified builders
+const builders = await search({
+  skills: ['Rust', 'WASM'],
+  verified: true,
+  projects: { min: 5 }
 })`,
   },
   {
     number: "03",
-    title: "Monitor",
-    subtitle: "& scale",
-    description: "Track progress in real-time. Spin up more agents as needed. Pay only for compute used.",
-    code: `optimus.dashboard({
-  agents: [researcher],
-  metrics: ['tasks', 'latency', 'cost'],
-  alerts: true
-})
-// 847 tasks completed today`,
+    title: "Build",
+    subtitle: "in public",
+    description: "Ship early. Get noticed. Share daily progress. Let the community boost your work and attract high-tier collaborators.",
+    code: `// Share progress daily
+await post({
+  content: 'Shipped MVP!',
+  visibility: 'public',
+  community: true
+})`,
   },
 ];
 
@@ -81,16 +81,15 @@ export function HowItWorksSection() {
             <div className={`transition-all duration-1000 ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-12 opacity-0"}`}>
               <span className="inline-flex items-center gap-3 text-sm font-mono text-white/40 mb-8">
                 <span className="w-12 h-px bg-white/20" />
-                Process
+                THE PROCESS
               </span>
             </div>
             
             <h2 className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.85] transition-all duration-1000 delay-100 ${
               isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
             }`}>
-              <span className="block">Define.</span>
-              <span className="block text-white/30">Deploy.</span>
-              <span className="block text-white/10">Scale.</span>
+              <span className="block">THE PROCESS</span>
+              <span className="block text-white/30">ENGINE SYSTEM</span>
             </h2>
           </div>
 

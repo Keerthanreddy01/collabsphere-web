@@ -5,32 +5,32 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "Our agents handle 80% of our customer support tickets autonomously. The ROI was immediate.",
-    author: "Sarah Chen",
-    role: "CTO",
-    company: "Meridian Labs",
-    metric: { value: "80%", label: "Ticket resolution" },
+    quote: "Finally found my backend co-founder here. We shipped our MVP in 6 weeks.",
+    author: "Alex K.",
+    role: "Full-Stack Developer",
+    company: "TechStartup",
+    metric: { value: "6w", label: "MVP Launch" },
   },
   {
-    quote: "We deployed research agents that work 24/7. They surface insights we'd never find manually.",
-    author: "Marcus Webb",
-    role: "Head of Research",
-    company: "Flux Systems",
-    metric: { value: "10x", label: "Research output" },
+    quote: "Posted a React bug at 11pm. Had 3 responses with working code by midnight. Unreal.",
+    author: "Priya M.",
+    role: "Frontend Engineer",
+    company: "DevStudio",
+    metric: { value: "1h", label: "Response Time" },
   },
   {
-    quote: "The multi-agent orchestration is incredible. Complex workflows that took weeks now run in hours.",
-    author: "Elena Rodriguez",
-    role: "VP Engineering",
-    company: "Beacon AI",
-    metric: { value: "40x", label: "Faster workflows" },
+    quote: "Collabsphere is what LinkedIn wishes it was for developers. No noise, just builders.",
+    author: "James O.",
+    role: "Indie Hacker",
+    company: "Solo Builder",
+    metric: { value: "94%", label: "Collaboration Rate" },
   },
   {
-    quote: "Security was our biggest concern. The sandboxing and audit trails gave us full confidence.",
-    author: "James Liu",
-    role: "CISO",
-    company: "Prism Analytics",
-    metric: { value: "0", label: "Security incidents" },
+    quote: "The quality of builders here is incredible. Found my entire founding team in 2 months.",
+    author: "Sophia Chen",
+    role: "Founder & CEO",
+    company: "NextGenStartup",
+    metric: { value: "2m", label: "Team Formation" },
   },
 ];
 
@@ -94,13 +94,13 @@ export function TestimonialsSection() {
           <div>
             <span className="inline-flex items-center gap-3 text-sm font-mono text-background/40 mb-4">
               <span className="w-12 h-px bg-background/20" />
-              Testimonials
+              TESTIMONIALS
             </span>
             <h2 className={`text-4xl lg:text-5xl font-display transition-all duration-1000 ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}>
-              Trusted by teams
-              <span className="text-background/40"> worldwide.</span>
+              KISSIES FROM OUR PARTNERS.
+              <span className="text-background/40"></span>
             </h2>
           </div>
           
@@ -191,7 +191,7 @@ export function TestimonialsSection() {
             {/* Company list */}
             <div className="mt-4 pt-6 border-t border-background/10">
               <span className="text-xs font-mono text-background/30 uppercase tracking-widest block mb-4">
-                Featured companies
+                Featured builders
               </span>
               <div className="flex flex-wrap gap-3">
                 {testimonials.map((t, idx) => (

@@ -5,27 +5,27 @@ import { useEffect, useRef, useState } from "react";
 const features = [
   {
     number: "01",
-    title: "Autonomous Execution",
-    description: "Deploy AI agents that work independently. They analyze, decide, and execute complex multi-step tasks without human intervention.",
-    stats: { value: "99.7%", label: "task completion" },
+    title: "Team Matching v4",
+    description: "NEURAL_LINK system matches you with elite builders. Browse verified builders with real project history. No LinkedIn fluff, just world-class code audits.",
+    stats: { value: "2,400+", label: "verified builders" },
   },
   {
     number: "02",
-    title: "Distributed Computing",
-    description: "Offload compute-heavy tasks to our global network. Your agents run on optimized infrastructure across 50+ regions worldwide.",
-    stats: { value: "50+", label: "global regions" },
+    title: "Live Feed",
+    description: "BUILD IN PUBLIC with our community. Share progress and attract high-tier collaborators in real-time.",
+    stats: { value: "94%", label: "collaboration rate" },
   },
   {
     number: "03",
-    title: "Multi-Agent Orchestration",
-    description: "Coordinate teams of specialized agents. They communicate, delegate, and collaborate to solve complex problems together.",
-    stats: { value: "1000x", label: "parallel execution" },
+    title: "Project Incubator",
+    description: "STARTUP_ENGINE turns projects into startups. Teams formed here are the CEOs of tomorrow. Start small, ship elite-grade software.",
+    stats: { value: "180+", label: "projects launched" },
   },
   {
     number: "04",
-    title: "Secure Sandboxing",
-    description: "Each agent runs in isolated environments. Full audit trails, encrypted execution, and zero data leakage between tasks.",
-    stats: { value: "0", label: "data breaches" },
+    title: "Collab Rooms",
+    description: "CORE_SECURE private spaces for core teams. Coordinate without the noise of fragmented platforms.",
+    stats: { value: "100%", label: "team sync" },
   },
 ];
 
@@ -158,23 +158,23 @@ export function FeaturesSection() {
             <div className="lg:col-span-7">
               <span className="inline-flex items-center gap-3 text-sm font-mono text-muted-foreground mb-6">
                 <span className="w-12 h-px bg-foreground/30" />
-                Capabilities
+                CAPABILITY_MATRIX_2026
               </span>
               <h2
                 className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${
                   isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
               >
-                Intelligent
+                EVERYTHING
                 <br />
-                <span className="text-muted-foreground">workers.</span>
+                <span className="text-muted-foreground">A BUILDER NEEDS.</span>
               </h2>
             </div>
             <div className="lg:col-span-5 lg:pb-4">
               <p className={`text-xl text-muted-foreground leading-relaxed transition-all duration-1000 delay-200 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}>
-                Deploy autonomous AI agents that execute complex tasks across distributed infrastructure. No supervision required.
+                Find the perfect team for your business goals. No noise, just verified production history.
               </p>
             </div>
           </div>
@@ -193,7 +193,7 @@ export function FeaturesSection() {
             <div className="relative flex-1 p-8 lg:p-12 bg-black">
               <ParticleVisualization />
               <div className="relative z-10">
-                <span className="font-mono text-sm text-muted-foreground">{features[0].number}</span>
+                <span className="font-mono text-sm text-muted-foreground">{features[0].number} / NEURAL_LINK</span>
                 <h3 className="text-3xl lg:text-4xl font-display mt-4 mb-6 group-hover:translate-x-2 transition-transform duration-500">
                   {features[0].title}
                 </h3>

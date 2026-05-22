@@ -4,35 +4,34 @@ import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 const footerLinks = {
-  Product: [
-    { name: "Agent capabilities", href: "#features" },
-    { name: "How it works", href: "#how-it-works" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Integrations", href: "#integrations" },
+  Resources: [
+    { name: "GitHub REPO", href: "#" },
+    { name: "NPM SDK", href: "#" },
+    { name: "DOCS (BETA)", href: "#" },
+    { name: "API STATUS", href: "#" },
   ],
-  Developers: [
-    { name: "Documentation", href: "#developers" },
-    { name: "Agent SDK", href: "#" },
-    { name: "API Reference", href: "#developers" },
-    { name: "Status", href: "#" },
+  Ecosystem: [
+    { name: "Featured", href: "#" },
+    { name: "Community", href: "#" },
+    { name: "Showcase", href: "#" },
+    { name: "Licenses", href: "#" },
   ],
-  Company: [
-    { name: "About", href: "#" },
-    { name: "Blog", href: "#" },
-    { name: "Careers", href: "#", badge: "Hiring" },
-    { name: "Contact", href: "#" },
+  Follow: [
+    { name: "Twitter", href: "#" },
+    { name: "Instagram", href: "#" },
+    { name: "Discord", href: "#" },
+    { name: "LinkedIn", href: "#" },
   ],
-  Legal: [
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
-    { name: "Security", href: "#security" },
+  Contact: [
+    { name: "LETS TALK", href: "#" },
+    { name: "HI@COLLAB.TECH", href: "#" },
   ],
 };
 
 const socialLinks = [
   { name: "Twitter", href: "#" },
-  { name: "GitHub", href: "#" },
-  { name: "LinkedIn", href: "#" },
+  { name: "Instagram", href: "#" },
+  { name: "Discord", href: "#" },
 ];
 
 function AnimatedWaveCanvas() {
@@ -115,12 +114,11 @@ export function FooterSection() {
             {/* Brand Column */}
             <div className="col-span-2">
               <a href="#" className="inline-flex items-center gap-2 mb-6">
-                <span className="text-2xl font-display text-white">COMPUTE</span>
-                <span className="text-xs text-white/40 font-mono">TM</span>
+                <span className="text-2xl font-display text-white">COLLABSPHERE™</span>
               </a>
 
               <p className="text-white/50 leading-relaxed mb-8 max-w-xs text-sm">
-                Autonomous AI agents for distributed computing. Delegate complex tasks to intelligent workers.
+                Find the perfect team for your business goals. No noise, just verified production history.
               </p>
 
               {/* Social Links */}
@@ -167,14 +165,13 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-white/30">
-            &copy; 2025 COMPUTE. All rights reserved.
+            © 2026 THE GALAXY CORP. · MIT Licensed · Open Source · Made by builders.
           </p>
 
           <div className="flex items-center gap-4 text-sm text-white/30">
-            <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#eca8d6]" />
-              All agents operational
-            </span>
+            <a href="#" className="hover:text-white transition-colors">PRIVACY</a>
+            <span className="text-white/10">·</span>
+            <a href="#" className="hover:text-white transition-colors">TERMS</a>
           </div>
         </div>
       </div>
