@@ -1,30 +1,25 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 const footerLinks = {
-  Resources: [
-    { name: "GitHub REPO", href: "#" },
-    { name: "NPM SDK", href: "#" },
-    { name: "DOCS (BETA)", href: "#" },
-    { name: "API STATUS", href: "#" },
-  ],
   Ecosystem: [
-    { name: "Featured", href: "#" },
-    { name: "Community", href: "#" },
-    { name: "Showcase", href: "#" },
-    { name: "Licenses", href: "#" },
+    { name: "Featured", href: "/featured", internal: true },
+    { name: "Community", href: "/community", internal: true },
+    { name: "Showcase", href: "/showcase", internal: true },
+    { name: "Licenses", href: "/licenses", internal: true },
   ],
   Follow: [
-    { name: "Twitter", href: "#" },
-    { name: "Instagram", href: "#" },
-    { name: "Discord", href: "#" },
-    { name: "LinkedIn", href: "#" },
+    { name: "Twitter", href: "#", internal: false },
+    { name: "Instagram", href: "#", internal: false },
+    { name: "Discord", href: "#", internal: false },
+    { name: "LinkedIn", href: "#", internal: false },
   ],
   Contact: [
-    { name: "LETS TALK", href: "#" },
-    { name: "HI@COLLAB.TECH", href: "#" },
+    { name: "LETS TALK", href: "mailto:hi@collab.tech", internal: false },
+    { name: "HI@COLLAB.TECH", href: "mailto:hi@collab.tech", internal: false },
   ],
 };
 
@@ -110,12 +105,12 @@ export function FooterSection() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Main Footer */}
         <div className="py-16 lg:py-20">
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-12 lg:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-12 lg:gap-8">
             {/* Brand Column */}
             <div className="col-span-2">
-              <a href="#" className="inline-flex items-center gap-2 mb-6">
+              <Link href="/" className="inline-flex items-center gap-2 mb-6">
                 <span className="text-2xl font-display text-white">COLLABSPHERE™</span>
-              </a>
+              </Link>
 
               <p className="text-white/50 leading-relaxed mb-8 max-w-xs text-sm">
                 Find the perfect team for your business goals. No noise, just verified production history.
@@ -143,17 +138,23 @@ export function FooterSection() {
                 <ul className="space-y-4">
                   {links.map((link) => (
                     <li key={link.name}>
-                      <a
-                        href={link.href}
-                        className="text-sm text-white/40 hover:text-white transition-colors inline-flex items-center gap-2"
-                      >
-                        {link.name}
-                        {"badge" in link && link.badge && (
-                          <span className="text-xs px-2 py-0.5 bg-white text-black rounded-full">
-                            {link.badge}
-                          </span>
-                        )}
-                      </a>
+                      {link.internal ? (
+                        <Link
+                          href={link.href}
+                          className="text-sm text-white/40 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                        >
+                          {link.name}
+                          <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                        </Link>
+                      ) : (
+                        <a
+                          href={link.href}
+                          className="text-sm text-white/40 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                        >
+                          {link.name}
+                          <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>
