@@ -89,6 +89,7 @@ export default function DashboardPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [shouldRedirectOnboarding, setShouldRedirectOnboarding] = useState(false);
 
   const [form, setForm] = useState<ProfileForm>({
     username: "",
@@ -132,6 +133,11 @@ export default function DashboardPage() {
 
     const loadProfile = async () => {
       const { data, error } = await getProfile(userId);
+      if (data && !data.onboarding_completed) {
+        setShouldRedirectOnboarding(true);
+        router.push("/onboarding");
+        return;
+      }
       if (data) {
         setForm((prev) => ({
           ...prev,
@@ -150,6 +156,8 @@ export default function DashboardPage() {
       }
 
       if (error && (error as { code?: string }).code === "PGRST116") {
+        setShouldRedirectOnboarding(true);
+        router.push("/onboarding");
         const created = await createProfile({
           clerk_user_id: userId,
           full_name: user?.fullName ?? undefined,
@@ -215,6 +223,10 @@ export default function DashboardPage() {
     }
     setIsSaving(false);
   };
+
+  if (shouldRedirectOnboarding) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
