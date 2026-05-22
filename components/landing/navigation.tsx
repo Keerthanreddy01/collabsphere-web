@@ -75,7 +75,19 @@ export function Navigation() {
                 </button>
               </SignInButton>
             ) : (
-              <UserButton appearance={{ elements: { avatarBox: "h-[34px] w-[34px]" } }} />
+              <div className="flex items-center gap-2">
+                <a
+                  href="/dashboard"
+                  className={`text-sm transition-colors duration-300 ${
+                    isScrolled
+                      ? "text-foreground/70 hover:text-foreground"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  DASHBOARD
+                </a>
+                <UserButton appearance={{ elements: { avatarBox: "h-[34px] w-[34px]" } }} />
+              </div>
             )}
           </div>
 
