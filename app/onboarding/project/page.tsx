@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function DashboardPage() {
+export default function ProjectOnboardingPage() {
   const router = useRouter();
 
   useEffect(() => {
