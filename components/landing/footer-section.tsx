@@ -166,7 +166,7 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-white/30">
-            © 2026 THE GALAXY CORP. · MIT Licensed · Open Source · Made by builders.
+            © 2026 COLLABSPHERE™ · Built by builders, for builders.
           </p>
 
           <div className="flex items-center gap-4 text-sm text-white/30">
