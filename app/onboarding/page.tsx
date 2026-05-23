@@ -105,6 +105,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState<StepKey>(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [shouldRedirectDashboard, setShouldRedirectDashboard] = useState(false);
   const [errors, setErrors] = useState<{ username?: string; fullName?: string }>(
     {}
   );
@@ -137,9 +138,9 @@ export default function OnboardingPage() {
     let isMounted = true;
 
     const checkOnboarding = async () => {
-      const { data } = await supabase
+      const { data: existingProfile } = await supabase
         .from("builder_profiles")
-        .select("onboarding_completed")
+        .select("onboarding_completed, username")
         .eq("clerk_user_id", userId)
         .single();
 
@@ -147,8 +148,10 @@ export default function OnboardingPage() {
         return;
       }
 
-      if (data?.onboarding_completed) {
-        router.replace("/dashboard");
+      if (existingProfile?.onboarding_completed === true) {
+        setShouldRedirectDashboard(true);
+        router.push("/dashboard");
+        return;
       }
     };
 
@@ -219,6 +222,10 @@ export default function OnboardingPage() {
     setIsSaving(false);
     router.replace("/dashboard");
   };
+
+  if (shouldRedirectDashboard) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
-import { getProfile, createProfile, updateProfile } from "@/lib/profiles";
+import { getProfile, updateProfile } from "@/lib/profiles";
 import { useRouter } from "next/navigation";
 
 type TabKey = "profile" | "projects" | "saved";
@@ -133,56 +133,37 @@ export default function DashboardPage() {
 
     const loadProfile = async () => {
       const { data, error } = await getProfile(userId);
-      if (data && !data.onboarding_completed) {
+      console.log("Profile data:", data, "Error:", error);
+
+      if (!data || error) {
         setShouldRedirectOnboarding(true);
         router.push("/onboarding");
-        return;
-      }
-      if (data) {
-        setForm((prev) => ({
-          ...prev,
-          username: data.username ?? "",
-          bio: data.bio ?? "",
-          location: data.location ?? "",
-          website: data.website ?? "",
-          github_url: data.github_url ?? "",
-          twitter_url: data.twitter_url ?? "",
-          skills: Array.isArray(data.skills) ? data.skills : [],
-          stack: Array.isArray(data.stack) ? data.stack : [],
-          experience_level: data.experience_level ?? "",
-          availability: data.availability ?? "Open to Collab",
-        }));
         return;
       }
 
-      if (error && (error as { code?: string }).code === "PGRST116") {
+      if (!data.onboarding_completed) {
         setShouldRedirectOnboarding(true);
         router.push("/onboarding");
-        const created = await createProfile({
-          clerk_user_id: userId,
-          full_name: user?.fullName ?? undefined,
-          avatar_url: user?.imageUrl ?? undefined,
-        });
-        if (created.data) {
-          setForm((prev) => ({
-            ...prev,
-            username: created.data.username ?? "",
-            bio: created.data.bio ?? "",
-            location: created.data.location ?? "",
-            website: created.data.website ?? "",
-            github_url: created.data.github_url ?? "",
-            twitter_url: created.data.twitter_url ?? "",
-            skills: Array.isArray(created.data.skills) ? created.data.skills : [],
-            stack: Array.isArray(created.data.stack) ? created.data.stack : [],
-            experience_level: created.data.experience_level ?? "",
-            availability: created.data.availability ?? "Open to Collab",
-          }));
-        }
+        return;
       }
+
+      setForm((prev) => ({
+        ...prev,
+        username: data.username ?? "",
+        bio: data.bio ?? "",
+        location: data.location ?? "",
+        website: data.website ?? "",
+        github_url: data.github_url ?? "",
+        twitter_url: data.twitter_url ?? "",
+        skills: Array.isArray(data.skills) ? data.skills : [],
+        stack: Array.isArray(data.stack) ? data.stack : [],
+        experience_level: data.experience_level ?? "",
+        availability: data.availability ?? "Open to Collab",
+      }));
     };
 
     loadProfile();
-  }, [isLoaded, isSignedIn, userId, router, user?.fullName, user?.imageUrl]);
+  }, [isLoaded, isSignedIn, userId, router]);
 
   useEffect(() => {
     return () => {
