@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { useAuth, useUser, SignInButton, UserButton } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
 
 const navLinks = [
   { name: "ABOUT US",      href: "#about"         },
@@ -18,9 +16,7 @@ const navLinks = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isSignedIn, userId } = useAuth();
-  const router = useRouter();
-  const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean | null>(null);
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,27 +25,6 @@ export function Navigation() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    if (userId) {
-      supabase
-        .from("builder_profiles")
-        .select("onboarding_completed")
-        .eq("clerk_user_id", userId)
-        .single()
-        .then(({ data }) => {
-          if (!data || !data.onboarding_completed) {
-            setIsOnboardingComplete(false);
-            router.push("/onboarding");
-          } else {
-            setIsOnboardingComplete(true);
-            router.push("/dashboard");
-          }
-        });
-    } else {
-      setIsOnboardingComplete(null);
-    }
-  }, [userId, router]);
 
   return (
     <header
@@ -102,18 +77,16 @@ export function Navigation() {
               </SignInButton>
             ) : (
               <div className="flex items-center gap-2">
-                {isOnboardingComplete && (
-                  <a
-                    href="/dashboard"
-                    className={`text-sm transition-colors duration-300 ${
-                      isScrolled
-                        ? "text-foreground/70 hover:text-foreground"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                  >
-                    DASHBOARD
-                  </a>
-                )}
+                <a
+                  href="/dashboard"
+                  className={`text-sm transition-colors duration-300 ${
+                    isScrolled
+                      ? "text-foreground/70 hover:text-foreground"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  DASHBOARD
+                </a>
                 <UserButton appearance={{ elements: { avatarBox: "h-[34px] w-[34px]" } }} />
               </div>
             )}
