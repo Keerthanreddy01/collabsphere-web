@@ -491,22 +491,28 @@ export default function DashboardHomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#EEF3FF] via-[#F4F7FF] to-[#FCFDFF] text-[#1D1E22] antialiased font-sans relative pb-12 lg:pb-16 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#fafafa] to-[#ffffff] text-[#1D1E22] antialiased font-sans relative pb-12 lg:pb-16 overflow-x-hidden">
       
-      {/* Glow animations */}
+      {/* Custom Styles and Heartbeat animation keyframes */}
       <style jsx global>{`
         @keyframes pulseGlow {
           0%, 100% { opacity: 0.12; }
           50% { opacity: 0.25; }
         }
         .animate-glow { animation: pulseGlow 4s ease-in-out infinite; }
+
+        @keyframes heartBeat {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.3); }
+          100% { transform: scale(1); }
+        }
       `}</style>
 
-      {/* Premium subtle dot grid texture background */}
+      {/* Subtle premium dot grid background pattern */}
       <div 
-        className="fixed inset-0 pointer-events-none z-0 opacity-[0.25]"
+        className="fixed inset-0 pointer-events-none z-0 opacity-[0.5]"
         style={{
-          backgroundImage: `radial-gradient(#7A5BFF 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, #e5e7eb 1px, transparent 1px)`,
           backgroundSize: '24px 24px',
         }}
       />
@@ -542,7 +548,7 @@ export default function DashboardHomePage() {
           )}
 
           {/* Central Column */}
-          <main className="min-w-0 space-y-4">
+          <main className="min-w-0 space-y-5">
 
             {/* Mobile Header */}
             <div className="flex items-center justify-between bg-white/70 border border-white/40 rounded-2xl p-4 shadow-sm backdrop-blur-md lg:hidden">
@@ -741,9 +747,15 @@ export default function DashboardHomePage() {
               </div>
             </div>
 
-            {/* Real data-driven setup checklist */}
+            {/* Real data-driven setup checklist with premium linear-gradient */}
             {!isSetupDismissed && (
-              <div className="bg-white/60 backdrop-blur-xl border border-white/50 rounded-[24px] p-5 shadow-[0_8px_24px_rgba(122,91,255,0.04)] relative z-10">
+              <div 
+                className="border rounded-[24px] p-5 shadow-[0_8px_24px_rgba(122,91,255,0.03)] relative z-10"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12))',
+                  borderColor: 'rgba(139, 92, 246, 0.12)',
+                }}
+              >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex flex-col text-left">
                     <div className="flex items-center gap-2">
@@ -769,7 +781,7 @@ export default function DashboardHomePage() {
                   </div>
                   <div className="w-full bg-[#EAEBF4]/60 h-2.5 rounded-full overflow-hidden shadow-inner border border-white/20">
                     <div 
-                      className="bg-gradient-to-r from-[#7A5BFF] to-[#EC4899] h-full rounded-full transition-all duration-500" 
+                      className="bg-gradient-to-r from-pink-500 to-purple-600 h-full rounded-full transition-all duration-500" 
                       style={{ width: `${checklistProgressPercent}%` }}
                     />
                   </div>
@@ -777,10 +789,10 @@ export default function DashboardHomePage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   {/* Add your stack */}
-                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200 cursor-pointer group ${
+                  <div className={`relative flex items-center gap-3 rounded-[16px] border px-4 py-3.5 transition-all duration-200 cursor-pointer group bg-white shadow-sm ${
                     setupDone["stack"]
-                      ? "border-green-200 bg-green-50/60 shadow-sm"
-                      : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
+                      ? "border-green-200 bg-white"
+                      : "border-gray-200 hover:border-[#7A5BFF]/30 hover:shadow-md"
                   }`}
                     onClick={handleAddStackClick}
                   >
@@ -790,20 +802,20 @@ export default function DashboardHomePage() {
                       {setupDone["stack"] ? "✓" : "⚡"}
                     </div>
                     <div className="text-left min-w-0">
-                      <p className={`text-xs font-black tracking-tight truncate ${
-                        setupDone["stack"] ? "text-green-700 line-through opacity-70" : "text-black"
+                      <p className={`text-xs font-semibold tracking-tight truncate ${
+                        setupDone["stack"] ? "text-green-700 line-through opacity-70" : "text-gray-900"
                       }`}>Add your stack</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5 truncate">
+                      <p className="text-[10px] text-gray-400 font-medium mt-0.5 truncate">
                         {setupDone["stack"] ? "Stack loaded!" : "React, Firebase..."}
                       </p>
                     </div>
                   </div>
 
                   {/* Ship your first project */}
-                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200 cursor-pointer group ${
+                  <div className={`relative flex items-center gap-3 rounded-[16px] border px-4 py-3.5 transition-all duration-200 cursor-pointer group bg-white shadow-sm ${
                     setupDone["project"]
-                      ? "border-green-200 bg-green-50/60 shadow-sm"
-                      : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
+                      ? "border-green-200 bg-white"
+                      : "border-gray-200 hover:border-[#7A5BFF]/30 hover:shadow-md"
                   }`}
                     onClick={handleShipProjectClick}
                   >
@@ -813,20 +825,20 @@ export default function DashboardHomePage() {
                       {setupDone["project"] ? "✓" : "🚀"}
                     </div>
                     <div className="text-left min-w-0">
-                      <p className={`text-xs font-black tracking-tight truncate ${
-                        setupDone["project"] ? "text-green-700 line-through opacity-70" : "text-black"
+                      <p className={`text-xs font-semibold tracking-tight truncate ${
+                        setupDone["project"] ? "text-green-700 line-through opacity-70" : "text-gray-900"
                       }`}>Ship first project</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5 truncate">
+                      <p className="text-[10px] text-gray-400 font-medium mt-0.5 truncate">
                         {setupDone["project"] ? "Project shipped!" : "Post your build logs"}
                       </p>
                     </div>
                   </div>
 
                   {/* Complete builder profile */}
-                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200 cursor-pointer group ${
+                  <div className={`relative flex items-center gap-3 rounded-[16px] border px-4 py-3.5 transition-all duration-200 cursor-pointer group bg-white shadow-sm ${
                     setupDone["profile"]
-                      ? "border-green-200 bg-green-50/60 shadow-sm"
-                      : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
+                      ? "border-green-200 bg-white"
+                      : "border-gray-200 hover:border-[#7A5BFF]/30 hover:shadow-md"
                   }`}
                     onClick={handleCompleteProfileClick}
                   >
@@ -836,10 +848,10 @@ export default function DashboardHomePage() {
                       {setupDone["profile"] ? "✓" : "👤"}
                     </div>
                     <div className="text-left min-w-0">
-                      <p className={`text-xs font-black tracking-tight truncate ${
-                        setupDone["profile"] ? "text-green-700 line-through opacity-70" : "text-black"
+                      <p className={`text-xs font-semibold tracking-tight truncate ${
+                        setupDone["profile"] ? "text-green-700 line-through opacity-70" : "text-gray-900"
                       }`}>Complete profile</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5 truncate">
+                      <p className="text-[10px] text-gray-400 font-medium mt-0.5 truncate">
                         {setupDone["profile"] ? "Profile ready!" : "Bio & username check"}
                       </p>
                     </div>
@@ -848,78 +860,77 @@ export default function DashboardHomePage() {
               </div>
             )}
 
-            {/* Post Composer */}
-            <div id="post-composer" className="bg-white border border-white/60 rounded-[28px] p-5 shadow-[0_10px_30px_rgba(31,38,135,0.015)] backdrop-blur-xl space-y-4 text-left relative z-10">
+            {/* Post Composer Redesign */}
+            <div id="post-composer" className="bg-white border border-[#e5e7eb] rounded-[16px] p-5 shadow-sm text-left relative z-10 space-y-3.5">
               <div className="flex items-start gap-3">
                 <img
                   src={currentUser.imageUrl}
                   alt={currentUser.fullName}
-                  className="w-10 h-10 rounded-full object-cover border shadow-sm"
+                  className="w-10 h-10 rounded-full object-cover border border-gray-150 shadow-sm shrink-0"
                 />
-                <div className="flex-1 space-y-2">
-                  <textarea
-                    id="composer-textarea"
-                    placeholder="What are you building today?"
-                    value={composerContent}
-                    onChange={(e) => setComposerContent(e.target.value)}
-                    className="w-full bg-[#EAEBF4]/30 hover:bg-[#EAEBF4]/40 focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 border border-transparent focus:border-[#7A5BFF]/40 p-3 rounded-2xl text-xs placeholder-gray-400 outline-none transition-all resize-none min-h-[70px]"
-                  />
-                  
-                  {composerTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {composerTags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#E9E7FF] text-[#7A5BFF] text-[9.5px] font-extrabold"
-                        >
-                          <span>#{tag}</span>
-                          <button
-                            type="button"
-                            onClick={() => setComposerTags(prev => prev.filter(t => t !== tag))}
-                            className="text-[#7A5BFF] hover:text-red-500 font-bold ml-1 text-[10px]"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="relative max-w-xs">
-                    <input
-                      type="text"
-                      placeholder="Add tech tag (type & enter)"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const val = tagInput.trim().toLowerCase().replace(/#/g, "");
-                          if (val && !composerTags.includes(val)) {
-                            setComposerTags(prev => [...prev, val]);
-                          }
-                          setTagInput("");
-                        }
-                      }}
-                      className="w-full bg-[#EAEBF4]/30 hover:bg-[#EAEBF4]/40 focus:bg-white border border-transparent focus:border-gray-200 px-3 py-1.5 rounded-xl text-[10px] placeholder-gray-400 outline-none transition-all"
-                    />
-                  </div>
-                </div>
+                <textarea
+                  id="composer-textarea"
+                  placeholder="What are you building today?"
+                  value={composerContent}
+                  onChange={(e) => setComposerContent(e.target.value)}
+                  className="flex-1 border-0 outline-none placeholder-gray-400 text-[15px] min-h-[80px] bg-transparent resize-none py-1 text-gray-800"
+                />
               </div>
 
-              <div className="flex items-center justify-between border-t border-gray-100/80 pt-3">
-                <div className="flex items-center bg-gray-100/80 p-0.5 rounded-full border border-gray-200/50 gap-0.5">
+              {composerTags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pl-13">
+                  {composerTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[11px] font-semibold border border-gray-200"
+                    >
+                      <span>#{tag}</span>
+                      <button
+                        type="button"
+                        onClick={() => setComposerTags(prev => prev.filter(t => t !== tag))}
+                        className="text-gray-400 hover:text-red-500 font-bold ml-1 text-xs"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="pl-13 relative max-w-xs">
+                <input
+                  type="text"
+                  placeholder="Add tech tag (type & enter)"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      const val = tagInput.trim().toLowerCase().replace(/#/g, "");
+                      if (val && !composerTags.includes(val)) {
+                        setComposerTags(prev => [...prev, val]);
+                      }
+                      setTagInput("");
+                    }
+                  }}
+                  className="w-full bg-gray-50 border border-gray-200 focus:border-gray-300 focus:bg-white rounded-full px-4 py-2 text-sm outline-none transition-all placeholder-gray-400"
+                />
+              </div>
+
+              <div className="border-t border-gray-100 my-2 pt-3 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
                   {(['update', 'looking_for', 'build_log'] as const).map((type) => {
                     const label = type === 'update' ? 'Update' : type === 'looking_for' ? 'Looking For' : 'Build Log';
+                    const isActive = composerType === type;
                     return (
                       <button
                         key={type}
                         type="button"
                         onClick={() => setComposerType(type)}
-                        className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all ${
-                          composerType === type
-                            ? 'bg-[#121315] text-[#CDFF3D] shadow-sm'
-                            : 'text-gray-500 hover:text-black'
+                        className={`rounded-full px-4 py-1.5 text-sm font-medium cursor-pointer transition-all ${
+                          isActive
+                            ? 'bg-gray-900 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                       >
                         {label}
@@ -932,7 +943,7 @@ export default function DashboardHomePage() {
                   type="button"
                   onClick={handlePostSubmit}
                   disabled={!composerContent.trim()}
-                  className="bg-[#121315] hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-black px-5 py-2.5 rounded-full shadow-sm active:scale-95 transition-all"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold px-6 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Post
                 </button>
@@ -985,61 +996,75 @@ export default function DashboardHomePage() {
                   const isLiked = user && likes.includes(user.uid);
                   const isCommentSectionOpen = !!expandedComments[post.id];
                   
-                  // Optimized type badge color pills
+                  // Optimized type badge color pills & accents
                   let typeBadgeClass = "";
                   let typeLabel = "";
+                  let cardAccentStyle = "";
+                  let avatarRingColor = "";
+
                   if (post.post_type === 'update') {
-                    typeBadgeClass = "bg-blue-50 border-blue-100 text-blue-600";
+                    typeBadgeClass = "bg-blue-100 text-blue-700 font-semibold";
                     typeLabel = "Update";
+                    cardAccentStyle = "border-l-4 border-l-[#3b82f6]";
+                    avatarRingColor = "ring-[#3b82f6]";
                   } else if (post.post_type === 'looking_for') {
-                    typeBadgeClass = "bg-purple-50 border-purple-100 text-purple-600";
-                    typeLabel = "Looking for Teammates";
+                    typeBadgeClass = "bg-purple-100 text-purple-700 font-semibold";
+                    typeLabel = "Looking For";
+                    cardAccentStyle = "border-l-4 border-l-[#8b5cf6]";
+                    avatarRingColor = "ring-[#8b5cf6]";
                   } else if (post.post_type === 'build_log') {
-                    typeBadgeClass = "bg-green-50 border-green-100 text-green-600";
+                    typeBadgeClass = "bg-green-100 text-green-700 font-semibold";
                     typeLabel = "Build Log";
+                    cardAccentStyle = "border-l-4 border-l-[#10b981]";
+                    avatarRingColor = "ring-[#10b981]";
                   } else {
-                    typeBadgeClass = "bg-orange-50 border-orange-100 text-orange-600";
+                    typeBadgeClass = "bg-orange-100 text-orange-700 font-semibold";
                     typeLabel = "Project Update";
+                    cardAccentStyle = "border-l-4 border-l-[#f59e0b]";
+                    avatarRingColor = "ring-[#f59e0b]";
                   }
 
                   return (
                     <div
                       key={post.id}
-                      className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(31,38,135,0.015)] text-left hover:shadow-[0_15px_30px_rgba(122,91,255,0.08)] hover:border-[#7A5BFF]/30 transition-all duration-300 relative group"
+                      className={`bg-white border border-[#e5e7eb] ${cardAccentStyle} rounded-[16px] px-6 py-5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[1px] transition-all duration-200 ease-in-out text-left relative group`}
                     >
                       {/* Post Header */}
-                      <div className="flex items-center justify-between gap-3 mb-3.5">
+                      <div className="flex items-center justify-between gap-3 mb-3">
                         <div className="flex items-center gap-3">
                           <img
                             src={post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
                             alt={post.author_name}
-                            className="w-10 h-10 rounded-full object-cover border border-white/80 shadow-sm"
+                            className={`w-10 h-10 rounded-full object-cover border border-white ring-2 ring-offset-2 ${avatarRingColor}`}
                           />
                           <div className="min-w-0 text-left">
-                            <p className="text-xs font-bold text-black truncate">{post.author_name}</p>
-                            <p className="text-[10px] text-gray-400 mt-0.5 truncate">
+                            <p className="text-sm font-semibold text-gray-900 truncate leading-tight">{post.author_name}</p>
+                            <p className="text-gray-400 text-xs mt-0.5 truncate font-medium">
                               @{post.author_username} · {timeAgo(post.created_at)}
                             </p>
                           </div>
                         </div>
 
-                        <span className={`px-2.5 py-0.5 border rounded-lg text-[9px] font-extrabold uppercase tracking-wide shrink-0 ${typeBadgeClass}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 ${typeBadgeClass}`}>
                           {typeLabel}
                         </span>
                       </div>
 
                       {/* Content */}
-                      <p className="text-xs text-[#1D1E22] leading-relaxed font-medium whitespace-pre-wrap">
+                      <p 
+                        className="text-[15px] text-[#374151] leading-relaxed my-3 whitespace-pre-wrap font-medium"
+                        style={{ lineHeight: '1.6' }}
+                      >
                         {post.content}
                       </p>
 
                       {/* Stack Tags */}
                       {post.stack_tags && post.stack_tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-3.5">
+                        <div className="flex flex-wrap gap-1.5 mt-3">
                           {post.stack_tags.map((tag: string) => (
                             <span
                               key={tag}
-                              className="px-2 py-0.5 rounded-lg bg-gray-50 border border-gray-100 text-gray-400 text-[9px] font-bold"
+                              className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold hover:bg-gray-200 cursor-pointer transition-colors"
                             >
                               #{tag}
                             </span>
@@ -1047,31 +1072,39 @@ export default function DashboardHomePage() {
                         </div>
                       )}
 
-                      {/* Footer Actions */}
-                      <div className="flex items-center justify-between border-t border-gray-100/60 pt-3.5 mt-4">
-                        <div className="flex items-center gap-4">
-                          {/* Like Button with Bouncy scale click */}
+                      {/* Footer Action Bar */}
+                      <div className="flex items-center justify-between border-t border-gray-100 pt-3.5 mt-4">
+                        <div className="flex items-center gap-2">
+                          {/* Like Button */}
                           <button
                             type="button"
                             onClick={() => handleLikeClick(post.id)}
-                            className="flex items-center gap-1.5 group/btn text-[10px] font-black text-gray-500"
+                            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                              isLiked 
+                                ? "text-pink-500 bg-pink-50 font-semibold" 
+                                : "text-gray-400 hover:text-pink-500 hover:bg-pink-50"
+                            }`}
                           >
-                            <Heart className={`w-4 h-4 transition-transform duration-200 active:scale-130 ${
-                              isLiked ? "fill-pink-500 text-pink-500 animate-pulse" : "text-gray-400 hover:text-pink-500"
+                            <Heart className={`w-4 h-4 transition-transform ${
+                              isLiked 
+                                ? "fill-pink-500 text-pink-500 animate-[heartBeat_0.3s_ease-in-out]" 
+                                : "text-gray-400"
                             }`} />
-                            <span className={isLiked ? "text-pink-500" : ""}>{likes.length}</span>
+                            <span>{likes.length}</span>
                           </button>
 
                           {/* Comment Count Button: Clickable drawer toggle */}
                           <button
                             type="button"
                             onClick={() => setExpandedComments(prev => ({ ...prev, [post.id]: !prev[post.id] }))}
-                            className={`flex items-center gap-1.5 text-[10px] font-black ${
-                              isCommentSectionOpen ? "text-[#7A5BFF]" : "text-gray-500 hover:text-[#7A5BFF]"
+                            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                              isCommentSectionOpen 
+                                ? "text-blue-500 bg-blue-50" 
+                                : "text-gray-400 hover:text-blue-500 hover:bg-blue-50"
                             }`}
                           >
                             <MessageCircle className={`w-4 h-4 transition-colors ${
-                              isCommentSectionOpen ? "text-[#7A5BFF]" : "text-gray-400"
+                              isCommentSectionOpen ? "text-blue-500" : "text-gray-400"
                             }`} />
                             <span>{post.comments_count || 0}</span>
                           </button>
@@ -1100,13 +1133,13 @@ export default function DashboardHomePage() {
                         </button>
                       </div>
 
-                      {/* Expandable Comment Drawer */}
+                      {/* Expandable Comment Drawer with negative offsets to blend into the card edge seamlessly */}
                       {isCommentSectionOpen && (
-                        <div className="mt-4 pt-4 border-t border-gray-100 space-y-4 text-left animate-in fade-in duration-200">
+                        <div className="mt-4 pt-4 border-t border-[#f3f4f6] bg-[#f9fafb] -mx-6 px-6 -mb-5 pb-5 rounded-b-[16px] space-y-4 text-left animate-in fade-in duration-200">
                           {/* Replies listing */}
                           <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
                             {(commentsMap[post.id] || []).map((reply) => (
-                              <div key={reply.id} className="flex gap-2.5 items-start bg-gray-50/50 p-2.5 rounded-2xl border border-gray-100/35">
+                              <div key={reply.id} className="flex gap-2.5 items-start bg-white p-3 rounded-2xl border border-gray-150 shadow-sm">
                                 <img
                                   src={reply.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
                                   alt={reply.author_name}
@@ -1114,10 +1147,10 @@ export default function DashboardHomePage() {
                                 />
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-center justify-between">
-                                    <p className="text-[10px] font-black text-black truncate">{reply.author_name}</p>
-                                    <span className="text-[8px] text-gray-400 shrink-0">{timeAgo(reply.created_at)}</span>
+                                    <p className="text-[11px] font-semibold text-gray-900 truncate leading-none">{reply.author_name}</p>
+                                    <span className="text-[9px] text-gray-400 shrink-0">{timeAgo(reply.created_at)}</span>
                                   </div>
-                                  <p className="text-[10px] text-gray-700 mt-0.5 whitespace-pre-wrap leading-normal font-medium">{reply.content}</p>
+                                  <p className="text-[11px] text-gray-600 mt-1 whitespace-pre-wrap leading-relaxed font-medium">{reply.content}</p>
                                 </div>
                               </div>
                             ))}
@@ -1128,7 +1161,7 @@ export default function DashboardHomePage() {
 
                           {/* Reply input drawer */}
                           <div className="flex items-center gap-2">
-                            <img src={currentUser.imageUrl} className="w-7.5 h-7.5 rounded-full object-cover border" />
+                            <img src={currentUser.imageUrl} className="w-7.5 h-7.5 rounded-full object-cover border border-gray-100" />
                             <input
                               type="text"
                               placeholder="Write a reply..."
@@ -1139,12 +1172,12 @@ export default function DashboardHomePage() {
                                   handlePostComment(post.id);
                                 }
                               }}
-                              className="flex-1 bg-gray-50 border border-gray-100 hover:border-gray-200 px-3.5 py-2 rounded-2xl text-[11px] placeholder-gray-400 outline-none focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 transition-all shadow-sm"
+                              className="flex-1 bg-white border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 rounded-full px-4 py-2 text-xs outline-none transition-all placeholder-gray-400"
                             />
                             <button
                               type="button"
                               onClick={() => handlePostComment(post.id)}
-                              className="bg-[#121315] hover:bg-black text-[#CDFF3D] text-[10px] font-black px-4 py-2 rounded-xl transition-all active:scale-95 shrink-0"
+                              className="bg-gray-900 text-white rounded-full px-4 py-2 text-xs font-medium hover:bg-gray-700 transition-all active:scale-95 shrink-0"
                             >
                               Reply
                             </button>
@@ -1164,7 +1197,7 @@ export default function DashboardHomePage() {
           <aside className="min-w-0 self-start space-y-6">
             
             {/* Online builders avatar stack */}
-            <div className="bg-white/80 border border-white/50 rounded-[28px] p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.01)] backdrop-blur-xl flex items-center justify-between gap-4 relative z-10">
+            <div className="bg-white border border-[#e5e7eb] rounded-[28px] p-2.5 shadow-sm flex items-center justify-between gap-4 relative z-10">
               <div className="flex items-center pl-1.5">
                 <div className="flex -space-x-1.5">
                   {allProfiles.slice(0, 4).map((p, index) => (
@@ -1240,7 +1273,7 @@ export default function DashboardHomePage() {
             </div>
 
             {/* Trending Builders Widget */}
-            <div className="bg-white border border-white/60 rounded-[32px] p-5 shadow-[0_12px_30px_rgba(31,38,135,0.01)] backdrop-blur-xl space-y-4 relative z-10">
+            <div className="bg-white border border-[#e5e7eb] rounded-[32px] p-5 shadow-sm space-y-4 relative z-10">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-black tracking-tight font-sans">Trending Builders</span>
                 <button
@@ -1303,7 +1336,7 @@ export default function DashboardHomePage() {
             </div>
 
             {/* Active Hackathons Trophy Widget */}
-            <div className="bg-white border border-white/60 rounded-[32px] p-5 shadow-[0_12px_30px_rgba(31,38,135,0.01)] backdrop-blur-xl space-y-4 relative z-10">
+            <div className="bg-white border border-[#e5e7eb] rounded-[32px] p-5 shadow-sm space-y-4 relative z-10">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-black tracking-tight font-sans">Active Hackathons</span>
                 <button
