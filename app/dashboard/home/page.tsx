@@ -4,39 +4,24 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
-  Home,
-  Bell,
-  Bookmark,
-  ChevronDown,
-  Compass,
-  Folder,
-  FileText,
-  Users,
-  Trophy,
-  MessageSquare,
   Plus,
-  Search,
   ArrowUpRight,
   Heart,
   MessageCircle,
-  Mic,
-  Play,
-  Clock,
+  Trophy,
 } from "lucide-react";
 import { 
   getProfile, 
   createProfile, 
   updateProfile, 
-  getUserStats, 
   connectToBuilder, 
-  getUserSpaces, 
   createSpace,
-  getAllProfiles
 } from "@/lib/profiles";
-import { createPost, likePost, addComment } from "@/lib/posts";
+import { createPost, likePost, addComment, computePostScore } from "@/lib/posts";
 import { collection, onSnapshot, query, orderBy, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { createProject } from "@/lib/projects";
+import Sidebar from "@/components/Sidebar";
 
 type FeedTabKey = "for-you" | "updates" | "teammates" | "logs";
 
@@ -45,7 +30,6 @@ const fallbackHackathons = [
   { id: 2, name: "Build for India", date: "May 5 - May 11", builders: "856", color: "bg-[#A3E635]" },
   { id: 3, name: "Web3 Builders", date: "May 12 - May 18", builders: "732", color: "bg-[#7A5BFF]" },
 ];
-
 
 export default function DashboardHomePage() {
   const router = useRouter();
@@ -59,10 +43,8 @@ export default function DashboardHomePage() {
   
   // Real Firestore States
   const [profile, setProfile] = useState<any>(null);
-  const [userStats, setUserStats] = useState({ posts: 0, projects: 0, builders: 0 });
   const [posts, setPosts] = useState<any[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
-  const [spaces, setSpaces] = useState<any[]>([]);
   const [showCreateSpaceModal, setShowCreateSpaceModal] = useState(false);
   const [newSpaceName, setNewSpaceName] = useState("");
   const [newSpaceColor, setNewSpaceColor] = useState("bg-[#CDFF3D]");
@@ -73,8 +55,37 @@ export default function DashboardHomePage() {
   const [connectingBuilderId, setConnectingBuilderId] = useState<string | null>(null);
   const [myConnections, setMyConnections] = useState<string[]>([]);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
+  const [userProjectsCount, setUserProjectsCount] = useState(0);
 
-  // Auth redirect — if not signed in, go to login page
+  // Comments Expander States
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
+  const [commentsMap, setCommentsMap] = useState<Record<string, any[]>>({});
+  const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
+
+  // Real-Time Safe Banner States
+  const [newPostsAvailable, setNewPostsAvailable] = useState(false);
+  const [stagedPosts, setStagedPosts] = useState<any[]>([]);
+
+  // Parse deep links & parameters from other subpages
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get("createSpace") === "true") {
+      setShowCreateSpaceModal(true);
+      router.replace("/dashboard/home");
+    }
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "logs") {
+      setActiveTab("logs");
+      router.replace("/dashboard/home");
+    }
+    const searchParam = searchParams.get("search");
+    if (searchParam) {
+      setSearchQuery(decodeURIComponent(searchParam));
+      router.replace("/dashboard/home");
+    }
+  }, [router]);
+
+  // Auth redirect
   useEffect(() => {
     if (!loading && !user) {
       router.replace("/login");
@@ -113,7 +124,7 @@ export default function DashboardHomePage() {
     loadUserProfile();
   }, [user, loading]);
 
-  // Load all profiles dynamically (for Trending Builders)
+  // Load all profiles dynamically
   useEffect(() => {
     if (!user) return;
     const unsubscribe = onSnapshot(collection(db, "builder_profiles"), (snapshot) => {
@@ -126,7 +137,7 @@ export default function DashboardHomePage() {
     return () => unsubscribe();
   }, [user]);
 
-  // Load connections for dynamic follow checking
+  // Load connections for follow checking
   useEffect(() => {
     if (!user) return;
     const q = query(collection(db, "connections"), where("follower_id", "==", user.uid));
@@ -136,74 +147,104 @@ export default function DashboardHomePage() {
     return () => unsubscribe();
   }, [user]);
 
-  // Fetch live stats (posts, projects, builders/connections)
-  const fetchStats = async () => {
-    if (!user) return;
-    const { data } = await getUserStats(user.uid);
-    if (data) {
-      setUserStats(data);
-    }
-  };
-
+  // Load user project counts in real-time
   useEffect(() => {
     if (!user) return;
-    fetchStats();
-  }, [user, posts, myConnections]);
-
-  // Load my spaces dynamically
-  useEffect(() => {
-    if (!user) return;
-    const q = query(
-      collection(db, "spaces"),
-      where("created_by", "==", user.uid),
-      orderBy("created_at", "desc")
-    );
+    const q = query(collection(db, "projects"), where("uid", "==", user.uid));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const list = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setSpaces(list);
-    }, (err) => {
-      console.error("Error spaces:", err);
+      setUserProjectsCount(snapshot.size);
     });
     return () => unsubscribe();
   }, [user]);
 
-  // Load real-time posts feed
+  // Real-time comments listener for expanded comment drawers
+  useEffect(() => {
+    const unsubs: (() => void)[] = [];
+    Object.keys(expandedComments).forEach((postId) => {
+      if (expandedComments[postId]) {
+        const q = query(
+          collection(db, "posts", postId, "comments"),
+          orderBy("created_at", "asc")
+        );
+        const unsub = onSnapshot(q, (snapshot) => {
+          const list = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setCommentsMap(prev => ({ ...prev, [postId]: list }));
+        }, (err) => {
+          console.error("Error loading comments:", err);
+        });
+        unsubs.push(unsub);
+      }
+    });
+    return () => {
+      unsubs.forEach(fn => fn());
+    };
+  }, [expandedComments]);
+
+  // Real-time smart posts feed listener with safeStage banner
   useEffect(() => {
     const q = query(collection(db, "posts"), orderBy("created_at", "desc"));
+    let isInitial = true;
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const list = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-      setPosts(list);
-      setLoadingPosts(false);
+
+      if (isInitial) {
+        setPosts(list);
+        setLoadingPosts(false);
+        isInitial = false;
+      } else {
+        // If a new post is added
+        if (list.length > posts.length) {
+          const newestPost = list[0] as any;
+          // If authored by the current user, merge immediately
+          if (user && newestPost.uid === user.uid) {
+            setPosts(list);
+          } else {
+            // Stage incoming posts and alert reader
+            setStagedPosts(list);
+            setNewPostsAvailable(true);
+          }
+        } else {
+          // Edits/Likes updates flow through
+          setPosts(list);
+        }
+      }
     }, (err) => {
       console.error("Error subscribing to posts:", err);
       setLoadingPosts(false);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user, posts.length]);
 
-  // Map Trending Builders
+  const handleLoadNewPosts = () => {
+    setPosts(stagedPosts);
+    setNewPostsAvailable(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Trending Builders Memo (REAL builders sorted by recency)
   const trendingBuildersList = useMemo(() => {
     if (!user) return [];
     return allProfiles
       .filter(p => p.uid !== user.uid && p.username)
+      .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
       .slice(0, 5)
       .map(p => ({
         id: p.uid,
         name: p.full_name || "Builder",
         username: p.username || "builder",
-        role: p.stack && p.stack.length > 0 ? p.stack[0] + " Dev" : "AI Explorer",
+        role: p.stack && p.stack.length > 0 ? p.stack[0] : "AI Explorer",
         avatar: p.avatar_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
       }));
   }, [allProfiles, user]);
 
-  // Greeting and Current User Memo
   const greetingName = useMemo(() => {
     if (!profile) return "Keerthan";
     return profile.full_name?.split(' ')[0] || "Keerthan";
@@ -217,16 +258,21 @@ export default function DashboardHomePage() {
     };
   }, [user, profile]);
 
-  // Setup progress completion states
+  // Setup Progress Checks (Checks real stats & bio details)
   const setupDone: Record<string, boolean> = useMemo(() => {
     return {
       stack: !!(profile?.stack && profile.stack.length > 0),
-      project: !!(userStats.projects > 0),
-      profile: !!(profile?.onboarding_completed)
+      project: userProjectsCount > 0,
+      profile: !!(profile?.bio && profile?.username)
     };
-  }, [profile, userStats]);
+  }, [profile, userProjectsCount]);
 
-  // Checklist Actions
+  const checklistProgressPercent = useMemo(() => {
+    const completed = Object.values(setupDone).filter(Boolean).length;
+    return Math.round((completed / 3) * 100);
+  }, [setupDone]);
+
+  // Action Triggers for Checklist
   const handleAddStackClick = async () => {
     if (!user || !profile) return;
     const defaultStack = ["React", "Next.js", "Firebase", "TypeScript"];
@@ -238,9 +284,11 @@ export default function DashboardHomePage() {
 
   const handleCompleteProfileClick = async () => {
     if (!user || !profile) return;
-    const { error } = await updateProfile(user.uid, { onboarding_completed: true });
+    const defaultBio = "Passionate builder shipping awesome software.";
+    const defaultUsername = profile.username || user.email?.split('@')[0] || "builder";
+    const { error } = await updateProfile(user.uid, { bio: defaultBio, username: defaultUsername });
     if (!error) {
-      setProfile((prev: any) => ({ ...prev, onboarding_completed: true }));
+      setProfile((prev: any) => ({ ...prev, bio: defaultBio, username: defaultUsername }));
     }
   };
 
@@ -254,16 +302,17 @@ export default function DashboardHomePage() {
       author_name: profile?.full_name || user.displayName || "Builder",
       created_at: new Date().toISOString()
     });
-    if (!error) {
-      fetchStats();
+    if (error) {
+      console.error(error);
     }
-    const element = document.getElementById("post-composer");
+    const element = document.getElementById("composer-textarea");
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => element.focus(), 500);
     }
   };
 
-  // Composer Post submit handler
+  // Compose Post submit handler
   const handlePostSubmit = async () => {
     if (!user || !composerContent.trim()) return;
 
@@ -296,12 +345,10 @@ export default function DashboardHomePage() {
     if (error) {
       console.error("Failed to create post:", error);
       setPosts((prev: any[]) => prev.filter((p: any) => p.id !== tempId));
-    } else {
-      fetchStats();
     }
   };
 
-  // Like toggler
+  // Heart click like handler
   const handleLikeClick = async (postId: string) => {
     if (!user) return;
     const post = posts.find(p => p.id === postId);
@@ -322,18 +369,39 @@ export default function DashboardHomePage() {
     }
   };
 
-  // Connect handler
+  // Trending Builder connection handler
   const handleConnectClick = async (builderId: string) => {
     if (!user || connectingBuilderId) return;
     setConnectingBuilderId(builderId);
     const { error } = await connectToBuilder(user.uid, builderId);
     setConnectingBuilderId(null);
-    if (!error) {
-      fetchStats();
+    if (error) {
+      console.error("Failed to connect builder:", error);
     }
   };
 
-  // Space creator
+  // Comment subcollection poster
+  const handlePostComment = async (postId: string) => {
+    if (!user) return;
+    const content = commentInputs[postId]?.trim();
+    if (!content) return;
+
+    setCommentInputs(prev => ({ ...prev, [postId]: "" }));
+
+    const { error } = await addComment(postId, {
+      uid: user.uid,
+      author_name: currentUser.fullName,
+      author_avatar: currentUser.imageUrl,
+      author_username: currentUser.username,
+      content
+    });
+
+    if (error) {
+      console.error("Failed to reply:", error);
+    }
+  };
+
+  // Custom space modal submitter
   const handleCreateSpaceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !newSpaceName.trim()) return;
@@ -349,32 +417,43 @@ export default function DashboardHomePage() {
     }
   };
 
-  // Space list calculation
-  const spacesList = useMemo(() => {
-    const defaultSpaces = [
-      { label: "AI Side Project", dotColor: "bg-[#CDFF3D]" },
-      { label: "SaaS Founders", dotColor: "bg-[#B69DFF]" },
-      { label: "Indie Hackers", dotColor: "bg-[#FF9D42]" },
-      { label: "Web3 Creators", dotColor: "bg-[#42EFFF]" },
-    ];
-    if (spaces.length > 0) {
-      return spaces;
-    }
-    return defaultSpaces;
-  }, [spaces]);
-
-  // Filter feed items based on activeTab
+  // Score algorithm ranking & Tabs filter
   const filteredPosts = useMemo(() => {
-    return posts.filter(post => {
-      if (activeTab === "for-you") return true;
-      if (activeTab === "updates") return post.post_type === "update";
-      if (activeTab === "teammates") return post.post_type === "looking_for";
-      if (activeTab === "logs") return post.post_type === "build_log";
-      return true;
-    });
-  }, [posts, activeTab]);
+    const userStack = profile?.stack || [];
+    let result = [...posts];
 
-  // Relative time helper
+    if (activeTab === "for-you") {
+      result.sort((a, b) => {
+        const scoreA = computePostScore(a, userStack);
+        const scoreB = computePostScore(b, userStack);
+        return scoreB - scoreA;
+      });
+    } else if (activeTab === "updates") {
+      result = result.filter(post => post.post_type === "update");
+    } else if (activeTab === "teammates") {
+      result = result.filter(post => post.post_type === "looking_for");
+    } else if (activeTab === "logs") {
+      result = result.filter(post => post.post_type === "build_log");
+    }
+    return result;
+  }, [posts, activeTab, profile]);
+
+  // Search Filter posts
+  const searchedPosts = useMemo(() => {
+    let result = filteredPosts;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(post => 
+        (post.content || "").toLowerCase().includes(q) || 
+        (post.author_name || "").toLowerCase().includes(q) ||
+        (post.author_username || "").toLowerCase().includes(q) ||
+        (post.stack_tags || []).some((tag: string) => tag.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [filteredPosts, searchQuery]);
+
+  // Relative Time Ago calculation helper
   const timeAgo = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -392,6 +471,14 @@ export default function DashboardHomePage() {
     }
   };
 
+  const handleNewPostClick = () => {
+    const textarea = document.getElementById("composer-textarea");
+    if (textarea) {
+      textarea.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => textarea.focus(), 500);
+    }
+  };
+
   if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#E5EEFF]">
@@ -406,20 +493,8 @@ export default function DashboardHomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#EEF3FF] via-[#F4F7FF] to-[#FCFDFF] text-[#1D1E22] antialiased font-sans relative pb-12 lg:pb-16 overflow-x-hidden">
       
-      {/* Waveform Soundwave & Orbit Glow CSS Keyframes */}
+      {/* Glow animations */}
       <style jsx global>{`
-        @keyframes pulseWave {
-          0%, 100% { transform: scaleY(1); }
-          50% { transform: scaleY(0.35); }
-        }
-        .animate-wave-1 { animation: pulseWave 1.1s ease-in-out infinite; }
-        .animate-wave-2 { animation: pulseWave 0.8s ease-in-out infinite 0.15s; }
-        .animate-wave-3 { animation: pulseWave 1.4s ease-in-out infinite 0.3s; }
-        .animate-wave-4 { animation: pulseWave 0.9s ease-in-out infinite 0.05s; }
-        .animate-wave-5 { animation: pulseWave 1.2s ease-in-out infinite 0.25s; }
-        .animate-wave-6 { animation: pulseWave 0.7s ease-in-out infinite 0.4s; }
-        .animate-wave-7 { animation: pulseWave 1.3s ease-in-out infinite 0.1s; }
-        
         @keyframes pulseGlow {
           0%, 100% { opacity: 0.12; }
           50% { opacity: 0.25; }
@@ -436,167 +511,27 @@ export default function DashboardHomePage() {
         }}
       />
 
-      {/* Soft ambient purple/blue blur glows (Options 1 & 3) */}
+      {/* Soft blur backgrounds */}
       <div className="absolute top-[10%] left-[5%] w-[600px] h-[600px] rounded-full bg-[#7A5BFF]/6 blur-[120px] pointer-events-none z-0 animate-glow" />
       <div className="absolute top-[40%] right-[5%] w-[700px] h-[700px] rounded-full bg-[#3B82F6]/6 blur-[140px] pointer-events-none z-0 animate-glow" />
       <div className="absolute bottom-[20%] left-[10%] w-[500px] h-[500px] rounded-full bg-[#C4B5FD]/5 blur-[110px] pointer-events-none z-0 animate-glow" />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-4 md:px-6 py-6 lg:pl-[304px]">
         
-        {/* ==================== MAIN CONTENT + RIGHT WIDGETS GRID ==================== */}
+        {/* Main content grid */}
         <div className="grid items-start grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6 xl:gap-8">
 
-          {/* ==================== LEFT SIDEBAR ==================== */}
-          <aside className={`fixed inset-y-0 left-0 z-50 w-[280px] transform overflow-y-auto bg-white/80 p-6 backdrop-blur-2xl transition-transform duration-300 border-r border-white/50 lg:inset-y-6 lg:left-6 lg:z-auto lg:h-[calc(100vh-48px)] lg:max-h-[calc(100vh-48px)] lg:translate-x-0 lg:overflow-hidden lg:border-none lg:bg-transparent lg:p-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-
-            <div className="flex flex-col justify-between h-full bg-white/70 border border-white/50 rounded-[32px] p-5 shadow-[0_12px_40px_rgba(31,38,135,0.02)] backdrop-blur-xl">
-
-              <div>
-                {/* Logo */}
-                <div className="flex items-center gap-2 mb-6 group cursor-pointer" onClick={() => { setActiveTab("for-you"); router.push("/dashboard/home"); }}>
-                  <div className="flex items-center justify-center w-5.5 h-5.5 rounded-[7px] bg-[#121315] text-[#F3F7FF] font-black text-xs select-none transition-transform group-hover:rotate-[30deg]">
-                    <span className="leading-none select-none font-bold text-sm">*</span>
-                  </div>
-                  <span className="text-base font-black tracking-tight text-[#121315] font-sans">collabsphere</span>
-                </div>
-
-
-                {/* Search */}
-                <div className="relative mb-5">
-                  <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                    <Search className="w-4 h-4" />
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-[#EAEBF4]/40 hover:bg-[#EAEBF4]/60 focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 border border-transparent focus:border-[#7A5BFF]/40 pl-9 pr-12 py-2.5 rounded-2xl text-xs placeholder-gray-400 outline-none transition-all"
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white border border-gray-200 shadow-sm text-[9px] font-bold text-gray-400 select-none">
-                    <span>⌘</span><span>K</span>
-                  </div>
-                </div>
-
-                {/* Nav */}
-                <nav className="space-y-1 mb-6">
-                  {[
-                    { key: "home", label: "Home", icon: Home, active: activeTab === "for-you" },
-                    { key: "builders", label: "Discover Builders", icon: Compass },
-                    { key: "projects", label: "Projects", icon: Folder },
-                    { key: "logs", label: "Build Log", icon: FileText, active: activeTab === "logs" },
-                    { key: "teams", label: "Teams", icon: Users },
-                    { key: "hackathons", label: "Hackathons", icon: Trophy },
-                    { key: "messages", label: "Messages", icon: MessageSquare, badge: "12" },
-                    { key: "notifications", label: "Notifications", icon: Bell, badge: "8" },
-                    { key: "bookmarks", label: "Bookmarks", icon: Bookmark },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        onClick={() => {
-                          if (item.key === "home") {
-                            setActiveTab("for-you");
-                            router.push("/dashboard/home");
-                          } else if (item.key === "logs") {
-                            setActiveTab("logs");
-                          } else if (item.key === "builders") {
-                            router.push("/builders");
-                          } else if (item.key === "projects") {
-                            router.push("/projects");
-                          } else {
-                            router.push(`/${item.key}`);
-                          }
-                        }}
-                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all group ${
-                          item.active || (item.key === "home" && activeTab !== "logs" && activeTab !== "for-you")
-                            ? "bg-[#E9E7FF] text-[#7A5BFF]"
-                            : "text-[#62636C] hover:bg-gray-100/50 hover:text-black"
-                        }`}
-                      >
-                        <span className="flex items-center gap-3">
-                          <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${item.active || (item.key === "home" && activeTab !== "logs" && activeTab !== "for-you") ? "text-[#7A5BFF]" : "text-[#7B7C85]"}`} />
-                          {item.label}
-                        </span>
-                        {item.badge && (
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                            item.active ? "bg-[#7A5BFF] text-white" : "bg-[#E9E7FF] text-[#7A5BFF]"
-                          }`}>
-                            {item.badge}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </nav>
-
-                {/* Your Spaces */}
-                <div className="space-y-3">
-                  <span className="text-[10px] font-extrabold text-[#9EA0A8] tracking-widest uppercase block pl-3 text-left">Your Spaces</span>
-                  <div className="space-y-1">
-                    {spacesList.map((space, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        className="w-full flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs font-bold text-[#62636C] hover:bg-gray-100/50 hover:text-black transition-all"
-                      >
-                        <span className="flex items-center gap-2.5 min-w-0">
-                          <span className={`w-2 h-2 rounded-full ${space.dotColor || "bg-[#CDFF3D]"} shadow-sm shrink-0`} />
-                          <span className="truncate">{space.label}</span>
-                        </span>
-                        <span className="text-[9px] text-gray-400 font-bold bg-white/50 border border-white/80 px-1.5 py-0.5 rounded-md">85%</span>
-                      </button>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => setShowCreateSpaceModal(true)}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2 rounded-2xl text-xs font-bold text-[#7A5BFF] hover:bg-[#E9E7FF]/40 transition-all text-left"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-[#7A5BFF]" />
-                      <span>Create New Space</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Profile card */}
-              <div className="pt-3 border-t border-gray-100 space-y-2">
-                <div className="flex items-center justify-between p-1.5 rounded-2xl hover:bg-gray-100/50 transition-all cursor-pointer">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <img
-                      src={currentUser.imageUrl}
-                      alt={currentUser.fullName}
-                      className="w-9 h-9 rounded-full object-cover border border-white/50 shadow-sm"
-                    />
-                    <div className="text-left min-w-0">
-                      <p className="text-xs font-bold truncate text-black">{currentUser.fullName}</p>
-                      <p className="text-[10px] text-[#8A8B94] truncate">@{currentUser.username}</p>
-                    </div>
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-[#8A8B94] shrink-0" />
-                </div>
-
-                {/* Stats indicators */}
-                <div className="grid grid-cols-3 gap-1 px-1 py-1 bg-gray-50/50 border border-gray-100/50 rounded-xl text-center select-none">
-                  <div>
-                    <span className="text-[8px] font-bold text-gray-400 block uppercase">Posts</span>
-                    <span className="text-xs font-black text-black">{userStats.posts}</span>
-                  </div>
-                  <div>
-                    <span className="text-[8px] font-bold text-gray-400 block uppercase">Builders</span>
-                    <span className="text-xs font-black text-black">{userStats.builders}</span>
-                  </div>
-                  <div>
-                    <span className="text-[8px] font-bold text-gray-400 block uppercase">Projects</span>
-                    <span className="text-xs font-black text-black">{userStats.projects}</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </aside>
+          {/* Sidebar */}
+          <Sidebar 
+            isSidebarOpen={isSidebarOpen} 
+            setIsSidebarOpen={setIsSidebarOpen}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            showCreateSpaceModal={showCreateSpaceModal}
+            setShowCreateSpaceModal={setShowCreateSpaceModal}
+          />
 
           {/* Mobile sidebar backdrop */}
           {isSidebarOpen && (
@@ -606,11 +541,11 @@ export default function DashboardHomePage() {
             />
           )}
 
-          {/* ==================== MAIN FEED COLUMN ==================== */}
-          <main className="min-w-0 space-y-3.5">
+          {/* Central Column */}
+          <main className="min-w-0 space-y-4">
 
-            {/* Mobile header */}
-            <div className="flex items-center justify-between bg-white/70 border border-white/40 rounded-2xl p-4 shadow-sm backdrop-blur-md lg:hidden z-15 relative">
+            {/* Mobile Header */}
+            <div className="flex items-center justify-between bg-white/70 border border-white/40 rounded-2xl p-4 shadow-sm backdrop-blur-md lg:hidden">
               <button
                 onClick={() => setIsSidebarOpen(true)}
                 className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition"
@@ -623,11 +558,11 @@ export default function DashboardHomePage() {
                 <span className="text-lg font-black text-black select-none leading-none">*</span>
                 <span className="font-bold text-black text-sm">collabsphere</span>
               </div>
-              <img src={currentUser.imageUrl} alt="user" className="w-8 h-8 rounded-full border shadow-sm" />
+              <img src={currentUser.imageUrl} alt="user" className="w-8 h-8 rounded-full border shadow-sm object-cover" />
             </div>
 
-            {/* Editorial Greeting Header Row (CLEAN AND DE-CLUTTERED, NO DUPLICATE AVATAR STACK OR TEXT LABELS) */}
-            <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 pt-2.5 pb-2 md:pt-4 md:pb-2.5 z-10 relative">
+            {/* Top row greeting */}
+            <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 pt-2.5 pb-2 md:pt-4 md:pb-2.5 relative z-10">
               <div className="flex items-center gap-4">
                 <img
                   src={currentUser.imageUrl}
@@ -642,8 +577,8 @@ export default function DashboardHomePage() {
                 </h2>
               </div>
 
-              {/* Toggle switch integrated beautifully inline (Screenshot 2 concept) */}
-              <div className="bg-white/50 backdrop-blur-xl border border-white/40 p-1 rounded-full flex items-center shadow-[0_8px_32px_rgba(0,0,0,0.03)] select-none shrink-0 self-start sm:self-auto gap-0.5 z-10 relative">
+              {/* Individual / Community toggle switch */}
+              <div className="bg-white/50 backdrop-blur-xl border border-white/40 p-1 rounded-full flex items-center shadow-[0_8px_32px_rgba(0,0,0,0.03)] select-none shrink-0 self-start sm:self-auto gap-0.5 relative z-10">
                 <button
                   type="button"
                   onClick={() => setIsTeamMode(false)}
@@ -665,10 +600,9 @@ export default function DashboardHomePage() {
               </div>
             </section>
 
-            {/* ==================== HERO BANNER ==================== */}
+            {/* Hero banner block */}
             <section className="relative overflow-hidden bg-white border border-white/60 rounded-[28px] pt-4.5 pb-3 px-4.5 sm:pt-5 sm:pb-3 sm:px-5 md:pt-5 md:pb-3 md:px-5.5 shadow-[0_10px_28px_rgba(31,38,135,0.012)] backdrop-blur-xl group z-10">
               
-              {/* Floating Translucent 3D Glass Waterdrop (Screenshot 1) */}
               <div className="absolute top-[-35px] right-[8%] w-[90px] h-[110px] pointer-events-none select-none z-10 transition-transform duration-500 group-hover:scale-105">
                 <svg className="w-full h-full text-blue-200/50" viewBox="0 0 100 120" fill="none">
                   <defs>
@@ -686,12 +620,10 @@ export default function DashboardHomePage() {
                 </svg>
               </div>
 
-              {/* Rotated green code card `</>` repositioned to left of Active Builders card to avoid overlap clash */}
               <div className="absolute bottom-[16px] right-[24%] bg-[#CDFF3D] border border-[#BDE82F] rounded-lg shadow-[0_6px_20px_rgba(205,255,61,0.25)] w-9.5 h-9.5 flex items-center justify-center select-none rotate-[15deg] pointer-events-none text-black z-10 transition-transform duration-500 group-hover:rotate-[25deg]">
                 <span className="font-mono text-sm font-bold leading-none">&lt;/&gt;</span>
               </div>
 
-              {/* Banner Text Contents */}
               <div className="max-w-[75%] text-left space-y-1.5 sm:space-y-2">
                 <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-black leading-[1.1] font-sans">
                   Build together.<br />
@@ -706,6 +638,7 @@ export default function DashboardHomePage() {
                 <div className="flex flex-wrap items-center gap-3 pt-0.5">
                   <button
                     type="button"
+                    onClick={() => router.push("/builders")}
                     className="inline-flex items-center gap-1.5 bg-[#0B0C10] hover:bg-black text-white px-5 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg transition-all active:scale-95 group"
                   >
                     <span>Find Teammates</span>
@@ -713,6 +646,7 @@ export default function DashboardHomePage() {
                   </button>
                   <button
                     type="button"
+                    onClick={handleNewPostClick}
                     className="text-[#7A5BFF] hover:text-[#5232FF] font-bold text-xs px-3 py-1.5 transition-all hover:underline"
                   >
                     Post a Project
@@ -720,10 +654,8 @@ export default function DashboardHomePage() {
                 </div>
               </div>
 
-              {/* Banner Statistics & Teammates Row */}
               <div className="mt-2.5 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-2">
                 
-                {/* Overlapping active builders and v1 pill */}
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="flex items-center">
                     <div className="flex -space-x-1">
@@ -745,13 +677,13 @@ export default function DashboardHomePage() {
                     </div>
                     <button
                       type="button"
+                      onClick={() => router.push("/builders")}
                       className="ml-1.5 flex items-center justify-center w-5.5 h-5.5 rounded-full bg-gray-100 border border-gray-200/50 text-gray-500 hover:bg-gray-200 transition-all"
                     >
                       <span className="text-[9px] font-bold">→</span>
                     </button>
                   </div>
 
-                  {/* Just Shipped Pill */}
                   <div className="px-2 py-1 rounded-lg bg-gray-50/80 border border-gray-100/50 text-[9px] font-extrabold text-gray-500 flex items-center gap-1 shadow-sm select-none">
                     <span>Just shipped</span>
                     <span className="px-1 py-0.5 rounded-md bg-gray-200/50 font-mono text-[8px]">v1.0</span>
@@ -759,7 +691,6 @@ export default function DashboardHomePage() {
                   </div>
                 </div>
 
-                {/* Active Builders Sparkline Card */}
                 <div className="bg-white border border-gray-100 rounded-xl p-1.5 px-2.5 shadow-sm flex items-center gap-2.5 min-w-[155px] group/card">
                   <div>
                     <span className="text-[8px] font-extrabold text-[#9EA0A8] uppercase tracking-wider block text-left">Active Builders</span>
@@ -769,7 +700,6 @@ export default function DashboardHomePage() {
                     </span>
                   </div>
                   
-                  {/* Purple Sparkline SVG path */}
                   <div className="shrink-0 flex items-center justify-center">
                     <svg className="w-[56px] h-[22px] text-[#7A5BFF] transition-all group-hover/card:scale-105 duration-300" viewBox="0 0 100 35" fill="none">
                       <path
@@ -784,11 +714,10 @@ export default function DashboardHomePage() {
                 </div>
 
               </div>
-
             </section>
 
-            {/* ==================== CONTENT FILTER TABS ==================== */}
-            <div className="flex flex-wrap items-center justify-between gap-4 -mt-2 sm:-mt-2.5 mb-2 z-10 relative">
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-2 relative z-10">
               <div className="flex flex-wrap items-center bg-white/50 backdrop-blur-xl p-1 rounded-full border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.03)] gap-0.5">
                 {[
                   { key: "for-you", label: "For You" },
@@ -811,14 +740,17 @@ export default function DashboardHomePage() {
                 ))}
               </div>
             </div>
-                  {/* ==================== INLINE PROGRESSIVE SETUP PROMPTS ==================== */}
+
+            {/* Real data-driven setup checklist */}
             {!isSetupDismissed && (
-              <div className="bg-white/60 backdrop-blur-xl border border-white/50 rounded-[24px] p-4 shadow-[0_8px_24px_rgba(122,91,255,0.04)] z-10 relative">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#7A5BFF] animate-pulse" />
-                    <span className="text-xs font-extrabold text-[#121315] tracking-tight">Get started</span>
-                    <span className="text-[10px] text-[#9EA0A8] font-medium">· Complete your builder profile</span>
+              <div className="bg-white/60 backdrop-blur-xl border border-white/50 rounded-[24px] p-5 shadow-[0_8px_24px_rgba(122,91,255,0.04)] relative z-10">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex flex-col text-left">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#7A5BFF] animate-pulse" />
+                      <span className="text-xs font-extrabold text-[#121315] tracking-tight">Get started checklist</span>
+                    </div>
+                    <span className="text-[10px] text-[#9EA0A8] font-medium mt-0.5">Complete these core setups to start shipping at scale</span>
                   </div>
                   <button
                     type="button"
@@ -829,99 +761,95 @@ export default function DashboardHomePage() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Progress bar showing real percentage */}
+                <div className="my-3">
+                  <div className="flex justify-between items-center text-[10px] font-extrabold text-black mb-1.5">
+                    <span>ONBOARDING PROGRESS</span>
+                    <span className="text-[#7A5BFF]">{checklistProgressPercent}% DONE</span>
+                  </div>
+                  <div className="w-full bg-[#EAEBF4]/60 h-2.5 rounded-full overflow-hidden shadow-inner border border-white/20">
+                    <div 
+                      className="bg-gradient-to-r from-[#7A5BFF] to-[#EC4899] h-full rounded-full transition-all duration-500" 
+                      style={{ width: `${checklistProgressPercent}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   {/* Add your stack */}
-                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200 cursor-pointer group ${
+                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200 cursor-pointer group ${
                     setupDone["stack"]
-                      ? "border-[#A3E635]/40 bg-[#F5FEE9]"
+                      ? "border-green-200 bg-green-50/60 shadow-sm"
                       : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
                   }`}
                     onClick={handleAddStackClick}
                   >
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base transition-all ${
-                      setupDone["stack"] ? "bg-[#CDFF3D]/40" : "bg-[#E9E7FF] group-hover:bg-[#D1CBFF]"
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-xs font-black transition-all ${
+                      setupDone["stack"] ? "bg-green-100 text-green-600" : "bg-[#E9E7FF] text-[#7A5BFF] group-hover:bg-[#D1CBFF]"
                     }`}>
                       {setupDone["stack"] ? "✓" : "⚡"}
                     </div>
                     <div className="text-left min-w-0">
                       <p className={`text-xs font-black tracking-tight truncate ${
-                        setupDone["stack"] ? "text-[#4B7A12] line-through opacity-60" : "text-black"
+                        setupDone["stack"] ? "text-green-700 line-through opacity-70" : "text-black"
                       }`}>Add your stack</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5">React, Firebase, Next.js…</p>
+                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5 truncate">
+                        {setupDone["stack"] ? "Stack loaded!" : "React, Firebase..."}
+                      </p>
                     </div>
-                    {!setupDone["stack"] && (
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#7A5BFF] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                    )}
                   </div>
 
                   {/* Ship your first project */}
-                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200 cursor-pointer group ${
+                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200 cursor-pointer group ${
                     setupDone["project"]
-                      ? "border-[#A3E635]/40 bg-[#F5FEE9]"
+                      ? "border-green-200 bg-green-50/60 shadow-sm"
                       : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
                   }`}
                     onClick={handleShipProjectClick}
                   >
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base transition-all ${
-                      setupDone["project"] ? "bg-[#CDFF3D]/40" : "bg-[#E9E7FF] group-hover:bg-[#D1CBFF]"
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-xs font-black transition-all ${
+                      setupDone["project"] ? "bg-green-100 text-green-600" : "bg-[#E9E7FF] text-[#7A5BFF] group-hover:bg-[#D1CBFF]"
                     }`}>
                       {setupDone["project"] ? "✓" : "🚀"}
                     </div>
                     <div className="text-left min-w-0">
                       <p className={`text-xs font-black tracking-tight truncate ${
-                        setupDone["project"] ? "text-[#4B7A12] line-through opacity-60" : "text-black"
-                      }`}>Ship your first project</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5">Post what you're building</p>
+                        setupDone["project"] ? "text-green-700 line-through opacity-70" : "text-black"
+                      }`}>Ship first project</p>
+                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5 truncate">
+                        {setupDone["project"] ? "Project shipped!" : "Post your build logs"}
+                      </p>
                     </div>
-                    {!setupDone["project"] && (
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#7A5BFF] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                    )}
                   </div>
 
                   {/* Complete builder profile */}
-                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200 cursor-pointer group ${
+                  <div className={`relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200 cursor-pointer group ${
                     setupDone["profile"]
-                      ? "border-[#A3E635]/40 bg-[#F5FEE9]"
+                      ? "border-green-200 bg-green-50/60 shadow-sm"
                       : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
                   }`}
                     onClick={handleCompleteProfileClick}
                   >
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base transition-all ${
-                      setupDone["profile"] ? "bg-[#CDFF3D]/40" : "bg-[#E9E7FF] group-hover:bg-[#D1CBFF]"
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-xs font-black transition-all ${
+                      setupDone["profile"] ? "bg-green-100 text-green-600" : "bg-[#E9E7FF] text-[#7A5BFF] group-hover:bg-[#D1CBFF]"
                     }`}>
                       {setupDone["profile"] ? "✓" : "👤"}
                     </div>
                     <div className="text-left min-w-0">
                       <p className={`text-xs font-black tracking-tight truncate ${
-                        setupDone["profile"] ? "text-[#4B7A12] line-through opacity-60" : "text-black"
-                      }`}>Complete builder profile</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5">Bio, links, availability</p>
+                        setupDone["profile"] ? "text-green-700 line-through opacity-70" : "text-black"
+                      }`}>Complete profile</p>
+                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5 truncate">
+                        {setupDone["profile"] ? "Profile ready!" : "Bio & username check"}
+                      </p>
                     </div>
-                    {!setupDone["profile"] && (
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#7A5BFF] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                    )}
                   </div>
-                </div>
-
-                {/* Progress dots */}
-                <div className="flex items-center gap-1.5 mt-3 pl-1">
-                  {["stack", "project", "profile"].map((key) => (
-                    <div
-                      key={key}
-                      className={`h-1 rounded-full transition-all duration-300 ${
-                        setupDone[key] ? "w-6 bg-[#7A5BFF]" : "w-3 bg-gray-200"
-                      }`}
-                    />
-                  ))}
-                  <span className="text-[10px] text-[#9EA0A8] font-bold ml-1">
-                    {Object.values(setupDone).filter(Boolean).length}/3 done
-                  </span>
                 </div>
               </div>
             )}
 
             {/* Post Composer */}
-            <div id="post-composer" className="bg-white border border-white/60 rounded-[28px] p-5 shadow-[0_10px_30px_rgba(31,38,135,0.015)] backdrop-blur-xl space-y-4 text-left z-10 relative">
+            <div id="post-composer" className="bg-white border border-white/60 rounded-[28px] p-5 shadow-[0_10px_30px_rgba(31,38,135,0.015)] backdrop-blur-xl space-y-4 text-left relative z-10">
               <div className="flex items-start gap-3">
                 <img
                   src={currentUser.imageUrl}
@@ -930,13 +858,13 @@ export default function DashboardHomePage() {
                 />
                 <div className="flex-1 space-y-2">
                   <textarea
+                    id="composer-textarea"
                     placeholder="What are you building today?"
                     value={composerContent}
                     onChange={(e) => setComposerContent(e.target.value)}
                     className="w-full bg-[#EAEBF4]/30 hover:bg-[#EAEBF4]/40 focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 border border-transparent focus:border-[#7A5BFF]/40 p-3 rounded-2xl text-xs placeholder-gray-400 outline-none transition-all resize-none min-h-[70px]"
                   />
                   
-                  {/* Tag List inside composer */}
                   {composerTags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {composerTags.map((tag) => (
@@ -957,7 +885,6 @@ export default function DashboardHomePage() {
                     </div>
                   )}
 
-                  {/* Add stack tag input */}
                   <div className="relative max-w-xs">
                     <input
                       type="text"
@@ -980,9 +907,7 @@ export default function DashboardHomePage() {
                 </div>
               </div>
 
-              {/* Bottom Actions of Composer */}
               <div className="flex items-center justify-between border-t border-gray-100/80 pt-3">
-                {/* Post type selector */}
                 <div className="flex items-center bg-gray-100/80 p-0.5 rounded-full border border-gray-200/50 gap-0.5">
                   {(['update', 'looking_for', 'build_log'] as const).map((type) => {
                     const label = type === 'update' ? 'Update' : type === 'looking_for' ? 'Looking For' : 'Build Log';
@@ -1014,10 +939,23 @@ export default function DashboardHomePage() {
               </div>
             </div>
 
-            {/* ==================== CENTRAL FEED TACTILE SKEUOMORPHIC FEEDS ==================== */}
-            <div className="space-y-5 z-10 relative">
+            {/* Real-time incoming scroll-safe posts banner alerts */}
+            {newPostsAvailable && (
+              <div className="flex justify-center py-2 relative z-20">
+                <button
+                  type="button"
+                  onClick={handleLoadNewPosts}
+                  className="bg-gradient-to-r from-[#7A5BFF] to-[#EC4899] text-white px-5 py-2 rounded-full text-[11px] font-black tracking-wider uppercase shadow-md hover:shadow-lg transform active:scale-95 transition-all animate-bounce flex items-center gap-2 border border-white/20"
+                >
+                  <span>✨ New posts available</span>
+                  <span className="bg-white/30 text-white px-1.5 py-0.5 rounded-full text-[9px]">Click to view</span>
+                </button>
+              </div>
+            )}
+
+            {/* Central Feed List */}
+            <div className="space-y-5 relative z-10">
               {loadingPosts ? (
-                // Skeleton Loader
                 Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(0,0,0,0.01)] animate-pulse space-y-4">
                     <div className="flex items-center gap-3">
@@ -1035,35 +973,39 @@ export default function DashboardHomePage() {
                     <div className="h-6 w-24 rounded bg-gray-100" />
                   </div>
                 ))
-              ) : filteredPosts.length === 0 ? (
+              ) : searchedPosts.length === 0 ? (
                 <div className="bg-white/60 border border-white/50 rounded-[28px] p-10 text-center shadow-sm backdrop-blur-md">
-                  <FileText className="w-12 h-12 text-[#7A5BFF]/30 mx-auto mb-3" />
-                  <h4 className="text-sm font-black text-black">No posts yet</h4>
-                  <p className="text-[11px] text-gray-500 mt-1">Be the first to share! Use the composer above to write something today.</p>
+                  <Trophy className="w-12 h-12 text-[#7A5BFF]/30 mx-auto mb-3" />
+                  <h4 className="text-sm font-black text-black">No posts found</h4>
+                  <p className="text-[11px] text-gray-500 mt-1">Try another keyword, tags, or create a post to kickstart the timeline!</p>
                 </div>
               ) : (
-                filteredPosts.map((post) => {
+                searchedPosts.map((post) => {
                   const likes = Array.isArray(post.likes) ? post.likes : [];
                   const isLiked = user && likes.includes(user.uid);
+                  const isCommentSectionOpen = !!expandedComments[post.id];
                   
-                  // Post type badge styling
+                  // Optimized type badge color pills
                   let typeBadgeClass = "";
                   let typeLabel = "";
                   if (post.post_type === 'update') {
-                    typeBadgeClass = "bg-[#F5FEE9] border-[#A3E635]/15 text-[#4B7A12]";
-                    typeLabel = "Project Update";
+                    typeBadgeClass = "bg-blue-50 border-blue-100 text-blue-600";
+                    typeLabel = "Update";
                   } else if (post.post_type === 'looking_for') {
-                    typeBadgeClass = "bg-[#E9E7FF] border-[#7A5BFF]/10 text-[#7A5BFF]";
-                    typeLabel = "Seeking Co-builders";
-                  } else {
-                    typeBadgeClass = "bg-[#FFF5E9] border-[#FF9D42]/10 text-[#D97706]";
+                    typeBadgeClass = "bg-purple-50 border-purple-100 text-purple-600";
+                    typeLabel = "Looking for Teammates";
+                  } else if (post.post_type === 'build_log') {
+                    typeBadgeClass = "bg-green-50 border-green-100 text-green-600";
                     typeLabel = "Build Log";
+                  } else {
+                    typeBadgeClass = "bg-orange-50 border-orange-100 text-orange-600";
+                    typeLabel = "Project Update";
                   }
 
                   return (
                     <div
                       key={post.id}
-                      className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(0,0,0,0.01)] text-left hover:shadow-md transition duration-300 relative group"
+                      className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(31,38,135,0.015)] text-left hover:shadow-[0_15px_30px_rgba(122,91,255,0.08)] hover:border-[#7A5BFF]/30 transition-all duration-300 relative group"
                     >
                       {/* Post Header */}
                       <div className="flex items-center justify-between gap-3 mb-3.5">
@@ -1071,9 +1013,9 @@ export default function DashboardHomePage() {
                           <img
                             src={post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
                             alt={post.author_name}
-                            className="w-10 h-10 rounded-full object-cover border"
+                            className="w-10 h-10 rounded-full object-cover border border-white/80 shadow-sm"
                           />
-                          <div className="min-w-0">
+                          <div className="min-w-0 text-left">
                             <p className="text-xs font-bold text-black truncate">{post.author_name}</p>
                             <p className="text-[10px] text-gray-400 mt-0.5 truncate">
                               @{post.author_username} · {timeAgo(post.created_at)}
@@ -1091,7 +1033,7 @@ export default function DashboardHomePage() {
                         {post.content}
                       </p>
 
-                      {/* Tags */}
+                      {/* Stack Tags */}
                       {post.stack_tags && post.stack_tags.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-3.5">
                           {post.stack_tags.map((tag: string) => (
@@ -1108,40 +1050,29 @@ export default function DashboardHomePage() {
                       {/* Footer Actions */}
                       <div className="flex items-center justify-between border-t border-gray-100/60 pt-3.5 mt-4">
                         <div className="flex items-center gap-4">
-                          {/* Like Button */}
+                          {/* Like Button with Bouncy scale click */}
                           <button
                             type="button"
                             onClick={() => handleLikeClick(post.id)}
                             className="flex items-center gap-1.5 group/btn text-[10px] font-black text-gray-500"
                           >
-                            <Heart className={`w-4 h-4 transition-transform group-hover/btn:scale-110 ${
-                              isLiked ? "fill-pink-500 text-pink-500" : "text-gray-400 hover:text-pink-500"
+                            <Heart className={`w-4 h-4 transition-transform duration-200 active:scale-130 ${
+                              isLiked ? "fill-pink-500 text-pink-500 animate-pulse" : "text-gray-400 hover:text-pink-500"
                             }`} />
                             <span className={isLiked ? "text-pink-500" : ""}>{likes.length}</span>
                           </button>
 
-                          {/* Comment Count Button */}
+                          {/* Comment Count Button: Clickable drawer toggle */}
                           <button
                             type="button"
-                            onClick={() => {
-                              const content = prompt("Add a comment:");
-                              if (content && content.trim()) {
-                                addComment(post.id, {
-                                  uid: user.uid,
-                                  author_name: currentUser.fullName,
-                                  author_avatar: currentUser.imageUrl,
-                                  author_username: currentUser.username,
-                                  content: content.trim()
-                                }).then(({ error }) => {
-                                  if (error) {
-                                    alert("Failed to add comment.");
-                                  }
-                                });
-                              }
-                            }}
-                            className="flex items-center gap-1.5 text-[10px] font-black text-gray-500 hover:text-[#7A5BFF]"
+                            onClick={() => setExpandedComments(prev => ({ ...prev, [post.id]: !prev[post.id] }))}
+                            className={`flex items-center gap-1.5 text-[10px] font-black ${
+                              isCommentSectionOpen ? "text-[#7A5BFF]" : "text-gray-500 hover:text-[#7A5BFF]"
+                            }`}
                           >
-                            <MessageCircle className="w-4 h-4 text-gray-400 group-hover:text-[#7A5BFF]" />
+                            <MessageCircle className={`w-4 h-4 transition-colors ${
+                              isCommentSectionOpen ? "text-[#7A5BFF]" : "text-gray-400"
+                            }`} />
                             <span>{post.comments_count || 0}</span>
                           </button>
                         </div>
@@ -1168,6 +1099,59 @@ export default function DashboardHomePage() {
                           </svg>
                         </button>
                       </div>
+
+                      {/* Expandable Comment Drawer */}
+                      {isCommentSectionOpen && (
+                        <div className="mt-4 pt-4 border-t border-gray-100 space-y-4 text-left animate-in fade-in duration-200">
+                          {/* Replies listing */}
+                          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                            {(commentsMap[post.id] || []).map((reply) => (
+                              <div key={reply.id} className="flex gap-2.5 items-start bg-gray-50/50 p-2.5 rounded-2xl border border-gray-100/35">
+                                <img
+                                  src={reply.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
+                                  alt={reply.author_name}
+                                  className="w-7 h-7 rounded-full object-cover border border-white shrink-0 shadow-sm"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <p className="text-[10px] font-black text-black truncate">{reply.author_name}</p>
+                                    <span className="text-[8px] text-gray-400 shrink-0">{timeAgo(reply.created_at)}</span>
+                                  </div>
+                                  <p className="text-[10px] text-gray-700 mt-0.5 whitespace-pre-wrap leading-normal font-medium">{reply.content}</p>
+                                </div>
+                              </div>
+                            ))}
+                            {(!commentsMap[post.id] || commentsMap[post.id].length === 0) && (
+                              <p className="text-[10px] text-gray-400 text-center font-medium py-1">No comments yet. Start the conversation!</p>
+                            )}
+                          </div>
+
+                          {/* Reply input drawer */}
+                          <div className="flex items-center gap-2">
+                            <img src={currentUser.imageUrl} className="w-7.5 h-7.5 rounded-full object-cover border" />
+                            <input
+                              type="text"
+                              placeholder="Write a reply..."
+                              value={commentInputs[post.id] || ""}
+                              onChange={(e) => setCommentInputs(prev => ({ ...prev, [post.id]: e.target.value }))}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  handlePostComment(post.id);
+                                }
+                              }}
+                              className="flex-1 bg-gray-50 border border-gray-100 hover:border-gray-200 px-3.5 py-2 rounded-2xl text-[11px] placeholder-gray-400 outline-none focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 transition-all shadow-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handlePostComment(post.id)}
+                              className="bg-[#121315] hover:bg-black text-[#CDFF3D] text-[10px] font-black px-4 py-2 rounded-xl transition-all active:scale-95 shrink-0"
+                            >
+                              Reply
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
                     </div>
                   );
                 })
@@ -1176,39 +1160,32 @@ export default function DashboardHomePage() {
 
           </main>
 
-          {/* ==================== RIGHT COLUMN: WIDGETS, PLANET GLOW & WAVE ACTIONS ==================== */}
+          {/* Right Column */}
           <aside className="min-w-0 self-start space-y-6">
             
-            {/* Action Header row (Screenshot 1) */}
-            <div className="bg-white/80 border border-white/50 rounded-[28px] p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.01)] backdrop-blur-xl flex items-center justify-between gap-4 z-10 relative">
-              {/* Avatars pile */}
+            {/* Online builders avatar stack */}
+            <div className="bg-white/80 border border-white/50 rounded-[28px] p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.01)] backdrop-blur-xl flex items-center justify-between gap-4 relative z-10">
               <div className="flex items-center pl-1.5">
                 <div className="flex -space-x-1.5">
-                  <img
-                    className="inline-block h-7.5 w-7.5 rounded-full ring-2 ring-white object-cover shadow-sm"
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80"
-                    alt="builder"
-                  />
-                  <img
-                    className="inline-block h-7.5 w-7.5 rounded-full ring-2 ring-white object-cover shadow-sm"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80"
-                    alt="builder"
-                  />
+                  {allProfiles.slice(0, 4).map((p, index) => (
+                    <img
+                      key={p.id || index}
+                      className="inline-block h-7.5 w-7.5 rounded-full ring-2 ring-white object-cover shadow-sm"
+                      src={p.avatar_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80"}
+                      alt="online builder"
+                    />
+                  ))}
                 </div>
-                <span className="text-[9px] font-black text-gray-500 ml-2 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200/50 shadow-sm">+23</span>
+                <span className="text-[9px] font-black text-gray-500 ml-2 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200/50 shadow-sm">
+                  +{allProfiles.length}
+                </span>
               </div>
 
-              {/* Notification & New Post button */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   className="bg-[#121315] hover:bg-black text-[#F3F7FF] px-4.5 py-2.5 rounded-full text-xs font-black shadow-sm inline-flex items-center gap-1.5 active:scale-95 transition-all"
-                  onClick={() => {
-                    const element = document.getElementById("post-composer");
-                    if (element) {
-                      element.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}
+                  onClick={handleNewPostClick}
                 >
                   <Plus className="w-3.5 h-3.5 text-white font-black" />
                   <span>New Post</span>
@@ -1216,10 +1193,8 @@ export default function DashboardHomePage() {
               </div>
             </div>
 
-            {/* The Dark Glass planet card (Screenshot 1) */}
+            {/* Dark glass sphere card */}
             <div className="bg-[#121318] text-white rounded-[36px] p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-[280px] z-10 group">
-              
-              {/* Planetary green glowing space orb with orbits SVG */}
               <div className="absolute right-[-25px] bottom-[-20px] pointer-events-none select-none transition-transform duration-[4000ms] group-hover:scale-105 group-hover:rotate-12">
                 <svg className="w-[190px] h-[190px]" viewBox="0 0 200 200" fill="none">
                   <defs>
@@ -1230,24 +1205,19 @@ export default function DashboardHomePage() {
                     </radialGradient>
                   </defs>
                   
-                  {/* Orbits */}
                   <ellipse cx="100" cy="100" rx="90" ry="24" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" strokeDasharray="3 3" transform="rotate(-15 100 100)" />
                   <ellipse cx="100" cy="100" rx="68" ry="16" stroke="rgba(255,255,255,0.15)" strokeWidth="1" transform="rotate(-15 100 100)" />
                   
-                  {/* Planet sphere */}
                   <circle cx="100" cy="100" r="26" fill="url(#sphereGrad)" filter="drop-shadow(0 0 20px rgba(163,230,53,0.35))" />
                   
-                  {/* Front ring section (overlapping planet) */}
                   <path d="M 33 113 A 90 25 0 0 0 167 67" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" strokeLinecap="round" transform="rotate(-15 100 100)" />
                   
-                  {/* Small stars */}
                   <path d="M40,55 L42,57 L40,59 L38,57 Z" fill="#CDFF3D" opacity="0.7" />
                   <path d="M150,150 L152,152 L150,154 L148,152 Z" fill="#CDFF3D" opacity="0.6" />
                   <path d="M165,30 L166.5,31.5 L165,33 L163.5,31.5 Z" fill="#fff" opacity="0.8" />
                 </svg>
               </div>
 
-              {/* Text Blocks */}
               <div className="space-y-4 max-w-[80%] text-left">
                 <h3 className="text-2xl font-bold leading-snug tracking-tight text-white font-sans">
                   You don't<br />have to<br />build alone.
@@ -1257,21 +1227,20 @@ export default function DashboardHomePage() {
                 </p>
               </div>
 
-              {/* CTA Button pill */}
               <div className="z-10 mt-6 text-left">
                 <button
                   type="button"
+                  onClick={() => router.push("/builders")}
                   className="bg-[#CDFF3D] hover:bg-[#B5E82F] text-black text-xs font-extrabold px-5 py-3 rounded-full flex items-center gap-1.5 shadow-md active:scale-95 transition-all group/cta"
                 >
                   <span>Join the Movement</span>
                   <span className="text-sm leading-none group-hover/cta:translate-x-1 transition-transform">→</span>
                 </button>
               </div>
-
             </div>
 
-            {/* Trending Builders Widget with Green Arrows (Screenshot 1) */}
-            <div className="bg-white border border-white/60 rounded-[32px] p-5 shadow-[0_12px_30px_rgba(31,38,135,0.01)] backdrop-blur-xl space-y-4 z-10 relative">
+            {/* Trending Builders Widget */}
+            <div className="bg-white border border-white/60 rounded-[32px] p-5 shadow-[0_12px_30px_rgba(31,38,135,0.01)] backdrop-blur-xl space-y-4 relative z-10">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-black tracking-tight font-sans">Trending Builders</span>
                 <button
@@ -1283,12 +1252,11 @@ export default function DashboardHomePage() {
                 </button>
               </div>
 
-              {/* Builders List */}
               <div className="space-y-3">
-                {trendingBuildersList.map((builder, idx) => {
+                {trendingBuildersList.map((builder) => {
                   const isConnected = myConnections.includes(builder.id);
                   return (
-                    <div key={idx} className="flex items-center justify-between group cursor-pointer">
+                    <div key={builder.id} className="flex items-center justify-between group cursor-pointer">
                       <div className="flex items-center gap-3 min-w-0" onClick={() => router.push(`/builders`)}>
                         <img
                           src={builder.avatar}
@@ -1302,7 +1270,7 @@ export default function DashboardHomePage() {
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-[10px] font-bold text-gray-400">{builder.role}</span>
+                        <span className="text-[10px] font-bold text-gray-400 truncate max-w-[80px]">{builder.role}</span>
                         <button
                           type="button"
                           onClick={(e) => {
@@ -1314,7 +1282,7 @@ export default function DashboardHomePage() {
                           disabled={isConnected || connectingBuilderId === builder.id}
                           className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
                             isConnected 
-                              ? "bg-green-50 text-green-500 cursor-default"
+                              ? "bg-green-50 text-green-500 cursor-default animate-pulse"
                               : "bg-gray-50 group-hover:bg-[#E9E7FF] text-gray-400 hover:text-[#7A5BFF] active:scale-95"
                           }`}
                         >
@@ -1334,8 +1302,8 @@ export default function DashboardHomePage() {
               </div>
             </div>
 
-            {/* Active Hackathons Trophy Widget (Screenshot 1) */}
-            <div className="bg-white border border-white/60 rounded-[32px] p-5 shadow-[0_12px_30px_rgba(31,38,135,0.01)] backdrop-blur-xl space-y-4 z-10 relative">
+            {/* Active Hackathons Trophy Widget */}
+            <div className="bg-white border border-white/60 rounded-[32px] p-5 shadow-[0_12px_30px_rgba(31,38,135,0.01)] backdrop-blur-xl space-y-4 relative z-10">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-black tracking-tight font-sans">Active Hackathons</span>
                 <button
@@ -1347,7 +1315,6 @@ export default function DashboardHomePage() {
                 </button>
               </div>
 
-              {/* Hackathons List */}
               <div className="space-y-3">
                 {fallbackHackathons.map((hackathon) => (
                   <div key={hackathon.id} className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-gray-50/60 transition-all border border-transparent hover:border-gray-100">
@@ -1369,47 +1336,6 @@ export default function DashboardHomePage() {
               </div>
             </div>
 
-            {/* Voice Actions Wave Assistant at bottom right (Screenshot 2) */}
-            <div className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_8px_20px_rgba(0,0,0,0.01)] text-left flex flex-col justify-between h-[160px] z-10 relative">
-              
-              {/* Audio soundwave waveform header */}
-              <div className="flex items-center justify-between gap-4">
-                <div className="space-y-2 flex-1">
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold text-[#7A5BFF] bg-[#E9E7FF] uppercase tracking-wide select-none">
-                    Voice Actions
-                  </span>
-                  <h4 
-                    className="text-lg italic tracking-tight text-black leading-snug"
-                    style={{ fontFamily: "var(--font-instrument-serif), 'Instrument Serif', Georgia, serif" }}
-                  >
-                    Say something<br />to Collabsphere!
-                  </h4>
-                </div>
-
-                {/* Pulsing soundwave bars */}
-                <div className="flex items-center gap-[3px] h-9 px-3 shrink-0 bg-[#E3EFFF] rounded-2xl border border-white/40">
-                  <div className="w-[2.5px] h-5 bg-[#7A5BFF]/80 rounded-full animate-wave-1" />
-                  <div className="w-[2.5px] h-3 bg-[#7A5BFF]/80 rounded-full animate-wave-2" />
-                  <div className="w-[2.5px] h-7 bg-[#7A5BFF]/80 rounded-full animate-wave-3" />
-                  <div className="w-[2.5px] h-4 bg-[#7A5BFF]/80 rounded-full animate-wave-4" />
-                  <div className="w-[2.5px] h-6 bg-[#7A5BFF]/80 rounded-full animate-wave-5" />
-                  <div className="w-[2.5px] h-3 bg-[#7A5BFF]/80 rounded-full animate-wave-6" />
-                  <div className="w-[2.5px] h-5 bg-[#7A5BFF]/80 rounded-full animate-wave-7" />
-                </div>
-              </div>
-
-              {/* mic button */}
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="w-9 h-9 rounded-full bg-[#121315] hover:bg-black text-[#F3F7FF] flex items-center justify-center shadow-md border border-white/50 hover:scale-105 active:scale-95 transition-all animate-pulse"
-                >
-                  <Mic className="w-4.5 h-4.5" />
-                </button>
-              </div>
-
-            </div>
-
           </aside>
 
         </div>
@@ -1418,7 +1344,7 @@ export default function DashboardHomePage() {
 
       {/* Create Space Modal */}
       {showCreateSpaceModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-sm p-4 animate-fade-in">
           <div className="bg-white border border-white/60 rounded-[32px] p-6 max-w-sm w-full shadow-2xl relative space-y-4 text-left animate-in fade-in zoom-in-95 duration-200">
             <h3 className="text-lg font-black text-black tracking-tight font-sans uppercase">Create New Space</h3>
             

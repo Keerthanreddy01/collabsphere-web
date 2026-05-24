@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { Bell, ArrowLeft } from "lucide-react";
+import { Bell } from "lucide-react";
+import Sidebar from "@/components/Sidebar";
 
 export default function NotificationsPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && !user) {
       router.replace("/login");
     }
@@ -24,36 +26,70 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#EEF3FF] via-[#F4F7FF] to-[#FCFDFF] text-[#1D1E22] antialiased font-sans relative flex items-center justify-center p-6 text-center overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#EEF3FF] via-[#F4F7FF] to-[#FCFDFF] text-[#1D1E22] antialiased font-sans relative pb-12 lg:pb-16 overflow-x-hidden">
       {/* Background patterns */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none z-0 opacity-[0.25]"
         style={{
           backgroundImage: `radial-gradient(#7A5BFF 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
+          backgroundSize: "24px 24px",
         }}
       />
-      <div className="absolute top-[10%] left-[25%] w-[450px] h-[450px] rounded-full bg-[#7A5BFF]/5 blur-[120px] pointer-events-none z-0 animate-pulse" />
+      <div className="absolute top-[10%] left-[5%] w-[600px] h-[600px] rounded-full bg-[#7A5BFF]/6 blur-[120px] pointer-events-none z-0" />
 
-      <div className="relative z-10 bg-white/70 border border-white/60 rounded-[32px] p-8 max-w-md w-full shadow-lg backdrop-blur-xl space-y-6">
-        <div className="w-16 h-16 bg-[#EAEBF4] text-[#7A5BFF] rounded-2xl flex items-center justify-center mx-auto shadow-sm">
-          <Bell className="w-8 h-8 text-[#7A5BFF]" />
+      <div className="relative z-10 mx-auto max-w-[1440px] px-4 md:px-6 py-6 lg:pl-[304px]">
+        {/* Sidebar */}
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+
+        {/* Mobile sidebar backdrop */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <div className="grid items-start grid-cols-1 gap-6 xl:gap-8">
+          <main className="min-w-0 space-y-6">
+            {/* Mobile header */}
+            <div className="flex items-center justify-between bg-white/70 border border-white/40 rounded-2xl p-4 shadow-sm backdrop-blur-md lg:hidden">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition"
+              >
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              </button>
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-black text-black select-none leading-none">*</span>
+                <span className="font-bold text-black text-sm">collabsphere</span>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-gray-200" />
+            </div>
+
+            {/* Coming Soon card */}
+            <div className="bg-white/70 border border-white/60 rounded-[32px] p-12 max-w-xl mx-auto text-center shadow-lg backdrop-blur-xl space-y-6 my-12">
+              <div className="w-16 h-16 bg-[#E9E7FF] text-[#7A5BFF] rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+                <Bell className="w-8 h-8" />
+              </div>
+              <div className="space-y-3">
+                <h1 className="text-2xl font-black text-black uppercase tracking-tight font-sans">
+                  NOTIFICATIONS <span className="text-pink-500">COMING SOON 🔥</span>
+                </h1>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-md mx-auto">
+                  Interactive real-time notification hubs, connection requests, and reply updates are currently under construction. Stay tuned for notifications!
+                </p>
+              </div>
+              <button
+                onClick={() => router.push("/dashboard/home")}
+                className="inline-flex items-center gap-2 bg-[#121315] hover:bg-black text-[#CDFF3D] text-xs font-black px-6 py-3 rounded-full shadow-md active:scale-95 transition-all"
+              >
+                <span>Back to Dashboard</span>
+              </button>
+            </div>
+          </main>
         </div>
-        <div className="space-y-2">
-          <h1 className="text-2xl font-black text-black uppercase tracking-tight font-sans">
-            NOTIFICATIONS
-          </h1>
-          <p className="text-xs text-gray-500 font-medium leading-relaxed">
-            Real-time activity logs and follow alerts are currently under construction. Check back soon to see who connected with your spaces!
-          </p>
-        </div>
-        <button
-          onClick={() => router.push("/dashboard/home")}
-          className="inline-flex items-center gap-2 bg-[#121315] hover:bg-black text-[#CDFF3D] text-xs font-black px-6 py-3 rounded-full shadow-md active:scale-95 transition-all mx-auto"
-        >
-          <ArrowLeft className="w-4 h-4 text-white" />
-          <span>Back to Dashboard</span>
-        </button>
       </div>
     </div>
   );
