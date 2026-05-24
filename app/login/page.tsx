@@ -1,217 +1,301 @@
 "use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { signInWithGoogle, signInWithGithub, signInWithEmail } from "@/lib/auth"
-import Link from "next/link"
-import { auth, db } from "@/lib/firebase"
-import { doc, getDoc } from "firebase/firestore"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { signInWithGoogle, signInWithGithub, signInWithEmail } from "@/lib/auth";
+import Link from "next/link";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { Github, Chrome, Apple } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const checkAndRedirect = async (uid: string) => {
     try {
-      const docRef = doc(db, 'builder_profiles', uid)
-      const docSnap = await getDoc(docRef)
+      const docRef = doc(db, "builder_profiles", uid);
+      const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().onboarding_completed) {
-        router.push('/dashboard/home')
+        router.push("/dashboard/home");
       } else {
-        router.push('/onboarding')
+        router.push("/onboarding");
       }
     } catch (err) {
-      console.error("Error checking onboarding:", err)
-      router.push('/onboarding')
+      console.error("Error checking onboarding:", err);
+      router.push("/onboarding");
     }
-  }
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        checkAndRedirect(user.uid)
+        checkAndRedirect(user.uid);
       }
-    })
-    return () => unsubscribe()
-  }, [router])
+    });
+    return () => unsubscribe();
+  }, [router]);
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      const { data, error } = await signInWithEmail(email, password)
+      const { data, error } = await signInWithEmail(email, password);
       if (error) {
-        setError(error.message)
+        setError(error.message);
       } else if (data?.user) {
-        await checkAndRedirect(data.user.uid)
+        await checkAndRedirect(data.user.uid);
       }
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred")
+      setError(err.message || "An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
+  };
 
   const handleGoogleSignIn = async () => {
-    setError(null)
+    setError(null);
     try {
-      await signInWithGoogle()
+      await signInWithGoogle();
     } catch (err: any) {
-      setError(err.message || "Failed to sign in with Google")
+      setError(err.message || "Failed to sign in with Google");
     }
-  }
+  };
 
   const handleGithubSignIn = async () => {
-    setError(null)
+    setError(null);
     try {
-      await signInWithGithub()
+      await signInWithGithub();
     } catch (err: any) {
-      setError(err.message || "Failed to sign in with GitHub")
+      setError(err.message || "Failed to sign in with GitHub");
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden font-sans">
-      {/* Background gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-pink-500/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[100px] pointer-events-none" />
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#0a0a0a] text-white font-sans antialiased overflow-x-hidden">
+      
+      {/* CSS Floating and Bouncing animations */}
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
 
-      {/* Grid pattern overlay */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.05]"
-        style={{
-          backgroundImage: `radial-gradient(white 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
-        }}
-      />
+        @keyframes floatSlow {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-10px) translateX(5px); }
+        }
+        .animate-float-slow {
+          animation: floatSlow 8s ease-in-out infinite;
+        }
+      `}</style>
 
-      <div className="w-full max-w-md px-6 z-10">
-        <div className="bg-[#0d0d11]/80 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-          {/* Decorative Top Accent Line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500" />
-          
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2 font-display">
-              WELCOME BACK
-            </h2>
-            <p className="text-sm text-zinc-400">
-              Sign in to Collabsphere
-            </p>
+      {/* LEFT COLUMN: FORM PANEL */}
+      <div className="h-screen flex flex-col justify-center px-8 sm:px-12 md:px-16 lg:px-20 py-10 bg-[#0a0a0a] relative select-none">
+        
+        {/* Logo Top Left */}
+        <div 
+          className="absolute top-8 left-8 sm:left-12 flex items-center gap-2 group cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          <div className="flex items-center justify-center w-5.5 h-5.5 rounded-[7px] bg-white text-black font-black text-xs transition-transform group-hover:rotate-[30deg]">
+            <span className="leading-none select-none font-bold text-sm">*</span>
           </div>
+          <span className="text-base font-black tracking-tight text-white font-sans">collabsphere</span>
+        </div>
+
+        {/* Form Container */}
+        <div className="w-full max-w-sm mx-auto text-left mt-10">
+          
+          <h2 className="text-3xl font-bold text-white tracking-tight">
+            Welcome back
+          </h2>
+          <p className="text-gray-400 text-sm mt-2 mb-8 leading-relaxed">
+            Create your builder profile and find your dream team.
+          </p>
 
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-medium">
+            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-bold">
               {error}
             </div>
           )}
 
-          <div className="space-y-3 mb-6">
-            {/* Google Login Button */}
-            <button
-              onClick={handleGoogleSignIn}
-              type="button"
-              className="w-full flex items-center justify-center gap-3 bg-white hover:bg-zinc-100 text-black font-semibold py-3 px-4 rounded-xl transition duration-200 shadow-lg"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-              <span>Continue with Google</span>
-            </button>
-
-            {/* GitHub Login Button */}
-            <button
-              onClick={handleGithubSignIn}
-              type="button"
-              className="w-full flex items-center justify-center gap-3 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold py-3 px-4 border border-zinc-800 rounded-xl transition duration-200 shadow-lg"
-            >
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.164 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
-              </svg>
-              <span>Continue with GitHub</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 my-6">
-            <div className="h-px bg-zinc-800 flex-1" />
-            <span className="text-zinc-500 text-xs font-bold uppercase select-none">or</span>
-            <div className="h-px bg-zinc-800 flex-1" />
-          </div>
-
           {/* Email / Password Sign In Form */}
           <form onSubmit={handleEmailSignIn} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-xs font-bold text-zinc-400 uppercase mb-2 pl-1">
-                Email Address
-              </label>
               <input
                 id="email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
-                className="w-full bg-[#09090b] border border-zinc-800 text-white placeholder-zinc-600 rounded-xl px-4 py-3 text-sm focus:border-zinc-700 outline-none transition duration-200"
+                placeholder="Enter Email"
+                className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3.5 placeholder-gray-500 focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 outline-none transition duration-200 text-sm"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-xs font-bold text-zinc-400 uppercase mb-2 pl-1">
-                Password
-              </label>
               <input
                 id="password"
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-[#09090b] border border-zinc-800 text-white placeholder-zinc-600 rounded-xl px-4 py-3 text-sm focus:border-zinc-700 outline-none transition duration-200"
+                placeholder="Create Password"
+                className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3.5 placeholder-gray-500 focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 outline-none transition duration-200 text-sm"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="bg-white text-black font-semibold rounded-xl py-3.5 w-full hover:bg-gray-100 transition duration-200 text-sm flex items-center justify-center mt-2 cursor-pointer active:scale-[0.99]"
             >
               {loading ? (
-                <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
               ) : (
                 "Sign In"
               )}
             </button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-xs text-zinc-500">
-              Don't have an account?{" "}
-              <Link href="/signup" className="text-pink-500 hover:text-pink-400 font-semibold transition">
-                Sign up
-              </Link>
-            </p>
+          {/* Divider with lines */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="h-px bg-white/10 flex-1" />
+            <span className="text-gray-500 text-xs font-bold uppercase select-none tracking-wider shrink-0">
+              or sign in via
+            </span>
+            <div className="h-px bg-white/10 flex-1" />
           </div>
+
+          {/* Social Row (3 in a row) */}
+          <div className="flex gap-3 mb-8">
+            <button
+              onClick={handleGoogleSignIn}
+              type="button"
+              className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-bold cursor-pointer"
+            >
+              <Chrome className="w-4 h-4 text-white shrink-0" />
+              <span>Google</span>
+            </button>
+            <button
+              onClick={handleGithubSignIn}
+              type="button"
+              className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-bold cursor-pointer"
+            >
+              <Github className="w-4 h-4 text-white shrink-0" />
+              <span>GitHub</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => alert("Apple login coming soon!")}
+              className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-bold cursor-pointer"
+            >
+              <Apple className="w-4 h-4 text-white shrink-0" />
+              <span>Apple</span>
+            </button>
+          </div>
+
+          {/* Bottom link routes */}
+          <p className="text-gray-500 text-sm text-center">
+            Don't have an account?{" "}
+            <Link href="/signup" className="text-pink-500 hover:text-pink-400 font-semibold transition ml-0.5">
+              Sign up
+            </Link>
+          </p>
+
         </div>
       </div>
+
+      {/* RIGHT COLUMN: VISUAL PANEL (hidden below md) */}
+      <div className="hidden md:block h-screen overflow-hidden relative"
+        style={{
+          background: "linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 30%, #1a0520 60%, #0a0a0a 100%)"
+        }}
+      >
+        
+        {/* Floating background glowing orbs */}
+        <div 
+          className="absolute top-1/4 right-10 w-96 h-96 rounded-full blur-[80px] pointer-events-none z-0"
+          style={{
+            background: "radial-gradient(circle, rgba(236,72,153,0.3) 0%, rgba(139,92,246,0.15) 50%, transparent 70%)"
+          }}
+        />
+
+        <div 
+          className="absolute bottom-10 left-10 w-[450px] h-[450px] rounded-full blur-[90px] pointer-events-none z-0 animate-float-slow"
+          style={{
+            background: "radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(236,72,153,0.08) 50%, transparent 70%)"
+          }}
+        />
+
+        {/* Centered Large Glowing Orb */}
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-[40px] pointer-events-none z-0 animate-float"
+          style={{
+            background: "radial-gradient(circle, rgba(236,72,153,0.4) 0%, rgba(139,92,246,0.2) 50%, transparent 70%)"
+          }}
+        />
+
+        {/* Floating particles (CSS glowing dots scattered) */}
+        <div className="absolute inset-0 pointer-events-none z-0 opacity-40">
+          <div className="absolute top-20 left-1/4 w-1.5 h-1.5 rounded-full bg-pink-400 blur-[1px] animate-pulse" />
+          <div className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-purple-400 blur-[1px] animate-pulse" />
+          <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 rounded-full bg-blue-300 blur-[1px] animate-pulse" />
+          <div className="absolute bottom-1/3 right-1/3 w-2 h-2 rounded-full bg-pink-300 blur-[1px] animate-pulse" />
+        </div>
+
+        {/* Floating Glassmorphic Computer Card */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-sm px-6 animate-float">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[36px] p-8 shadow-2xl space-y-6 text-left relative overflow-hidden">
+            
+            {/* Header stars logo */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-5.5 h-5.5 rounded-[7px] bg-white text-black font-black text-xs">
+                <span className="leading-none font-bold text-sm">*</span>
+              </div>
+              <span className="text-base font-black tracking-tight text-white font-sans uppercase">collabsphere</span>
+            </div>
+
+            {/* Stats Metrics */}
+            <div className="grid grid-cols-2 gap-4 py-1.5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+              <div>
+                <span className="text-[9px] font-extrabold text-purple-300 block uppercase tracking-wider">Active Community</span>
+                <span className="text-xl font-black text-white block mt-0.5">2,400+</span>
+                <span className="text-[8px] font-bold text-gray-400">Verified Builders</span>
+              </div>
+              <div>
+                <span className="text-[9px] font-extrabold text-pink-300 block uppercase tracking-wider">Shipped Projects</span>
+                <span className="text-xl font-black text-white block mt-0.5">180+</span>
+                <span className="text-[8px] font-bold text-gray-400">In Production</span>
+              </div>
+            </div>
+
+            {/* Avatar Stack */}
+            <div className="flex items-center justify-between gap-4 pt-1">
+              <div className="flex -space-x-2">
+                <img className="h-7 w-7 rounded-full ring-2 ring-[#121318] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
+                <img className="h-7 w-7 rounded-full ring-2 ring-[#121318] object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
+                <img className="h-7 w-7 rounded-full ring-2 ring-[#121318] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
+              </div>
+              <span className="text-[10px] font-extrabold text-pink-400 uppercase tracking-widest block text-right">Join the movement →</span>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Gradient dark fade to black at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent pointer-events-none z-0" />
+
+      </div>
+
     </div>
-  )
+  );
 }
