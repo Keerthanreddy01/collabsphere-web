@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
   Home,
@@ -23,18 +23,22 @@ import {
   Play,
   Clock,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { 
+  getProfile, 
+  createProfile, 
+  updateProfile, 
+  getUserStats, 
+  connectToBuilder, 
+  getUserSpaces, 
+  createSpace,
+  getAllProfiles
+} from "@/lib/profiles";
+import { createPost, likePost, addComment } from "@/lib/posts";
+import { collection, onSnapshot, query, orderBy, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { createProject } from "@/lib/projects";
 
 type FeedTabKey = "for-you" | "updates" | "teammates" | "logs";
-
-// Mock trending builders matching visual indicators
-const trendingBuilders = [
-  { name: "Riya Sharma", username: "riya_codes", role: "AI Engineer", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80" },
-  { name: "Dev Patel", username: "dev.builds", role: "Full Stack", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80" },
-  { name: "João Silva", username: "joaodev", role: "Web3 Dev", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80" },
-  { name: "Anika Lee", username: "anikalee", role: "Product Dev", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80" },
-  { name: "Sam Williams", username: "sam.codes", role: "Mobile Dev", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80" },
-];
 
 const fallbackHackathons = [
   { id: 1, name: "AI Startup Sprint", date: "Apr 20 - Apr 27", builders: "1.2K", color: "bg-[#7A5BFF]" },
@@ -42,82 +46,353 @@ const fallbackHackathons = [
   { id: 3, name: "Web3 Builders", date: "May 12 - May 18", builders: "732", color: "bg-[#7A5BFF]" },
 ];
 
+
 export default function DashboardHomePage() {
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
+  const { user, loading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<FeedTabKey>("for-you");
   const [isTeamMode, setIsTeamMode] = useState(true);
-  const [builders, setBuilders] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSetupDismissed, setIsSetupDismissed] = useState(false);
-  const [setupDone, setSetupDone] = useState<Record<string, boolean>>({});
+  
+  // Real Firestore States
+  const [profile, setProfile] = useState<any>(null);
+  const [userStats, setUserStats] = useState({ posts: 0, projects: 0, builders: 0 });
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [spaces, setSpaces] = useState<any[]>([]);
+  const [showCreateSpaceModal, setShowCreateSpaceModal] = useState(false);
+  const [newSpaceName, setNewSpaceName] = useState("");
+  const [newSpaceColor, setNewSpaceColor] = useState("bg-[#CDFF3D]");
+  const [composerContent, setComposerContent] = useState("");
+  const [composerType, setComposerType] = useState<'update' | 'looking_for' | 'build_log'>('update');
+  const [composerTags, setComposerTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [connectingBuilderId, setConnectingBuilderId] = useState<string | null>(null);
+  const [myConnections, setMyConnections] = useState<string[]>([]);
+  const [allProfiles, setAllProfiles] = useState<any[]>([]);
 
-  // Auth redirect — if not signed in, go to landing page
+  // Auth redirect — if not signed in, go to login page
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.replace("/");
+    if (!loading && !user) {
+      router.replace("/login");
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [loading, user, router]);
 
-  // Mark a setup step as done inline
-  const markSetupDone = (key: string) => {
-    setSetupDone((prev) => ({ ...prev, [key]: true }));
-  };
-
-  // Load team builders from Supabase
+  // Load user profile & auto-initialize
   useEffect(() => {
-    const loadBuilders = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("builder_profiles")
-          .select("full_name, username, avatar_url")
-          .limit(5);
+    if (loading || !user) return;
 
-        if (!error && data && data.length > 0) {
-          const merged = trendingBuilders.map((tb, idx) => {
-            if (data[idx]) {
-              return {
-                name: data[idx].full_name || tb.name,
-                username: data[idx].username || tb.username,
-                role: tb.role,
-                avatar: data[idx].avatar_url || tb.avatar,
-              };
-            }
-            return tb;
-          });
-          setBuilders(merged);
-        } else {
-          setBuilders(trendingBuilders);
+    const loadUserProfile = async () => {
+      try {
+        const { data, error } = await getProfile(user.uid);
+        if (!error) {
+          if (data) {
+            setProfile(data);
+          } else {
+            const newProf = {
+              uid: user.uid,
+              full_name: user.displayName || user.email?.split('@')[0] || "Builder",
+              avatar_url: user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
+              email: user.email || "",
+              username: user.email?.split('@')[0] || "builder",
+              stack: [],
+              onboarding_completed: false
+            };
+            await createProfile(newProf);
+            setProfile(newProf);
+          }
         }
       } catch (err) {
-        setBuilders(trendingBuilders);
+        console.error("Error loading profile:", err);
       }
     };
-    loadBuilders();
+
+    loadUserProfile();
+  }, [user, loading]);
+
+  // Load all profiles dynamically (for Trending Builders)
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = onSnapshot(collection(db, "builder_profiles"), (snapshot) => {
+      const list = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setAllProfiles(list);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Load connections for dynamic follow checking
+  useEffect(() => {
+    if (!user) return;
+    const q = query(collection(db, "connections"), where("follower_id", "==", user.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setMyConnections(snapshot.docs.map(doc => doc.data().following_id));
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Fetch live stats (posts, projects, builders/connections)
+  const fetchStats = async () => {
+    if (!user) return;
+    const { data } = await getUserStats(user.uid);
+    if (data) {
+      setUserStats(data);
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    fetchStats();
+  }, [user, posts, myConnections]);
+
+  // Load my spaces dynamically
+  useEffect(() => {
+    if (!user) return;
+    const q = query(
+      collection(db, "spaces"),
+      where("created_by", "==", user.uid),
+      orderBy("created_at", "desc")
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const list = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setSpaces(list);
+    }, (err) => {
+      console.error("Error spaces:", err);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Load real-time posts feed
+  useEffect(() => {
+    const q = query(collection(db, "posts"), orderBy("created_at", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const list = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setPosts(list);
+      setLoadingPosts(false);
+    }, (err) => {
+      console.error("Error subscribing to posts:", err);
+      setLoadingPosts(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  // Logged-in user dynamically greeting the builder
-  const greetingName = useMemo(() => {
-    if (!user) return "Keerthan";
-    return user.firstName || user.fullName || "Keerthan";
-  }, [user]);
+  // Map Trending Builders
+  const trendingBuildersList = useMemo(() => {
+    if (!user) return [];
+    return allProfiles
+      .filter(p => p.uid !== user.uid && p.username)
+      .slice(0, 5)
+      .map(p => ({
+        id: p.uid,
+        name: p.full_name || "Builder",
+        username: p.username || "builder",
+        role: p.stack && p.stack.length > 0 ? p.stack[0] + " Dev" : "AI Explorer",
+        avatar: p.avatar_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
+      }));
+  }, [allProfiles, user]);
 
-  const userAvatar = useMemo(() => {
-    return user?.imageUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80";
-  }, [user]);
+  // Greeting and Current User Memo
+  const greetingName = useMemo(() => {
+    if (!profile) return "Keerthan";
+    return profile.full_name?.split(' ')[0] || "Keerthan";
+  }, [profile]);
 
   const currentUser = useMemo(() => {
     return {
-      fullName: user?.fullName || "Keerthan Reddy",
-      username: user?.username || "keerthan_codes",
-      imageUrl: userAvatar,
+      fullName: profile?.full_name || user?.displayName || user?.email || "Keerthan Reddy",
+      username: profile?.username || user?.email?.split('@')[0] || "keerthan_codes",
+      imageUrl: profile?.avatar_url || user?.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
     };
-  }, [user, userAvatar]);
+  }, [user, profile]);
 
-  if (!isLoaded || !isSignedIn) {
+  // Setup progress completion states
+  const setupDone: Record<string, boolean> = useMemo(() => {
+    return {
+      stack: !!(profile?.stack && profile.stack.length > 0),
+      project: !!(userStats.projects > 0),
+      profile: !!(profile?.onboarding_completed)
+    };
+  }, [profile, userStats]);
+
+  // Checklist Actions
+  const handleAddStackClick = async () => {
+    if (!user || !profile) return;
+    const defaultStack = ["React", "Next.js", "Firebase", "TypeScript"];
+    const { error } = await updateProfile(user.uid, { stack: defaultStack });
+    if (!error) {
+      setProfile((prev: any) => ({ ...prev, stack: defaultStack }));
+    }
+  };
+
+  const handleCompleteProfileClick = async () => {
+    if (!user || !profile) return;
+    const { error } = await updateProfile(user.uid, { onboarding_completed: true });
+    if (!error) {
+      setProfile((prev: any) => ({ ...prev, onboarding_completed: true }));
+    }
+  };
+
+  const handleShipProjectClick = async () => {
+    if (!user) return;
+    const { error } = await createProject({
+      name: "My First Collab",
+      description: "Building an awesome project with Collabsphere!",
+      tech_stack: ["React", "Next.js", "Firestore"],
+      uid: user.uid,
+      author_name: profile?.full_name || user.displayName || "Builder",
+      created_at: new Date().toISOString()
+    });
+    if (!error) {
+      fetchStats();
+    }
+    const element = document.getElementById("post-composer");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Composer Post submit handler
+  const handlePostSubmit = async () => {
+    if (!user || !composerContent.trim()) return;
+
+    const newPostData = {
+      uid: user.uid,
+      author_name: currentUser.fullName,
+      author_email: user.email || "",
+      author_avatar: currentUser.imageUrl,
+      author_username: currentUser.username,
+      content: composerContent.trim(),
+      stack_tags: composerTags,
+      post_type: composerType,
+    };
+
+    const tempId = `temp-${Date.now()}`;
+    const optimisticPost = {
+      id: tempId,
+      ...newPostData,
+      likes: [],
+      comments_count: 0,
+      views: 0,
+      created_at: new Date().toISOString(),
+    };
+
+    setPosts((prev: any[]) => [optimisticPost, ...prev]);
+    setComposerContent("");
+    setComposerTags([]);
+
+    const { error } = await createPost(newPostData);
+    if (error) {
+      console.error("Failed to create post:", error);
+      setPosts((prev: any[]) => prev.filter((p: any) => p.id !== tempId));
+    } else {
+      fetchStats();
+    }
+  };
+
+  // Like toggler
+  const handleLikeClick = async (postId: string) => {
+    if (!user) return;
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+
+    const likes = Array.isArray(post.likes) ? post.likes : [];
+    const isLiked = likes.includes(user.uid);
+    const newLikes = isLiked 
+      ? likes.filter((id: string) => id !== user.uid)
+      : [...likes, user.uid];
+
+    setPosts((prev: any[]) => prev.map((p: any) => p.id === postId ? { ...p, likes: newLikes } : p));
+
+    const { error } = await likePost(postId, user.uid);
+    if (error) {
+      console.error("Failed to like post:", error);
+      setPosts((prev: any[]) => prev.map((p: any) => p.id === postId ? { ...p, likes } : p));
+    }
+  };
+
+  // Connect handler
+  const handleConnectClick = async (builderId: string) => {
+    if (!user || connectingBuilderId) return;
+    setConnectingBuilderId(builderId);
+    const { error } = await connectToBuilder(user.uid, builderId);
+    setConnectingBuilderId(null);
+    if (!error) {
+      fetchStats();
+    }
+  };
+
+  // Space creator
+  const handleCreateSpaceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !newSpaceName.trim()) return;
+
+    const { error } = await createSpace(user.uid, {
+      label: newSpaceName.trim(),
+      dotColor: newSpaceColor
+    });
+
+    if (!error) {
+      setNewSpaceName("");
+      setShowCreateSpaceModal(false);
+    }
+  };
+
+  // Space list calculation
+  const spacesList = useMemo(() => {
+    const defaultSpaces = [
+      { label: "AI Side Project", dotColor: "bg-[#CDFF3D]" },
+      { label: "SaaS Founders", dotColor: "bg-[#B69DFF]" },
+      { label: "Indie Hackers", dotColor: "bg-[#FF9D42]" },
+      { label: "Web3 Creators", dotColor: "bg-[#42EFFF]" },
+    ];
+    if (spaces.length > 0) {
+      return spaces;
+    }
+    return defaultSpaces;
+  }, [spaces]);
+
+  // Filter feed items based on activeTab
+  const filteredPosts = useMemo(() => {
+    return posts.filter(post => {
+      if (activeTab === "for-you") return true;
+      if (activeTab === "updates") return post.post_type === "update";
+      if (activeTab === "teammates") return post.post_type === "looking_for";
+      if (activeTab === "logs") return post.post_type === "build_log";
+      return true;
+    });
+  }, [posts, activeTab]);
+
+  // Relative time helper
+  const timeAgo = (dateStr: string) => {
+    try {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 1) return "Just now";
+      if (diffMins < 60) return `${diffMins}m ago`;
+      const diffHours = Math.floor(diffMins / 60);
+      if (diffHours < 24) return `${diffHours}h ago`;
+      const diffDays = Math.floor(diffHours / 24);
+      return `${diffDays}d ago`;
+    } catch (e) {
+      return "Recently";
+    }
+  };
+
+  if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#E5EEFF]">
         <div className="flex flex-col items-center gap-3">
@@ -178,12 +453,13 @@ export default function DashboardHomePage() {
 
               <div>
                 {/* Logo */}
-                <div className="flex items-center gap-2 mb-6 group cursor-pointer" onClick={() => router.push("/dashboard/home")}>
+                <div className="flex items-center gap-2 mb-6 group cursor-pointer" onClick={() => { setActiveTab("for-you"); router.push("/dashboard/home"); }}>
                   <div className="flex items-center justify-center w-5.5 h-5.5 rounded-[7px] bg-[#121315] text-[#F3F7FF] font-black text-xs select-none transition-transform group-hover:rotate-[30deg]">
                     <span className="leading-none select-none font-bold text-sm">*</span>
                   </div>
                   <span className="text-base font-black tracking-tight text-[#121315] font-sans">collabsphere</span>
                 </div>
+
 
                 {/* Search */}
                 <div className="relative mb-5">
@@ -205,10 +481,10 @@ export default function DashboardHomePage() {
                 {/* Nav */}
                 <nav className="space-y-1 mb-6">
                   {[
-                    { key: "home", label: "Home", icon: Home, active: true },
+                    { key: "home", label: "Home", icon: Home, active: activeTab === "for-you" },
                     { key: "builders", label: "Discover Builders", icon: Compass },
                     { key: "projects", label: "Projects", icon: Folder },
-                    { key: "logs", label: "Build Log", icon: FileText },
+                    { key: "logs", label: "Build Log", icon: FileText, active: activeTab === "logs" },
                     { key: "teams", label: "Teams", icon: Users },
                     { key: "hackathons", label: "Hackathons", icon: Trophy },
                     { key: "messages", label: "Messages", icon: MessageSquare, badge: "12" },
@@ -220,14 +496,28 @@ export default function DashboardHomePage() {
                       <button
                         key={item.key}
                         type="button"
+                        onClick={() => {
+                          if (item.key === "home") {
+                            setActiveTab("for-you");
+                            router.push("/dashboard/home");
+                          } else if (item.key === "logs") {
+                            setActiveTab("logs");
+                          } else if (item.key === "builders") {
+                            router.push("/builders");
+                          } else if (item.key === "projects") {
+                            router.push("/projects");
+                          } else {
+                            router.push(`/${item.key}`);
+                          }
+                        }}
                         className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all group ${
-                          item.active
+                          item.active || (item.key === "home" && activeTab !== "logs" && activeTab !== "for-you")
                             ? "bg-[#E9E7FF] text-[#7A5BFF]"
                             : "text-[#62636C] hover:bg-gray-100/50 hover:text-black"
                         }`}
                       >
                         <span className="flex items-center gap-3">
-                          <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${item.active ? "text-[#7A5BFF]" : "text-[#7B7C85]"}`} />
+                          <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${item.active || (item.key === "home" && activeTab !== "logs" && activeTab !== "for-you") ? "text-[#7A5BFF]" : "text-[#7B7C85]"}`} />
                           {item.label}
                         </span>
                         {item.badge && (
@@ -246,19 +536,14 @@ export default function DashboardHomePage() {
                 <div className="space-y-3">
                   <span className="text-[10px] font-extrabold text-[#9EA0A8] tracking-widest uppercase block pl-3 text-left">Your Spaces</span>
                   <div className="space-y-1">
-                    {[
-                      { label: "AI Side Project", dotColor: "bg-[#CDFF3D]" },
-                      { label: "SaaS Founders", dotColor: "bg-[#B69DFF]" },
-                      { label: "Indie Hackers", dotColor: "bg-[#FF9D42]" },
-                      { label: "Web3 Creators", dotColor: "bg-[#42EFFF]" },
-                    ].map((space, idx) => (
+                    {spacesList.map((space, idx) => (
                       <button
                         key={idx}
                         type="button"
                         className="w-full flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs font-bold text-[#62636C] hover:bg-gray-100/50 hover:text-black transition-all"
                       >
                         <span className="flex items-center gap-2.5 min-w-0">
-                          <span className={`w-2 h-2 rounded-full ${space.dotColor} shadow-sm shrink-0`} />
+                          <span className={`w-2 h-2 rounded-full ${space.dotColor || "bg-[#CDFF3D]"} shadow-sm shrink-0`} />
                           <span className="truncate">{space.label}</span>
                         </span>
                         <span className="text-[9px] text-gray-400 font-bold bg-white/50 border border-white/80 px-1.5 py-0.5 rounded-md">85%</span>
@@ -266,6 +551,7 @@ export default function DashboardHomePage() {
                     ))}
                     <button
                       type="button"
+                      onClick={() => setShowCreateSpaceModal(true)}
                       className="w-full flex items-center gap-2.5 px-3.5 py-2 rounded-2xl text-xs font-bold text-[#7A5BFF] hover:bg-[#E9E7FF]/40 transition-all text-left"
                     >
                       <Plus className="w-3.5 h-3.5 text-[#7A5BFF]" />
@@ -276,7 +562,7 @@ export default function DashboardHomePage() {
               </div>
 
               {/* Profile card */}
-              <div className="pt-3 border-t border-gray-100">
+              <div className="pt-3 border-t border-gray-100 space-y-2">
                 <div className="flex items-center justify-between p-1.5 rounded-2xl hover:bg-gray-100/50 transition-all cursor-pointer">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <img
@@ -290,6 +576,22 @@ export default function DashboardHomePage() {
                     </div>
                   </div>
                   <ChevronDown className="w-3.5 h-3.5 text-[#8A8B94] shrink-0" />
+                </div>
+
+                {/* Stats indicators */}
+                <div className="grid grid-cols-3 gap-1 px-1 py-1 bg-gray-50/50 border border-gray-100/50 rounded-xl text-center select-none">
+                  <div>
+                    <span className="text-[8px] font-bold text-gray-400 block uppercase">Posts</span>
+                    <span className="text-xs font-black text-black">{userStats.posts}</span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] font-bold text-gray-400 block uppercase">Builders</span>
+                    <span className="text-xs font-black text-black">{userStats.builders}</span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] font-bold text-gray-400 block uppercase">Projects</span>
+                    <span className="text-xs font-black text-black">{userStats.projects}</span>
+                  </div>
                 </div>
               </div>
 
@@ -509,8 +811,7 @@ export default function DashboardHomePage() {
                 ))}
               </div>
             </div>
-
-            {/* ==================== INLINE PROGRESSIVE SETUP PROMPTS ==================== */}
+                  {/* ==================== INLINE PROGRESSIVE SETUP PROMPTS ==================== */}
             {!isSetupDismissed && (
               <div className="bg-white/60 backdrop-blur-xl border border-white/50 rounded-[24px] p-4 shadow-[0_8px_24px_rgba(122,91,255,0.04)] z-10 relative">
                 <div className="flex items-center justify-between mb-3">
@@ -535,7 +836,7 @@ export default function DashboardHomePage() {
                       ? "border-[#A3E635]/40 bg-[#F5FEE9]"
                       : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
                   }`}
-                    onClick={() => markSetupDone("stack")}
+                    onClick={handleAddStackClick}
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base transition-all ${
                       setupDone["stack"] ? "bg-[#CDFF3D]/40" : "bg-[#E9E7FF] group-hover:bg-[#D1CBFF]"
@@ -546,7 +847,7 @@ export default function DashboardHomePage() {
                       <p className={`text-xs font-black tracking-tight truncate ${
                         setupDone["stack"] ? "text-[#4B7A12] line-through opacity-60" : "text-black"
                       }`}>Add your stack</p>
-                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5">React, Supabase, Next.js…</p>
+                      <p className="text-[10px] text-[#9EA0A8] font-medium mt-0.5">React, Firebase, Next.js…</p>
                     </div>
                     {!setupDone["stack"] && (
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#7A5BFF] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
@@ -559,7 +860,7 @@ export default function DashboardHomePage() {
                       ? "border-[#A3E635]/40 bg-[#F5FEE9]"
                       : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
                   }`}
-                    onClick={() => markSetupDone("project")}
+                    onClick={handleShipProjectClick}
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base transition-all ${
                       setupDone["project"] ? "bg-[#CDFF3D]/40" : "bg-[#E9E7FF] group-hover:bg-[#D1CBFF]"
@@ -583,7 +884,7 @@ export default function DashboardHomePage() {
                       ? "border-[#A3E635]/40 bg-[#F5FEE9]"
                       : "border-white/80 bg-white hover:border-[#7A5BFF]/30 hover:shadow-[0_4px_16px_rgba(122,91,255,0.06)]"
                   }`}
-                    onClick={() => markSetupDone("profile")}
+                    onClick={handleCompleteProfileClick}
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base transition-all ${
                       setupDone["profile"] ? "bg-[#CDFF3D]/40" : "bg-[#E9E7FF] group-hover:bg-[#D1CBFF]"
@@ -619,203 +920,258 @@ export default function DashboardHomePage() {
               </div>
             )}
 
+            {/* Post Composer */}
+            <div id="post-composer" className="bg-white border border-white/60 rounded-[28px] p-5 shadow-[0_10px_30px_rgba(31,38,135,0.015)] backdrop-blur-xl space-y-4 text-left z-10 relative">
+              <div className="flex items-start gap-3">
+                <img
+                  src={currentUser.imageUrl}
+                  alt={currentUser.fullName}
+                  className="w-10 h-10 rounded-full object-cover border shadow-sm"
+                />
+                <div className="flex-1 space-y-2">
+                  <textarea
+                    placeholder="What are you building today?"
+                    value={composerContent}
+                    onChange={(e) => setComposerContent(e.target.value)}
+                    className="w-full bg-[#EAEBF4]/30 hover:bg-[#EAEBF4]/40 focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 border border-transparent focus:border-[#7A5BFF]/40 p-3 rounded-2xl text-xs placeholder-gray-400 outline-none transition-all resize-none min-h-[70px]"
+                  />
+                  
+                  {/* Tag List inside composer */}
+                  {composerTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {composerTags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#E9E7FF] text-[#7A5BFF] text-[9.5px] font-extrabold"
+                        >
+                          <span>#{tag}</span>
+                          <button
+                            type="button"
+                            onClick={() => setComposerTags(prev => prev.filter(t => t !== tag))}
+                            className="text-[#7A5BFF] hover:text-red-500 font-bold ml-1 text-[10px]"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add stack tag input */}
+                  <div className="relative max-w-xs">
+                    <input
+                      type="text"
+                      placeholder="Add tech tag (type & enter)"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = tagInput.trim().toLowerCase().replace(/#/g, "");
+                          if (val && !composerTags.includes(val)) {
+                            setComposerTags(prev => [...prev, val]);
+                          }
+                          setTagInput("");
+                        }
+                      }}
+                      className="w-full bg-[#EAEBF4]/30 hover:bg-[#EAEBF4]/40 focus:bg-white border border-transparent focus:border-gray-200 px-3 py-1.5 rounded-xl text-[10px] placeholder-gray-400 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Actions of Composer */}
+              <div className="flex items-center justify-between border-t border-gray-100/80 pt-3">
+                {/* Post type selector */}
+                <div className="flex items-center bg-gray-100/80 p-0.5 rounded-full border border-gray-200/50 gap-0.5">
+                  {(['update', 'looking_for', 'build_log'] as const).map((type) => {
+                    const label = type === 'update' ? 'Update' : type === 'looking_for' ? 'Looking For' : 'Build Log';
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setComposerType(type)}
+                        className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all ${
+                          composerType === type
+                            ? 'bg-[#121315] text-[#CDFF3D] shadow-sm'
+                            : 'text-gray-500 hover:text-black'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handlePostSubmit}
+                  disabled={!composerContent.trim()}
+                  className="bg-[#121315] hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-black px-5 py-2.5 rounded-full shadow-sm active:scale-95 transition-all"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+
             {/* ==================== CENTRAL FEED TACTILE SKEUOMORPHIC FEEDS ==================== */}
             <div className="space-y-5 z-10 relative">
-              
-              {/* Card 1: Habit Tracker live builder telemetry stream */}
-              <div className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(0,0,0,0.01)] text-left flex flex-col md:flex-row md:items-stretch gap-5 hover:shadow-md transition duration-300 group relative">
-                
-                {/* Left side: Terminal live matching logs */}
-                <div className="flex-1 bg-[#121318] text-[#E0E2EC] rounded-2xl p-4 font-mono text-[10px] space-y-1.5 shadow-inner border border-black/80 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between border-b border-white/10 pb-1.5 mb-2">
-                      <span className="text-gray-400 font-extrabold text-[9px] uppercase tracking-widest flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#CDFF3D] animate-pulse" />
-                        Live Pipeline: habit-tracker / nextjs
-                      </span>
-                      <span className="text-[9px] text-[#7A5BFF] font-bold">active: 2m</span>
+              {loadingPosts ? (
+                // Skeleton Loader
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(0,0,0,0.01)] animate-pulse space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-200" />
+                      <div className="space-y-1.5 flex-1">
+                        <div className="h-3 w-1/4 rounded bg-gray-200" />
+                        <div className="h-2 w-1/6 rounded bg-gray-100" />
+                      </div>
+                      <div className="h-5 w-16 rounded-full bg-gray-100" />
                     </div>
-                    <div className="text-gray-400">$ collabsphere match-builder --workspace="habit-tracker"</div>
-                    <div className="text-white font-semibold">[SYSTEM] Found active slots: full-stack=Dev, ai-engineer=Riya</div>
-                    <div className="text-[#CDFF3D]">[ALERT] Slot frontend-nextjs is currently OPEN</div>
-                    <div className="text-gray-500 animate-pulse">[WAIT] Awaiting node connection...</div>
+                    <div className="space-y-2">
+                      <div className="h-3 w-full rounded bg-gray-200" />
+                      <div className="h-3 w-5/6 rounded bg-gray-200" />
+                    </div>
+                    <div className="h-6 w-24 rounded bg-gray-100" />
                   </div>
+                ))
+              ) : filteredPosts.length === 0 ? (
+                <div className="bg-white/60 border border-white/50 rounded-[28px] p-10 text-center shadow-sm backdrop-blur-md">
+                  <FileText className="w-12 h-12 text-[#7A5BFF]/30 mx-auto mb-3" />
+                  <h4 className="text-sm font-black text-black">No posts yet</h4>
+                  <p className="text-[11px] text-gray-500 mt-1">Be the first to share! Use the composer above to write something today.</p>
+                </div>
+              ) : (
+                filteredPosts.map((post) => {
+                  const likes = Array.isArray(post.likes) ? post.likes : [];
+                  const isLiked = user && likes.includes(user.uid);
                   
-                  {/* Status indicators */}
-                  <div className="flex items-center gap-4 text-[9px] text-gray-500 border-t border-white/10 pt-2 mt-2">
-                    <span>slots: 2/3</span>
-                    <span>host: traceflow.git</span>
-                    <span className="text-[#CDFF3D]">ready_slots: 66%</span>
-                  </div>
-                </div>
+                  // Post type badge styling
+                  let typeBadgeClass = "";
+                  let typeLabel = "";
+                  if (post.post_type === 'update') {
+                    typeBadgeClass = "bg-[#F5FEE9] border-[#A3E635]/15 text-[#4B7A12]";
+                    typeLabel = "Project Update";
+                  } else if (post.post_type === 'looking_for') {
+                    typeBadgeClass = "bg-[#E9E7FF] border-[#7A5BFF]/10 text-[#7A5BFF]";
+                    typeLabel = "Seeking Co-builders";
+                  } else {
+                    typeBadgeClass = "bg-[#FFF5E9] border-[#FF9D42]/10 text-[#D97706]";
+                    typeLabel = "Build Log";
+                  }
 
-                {/* Right side: Node connection actions and details */}
-                <div className="md:w-60 flex flex-col justify-between bg-gray-50/50 border border-gray-100 rounded-2xl p-3.5 relative overflow-hidden shrink-0">
-                  <div className="space-y-3.5 text-left">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="px-2 py-0.5 rounded-md text-[8.5px] font-extrabold text-[#7A5BFF] bg-[#E9E7FF] uppercase tracking-wide">
-                        MATCH SPACE
-                      </span>
-                      <span className="text-[9px] text-gray-400 font-bold">ping: 14ms</span>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-black text-black tracking-tight font-sans">AI Habit Tracker</h4>
-                      <p className="text-[11px] text-[#6E7079] leading-relaxed mt-1">
-                        Building a skeuomorphic autonomous habit companion.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-1.5 border-t border-gray-100">
-                      <div className="flex -space-x-1.5">
-                        <img className="w-5.5 h-5.5 rounded-full border border-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="avatar" />
-                        <img className="w-5.5 h-5.5 rounded-full border border-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="avatar" />
-                      </div>
-                      <span className="text-[9px] font-bold text-gray-400">Next.js, Tailwind, TS</span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    className="w-full mt-3 bg-[#121315] hover:bg-black text-[#CDFF3D] font-mono text-[10px] font-black py-2.5 rounded-xl shadow-md active:scale-95 transition-all text-center tracking-wider block"
-                  >
-                    CONNECT_NODE_
-                  </button>
-                </div>
-              </div>
-
-              {/* Card 2: MVP is live! Feedback? (THE TILTED CARD WITH GRADIENT PRODUCT PREVIEW PANEL) */}
-              <div className="bg-white border border-white/60 rounded-[28px] p-6 shadow-[0_20px_45px_rgba(0,0,0,0.03)] text-left flex flex-col md:flex-row md:items-stretch justify-between gap-6 relative group rotate-[-1deg] sm:rotate-[-1.5deg] transition-all duration-300 hover:rotate-0 hover:scale-[1.01] hover:shadow-lg">
-                
-                {/* Left details */}
-                <div className="space-y-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    {/* Header row */}
-                    <div className="flex items-center flex-wrap gap-2">
-                      <div className="w-5.5 h-5.5 rounded-lg bg-[#F5FEE9] border border-[#A3E635]/15 flex items-center justify-center text-[#A3E635]">
-                        <span className="text-[9px] font-extrabold select-none leading-none">•</span>
-                      </div>
-                      <h4 className="text-base font-black text-black tracking-tight font-sans">DEPLOYMENT SUCCESS: traceflow-mvp</h4>
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold text-white bg-[#34C759] uppercase tracking-wide ml-1 select-none">
-                        SHIPPED
-                      </span>
-                    </div>
-
-                    {/* Details row */}
-                    <div className="grid grid-cols-3 gap-2 text-xs mt-3">
-                      <div>
-                        <span className="text-[#8E8F97] font-medium block">Repository:</span>
-                        <span className="text-black font-extrabold mt-0.5 block truncate">collabsphere/traceflow</span>
-                      </div>
-                      <div>
-                        <span className="text-[#8E8F97] font-medium block">Momentum:</span>
-                        <span className="text-black font-extrabold mt-0.5 block truncate">20+ active logs</span>
-                      </div>
-                      <div>
-                        <span className="text-[#8E8F97] font-medium block">Build Latency:</span>
-                        <span className="text-black font-extrabold mt-0.5 block">4.1s (successful)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom actions row */}
-                  <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100/50">
-                    <button
-                      type="button"
-                      className="bg-[#121315] hover:bg-black text-white text-xs font-black px-4.5 py-2.5 rounded-full flex items-center gap-1.5 shadow-md active:scale-95 transition group/btn"
+                  return (
+                    <div
+                      key={post.id}
+                      className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(0,0,0,0.01)] text-left hover:shadow-md transition duration-300 relative group"
                     >
-                      <Plus className="w-3.5 h-3.5 text-[#CDFF3D] group-hover/btn:rotate-90 transition-transform duration-300" />
-                      <span>ASK_AI_AGENT_FEEDBACK</span>
-                    </button>
-                    
-                    {/* Performers avatar queue */}
-                    <div className="flex items-center gap-1.5 pl-1.5">
-                      <span className="text-[9px] text-[#8E8F97] font-bold">Shipped by:</span>
-                      <div className="flex -space-x-1">
-                        {builders.slice(0, 2).map((b, idx) => (
+                      {/* Post Header */}
+                      <div className="flex items-center justify-between gap-3 mb-3.5">
+                        <div className="flex items-center gap-3">
                           <img
-                            key={idx}
-                            className="w-5 h-5 rounded-full border border-white object-cover shadow-sm"
-                            src={b.avatar}
-                            alt="shipper"
+                            src={post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
+                            alt={post.author_name}
+                            className="w-10 h-10 rounded-full object-cover border"
                           />
-                        ))}
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-black truncate">{post.author_name}</p>
+                            <p className="text-[10px] text-gray-400 mt-0.5 truncate">
+                              @{post.author_username} · {timeAgo(post.created_at)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className={`px-2.5 py-0.5 border rounded-lg text-[9px] font-extrabold uppercase tracking-wide shrink-0 ${typeBadgeClass}`}>
+                          {typeLabel}
+                        </span>
+                      </div>
+
+                      {/* Content */}
+                      <p className="text-xs text-[#1D1E22] leading-relaxed font-medium whitespace-pre-wrap">
+                        {post.content}
+                      </p>
+
+                      {/* Tags */}
+                      {post.stack_tags && post.stack_tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-3.5">
+                          {post.stack_tags.map((tag: string) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-0.5 rounded-lg bg-gray-50 border border-gray-100 text-gray-400 text-[9px] font-bold"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Footer Actions */}
+                      <div className="flex items-center justify-between border-t border-gray-100/60 pt-3.5 mt-4">
+                        <div className="flex items-center gap-4">
+                          {/* Like Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleLikeClick(post.id)}
+                            className="flex items-center gap-1.5 group/btn text-[10px] font-black text-gray-500"
+                          >
+                            <Heart className={`w-4 h-4 transition-transform group-hover/btn:scale-110 ${
+                              isLiked ? "fill-pink-500 text-pink-500" : "text-gray-400 hover:text-pink-500"
+                            }`} />
+                            <span className={isLiked ? "text-pink-500" : ""}>{likes.length}</span>
+                          </button>
+
+                          {/* Comment Count Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const content = prompt("Add a comment:");
+                              if (content && content.trim()) {
+                                addComment(post.id, {
+                                  uid: user.uid,
+                                  author_name: currentUser.fullName,
+                                  author_avatar: currentUser.imageUrl,
+                                  author_username: currentUser.username,
+                                  content: content.trim()
+                                }).then(({ error }) => {
+                                  if (error) {
+                                    alert("Failed to add comment.");
+                                  }
+                                });
+                              }
+                            }}
+                            className="flex items-center gap-1.5 text-[10px] font-black text-gray-500 hover:text-[#7A5BFF]"
+                          >
+                            <MessageCircle className="w-4 h-4 text-gray-400 group-hover:text-[#7A5BFF]" />
+                            <span>{post.comments_count || 0}</span>
+                          </button>
+                        </div>
+
+                        {/* Share Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (navigator.share) {
+                              navigator.share({
+                                title: `${post.author_name} on Collabsphere`,
+                                text: post.content,
+                                url: window.location.href,
+                              });
+                            } else {
+                              navigator.clipboard.writeText(post.content);
+                              alert("Post content copied to clipboard!");
+                            }
+                          }}
+                          className="text-gray-400 hover:text-black transition"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 10.742l4.636-2.318M8.684 13.258l4.636 2.318M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Right Gradient TraceFlow Visual box matching screenshot perfectly */}
-                <div className="md:w-48 h-36 bg-gradient-to-tr from-[#DEE2FF] via-[#E8EAFF] to-[#FFE5F1] border border-white/60 rounded-2xl p-4 flex flex-col justify-between shrink-0 relative overflow-hidden shadow-sm select-none group-hover:scale-105 transition-transform duration-300">
-                  <div className="absolute top-3 right-3 w-5.5 h-5.5 rounded-full bg-white/60 border border-white/80 flex items-center justify-center shadow-sm text-black">
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <h5 className="text-base font-black tracking-tight text-black flex items-center justify-center gap-1 font-sans">
-                        <span>traceflow</span>
-                      </h5>
-                      <div className="flex items-center justify-center gap-1 mt-1.5 opacity-80">
-                        <span className="w-4 h-4 rounded-full bg-white/80 flex items-center justify-center shadow-sm text-[8px] font-bold">⌨</span>
-                        <span className="w-4 h-4 rounded-full bg-white/80 flex items-center justify-center shadow-sm text-[8px] font-bold">⚙</span>
-                        <span className="w-4 h-4 rounded-full bg-white/80 flex items-center justify-center shadow-sm text-[8px] font-bold">❂</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Hand-drawn cursor hover mockup */}
-                <div className="absolute right-[22%] bottom-[10%] pointer-events-none select-none translate-y-3 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                  <svg className="w-5 h-5 drop-shadow-md text-[#C4B5FD]" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M4,2 L20,10 L12,13 L4,2 Z" />
-                  </svg>
-                </div>
-
-              </div>
-
-              {/* Card 3: live grid of system slots showing fintech UI team composition */}
-              <div className="bg-white border border-white/50 rounded-[28px] p-5 shadow-[0_12px_24px_rgba(0,0,0,0.01)] text-left flex flex-col sm:flex-row gap-5 hover:shadow-md transition duration-300 group">
-                <div className="flex-1 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-5.5 h-5.5 rounded-lg bg-[#E9E7FF] border border-[#7A5BFF]/10 flex items-center justify-center text-[#7A5BFF]">
-                      <span className="text-[9px] font-extrabold select-none leading-none">*</span>
-                    </div>
-                    <h4 className="text-base font-black text-black tracking-tight font-sans">MATCH SPACE: fintech-dashboard</h4>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold text-[#7A5BFF] bg-[#E9E7FF] uppercase tracking-wide ml-1 select-none">
-                      OPEN_NODE
-                    </span>
-                  </div>
-
-                  {/* Tactile slot grid representation */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-gray-50 border border-gray-100 rounded-xl p-2.5 flex items-center justify-between text-xs">
-                      <span className="text-[#8E8F97] font-medium">Slot [1]: Full Stack</span>
-                      <span className="text-black font-extrabold flex items-center gap-1.5">
-                        <img className="w-4.5 h-4.5 rounded-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="avatar" />
-                        João S.
-                      </span>
-                    </div>
-                    <div className="bg-[#E9E7FF]/20 border border-dashed border-[#7A5BFF]/30 rounded-xl p-2.5 flex items-center justify-between text-xs relative overflow-hidden group/slot animate-pulse">
-                      <span className="text-[#7A5BFF] font-bold">Slot [2]: UI/UX</span>
-                      <span className="text-[#7A5BFF] font-extrabold text-[9px] uppercase tracking-widest bg-[#E9E7FF] px-1.5 py-0.5 rounded-md">
-                        SEEKING MATCH
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action button */}
-                <div className="shrink-0 flex items-center">
-                  <button
-                    type="button"
-                    className="w-full sm:w-auto bg-[#EAEBF4]/60 hover:bg-[#EAEBF4] text-[#121315] hover:text-black text-xs font-mono font-black px-5 py-3 rounded-xl transition active:scale-95 shadow-sm"
-                  >
-                    CONNECT_SLOT_
-                  </button>
-                </div>
-              </div>
-
+                  );
+                })
+              )}
             </div>
 
           </main>
@@ -847,7 +1203,12 @@ export default function DashboardHomePage() {
                 <button
                   type="button"
                   className="bg-[#121315] hover:bg-black text-[#F3F7FF] px-4.5 py-2.5 rounded-full text-xs font-black shadow-sm inline-flex items-center gap-1.5 active:scale-95 transition-all"
-                  onClick={() => markSetupDone("post")}
+                  onClick={() => {
+                    const element = document.getElementById("post-composer");
+                    if (element) {
+                      element.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                 >
                   <Plus className="w-3.5 h-3.5 text-white font-black" />
                   <span>New Post</span>
@@ -924,28 +1285,52 @@ export default function DashboardHomePage() {
 
               {/* Builders List */}
               <div className="space-y-3">
-                {builders.slice(0, 5).map((builder, idx) => (
-                  <div key={idx} className="flex items-center justify-between group cursor-pointer" onClick={() => router.push(`/builders`)}>
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img
-                        src={builder.avatar}
-                        alt={builder.name}
-                        className="w-10 h-10 rounded-full object-cover border border-white shadow-sm shrink-0"
-                      />
-                      <div className="text-left min-w-0">
-                        <p className="text-sm font-bold text-black group-hover:text-[#7A5BFF] transition-colors leading-none truncate">{builder.name}</p>
-                        <p className="text-xs text-[#8A8B94] mt-1.5 truncate">@{builder.username}</p>
+                {trendingBuildersList.map((builder, idx) => {
+                  const isConnected = myConnections.includes(builder.id);
+                  return (
+                    <div key={idx} className="flex items-center justify-between group cursor-pointer">
+                      <div className="flex items-center gap-3 min-w-0" onClick={() => router.push(`/builders`)}>
+                        <img
+                          src={builder.avatar}
+                          alt={builder.name}
+                          className="w-10 h-10 rounded-full object-cover border border-white shadow-sm shrink-0"
+                        />
+                        <div className="text-left min-w-0">
+                          <p className="text-sm font-bold text-black group-hover:text-[#7A5BFF] transition-colors leading-none truncate">{builder.name}</p>
+                          <p className="text-xs text-[#8A8B94] mt-1.5 truncate">@{builder.username}</p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="text-[10px] font-bold text-gray-400">{builder.role}</span>
-                      <div className="w-7 h-7 rounded-full bg-gray-50 group-hover:bg-[#E9E7FF] flex items-center justify-center transition-all">
-                        <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#7A5BFF] transition-colors" />
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-[10px] font-bold text-gray-400">{builder.role}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isConnected) {
+                              handleConnectClick(builder.id);
+                            }
+                          }}
+                          disabled={isConnected || connectingBuilderId === builder.id}
+                          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                            isConnected 
+                              ? "bg-green-50 text-green-500 cursor-default"
+                              : "bg-gray-50 group-hover:bg-[#E9E7FF] text-gray-400 hover:text-[#7A5BFF] active:scale-95"
+                          }`}
+                        >
+                          {isConnected ? (
+                            <span className="text-xs font-bold font-sans">✓</span>
+                          ) : (
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          )}
+                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+                {trendingBuildersList.length === 0 && (
+                  <p className="text-[10px] text-gray-400 text-center font-medium">No other builders found.</p>
+                )}
               </div>
             </div>
 
@@ -1030,6 +1415,67 @@ export default function DashboardHomePage() {
         </div>
 
       </div>
+
+      {/* Create Space Modal */}
+      {showCreateSpaceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-sm p-4">
+          <div className="bg-white border border-white/60 rounded-[32px] p-6 max-w-sm w-full shadow-2xl relative space-y-4 text-left animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-lg font-black text-black tracking-tight font-sans uppercase">Create New Space</h3>
+            
+            <form onSubmit={handleCreateSpaceSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-extrabold text-[#9EA0A8] uppercase tracking-wider mb-1">Space Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Solopreneurs Hub"
+                  value={newSpaceName}
+                  onChange={(e) => setNewSpaceName(e.target.value)}
+                  className="w-full bg-[#EAEBF4]/40 border border-transparent focus:border-[#7A5BFF]/40 px-3.5 py-2.5 rounded-2xl text-xs placeholder-gray-400 outline-none focus:bg-white focus:ring-2 focus:ring-[#7A5BFF]/30 transition-all shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-extrabold text-[#9EA0A8] uppercase tracking-wider mb-1.5">Color Accent</label>
+                <div className="flex gap-2">
+                  {[
+                    { color: "bg-[#CDFF3D]", value: "bg-[#CDFF3D]" },
+                    { color: "bg-[#B69DFF]", value: "bg-[#B69DFF]" },
+                    { color: "bg-[#FF9D42]", value: "bg-[#FF9D42]" },
+                    { color: "bg-[#42EFFF]", value: "bg-[#42EFFF]" },
+                    { color: "bg-[#FF42A1]", value: "bg-[#FF42A1]" },
+                  ].map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setNewSpaceColor(item.value)}
+                      className={`w-6 h-6 rounded-full ${item.color} border-2 transition-transform ${
+                        newSpaceColor === item.value ? "border-black scale-110 shadow-sm" : "border-transparent hover:scale-105"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateSpaceModal(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-black py-3 rounded-full active:scale-95 transition-all text-center"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-[#121315] hover:bg-black text-[#CDFF3D] text-xs font-black py-3 rounded-full active:scale-95 transition-all text-center"
+                >
+                  Create Space
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
+import { useAuth } from "@/hooks/useAuth";
+import { signOut } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const navLinks = [
   { name: "ABOUT US",      href: "#about"         },
@@ -16,7 +19,8 @@ const navLinks = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isSignedIn } = useAuth();
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,18 +71,17 @@ export function Navigation() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
-            {!isSignedIn ? (
-              <SignInButton mode="modal">
-                <button
-                  className={`rounded-full transition-all duration-500 ${isScrolled ? "bg-foreground hover:bg-foreground/90 text-background px-4 h-8 text-xs" : "bg-white hover:bg-white/90 text-black px-6"}`}
-                >
-                  LOGIN
-                </button>
-              </SignInButton>
+            {!user ? (
+              <button
+                onClick={() => router.push('/login')}
+                className={`rounded-full transition-all duration-500 ${isScrolled ? "bg-foreground hover:bg-foreground/90 text-background px-4 h-8 text-xs" : "bg-white hover:bg-white/90 text-black px-6"}`}
+              >
+                LOGIN
+              </button>
             ) : (
               <div className="flex items-center gap-2">
                 <a
-                  href="/dashboard"
+                  href="/dashboard/home"
                   className={`text-sm transition-colors duration-300 ${
                     isScrolled
                       ? "text-foreground/70 hover:text-foreground"
@@ -87,7 +90,18 @@ export function Navigation() {
                 >
                   DASHBOARD
                 </a>
-                <UserButton appearance={{ elements: { avatarBox: "h-[34px] w-[34px]" } }} />
+                <button
+                  onClick={async () => {
+                    await signOut()
+                    router.push('/')
+                  }}
+                  className="w-8 h-8 rounded-full 
+                  bg-pink-500 flex items-center 
+                  justify-center text-white text-sm
+                  font-bold"
+                >
+                  {user.email?.[0].toUpperCase()}
+                </button>
               </div>
             )}
           </div>

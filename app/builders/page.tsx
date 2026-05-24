@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getAllProfiles } from "@/lib/profiles";
 
 type BuilderProfile = {
   id?: string;
@@ -34,17 +34,22 @@ export default function BuildersPage() {
     let isMounted = true;
 
     const loadBuilders = async () => {
-      const { data } = await supabase
-        .from("builder_profiles")
-        .select("*")
-        .not("username", "is", null)
-        .order("created_at", { ascending: false });
+      const { data, error } = await getAllProfiles();
 
       if (!isMounted) {
         return;
       }
 
-      setBuilders((data ?? []) as BuilderProfile[]);
+      if (!error && data) {
+        const filtered = data
+          .filter((p: any) => p.username !== null && p.username !== undefined)
+          .sort((a: any, b: any) => {
+            const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+            const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+            return dateB - dateA;
+          });
+        setBuilders(filtered as BuilderProfile[]);
+      }
       setIsLoading(false);
     };
 
