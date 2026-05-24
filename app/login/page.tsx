@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { signInWithGoogle, signInWithGithub, signInWithEmail } from "@/lib/auth"
 import Link from "next/link"
-import { getRedirectResult } from "firebase/auth"
-import { auth } from "@/lib/firebase"
+import { auth, db } from "@/lib/firebase"
+import { doc, getDoc } from "firebase/firestore"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -14,10 +14,25 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  const checkAndRedirect = async (uid: string) => {
+    try {
+      const docRef = doc(db, 'builder_profiles', uid)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists() && docSnap.data().onboarding_completed) {
+        router.push('/dashboard/home')
+      } else {
+        router.push('/onboarding')
+      }
+    } catch (err) {
+      console.error("Error checking onboarding:", err)
+      router.push('/onboarding')
+    }
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        router.push('/dashboard/home')
+        checkAndRedirect(user.uid)
       }
     })
     return () => unsubscribe()
@@ -31,8 +46,8 @@ export default function LoginPage() {
       const { data, error } = await signInWithEmail(email, password)
       if (error) {
         setError(error.message)
-      } else {
-        router.push("/dashboard/home")
+      } else if (data?.user) {
+        await checkAndRedirect(data.user.uid)
       }
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred")
@@ -40,6 +55,7 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
+
 
   const handleGoogleSignIn = async () => {
     setError(null)

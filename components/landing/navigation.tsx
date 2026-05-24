@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { signOut } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const navLinks = [
   { name: "ABOUT US",      href: "#about"         },
@@ -21,6 +23,26 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
+
+  const handleDashboardClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    try {
+      const docRef = doc(db, "builder_profiles", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && docSnap.data().onboarding_completed) {
+        router.push("/dashboard/home");
+      } else {
+        router.push("/onboarding");
+      }
+    } catch (err) {
+      console.error("Error checking onboarding:", err);
+      router.push("/onboarding");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,7 +104,8 @@ export function Navigation() {
               <div className="flex items-center gap-2">
                 <a
                   href="/dashboard/home"
-                  className={`text-sm transition-colors duration-300 ${
+                  onClick={handleDashboardClick}
+                  className={`text-sm transition-colors duration-300 cursor-pointer ${
                     isScrolled
                       ? "text-foreground/70 hover:text-foreground"
                       : "text-white/70 hover:text-white"
