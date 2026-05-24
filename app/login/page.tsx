@@ -85,22 +85,22 @@ export default function LoginPage() {
           backgroundImage: "url('/loginpage.png')"
         }}
       />
-      {/* Dark overlay to match contrast */}
-      <div className="fixed inset-0 z-0 bg-black/20 pointer-events-none" />
+      {/* Subtle dark overlay to match contrast */}
+      <div className="fixed inset-0 z-0 bg-black/10 pointer-events-none" />
 
       {/* MAIN FLOAT CONTAINER CARD */}
       <div 
-        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row backdrop-blur-md animate-fade-in"
+        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row animate-fade-in"
         style={{
           boxShadow: "0 30px 60px rgba(0,0,0,0.5)"
         }}
       >
         
-        {/* LEFT COLUMN: WHITE GLASSMORPHISM FORM PANEL */}
+        {/* LEFT COLUMN: SOLID DARK FORM PANEL */}
         <div 
-          className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative select-none backdrop-blur-2xl"
+          className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative select-none"
           style={{
-            background: "rgba(255, 255, 255, 0.05)",
+            background: "#0c0c0e",
             borderRight: "1px solid rgba(255, 255, 255, 0.08)"
           }}
         >
@@ -121,7 +121,7 @@ export default function LoginPage() {
             <h2 className="text-3xl font-bold text-white tracking-tight">
               Welcome back
             </h2>
-            <p className="text-white/60 text-xs mt-2 mb-8 leading-relaxed">
+            <p className="text-white/40 text-xs mt-2 mb-8 leading-relaxed">
               Create your builder profile and find your dream team.
             </p>
 
@@ -141,7 +141,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter Email"
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3.5 placeholder-white/30 focus:border-white/40 focus:ring-3 focus:ring-white/5 outline-none transition duration-200 text-sm"
+                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
                 />
               </div>
 
@@ -153,7 +153,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create Password"
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3.5 placeholder-white/30 focus:border-white/40 focus:ring-3 focus:ring-white/5 outline-none transition duration-200 text-sm"
+                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
                 />
               </div>
 
@@ -184,7 +184,7 @@ export default function LoginPage() {
               <button
                 onClick={handleGoogleSignIn}
                 type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-black/20 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer backdrop-blur-md"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
               >
                 <Chrome className="w-4 h-4 text-white shrink-0" />
                 <span>Google</span>
@@ -192,7 +192,7 @@ export default function LoginPage() {
               <button
                 onClick={handleGithubSignIn}
                 type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-black/20 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer backdrop-blur-md"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
               >
                 <Github className="w-4 h-4 text-white shrink-0" />
                 <span>GitHub</span>
@@ -200,7 +200,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => alert("Twitter/X authentication coming soon!")}
-                className="flex-1 flex items-center justify-center gap-2 bg-black/20 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer backdrop-blur-md"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
               >
                 <Twitter className="w-4 h-4 text-white shrink-0" />
                 <span>Twitter</span>
@@ -219,11 +219,13 @@ export default function LoginPage() {
 
         </div>
 
-        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape) */}
+        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape sharply) */}
         <div 
-          className="hidden md:flex w-full md:w-1/2 bg-white/5 backdrop-blur-xl border-l border-white/10 flex-col justify-between p-12 text-left relative overflow-hidden"
+          className="hidden md:flex w-full md:w-1/2 border-l border-white/10 flex-col justify-between p-12 text-left relative overflow-hidden"
           style={{
-            background: "rgba(255, 255, 255, 0.02)"
+            background: "rgba(255, 255, 255, 0.02)",
+            backdropFilter: "blur(0.5px)",
+            WebkitBackdropFilter: "blur(0.5px)"
           }}
         >
           {/* Subtle logo badge top */}
