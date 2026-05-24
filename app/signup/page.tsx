@@ -96,9 +96,39 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center p-4 text-white font-sans antialiased overflow-hidden select-none">
       
+      {/* HIGH-PERFORMANCE 60FPS CSS TRANSITIONS (Hardware Accelerated) */}
+      <style>{`
+        @keyframes fadeInBg {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        @keyframes fadeInUpCard {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        .animate-fade-in-bg {
+          animation: fadeInBg 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          will-change: opacity;
+        }
+        .animate-fade-in-card {
+          animation: fadeInUpCard 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          will-change: transform, opacity;
+        }
+      `}</style>
+
       {/* FULL-SCREEN SCENIC SUNSET BACKGROUND IMAGE (Sourced directly from user's loginpage.png) */}
       <div 
-        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat transition-all duration-700"
+        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat opacity-0 animate-fade-in-bg"
         style={{
           backgroundImage: "url('/loginpage.png')"
         }}
@@ -108,7 +138,7 @@ export default function SignupPage() {
 
       {/* MAIN FLOAT CONTAINER CARD */}
       <div 
-        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row animate-fade-in"
+        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row opacity-0 animate-fade-in-card"
         style={{
           boxShadow: "0 30px 60px rgba(0,0,0,0.5)"
         }}
@@ -269,47 +299,15 @@ export default function SignupPage() {
 
         </div>
 
-        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape sharply) */}
+        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape sharply and cleanly) */}
         <div 
-          className="hidden md:flex w-full md:w-1/2 border-l border-white/10 flex-col justify-between p-12 text-left relative overflow-hidden"
+          className="hidden md:flex w-full md:w-1/2 border-l border-white/10 relative overflow-hidden"
           style={{
             background: "rgba(255, 255, 255, 0.02)",
             backdropFilter: "blur(0.5px)",
             WebkitBackdropFilter: "blur(0.5px)"
           }}
-        >
-          {/* Subtle logo badge top */}
-          <div className="flex items-center gap-2 select-none opacity-45">
-            <div className="flex items-center justify-center w-5 h-5 rounded-[6px] bg-white text-black font-black text-xs">
-              <span className="leading-none font-bold text-xs">*</span>
-            </div>
-            <span className="text-xs font-black tracking-widest text-white font-sans uppercase">collabsphere portal</span>
-          </div>
-
-          {/* Stats indicators layered on glass bottom */}
-          <div className="space-y-4 bg-black/25 border border-white/5 rounded-[24px] p-6 max-w-xs shadow-md backdrop-blur-md self-end mt-auto">
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="text-left">
-                <span className="text-xl font-black text-white block">2,400+</span>
-                <span className="text-[8px] text-gray-400 font-extrabold uppercase tracking-wider block mt-0.5">Active Builders</span>
-              </div>
-              <div className="text-left">
-                <span className="text-xl font-black text-white block">180+</span>
-                <span className="text-[8px] text-gray-400 font-extrabold uppercase tracking-wider block mt-0.5">Projects Shipped</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between border-t border-white/5 pt-4">
-              <div className="flex -space-x-1.5">
-                <img className="h-6 w-6 rounded-full ring-2 ring-purple-900 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
-                <img className="h-6 w-6 rounded-full ring-2 ring-purple-900 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
-                <img className="h-6 w-6 rounded-full ring-2 ring-purple-900 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
-              </div>
-              <span className="text-[9px] font-extrabold text-[#CDFF3D] uppercase tracking-widest block text-right">JOIN THE MOVEMENT →</span>
-            </div>
-          </div>
-
-        </div>
+        />
 
       </div>
 
