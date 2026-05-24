@@ -76,91 +76,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full relative flex items-center justify-center bg-[#000008] text-white font-sans antialiased overflow-hidden select-none">
+    <div className="min-h-screen w-full relative flex items-center justify-center p-4 text-white font-sans antialiased overflow-hidden select-none">
       
-      {/* CSS Floating and Particle animations */}
-      <style jsx global>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
+      {/* FULL-SCREEN SCENIC SUNSET BACKGROUND IMAGE (Sourced directly from reference landscape) */}
+      <div 
+        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat transition-all duration-700"
+        style={{
+          backgroundImage: "url('/images/auth_right_panel.png')"
+        }}
+      />
+      {/* Dark overlay to match contrast */}
+      <div className="fixed inset-0 z-0 bg-black/30 pointer-events-none" />
 
-        @keyframes particleUp {
-          0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
-          10% { opacity: 0.4; }
-          90% { opacity: 0.4; }
-          100% { transform: translateY(-20px) translateX(20px); opacity: 0; }
-        }
+      {/* MAIN FLOAT CONTAINER CARD */}
+      <div 
+        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row backdrop-blur-sm animate-fade-in"
+        style={{
+          boxShadow: "0 30px 60px rgba(0,0,0,0.6)"
+        }}
+      >
         
-        .floating-particle {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background: rgba(167, 139, 250, 0.4);
-          pointer-events: none;
-          z-index: 1;
-        }
-      `}</style>
-
-      {/* FULL PAGE BACKGROUND GRADIENT */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          background: "linear-gradient(135deg, #0d0015 0%, #1a0030 20%, #0d001a 40%, #050010 60%, #000008 100%)"
-        }}
-      />
-
-      {/* Floating Glowing Blobs */}
-      <div 
-        className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none z-0"
-        style={{
-          background: "radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)"
-        }}
-      />
-      <div 
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] pointer-events-none z-0"
-        style={{
-          background: "radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%)"
-        }}
-      />
-
-      {/* Scattered particles with custom delays */}
-      <div className="absolute inset-0 z-1 pointer-events-none overflow-hidden">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div
-            key={i}
-            className="floating-particle"
-            style={{
-              left: `${(i * 9) + 4}%`,
-              bottom: "-10px",
-              animation: `particleUp ${10 + (i * 2)}s linear infinite`,
-              animationDelay: `${i * 1.2}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* MAIN CONTAINER LAYER */}
-      <div className="relative z-10 w-full max-w-[1200px] px-6 py-10 min-h-screen flex items-center justify-center md:justify-start">
-        
-        {/* CENTER-LEFT FLOATING GLASS CARD */}
-        <div 
-          className="w-full max-w-[460px] rounded-[24px] shadow-2xl relative border border-white/10 md:ml-[5%] animate-float"
-          style={{
-            background: "rgba(15, 10, 25, 0.75)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            boxShadow: "0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)",
-            padding: "40px 44px"
-          }}
-        >
-          {/* Logo top left of card */}
+        {/* LEFT COLUMN: SOLID DARK FORM PANEL */}
+        <div className="w-full md:w-1/2 bg-[#0c0c0e] p-8 sm:p-12 flex flex-col justify-center relative select-none">
+          
+          {/* Logo top left */}
           <div 
-            className="flex items-center gap-2 group cursor-pointer mb-8"
+            className="absolute top-8 left-8 sm:left-12 flex items-center gap-2 group cursor-pointer"
             onClick={() => router.push("/")}
           >
             <div className="flex items-center justify-center w-5 h-5 rounded-[6px] bg-white text-black font-black text-xs transition-transform group-hover:rotate-[30deg]">
@@ -169,151 +110,145 @@ export default function LoginPage() {
             <span className="text-base font-black tracking-tight text-white font-sans">collabsphere</span>
           </div>
 
-          {/* Heading subtexts */}
-          <h2 className="text-3xl font-bold text-white tracking-tight">
-            Welcome back
-          </h2>
-          <p className="text-white/50 text-sm mt-2 mb-8 leading-relaxed">
-            Create your builder profile and find your dream team.
-          </p>
+          {/* Form wrapper */}
+          <div className="w-full max-w-[340px] mx-auto text-left mt-8">
+            <h2 className="text-3xl font-bold text-white tracking-tight">
+              Welcome back
+            </h2>
+            <p className="text-white/40 text-xs mt-2 mb-8 leading-relaxed">
+              Create your builder profile and find your dream team.
+            </p>
 
-          {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-bold">
-              {error}
+            {error && (
+              <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-bold">
+                {error}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleEmailSignIn} className="space-y-4">
+              <div>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter Email"
+                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
+                />
+              </div>
+
+              <div>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create Password"
+                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-white text-black font-semibold rounded-xl py-3.5 w-full hover:bg-[#f0f0f0] transition duration-200 text-sm flex items-center justify-center mt-2 cursor-pointer active:scale-[0.99]"
+              >
+                {loading ? (
+                  <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  "Sign In"
+                )}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-6">
+              <div className="h-px bg-white/10 flex-1" />
+              <span className="text-white/30 text-[10px] font-extrabold uppercase select-none tracking-widest shrink-0">
+                or sign in via
+              </span>
+              <div className="h-px bg-white/10 flex-1" />
             </div>
-          )}
 
-          {/* Email / Password Sign In Form */}
-          <form onSubmit={handleEmailSignIn} className="space-y-4">
-            <div>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter Email"
-                className="w-full text-white rounded-xl px-4 py-3.5 outline-none transition duration-200 text-sm placeholder-white/30 border border-white/10 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15"
-                style={{
-                  background: "rgba(255,255,255,0.05)"
-                }}
-              />
+            {/* Social buttons */}
+            <div className="flex gap-2.5 mb-6">
+              <button
+                onClick={handleGoogleSignIn}
+                type="button"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
+              >
+                <Chrome className="w-4 h-4 text-white shrink-0" />
+                <span>Google</span>
+              </button>
+              <button
+                onClick={handleGithubSignIn}
+                type="button"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
+              >
+                <Github className="w-4 h-4 text-white shrink-0" />
+                <span>GitHub</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => alert("Twitter/X authentication coming soon!")}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
+              >
+                <Twitter className="w-4 h-4 text-white shrink-0" />
+                <span>Twitter</span>
+              </button>
             </div>
 
-            <div>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Create Password"
-                className="w-full text-white rounded-xl px-4 py-3.5 outline-none transition duration-200 text-sm placeholder-white/30 border border-white/10 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15"
-                style={{
-                  background: "rgba(255,255,255,0.05)"
-                }}
-              />
-            </div>
+            {/* Switch routes */}
+            <p className="text-white/40 text-xs text-center">
+              Don't have an account?{" "}
+              <Link href="/signup" className="text-pink-500 hover:text-pink-400 font-semibold transition ml-0.5">
+                Sign up
+              </Link>
+            </p>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-white text-black font-semibold rounded-xl py-3.5 w-full hover:bg-[#f0f0f0] transition duration-200 text-sm flex items-center justify-center mt-2 cursor-pointer active:scale-[0.99]"
-            >
-              {loading ? (
-                <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-              ) : (
-                "Sign In"
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="h-px bg-white/10 flex-1" />
-            <span className="text-white/30 text-[10px] font-extrabold uppercase select-none tracking-widest shrink-0">
-              or sign in via
-            </span>
-            <div className="h-px bg-white/10 flex-1" />
           </div>
-
-          {/* Social login buttons */}
-          <div className="flex gap-3 mb-4">
-            <button
-              onClick={handleGoogleSignIn}
-              type="button"
-              className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-            >
-              <Chrome className="w-4 h-4 text-white shrink-0" />
-              <span>Google</span>
-            </button>
-            <button
-              onClick={handleGithubSignIn}
-              type="button"
-              className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-            >
-              <Github className="w-4 h-4 text-white shrink-0" />
-              <span>GitHub</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => alert("Twitter/X authentication coming soon!")}
-              className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-            >
-              <Twitter className="w-4 h-4 text-white shrink-0" />
-              <span>Twitter</span>
-            </button>
-          </div>
-
-          {/* Switch links */}
-          <p className="text-white/40 text-sm text-center mt-6">
-            Don't have an account?{" "}
-            <Link href="/signup" className="text-purple-400 hover:text-purple-300 font-semibold transition ml-0.5">
-              Sign up
-            </Link>
-          </p>
 
         </div>
 
-        {/* RIGHT SIDE FLOATING STATS CARD (hidden on mobile) */}
+        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape) */}
         <div 
-          className="hidden md:flex absolute right-[8%] top-1/2 -translate-y-1/2 w-[320px] rounded-[24px] shadow-xl border border-white/10 animate-float flex-col p-6 space-y-6 text-left relative overflow-hidden"
+          className="hidden md:flex w-full md:w-1/2 bg-white/5 backdrop-blur-xl border-l border-white/10 flex-col justify-between p-12 text-left relative overflow-hidden"
           style={{
-            background: "rgba(15, 10, 25, 0.75)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
-            animationDelay: "1s"
+            background: "rgba(255, 255, 255, 0.02)"
           }}
         >
-          {/* Header */}
-          <div className="flex items-center gap-2">
+          {/* Subtle logo badge top */}
+          <div className="flex items-center gap-2 select-none opacity-45">
             <div className="flex items-center justify-center w-5 h-5 rounded-[6px] bg-white text-black font-black text-xs">
               <span className="leading-none font-bold text-xs">*</span>
             </div>
-            <span className="text-xs font-black tracking-widest text-white/50 font-sans uppercase">collabsphere stats</span>
+            <span className="text-xs font-black tracking-widest text-white font-sans uppercase">collabsphere portal</span>
           </div>
 
-          {/* Stats details */}
-          <div className="space-y-4 py-2 border-y border-white/10">
-            <div>
-              <span className="text-2xl font-black text-white block">2,400+</span>
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mt-0.5">Active Builders</span>
+          {/* Stats indicators layered on glass bottom */}
+          <div className="space-y-4 bg-black/25 border border-white/5 rounded-[24px] p-6 max-w-xs shadow-md backdrop-blur-md self-end mt-auto">
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="text-left">
+                <span className="text-xl font-black text-white block">2,400+</span>
+                <span className="text-[8px] text-gray-400 font-extrabold uppercase tracking-wider block mt-0.5">Active Builders</span>
+              </div>
+              <div className="text-left">
+                <span className="text-xl font-black text-white block">180+</span>
+                <span className="text-[8px] text-gray-400 font-extrabold uppercase tracking-wider block mt-0.5">Projects Shipped</span>
+              </div>
             </div>
-            <div>
-              <span className="text-2xl font-black text-white block">180+</span>
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mt-0.5">Projects Shipped</span>
+            
+            <div className="flex items-center justify-between border-t border-white/5 pt-4">
+              <div className="flex -space-x-1.5">
+                <img className="h-6 w-6 rounded-full ring-2 ring-purple-900 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
+                <img className="h-6 w-6 rounded-full ring-2 ring-purple-900 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
+                <img className="h-6 w-6 rounded-full ring-2 ring-purple-900 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
+              </div>
+              <span className="text-[9px] font-extrabold text-[#CDFF3D] uppercase tracking-widest block text-right">JOIN THE MOVEMENT →</span>
             </div>
-          </div>
-
-          {/* Stack circle avatars */}
-          <div className="flex items-center justify-between gap-4 pt-1">
-            <div className="flex -space-x-1.5">
-              <img className="h-6.5 w-6.5 rounded-full ring-2 ring-[#0f0a19] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
-              <img className="h-6.5 w-6.5 rounded-full ring-2 ring-[#0f0a19] object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
-              <img className="h-6.5 w-6.5 rounded-full ring-2 ring-[#0f0a19] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="builder" />
-            </div>
-            <span className="text-[10px] font-extrabold text-purple-400 uppercase tracking-widest block text-right">JOIN THE MOVEMENT →</span>
           </div>
 
         </div>
