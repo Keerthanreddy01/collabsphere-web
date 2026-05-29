@@ -29,6 +29,12 @@ function AvatarImage({
     <AvatarPrimitive.Image
       data-slot="avatar-image"
       className={cn('aspect-square size-full', className)}
+      referrerPolicy="no-referrer"
+      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+        const target = e.currentTarget as HTMLImageElement
+        target.onerror = null
+        target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
+      }}
       {...props}
     />
   )

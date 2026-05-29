@@ -245,6 +245,12 @@ export default function BuildersPage() {
                             <img
                               src={builder.avatar_url}
                               alt={builder.full_name ?? "Builder"}
+                              referrerPolicy="no-referrer"
+                              onError={(e) => {
+                                const t = e.currentTarget as HTMLImageElement
+                                t.onerror = null
+                                t.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
+                              }}
                               className="h-full w-full object-cover"
                             />
                           ) : (

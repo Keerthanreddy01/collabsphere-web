@@ -564,7 +564,17 @@ export default function DashboardHomePage() {
                 <span className="text-lg font-black text-black select-none leading-none">*</span>
                 <span className="font-bold text-black text-sm">collabsphere</span>
               </div>
-              <img src={currentUser.imageUrl} alt="user" className="w-8 h-8 rounded-full border shadow-sm object-cover" />
+              <img
+                src={currentUser.imageUrl}
+                alt="user"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const t = e.currentTarget as HTMLImageElement
+                  t.onerror = null
+                  t.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
+                }}
+                className="w-8 h-8 rounded-full border shadow-sm object-cover"
+              />
             </div>
 
             {/* Top row greeting */}
@@ -573,6 +583,12 @@ export default function DashboardHomePage() {
                 <img
                   src={currentUser.imageUrl}
                   alt={greetingName}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const t = e.currentTarget as HTMLImageElement
+                    t.onerror = null
+                    t.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
+                  }}
                   className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
                 />
                 <h2 
@@ -669,16 +685,22 @@ export default function DashboardHomePage() {
                         className="inline-block h-6.5 w-6.5 rounded-full ring-2 ring-white object-cover shadow-sm"
                         src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80"
                         alt="Teammate 1"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" }}
                       />
                       <img
                         className="inline-block h-6.5 w-6.5 rounded-full ring-2 ring-white object-cover shadow-sm"
                         src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80"
                         alt="Teammate 2"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" }}
                       />
                       <img
                         className="inline-block h-6.5 w-6.5 rounded-full ring-2 ring-white object-cover shadow-sm"
                         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80"
                         alt="Teammate 3"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" }}
                       />
                     </div>
                     <button
@@ -1035,6 +1057,8 @@ export default function DashboardHomePage() {
                           <img
                             src={post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
                             alt={post.author_name}
+                            referrerPolicy="no-referrer"
+                            onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80" }}
                             className={`w-10 h-10 rounded-full object-cover border border-white ring-2 ring-offset-2 ${avatarRingColor}`}
                           />
                           <div className="min-w-0 text-left">
@@ -1143,6 +1167,8 @@ export default function DashboardHomePage() {
                                 <img
                                   src={reply.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
                                   alt={reply.author_name}
+                                  referrerPolicy="no-referrer"
+                                  onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80" }}
                                   className="w-7 h-7 rounded-full object-cover border border-white shrink-0 shadow-sm"
                                 />
                                 <div className="min-w-0 flex-1">
@@ -1161,7 +1187,12 @@ export default function DashboardHomePage() {
 
                           {/* Reply input drawer */}
                           <div className="flex items-center gap-2">
-                            <img src={currentUser.imageUrl} className="w-7.5 h-7.5 rounded-full object-cover border border-gray-100" />
+                            <img
+                              src={currentUser.imageUrl}
+                              referrerPolicy="no-referrer"
+                              onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80" }}
+                              className="w-7.5 h-7.5 rounded-full object-cover border border-gray-100"
+                            />
                             <input
                               type="text"
                               placeholder="Write a reply..."
