@@ -312,6 +312,12 @@ export default function Sidebar({
               <img
                 src={currentUser.imageUrl}
                 alt={currentUser.fullName}
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement
+                  target.onerror = null
+                  target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
+                }}
                 className="w-8.5 h-8.5 rounded-full object-cover border border-white/80 shadow-sm"
               />
               <div className="text-left min-w-0 flex-1">
