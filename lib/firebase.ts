@@ -11,13 +11,22 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-const app = getApps().length === 0 
-  ? initializeApp(firebaseConfig) 
-  : getApps()[0]
+// If no API key is provided, skip initializing Firebase to avoid runtime errors
+let app: any = null
+let auth: any = null
+let db: any = null
 
-const auth = getAuth(app)
-setPersistence(auth, browserLocalPersistence)
+if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+  auth = getAuth(app)
+  // set persistence but guard in case auth initialization fails
+  try {
+    setPersistence(auth, browserLocalPersistence)
+  } catch (e) {
+    // ignore persistence errors during local/dev when auth is not fully configured
+  }
+  db = getFirestore(app)
+}
 
-export const db = getFirestore(app)
-export { auth }
+export { auth, db }
 export default app
