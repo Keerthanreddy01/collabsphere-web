@@ -15,6 +15,8 @@ import {
 const googleProvider = new GoogleAuthProvider()
 googleProvider.addScope('email')
 googleProvider.addScope('profile')
+// Always prompt the user to select an account (prevents silent auto-signin)
+googleProvider.setCustomParameters({ prompt: 'select_account' })
 const githubProvider = new GithubAuthProvider()
 
 export async function signInWithGoogle() {
