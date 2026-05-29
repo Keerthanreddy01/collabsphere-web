@@ -125,7 +125,8 @@ export default function Sidebar({
 
   const handleLogout = async () => {
     await signOut();
-    router.push("/login");
+    // Replace current history entry so back navigates to the landing page
+    router.replace("/login");
   };
 
   const navItems = [
