@@ -5,7 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { 
   MoreHorizontal, ImageIcon, Video, Mic, MapPin, 
-  Heart, MessageCircle, Share, Search, BadgeCheck 
+  Heart, MessageCircle, Share, Search, BadgeCheck,
+  Rocket, LifeBuoy
 } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, limit, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -20,11 +21,11 @@ type PostType = "all" | "looking_for" | "showcase" | "help_needed" | "discussion
 // Available Tags for Filter
 const POPULAR_TAGS = ["All", "React", "Python", "Firebase", "Open Source", "Hiring", "Showcase"];
 
-const POST_TYPE_BADGES: Record<string, { label: string, color: string, icon: string }> = {
-  "looking_for": { label: "Looking For", color: "bg-purple-100 text-purple-600 border-purple-200", icon: "🔍" },
-  "showcase": { label: "Showcase", color: "bg-blue-100 text-blue-600 border-blue-200", icon: "🚀" },
-  "help_needed": { label: "Help Needed", color: "bg-red-100 text-red-600 border-red-200", icon: "🆘" },
-  "discussion": { label: "Discussion", color: "bg-green-100 text-green-600 border-green-200", icon: "💬" }
+const POST_TYPE_BADGES: Record<string, { label: string, color: string, Icon: any }> = {
+  "looking_for": { label: "Looking For", color: "bg-[#6366F1] text-white", Icon: Search },
+  "showcase": { label: "Showcase", color: "bg-[#0EA5E9] text-white", Icon: Rocket },
+  "help_needed": { label: "Help Needed", color: "bg-[#EF4444] text-white", Icon: LifeBuoy },
+  "discussion": { label: "Discussion", color: "bg-[#10B981] text-white", Icon: MessageCircle }
 };
 
 // Extracted PostCard to use the hook per item
@@ -109,8 +110,8 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
       
       {postBadge && (
         <div className="mb-3">
-          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${postBadge.color}`}>
-            {postBadge.icon} {postBadge.label}
+          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ${postBadge.color}`}>
+            <postBadge.Icon className="w-3 h-3" /> {postBadge.label}
           </span>
         </div>
       )}
@@ -319,15 +320,14 @@ export default function DashboardHomePage() {
               </div>
             </div>
 
-            {/* Post Type Filter Row */}
             <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              {[{ key: "all", label: "All Types", icon: "" }, ...Object.entries(POST_TYPE_BADGES).map(([k, v]) => ({ key: k, label: v.label, icon: v.icon }))].map((type) => (
+              {[{ key: "all", label: "All Types", Icon: null }, ...Object.entries(POST_TYPE_BADGES).map(([k, v]) => ({ key: k, label: v.label, Icon: v.Icon }))].map((type) => (
                 <button
                   key={type.key}
                   onClick={() => setSelectedType(type.key as PostType)}
                   className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-colors flex items-center gap-1.5 ${selectedType === type.key ? "bg-[#0F172A] text-white border-[#0F172A]" : "bg-white text-[#64748B] border-gray-200 hover:border-gray-300"}`}
                 >
-                  {type.icon} {type.label}
+                  {type.Icon && <type.Icon className="w-3.5 h-3.5" />} {type.label}
                 </button>
               ))}
             </div>

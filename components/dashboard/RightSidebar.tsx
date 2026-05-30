@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { Plus, X, Activity, Compass, Flame, Users, Sparkles } from "lucide-react";
+import { Plus, X, Activity, Compass, Flame, Users, Sparkles, Rocket } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { computePostScore } from "@/lib/posts";
@@ -119,8 +119,8 @@ export default function RightSidebar() {
               
               <div className="relative z-10 flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 bg-white/10 text-white backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold">
-                    🚀 Showcase
+                  <span className="inline-flex items-center gap-1.5 bg-[#0EA5E9] text-white px-2 py-0.5 rounded text-[10px] font-bold">
+                    <Rocket className="w-3 h-3" /> Showcase
                   </span>
                   <span className="text-[10px] text-white/50">{project.likes?.length || 0} Likes</span>
                 </div>
