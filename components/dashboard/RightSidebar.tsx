@@ -59,7 +59,7 @@ export default function RightSidebar() {
       </div>
 
       {/* Suggested Users List */}
-      <div className="flex flex-col gap-4 mb-8 px-4 min-h-[250px]">
+      <div className="flex flex-col gap-4 mb-8 px-4">
         {loading ? (
           <div className="text-[12px] text-[#A8A8A8] text-center mt-4">Loading suggestions...</div>
         ) : suggestedUsers.length > 0 ? (
@@ -83,14 +83,14 @@ export default function RightSidebar() {
       </div>
 
       {/* Get the App Poster */}
-      <div className="px-4 mb-6">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1E1B4B] via-[#171717] to-black border border-indigo-500/20 p-6 flex flex-col items-center text-center group shadow-2xl">
+      <div className="px-4 mb-6 mt-auto">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-900/40 via-orange-800/10 to-black border border-orange-500/20 p-6 flex flex-col items-center text-center group shadow-2xl">
           {/* Ambient Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-indigo-500/30 rounded-full blur-[50px] pointer-events-none"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-orange-500/20 rounded-full blur-[50px] pointer-events-none"></div>
           
           {/* Big Phone Icon */}
-          <div className="relative mb-5 z-10 w-16 h-16 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center backdrop-blur-sm shadow-inner">
-            <svg className="w-8 h-8 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <div className="relative mb-5 z-10 w-16 h-16 bg-orange-500/10 rounded-2xl border border-orange-500/20 flex items-center justify-center backdrop-blur-sm shadow-inner">
+            <svg className="w-8 h-8 text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <rect x="5" y="2" width="14" height="20" rx="3" ry="3"></rect>
               <path d="M12 18h.01"></path>
             </svg>
