@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { collection, query, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Aurora from "@/components/Aurora";
+import Folder from "@/components/Folder";
 
 export default function RightSidebar() {
   const { user } = useAuth();
@@ -57,6 +58,28 @@ export default function RightSidebar() {
         <button className="text-[12px] font-semibold text-white hover:text-[#A8A8A8] transition-colors">
           See all
         </button>
+      </div>
+
+      {/* Your Projects Folder */}
+      <div className="flex flex-col px-4 mb-8">
+        <h3 className="text-[14px] font-semibold text-[#A8A8A8] mb-8">Your Projects</h3>
+        <div className="flex justify-center h-[120px]">
+          <Folder 
+            color="#FF512F" 
+            size={1.4}
+            items={[
+              <div key="1" className="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 p-2 text-[10px] text-white font-bold flex items-end">
+                <span>TaskLab UI</span>
+              </div>,
+              <div key="2" className="w-full h-full bg-gradient-to-br from-emerald-400 to-teal-600 p-2 text-[10px] text-white font-bold flex items-end">
+                <span>API Gateway</span>
+              </div>,
+              <div key="3" className="w-full h-full bg-gradient-to-br from-rose-400 to-red-600 p-2 text-[10px] text-white font-bold flex items-end">
+                <span>Mobile App</span>
+              </div>
+            ]}
+          />
+        </div>
       </div>
 
       {/* Suggested Users List */}
