@@ -24,7 +24,7 @@ interface UsePlatformStatsResult {
 // Module-level cache (persists across re-renders in the same session)
 let cachedStats: PlatformStats | null = null
 let cacheTimestamp = 0
-const CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+const CACHE_TTL_MS = 60 * 1000 // 1 minute
 
 const DEFAULT_STATS: PlatformStats = {
   activeBuilders: 0,
