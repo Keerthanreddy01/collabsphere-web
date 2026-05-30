@@ -75,6 +75,18 @@ export async function likePost(postId: string, userId: string) {
   }
 }
 
+export async function incrementViews(postId: string) {
+  try {
+    const postRef = doc(db, 'posts', postId)
+    await updateDoc(postRef, {
+      views_count: increment(1)
+    })
+    return { error: null }
+  } catch (error) {
+    return { error }
+  }
+}
+
 export async function addComment(postId: string, comment: {
   uid: string
   author_name: string
@@ -113,29 +125,24 @@ export async function getComments(postId: string) {
   }
 }
 
-export function computePostScore(post: any, userStack: string[] = []): number {
+export function computePostScore(post: any): number {
   const likesCount = Array.isArray(post.likes) ? post.likes.length : 0;
   const commentsCount = post.comments_count || 0;
+  const viewsCount = post.views_count || 0;
   
-  // recency_score = max(0, 100 - hours_since_post * 2)
-  let recencyScore = 0;
+  let recencyBoost = 0;
   if (post.created_at) {
     const hoursSincePost = (Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
-    recencyScore = Math.max(0, 100 - hoursSincePost * 2);
-  }
-  
-  // relevance_score = if post.stack_tags overlaps with user.stack then +20 else 0
-  let relevanceScore = 0;
-  if (Array.isArray(post.stack_tags) && Array.isArray(userStack) && userStack.length > 0) {
-    const hasOverlap = post.stack_tags.some((tag: string) => 
-      userStack.some((uTag: string) => uTag.toLowerCase() === tag.toLowerCase())
-    );
-    if (hasOverlap) {
-      relevanceScore = 20;
+    if (hoursSincePost < 1) {
+      recencyBoost = 50;
+    } else if (hoursSincePost < 6) {
+      recencyBoost = 30;
+    } else if (hoursSincePost < 24) {
+      recencyBoost = 10;
     }
   }
   
-  return (likesCount * 3) + (commentsCount * 2) + recencyScore + relevanceScore;
+  return (likesCount * 3) + (commentsCount * 5) + (viewsCount * 0.5) + recencyBoost;
 }
 
 
