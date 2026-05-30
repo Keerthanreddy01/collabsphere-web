@@ -17,6 +17,7 @@ import {
   UserPlus,
   Apple,
   PlaySquare,
+  Menu,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -74,10 +75,8 @@ export default function Sidebar({
   const navItems = [
     { key: "home", label: "Feed", icon: Home, route: "/dashboard/home" },
     { key: "messages", label: "Messages", icon: MessageSquare, route: "/messages", badge: "3" },
-    { key: "communities", label: "Communities", icon: Globe2, route: "/forums" },
     { key: "friends", label: "Friends", icon: Users, route: "/friends", badge: "12" },
-    { key: "media", label: "Media", icon: ImageIcon, route: "/media" },
-    { key: "settings", label: "Settings", icon: Settings, route: "/settings" },
+    { key: "more", label: "More", icon: Menu, route: "#" },
   ];
 
   const quickActions = [
@@ -101,7 +100,7 @@ export default function Sidebar({
         <div className="absolute -bottom-32 left-1/2 w-72 h-72 bg-[#8B5CF6]/10 rounded-full blur-[90px] pointer-events-none"></div>
       </div>
 
-      <div className="flex flex-col h-full w-full py-6 px-5 overflow-y-auto no-scrollbar">
+      <div className="flex flex-col h-full w-full py-6 px-5 overflow-hidden">
         
         {/* Profile Section */}
         <div className="flex flex-col items-center mb-8 shrink-0 cursor-pointer group" onClick={() => router.push('/dashboard/home')}>
@@ -203,8 +202,8 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Download App Card */}
-        <div className="mt-8 w-full shrink-0 relative group" onClick={handleLogout}>
+        {/* Download App Card - Hidden on shorter screens to prevent scroll */}
+        <div className="mt-6 w-full shrink-0 relative group hidden [@media(min-height:800px)]:block" onClick={handleLogout}>
           <div className="relative w-full overflow-hidden rounded-[24px] p-5 border border-white/40 shadow-[0_12px_32px_rgba(99,102,241,0.15)] transition-transform duration-300 group-hover:-translate-y-1 cursor-pointer">
             
             {/* Animated Premium Gradient Background */}
