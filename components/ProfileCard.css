@@ -399,6 +399,7 @@
   -webkit-background-clip: text;
 }
 
+
 @keyframes glow-bg {
   0% {
     --bgrotate: 0deg;

@@ -1,22 +1,8 @@
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import './ProfileCard.css';
 
-const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
-
-const ANIMATION_CONFIG = {
-  INITIAL_DURATION: 1200,
-  INITIAL_X_OFFSET: 70,
-  INITIAL_Y_OFFSET: 60,
-  DEVICE_BETA_OFFSET: 20,
-  ENTER_TRANSITION_MS: 180
-};
-
-const clamp = (v: number, min = 0, max = 100) => Math.min(Math.max(v, min), max);
-const round = (v: number, precision = 3) => parseFloat(v.toFixed(precision));
-const adjust = (v: number, fMin: number, fMax: number, tMin: number, tMax: number) => round(tMin + ((tMax - tMin) * (v - fMin)) / (fMax - fMin));
-
 interface ProfileCardProps {
-  avatarUrl?: string;
+  avatarUrl: string;
   iconUrl?: string;
   grainUrl?: string;
   innerGradient?: string;
@@ -37,10 +23,25 @@ interface ProfileCardProps {
   onContactClick?: () => void;
 }
 
+const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
+
+const ANIMATION_CONFIG = {
+  INITIAL_DURATION: 1200,
+  INITIAL_X_OFFSET: 70,
+  INITIAL_Y_OFFSET: 60,
+  DEVICE_BETA_OFFSET: 20,
+  ENTER_TRANSITION_MS: 180
+} as const;
+
+const clamp = (v: number, min = 0, max = 100): number => Math.min(Math.max(v, min), max);
+const round = (v: number, precision = 3): number => parseFloat(v.toFixed(precision));
+const adjust = (v: number, fMin: number, fMax: number, tMin: number, tMax: number): number =>
+  round(tMin + ((tMax - tMin) * (v - fMin)) / (fMax - fMin));
+
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
-  avatarUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&h=600&q=80',
-  iconUrl = '',
-  grainUrl = '',
+  avatarUrl = '<Placeholder for avatar URL>',
+  iconUrl = '<Placeholder for icon URL>',
+  grainUrl = '<Placeholder for grain URL>',
   innerGradient,
   behindGlowEnabled = true,
   behindGlowColor,
@@ -54,7 +55,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   title = 'Software Engineer',
   handle = 'javicodes',
   status = 'Online',
-  contactText = 'Contact Me',
+  contactText = 'Contact',
   showUserInfo = true,
   onContactClick
 }) => {
@@ -94,7 +95,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       const centerX = percentX - 50;
       const centerY = percentY - 50;
 
-      const properties: Record<string, string> = {
+      const properties = {
         '--pointer-x': `${percentX}%`,
         '--pointer-y': `${percentY}%`,
         '--background-x': `${adjust(percentX, 0, 100, 35, 65)}%`,
@@ -104,7 +105,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
         '--pointer-from-left': `${percentX / 100}`,
         '--rotate-x': `${round(-(centerX / 5))}deg`,
         '--rotate-y': `${round(centerY / 4)}deg`
-      };
+      } as Record<string, string>;
 
       for (const [k, v] of Object.entries(properties)) wrap.style.setProperty(k, v);
     };
@@ -176,13 +177,13 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     };
   }, [enableTilt]);
 
-  const getOffsets = (evt: any, el: HTMLElement) => {
+  const getOffsets = (evt: PointerEvent, el: HTMLElement) => {
     const rect = el.getBoundingClientRect();
     return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
   };
 
   const handlePointerMove = useCallback(
-    (event: any) => {
+    (event: PointerEvent) => {
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
       const { x, y } = getOffsets(event, shell);
@@ -192,7 +193,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   );
 
   const handlePointerEnter = useCallback(
-    (event: any) => {
+    (event: PointerEvent) => {
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
 
@@ -230,7 +231,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   }, [tiltEngine]);
 
   const handleDeviceOrientation = useCallback(
-    (event: any) => {
+    (event: DeviceOrientationEvent) => {
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
 
@@ -257,18 +258,18 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     const shell = shellRef.current;
     if (!shell) return;
 
-    const pointerMoveHandler = handlePointerMove as any;
-    const pointerEnterHandler = handlePointerEnter as any;
-    const pointerLeaveHandler = handlePointerLeave as any;
-    const deviceOrientationHandler = handleDeviceOrientation as any;
+    const pointerMoveHandler = handlePointerMove as EventListener;
+    const pointerEnterHandler = handlePointerEnter as EventListener;
+    const pointerLeaveHandler = handlePointerLeave as EventListener;
+    const deviceOrientationHandler = handleDeviceOrientation as EventListener;
 
     shell.addEventListener('pointerenter', pointerEnterHandler);
     shell.addEventListener('pointermove', pointerMoveHandler);
     shell.addEventListener('pointerleave', pointerLeaveHandler);
 
     const handleClick = () => {
-      if (!enableMobileTilt || window.location.protocol !== 'https:') return;
-      const anyMotion = (window as any).DeviceMotionEvent;
+      if (!enableMobileTilt || location.protocol !== 'https:') return;
+      const anyMotion = window.DeviceMotionEvent as any;
       if (anyMotion && typeof anyMotion.requestPermission === 'function') {
         anyMotion
           .requestPermission()
@@ -312,13 +313,14 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   ]);
 
   const cardStyle = useMemo(
-    () => ({
-      '--icon': iconUrl ? `url(${iconUrl})` : 'none',
-      '--grain': grainUrl ? `url(${grainUrl})` : 'none',
-      '--inner-gradient': innerGradient ?? DEFAULT_INNER_GRADIENT,
-      '--behind-glow-color': behindGlowColor ?? 'rgba(125, 190, 255, 0.67)',
-      '--behind-glow-size': behindGlowSize ?? '50%'
-    } as React.CSSProperties),
+    () =>
+      ({
+        '--icon': iconUrl ? `url(${iconUrl})` : 'none',
+        '--grain': grainUrl ? `url(${grainUrl})` : 'none',
+        '--inner-gradient': innerGradient ?? DEFAULT_INNER_GRADIENT,
+        '--behind-glow-color': behindGlowColor ?? 'rgba(125, 190, 255, 0.67)',
+        '--behind-glow-size': behindGlowSize ?? '50%'
+      }) as React.CSSProperties,
     [iconUrl, grainUrl, innerGradient, behindGlowColor, behindGlowSize]
   );
 
@@ -340,7 +342,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 src={avatarUrl}
                 alt={`${name || 'User'} avatar`}
                 loading="lazy"
-                onError={(e) => {
+                onError={e => {
                   const t = e.target as HTMLImageElement;
                   t.style.display = 'none';
                 }}
@@ -353,7 +355,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                         src={miniAvatarUrl || avatarUrl}
                         alt={`${name || 'User'} mini avatar`}
                         loading="lazy"
-                        onError={(e) => {
+                        onError={e => {
                           const t = e.target as HTMLImageElement;
                           t.style.opacity = '0.5';
                           t.src = avatarUrl;
@@ -361,7 +363,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                       />
                     </div>
                     <div className="pc-user-text">
-                      <div className="pc-handle">@{handle || 'username'}</div>
+                      <div className="pc-handle">@{handle}</div>
                       <div className="pc-status">{status}</div>
                     </div>
                   </div>
@@ -379,7 +381,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
             </div>
             <div className="pc-content">
               <div className="pc-details">
-                <h3>{name || "Your Name"}</h3>
+                <h3>{name}</h3>
                 <p>{title}</p>
               </div>
             </div>
