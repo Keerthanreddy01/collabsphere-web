@@ -176,19 +176,50 @@ export function Navigation() {
           </div>
           
           {/* Bottom CTAs */}
-          <div className={`flex gap-4 pt-8 border-t border-foreground/10 transition-all duration-500 ${
-            isMobileMenuOpen 
-              ? "opacity-100 translate-y-0" 
-              : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: isMobileMenuOpen ? "300ms" : "0ms" }}
+          <div
+            className={`flex flex-col gap-3 pt-8 border-t border-foreground/10 transition-all duration-500 ${
+              isMobileMenuOpen 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-4"
+            }`}
+            style={{ transitionDelay: isMobileMenuOpen ? "300ms" : "0ms" }}
           >
-            <Button 
-              className="flex-1 bg-foreground text-background rounded-full h-14 text-base"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              CONTACT US ↗
-            </Button>
+            {user ? (
+              <>
+                <Button
+                  className="flex-1 bg-foreground text-background rounded-full h-14 text-base font-bold"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleDashboardClick({ preventDefault: () => {} } as any);
+                  }}
+                >
+                  GO TO DASHBOARD ↗
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-full h-12 text-base border-foreground/20"
+                  onClick={async () => {
+                    await signOut();
+                    setIsMobileMenuOpen(false);
+                    router.replace("/");
+                  }}
+                >
+                  SIGN OUT
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="flex-1 bg-foreground text-background rounded-full h-14 text-base font-bold"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/login");
+                  }}
+                >
+                  LOGIN / SIGN UP ↗
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
