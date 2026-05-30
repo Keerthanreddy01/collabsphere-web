@@ -4,66 +4,63 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
-  MoreHorizontal, ImageIcon, Video, Mic, MapPin,
-  Heart, MessageCircle, Share, Search, BadgeCheck,
-  Rocket, LifeBuoy
+  MoreHorizontal,
+  Heart,
+  MessageCircle,
+  Send,
+  Bookmark,
+  Search,
+  PlusSquare,
+  Smile,
+  BadgeCheck
 } from "lucide-react";
-import { collection, onSnapshot, query, orderBy, limit, where } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { createPost, likePost, computePostScore, addComment, getComments } from "@/lib/posts";
+import { createPost, likePost, addComment, getComments } from "@/lib/posts";
 import Sidebar from "@/components/Sidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { usePostViewTracker } from "@/hooks/usePostViewTracker";
 
-type FeedTabKey = "recents" | "friends" | "popular";
-type PostType = "all" | "looking_for" | "showcase" | "help_needed" | "discussion";
+// Mock Stories Data
+const MOCK_STORIES = [
+  { username: "vrixfx", avatar: "https://i.pravatar.cc/150?img=21", hasUnseen: true },
+  { username: "ae.rixon", avatar: "https://i.pravatar.cc/150?img=22", hasUnseen: true },
+  { username: "keerthan", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=krixee", hasUnseen: false },
+  { username: "john_doe", avatar: "https://i.pravatar.cc/150?img=23", hasUnseen: true },
+  { username: "sarah99", avatar: "https://i.pravatar.cc/150?img=24", hasUnseen: true },
+  { username: "alex.dev", avatar: "https://i.pravatar.cc/150?img=25", hasUnseen: false },
+];
 
-// Available Tags for Filter
-const POPULAR_TAGS = ["All", "React", "Python", "Firebase", "Open Source", "Hiring", "Showcase"];
-
-const POST_TYPE_BADGES: Record<string, { label: string, color: string, Icon: any }> = {
-  "looking_for": { label: "Looking For", color: "bg-[#6366F1] text-white", Icon: Search },
-  "showcase": { label: "Showcase", color: "bg-[#0EA5E9] text-white", Icon: Rocket },
-  "help_needed": { label: "Help Needed", color: "bg-[#EF4444] text-white", Icon: LifeBuoy },
-  "discussion": { label: "Discussion", color: "bg-[#10B981] text-white", Icon: MessageCircle }
-};
-
-// Extracted PostCard to use the hook per item
 function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handleLikeClick: (id: string) => void }) {
   const ref = usePostViewTracker(post.id);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const likesCount = Array.isArray(post.likes) ? post.likes.length : 0;
   const isLiked = Array.isArray(post.likes) && post.likes.includes(user.uid);
-  const isTruncated = post.content?.length > 150;
-  const displayContent = isExpanded || !isTruncated ? post.content : post.content?.slice(0, 150) + "...";
-  const postBadge = POST_TYPE_BADGES[post.post_type];
+  const isTruncated = post.content?.length > 100;
+  const displayContent = isExpanded || !isTruncated ? post.content : post.content?.slice(0, 100) + "...";
 
   const timeAgo = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
       const diffMins = Math.floor((Date.now() - date.getTime()) / 60000);
       if (diffMins < 1) return "Just now";
-      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffMins < 60) return `${diffMins}m`;
       const diffHours = Math.floor(diffMins / 60);
-      if (diffHours < 24) return `${diffHours}h ago`;
-      return `${Math.floor(diffHours / 24)}d ago`;
-    } catch { return "Recently"; }
+      if (diffHours < 24) return `${diffHours}h`;
+      return `${Math.floor(diffHours / 24)}d`;
+    } catch { return "1w"; }
   };
 
   const handleFetchComments = async () => {
-    if (!showComments) {
-      setShowComments(true);
-      if (comments.length === 0) {
-        const { data } = await getComments(post.id);
-        if (data) setComments(data);
-      }
-    } else {
-      setShowComments(false);
+    setShowComments(!showComments);
+    if (!showComments && comments.length === 0) {
+      const { data } = await getComments(post.id);
+      if (data) setComments(data);
     }
   };
 
@@ -77,117 +74,99 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
       author_username: user.email?.split('@')[0] || "builder",
       content: newComment.trim(),
     };
-
-    // Optimistic
     setComments(prev => [...prev, { ...commentData, id: Date.now().toString() }]);
     setNewComment("");
-
     await addComment(post.id, commentData);
     setIsCommenting(false);
   };
 
   return (
-    <article ref={ref} className="bg-white/80 backdrop-blur-sm border border-white rounded-[32px] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)] hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)] transition-all duration-300">
-      <div className="flex items-center justify-between mb-3">
+    <article ref={ref} className="bg-black border-b border-[#262626] sm:border sm:rounded-[4px] sm:mb-4 pb-4">
+      {/* Post Header */}
+      <div className="flex items-center justify-between p-3">
         <div className="flex items-center gap-3">
-          <img src={post.author_avatar} alt={post.author_name} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
-          <div className="flex flex-col leading-tight">
-            <div className="flex items-center gap-1">
-              <span className="text-[14px] font-bold text-[#0F172A]">{post.author_name}</span>
-              {post.author_username && <BadgeCheck className="w-3.5 h-3.5 text-[#06B6D4]" fill="currentColor" stroke="white" />}
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#64748B]">
-              <span>@{post.author_username}</span>
-              <span>•</span>
-              <span>{timeAgo(post.created_at)}</span>
-            </div>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600 p-[2px]">
+            <img src={post.author_avatar} alt={post.author_name} className="w-full h-full rounded-full object-cover border-2 border-black" />
+          </div>
+          <div className="flex items-center gap-1.5 text-[14px]">
+            <span className="font-semibold text-white hover:text-[#A8A8A8] cursor-pointer">{post.author_username}</span>
+            {post.author_username && <BadgeCheck className="w-3.5 h-3.5 text-[#0095F6]" fill="currentColor" stroke="black" />}
+            <span className="text-[#A8A8A8]">•</span>
+            <span className="text-[#A8A8A8]">{timeAgo(post.created_at)}</span>
           </div>
         </div>
-        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F4F6F8] text-[#64748B] transition-colors">
-          <MoreHorizontal className="w-4 h-4" />
+        <button className="text-white hover:text-[#A8A8A8]">
+          <MoreHorizontal className="w-5 h-5" />
         </button>
       </div>
 
-      {postBadge && (
-        <div className="mb-3">
-          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ${postBadge.color}`}>
-            <postBadge.Icon className="w-3 h-3" /> {postBadge.label}
-          </span>
-        </div>
-      )}
+      {/* Post Content (Mocking Image with a colored block if text only, or just showing text) */}
+      <div className="w-full bg-[#1A1A1A] aspect-square flex items-center justify-center p-6 border-y border-[#262626]">
+        <p className="text-[18px] font-medium text-white text-center break-words max-h-full overflow-y-auto no-scrollbar">
+          {post.content}
+        </p>
+      </div>
 
-      <p className="text-[14px] font-medium text-[#334155] mb-2 whitespace-pre-wrap leading-relaxed">
-        {displayContent}
-      </p>
-
-      {isTruncated && (
-        <button onClick={() => setIsExpanded(!isExpanded)} className="text-[#6366F1] text-[12px] font-bold hover:underline mb-3">
-          {isExpanded ? "Show less" : "See more"}
-        </button>
-      )}
-
-      {post.stack_tags && post.stack_tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-4 mt-2">
-          {post.stack_tags.map((tag: string, idx: number) => (
-            <span key={idx} className="bg-[#F4F6F8] text-[#64748B] text-[10px] font-bold px-2 py-0.5 rounded-md">
-              #{tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-6 text-[12px] font-bold text-[#64748B]">
-          <span className="flex items-center gap-2">
-            <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" /></svg>
-            {post.views_count || 0}
-          </span>
-          <button onClick={() => handleLikeClick(post.id)} className={`flex items-center gap-2 transition-colors ${isLiked ? 'text-[#FF3366]' : 'hover:text-[#FF3366]'}`}>
-            <Heart className={`w-[18px] h-[18px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
-            {likesCount} Like{likesCount !== 1 ? 's' : ''}
+      {/* Post Actions */}
+      <div className="flex items-center justify-between p-3 pb-2">
+        <div className="flex items-center gap-4">
+          <button onClick={() => handleLikeClick(post.id)} className={`transition-colors hover:opacity-70 ${isLiked ? 'text-[#FF3040]' : 'text-white'}`}>
+            <Heart className={`w-[26px] h-[26px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
           </button>
-          <button onClick={handleFetchComments} className={`flex items-center gap-2 transition-colors ${showComments ? 'text-[#6366F1]' : 'hover:text-[#0F172A]'}`}>
-            <MessageCircle className="w-[18px] h-[18px]" strokeWidth={2} />
-            {post.comments_count || 0} Comment{(post.comments_count || 0) !== 1 ? 's' : ''}
+          <button onClick={handleFetchComments} className="text-white hover:opacity-70">
+            <MessageCircle className="w-[26px] h-[26px]" strokeWidth={2} style={{ transform: 'scaleX(-1)' }} />
+          </button>
+          <button className="text-white hover:opacity-70">
+            <Send className="w-[26px] h-[26px]" strokeWidth={2} />
           </button>
         </div>
-        <button className="text-[#64748B] hover:text-[#0F172A] transition-colors">
-          <Share className="w-[16px] h-[16px]" />
+        <button className="text-white hover:opacity-70">
+          <Bookmark className="w-[26px] h-[26px]" strokeWidth={2} />
         </button>
       </div>
 
-      {/* Inline Comments Drawer */}
-      {showComments && (
-        <div className="mt-4 pt-4 border-t border-gray-100/50 flex flex-col gap-3 animate-in slide-in-from-top-2">
-          {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment.id} className="flex gap-2">
-                <img src={comment.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=50&h=50&q=80"} alt="" className="w-6 h-6 rounded-full mt-0.5 object-cover" />
-                <div className="bg-[#F8FAFC] rounded-2xl rounded-tl-sm px-3 py-2 flex-1">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <span className="text-[12px] font-bold text-[#0F172A]">{comment.author_name}</span>
-                  </div>
-                  <p className="text-[12px] text-[#334155]">{comment.content}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-xs text-gray-400 py-2">No comments yet. Be the first!</p>
-          )}
+      {/* Likes */}
+      <div className="px-3 text-[14px] font-semibold text-white mb-1">
+        {likesCount > 0 && `${likesCount} likes`}
+      </div>
 
-          <div className="flex gap-2 mt-2 items-center">
-            <img src={user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=50&h=50&q=80"} alt="" className="w-7 h-7 rounded-full object-cover shadow-sm" />
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && submitComment()}
-              placeholder="Write a comment..."
-              className="flex-1 bg-[#F1F5F9] rounded-full px-4 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
-            />
-          </div>
-        </div>
+      {/* Caption */}
+      <div className="px-3 text-[14px] text-white">
+        <span className="font-semibold mr-2">{post.author_username}</span>
+        <span>{displayContent}</span>
+        {isTruncated && !isExpanded && (
+          <button onClick={() => setIsExpanded(true)} className="text-[#A8A8A8] ml-1">more</button>
+        )}
+      </div>
+
+      {/* Comments Preview */}
+      {(post.comments_count > 0 || comments.length > 0) && (
+        <button onClick={handleFetchComments} className="px-3 text-[14px] text-[#A8A8A8] mt-1 hover:text-white">
+          View all {post.comments_count || comments.length} comments
+        </button>
       )}
+
+      {/* Inline Add Comment */}
+      <div className="px-3 mt-2 flex items-center justify-between border-t border-[#262626] pt-2">
+        <div className="flex items-center gap-3 w-full">
+          <Smile className="w-5 h-5 text-white" strokeWidth={2} />
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submitComment()}
+            placeholder="Add a comment..."
+            className="w-full bg-transparent border-none text-[14px] text-white placeholder-[#A8A8A8] focus:outline-none focus:ring-0"
+          />
+        </div>
+        <button 
+          onClick={submitComment}
+          disabled={!newComment.trim() || isCommenting}
+          className="text-[#0095F6] font-semibold text-[14px] disabled:opacity-50"
+        >
+          Post
+        </button>
+      </div>
     </article>
   );
 }
@@ -195,81 +174,20 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
 export default function DashboardHomePage() {
   const router = useRouter();
   const { user, loading } = useAuth();
-
-  const [activeTab, setActiveTab] = useState<FeedTabKey>("recents");
-  const [selectedTag, setSelectedTag] = useState("All");
-  const [selectedType, setSelectedType] = useState<PostType>("all");
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
-  const [following, setFollowing] = useState<string[]>([]); // Mock state for friends tab
-
-  const [composerContent, setComposerContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
 
-  // Fetch real-time posts (limit to 50 for popular tab scoring)
   useEffect(() => {
-    // Fetch top 50 recent posts
     const q = query(collection(db, "posts"), orderBy("created_at", "desc"), limit(50));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPosts(list);
     });
     return () => unsubscribe();
-  }, []); // Only fetch once, apply filters client-side
-
-  // Client-side filtering and sorting based on Tabs, Tags, and Types
-  const processedFeed = useMemo(() => {
-    let result = [...posts];
-
-    // 1. Post Type Filter
-    if (selectedType !== "all") {
-      result = result.filter(p => p.post_type === selectedType);
-    }
-
-    // 2. Tag Filter
-    if (selectedTag !== "All") {
-      result = result.filter(p => Array.isArray(p.stack_tags) && p.stack_tags.includes(selectedTag));
-    }
-
-    // 2. Tab Routing
-    if (activeTab === "recents") {
-      // Already sorted by created_at desc from Firestore
-    } else if (activeTab === "friends") {
-      result = result.filter(p => following.includes(p.uid));
-    } else if (activeTab === "popular") {
-      // Popular Tab Scoring Algorithm
-      result.sort((a, b) => computePostScore(b) - computePostScore(a));
-    }
-
-    return result;
-  }, [posts, activeTab, selectedTag, following]);
-
-  const handlePostSubmit = async () => {
-    if (!user || !composerContent.trim() || isSubmitting) return;
-    setIsSubmitting(true);
-    const newPostData = {
-      uid: user.uid,
-      author_name: user.displayName || user.email?.split('@')[0] || "Builder",
-      author_email: user.email || "",
-      author_avatar: user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
-      author_username: user.email?.split('@')[0] || "builder",
-      content: composerContent.trim(),
-      stack_tags: ["React"], // Default tag for now
-      post_type: 'discussion', // Default type
-    };
-
-    const tempId = `temp-${Date.now()}`;
-    setPosts(prev => [{ id: tempId, ...newPostData, likes: [], comments_count: 0, views_count: 0, created_at: new Date().toISOString() }, ...prev]);
-    setComposerContent("");
-
-    await createPost(newPostData as any);
-    setIsSubmitting(false);
-  };
+  }, []);
 
   const handleLikeClick = async (postId: string) => {
     if (!user) return;
@@ -285,109 +203,49 @@ export default function DashboardHomePage() {
 
   if (loading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAFAFC]">
-        <div className="w-8 h-8 animate-spin rounded-full border-4 border-[#6366F1] border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="w-8 h-8 animate-spin rounded-full border-4 border-[#0095F6] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-[#FAFAFC] text-[#0F172A] font-sans overflow-hidden">
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm lg:hidden" onClick={() => setIsSidebarOpen(false)} />}
+    <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
+      <Sidebar isSidebarOpen={false} setIsSidebarOpen={() => {}} />
 
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 px-4 sm:px-6 lg:pl-[270px]">
-        <div className="w-full max-w-[720px] flex flex-col pt-6 pb-32">
+      {/* Main Feed Area */}
+      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[320px]">
+        <div className="w-full max-w-[470px] flex flex-col pt-8 pb-32 mx-auto">
 
-          <header className="flex flex-col gap-4 mb-6 sticky top-0 bg-[#FAFAFC]/95 backdrop-blur-md py-4 z-30 shadow-[0_4px_30px_rgba(250,250,252,1)]">
-            <div className="flex items-center justify-between">
-              <h1 className="text-[28px] font-black tracking-tight">Feeds</h1>
-              <div className="flex bg-[#F1F5F9] p-1 rounded-full border border-white">
-                {[
-                  { key: "recents", label: "Recents" },
-                  { key: "friends", label: "Friends" },
-                  { key: "popular", label: "Popular" },
-                ].map((tab) => (
-                  <button
-                    key={tab.key}
-                    onClick={() => setActiveTab(tab.key as FeedTabKey)}
-                    className={`px-4 py-1.5 rounded-full text-[13px] font-bold transition-all ${activeTab === tab.key ? "bg-white text-[#0F172A] shadow-sm" : "text-[#64748B] hover:text-[#0F172A]"}`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              {[{ key: "all", label: "All Types", Icon: null }, ...Object.entries(POST_TYPE_BADGES).map(([k, v]) => ({ key: k, label: v.label, Icon: v.Icon }))].map((type) => (
-                <button
-                  key={type.key}
-                  onClick={() => setSelectedType(type.key as PostType)}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-colors flex items-center gap-1.5 ${selectedType === type.key ? "bg-[#0F172A] text-white border-[#0F172A]" : "bg-white text-[#64748B] border-gray-200 hover:border-gray-300"}`}
-                >
-                  {type.Icon && <type.Icon className="w-3.5 h-3.5" />} {type.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Tag Filter Row */}
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              {POPULAR_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setSelectedTag(tag)}
-                  className={`shrink-0 px-3 py-1 rounded-md text-[11px] font-bold transition-colors ${selectedTag === tag ? "bg-[#6366F1]/10 text-[#6366F1]" : "text-[#94A3B8] hover:text-[#64748B] hover:bg-gray-100"}`}
-                >
-                  {tag === "All" ? tag : `#${tag}`}
-                </button>
-              ))}
-            </div>
-          </header>
-
-          <div className="space-y-5 flex flex-col pb-20">
-            {processedFeed.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 bg-[#F1F5F9] rounded-full flex items-center justify-center mb-4">
-                  <Search className="w-6 h-6 text-[#94A3B8]" />
+          {/* Stories Reel Mock */}
+          <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
+            {MOCK_STORIES.map((story, i) => (
+              <div key={i} className="flex flex-col items-center gap-1.5 cursor-pointer">
+                <div className={`w-[66px] h-[66px] rounded-full p-[2px] ${story.hasUnseen ? 'bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600' : 'bg-[#262626]'}`}>
+                  <div className="w-full h-full bg-black rounded-full p-[2px]">
+                    <img src={story.avatar} alt={story.username} className="w-full h-full rounded-full object-cover" />
+                  </div>
                 </div>
-                <h3 className="text-[16px] font-bold text-[#0F172A] mb-1">
-                  {activeTab === 'friends' ? "Follow some builders to see their updates" :
-                    selectedTag !== 'All' ? `No posts with #${selectedTag} yet` :
-                      "Be the first to post something! 🚀"}
-                </h3>
-                <p className="text-[13px] text-[#64748B]">Check back later or adjust your filters.</p>
+                <span className="text-[12px] text-[#A8A8A8] truncate w-[66px] text-center">{story.username}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Feed Posts */}
+          <div className="flex flex-col gap-2 sm:gap-4">
+            {posts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <Search className="w-12 h-12 text-[#262626] mb-4" />
+                <h3 className="text-[16px] font-bold text-white mb-1">No posts yet</h3>
+                <p className="text-[13px] text-[#A8A8A8]">When people post, you'll see them here.</p>
               </div>
             ) : (
-              processedFeed.map((post) => (
+              posts.map((post) => (
                 <PostCard key={post.id} post={post} user={user} handleLikeClick={handleLikeClick} />
               ))
             )}
           </div>
 
-          {/* Composer */}
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[650px] px-4 z-50 pointer-events-none lg:ml-[140px] xl:ml-[0]">
-            <div className="bg-white/90 backdrop-blur-2xl border border-white rounded-[32px] p-2.5 flex items-center justify-between shadow-[0_16px_40px_rgba(15,23,42,0.15)] pointer-events-auto">
-              <div className="flex items-center gap-3 flex-1 min-w-0 pl-2">
-                <img src={user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=50&h=50&q=80"} alt="Avatar" className="w-9 h-9 rounded-full object-cover shrink-0 shadow-sm" />
-                <input
-                  type="text"
-                  value={composerContent}
-                  onChange={(e) => setComposerContent(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handlePostSubmit()}
-                  placeholder="Share something with your network..."
-                  className="w-full bg-transparent border-none focus:ring-0 text-[14px] font-medium text-[#0F172A] placeholder-[#94A3B8] outline-none"
-                />
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button className="p-2 text-[#94A3B8] hover:text-[#6366F1] transition-colors"><ImageIcon className="w-[18px] h-[18px]" /></button>
-                <button className="p-2 text-[#94A3B8] hover:text-[#6366F1] transition-colors"><Video className="w-[18px] h-[18px]" /></button>
-                <button onClick={handlePostSubmit} disabled={!composerContent.trim() || isSubmitting} className="ml-2 bg-[#6366F1] hover:bg-[#4F46E5] disabled:opacity-50 text-white font-bold text-[13px] px-6 py-2.5 rounded-full transition-all shadow-md hover:shadow-lg">
-                  Post
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
 
