@@ -20,6 +20,7 @@ import { createPost, likePost, addComment, getComments } from "@/lib/posts";
 import Sidebar from "@/components/Sidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { usePostViewTracker } from "@/hooks/usePostViewTracker";
+import ClickSpark from "@/components/ClickSpark";
 
 
 
@@ -105,10 +106,18 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
       {/* Post Actions */}
       <div className="flex items-center justify-between px-3 pb-2 border-t border-[#262626] pt-3">
         <div className="flex items-center gap-6">
-          <button onClick={() => handleLikeClick(post.id)} className={`transition-colors flex items-center gap-2 text-[14px] font-semibold hover:opacity-70 ${isLiked ? 'text-[#FF3040]' : 'text-white'}`}>
-            <Heart className={`w-[22px] h-[22px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
-            {likesCount > 0 && likesCount}
-          </button>
+          <ClickSpark
+            sparkColor='#FF3040'
+            sparkSize={6}
+            sparkRadius={12}
+            sparkCount={6}
+            duration={400}
+          >
+            <button onClick={() => handleLikeClick(post.id)} className={`transition-colors flex items-center gap-2 text-[14px] font-semibold hover:opacity-70 ${isLiked ? 'text-[#FF3040]' : 'text-white'}`}>
+              <Heart className={`w-[22px] h-[22px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
+              {likesCount > 0 && likesCount}
+            </button>
+          </ClickSpark>
           <button onClick={handleFetchComments} className="text-white hover:opacity-70 flex items-center gap-2 text-[14px] font-semibold">
             <MessageCircle className="w-[22px] h-[22px]" strokeWidth={2} style={{ transform: 'scaleX(-1)' }} />
             {post.comments_count > 0 && post.comments_count}
