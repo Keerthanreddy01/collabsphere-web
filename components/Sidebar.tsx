@@ -36,13 +36,12 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
   }), [user, profile]);
 
   const navItems = [
-    { key: "home", label: "Home", icon: Home, route: "/dashboard/home" },
+    { key: "home", label: "Feed", icon: Home, route: "/dashboard/home" },
     { key: "search", label: "Search", icon: Search, route: "/search" },
     { key: "explore", label: "Explore", icon: Compass, route: "/explore" },
-    { key: "reels", label: "Reels", icon: PlaySquare, route: "/reels" },
     { key: "messages", label: "Messages", icon: MessageCircle, route: "/messages" },
     { key: "notifications", label: "Notifications", icon: Heart, route: "/notifications" },
-    { key: "create", label: "Create", icon: PlusSquare, route: "/create" },
+    { key: "create", label: "Post", icon: PlusSquare, route: "/create" },
   ];
 
   return (
