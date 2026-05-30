@@ -89,7 +89,7 @@ export default function RightSidebar() {
   }, [user]);
 
   return (
-    <aside className="hidden xl:flex fixed right-4 top-4 bottom-4 w-[284px] flex-col gap-6 overflow-y-auto rounded-[28px] border border-white/10 bg-black/95 p-6 text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] no-scrollbar">
+    <aside className="hidden xl:flex fixed right-4 top-4 bottom-4 w-[284px] flex-col gap-3 rounded-[28px] border border-white/10 bg-black/95 p-4 text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden">
       <section className="rounded-[20px] border border-white/10 bg-white/[0.05] p-3 transition duration-200 hover:border-white/15 hover:bg-white/[0.07]">
         <div className="flex items-center gap-3">
           <div className="relative h-11 w-11 shrink-0 rounded-full border border-white/10 bg-white/5 p-[2px]">
@@ -179,8 +179,8 @@ export default function RightSidebar() {
           {loadingUsers ? (
             <div className="py-3 text-[12px] text-[#A8A8A8]">Loading suggestions...</div>
           ) : suggestedUsers.length > 0 ? (
-            suggestedUsers.slice(0, 5).map((u) => (
-              <div key={u.id} className="flex items-center gap-3 py-3">
+            suggestedUsers.slice(0, 3).map((u) => (
+              <div key={u.id} className="flex items-center gap-3 py-2">
                 <img src={u.avatar} alt={u.username} className="h-10 w-10 rounded-full object-cover ring-1 ring-white/10" />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13px] font-semibold text-white">{u.username}</div>
@@ -197,7 +197,7 @@ export default function RightSidebar() {
         </div>
       </section>
 
-      <section className="mt-auto rounded-[18px] border border-violet-400/20 bg-gradient-to-br from-[#1e0a3c] to-[#0f172a] p-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+      <section className="rounded-[18px] border border-violet-400/20 bg-gradient-to-br from-[#1e0a3c] to-[#0f172a] p-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-violet-500/20 border border-violet-400/20">
             <Smartphone className="size-4 text-violet-300" />
@@ -219,9 +219,7 @@ export default function RightSidebar() {
         </div>
       </section>
 
-      <div className="pb-1 pt-1 text-[11px] leading-relaxed text-[#737373]">
-        <span>© 2026 COLLABSPHERE</span>
-      </div>
+
 
     </aside>
   );
