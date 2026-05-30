@@ -23,12 +23,11 @@ import { usePostViewTracker } from "@/hooks/usePostViewTracker";
 
 // Mock Stories Data
 const MOCK_STORIES = [
-  { username: "vrixfx", avatar: "https://i.pravatar.cc/150?img=21", hasUnseen: true },
-  { username: "ae.rixon", avatar: "https://i.pravatar.cc/150?img=22", hasUnseen: true },
-  { username: "keerthan", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=krixee", hasUnseen: false },
-  { username: "john_doe", avatar: "https://i.pravatar.cc/150?img=23", hasUnseen: true },
-  { username: "sarah99", avatar: "https://i.pravatar.cc/150?img=24", hasUnseen: true },
-  { username: "alex.dev", avatar: "https://i.pravatar.cc/150?img=25", hasUnseen: false },
+  { username: "keerthan_reddy", avatar: "https://i.pravatar.cc/150?img=11", hasUnseen: true },
+  { username: "v_naa", avatar: "https://i.pravatar.cc/150?img=12", hasUnseen: true },
+  { username: "nagavaram_vrishin", avatar: "https://i.pravatar.cc/150?img=13", hasUnseen: false },
+  { username: "skinny.blxct", avatar: "https://i.pravatar.cc/150?img=14", hasUnseen: true },
+  { username: "l_ram_dayakar", avatar: "https://i.pravatar.cc/150?img=15", hasUnseen: false },
 ];
 
 function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handleLikeClick: (id: string) => void }) {
@@ -100,43 +99,34 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
         </button>
       </div>
 
-      {/* Post Content (Mocking Image with a colored block if text only, or just showing text) */}
-      <div className="w-full bg-[#1A1A1A] aspect-square flex items-center justify-center p-6 border-y border-[#262626]">
-        <p className="text-[18px] font-medium text-white text-center break-words max-h-full overflow-y-auto no-scrollbar">
-          {post.content}
+      {/* Post Content */}
+      <div className="w-full px-3 pt-2 pb-3">
+        <p className="text-[15px] leading-relaxed text-white whitespace-pre-wrap break-words">
+          {displayContent}
         </p>
+        {isTruncated && !isExpanded && (
+          <button onClick={() => setIsExpanded(true)} className="text-[#A8A8A8] text-[14px] font-medium mt-1 hover:text-white">more</button>
+        )}
       </div>
 
       {/* Post Actions */}
-      <div className="flex items-center justify-between p-3 pb-2">
-        <div className="flex items-center gap-4">
-          <button onClick={() => handleLikeClick(post.id)} className={`transition-colors hover:opacity-70 ${isLiked ? 'text-[#FF3040]' : 'text-white'}`}>
-            <Heart className={`w-[26px] h-[26px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
+      <div className="flex items-center justify-between px-3 pb-2 border-t border-[#262626] pt-3">
+        <div className="flex items-center gap-6">
+          <button onClick={() => handleLikeClick(post.id)} className={`transition-colors flex items-center gap-2 text-[14px] font-semibold hover:opacity-70 ${isLiked ? 'text-[#FF3040]' : 'text-white'}`}>
+            <Heart className={`w-[22px] h-[22px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
+            {likesCount > 0 && likesCount}
           </button>
-          <button onClick={handleFetchComments} className="text-white hover:opacity-70">
-            <MessageCircle className="w-[26px] h-[26px]" strokeWidth={2} style={{ transform: 'scaleX(-1)' }} />
+          <button onClick={handleFetchComments} className="text-white hover:opacity-70 flex items-center gap-2 text-[14px] font-semibold">
+            <MessageCircle className="w-[22px] h-[22px]" strokeWidth={2} style={{ transform: 'scaleX(-1)' }} />
+            {post.comments_count > 0 && post.comments_count}
           </button>
           <button className="text-white hover:opacity-70">
-            <Send className="w-[26px] h-[26px]" strokeWidth={2} />
+            <Send className="w-[22px] h-[22px]" strokeWidth={2} />
           </button>
         </div>
         <button className="text-white hover:opacity-70">
-          <Bookmark className="w-[26px] h-[26px]" strokeWidth={2} />
+          <Bookmark className="w-[22px] h-[22px]" strokeWidth={2} />
         </button>
-      </div>
-
-      {/* Likes */}
-      <div className="px-3 text-[14px] font-semibold text-white mb-1">
-        {likesCount > 0 && `${likesCount} likes`}
-      </div>
-
-      {/* Caption */}
-      <div className="px-3 text-[14px] text-white">
-        <span className="font-semibold mr-2">{post.author_username}</span>
-        <span>{displayContent}</span>
-        {isTruncated && !isExpanded && (
-          <button onClick={() => setIsExpanded(true)} className="text-[#A8A8A8] ml-1">more</button>
-        )}
       </div>
 
       {/* Comments Preview */}
