@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { db, auth } from "@/lib/firebase";
 import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
-import { Sparkles } from "lucide-react";
+import ProfileCard from "@/components/ProfileCard";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -143,92 +143,102 @@ export default function OnboardingPage() {
   if (authLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7EE8FA] border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex flex-col items-center justify-center p-4 selection:bg-[#7e85fe] selection:text-white">
+    <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex flex-col md:flex-row overflow-hidden selection:bg-white selection:text-black">
       
-      {/* Top Logo */}
-      <div className="flex flex-col items-center mb-12">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(126,133,254,0.4)]">
-          <Sparkles className="w-5 h-5 text-white" />
-        </div>
-        <h1 className="text-xl font-bold tracking-tight">CollabSphere</h1>
-      </div>
-
-      <div className="w-full max-w-[340px] text-center mt-4">
-        <h2 className="text-3xl font-bold text-white mb-3">
-          Set up your profile
-        </h2>
-        <p className="text-[#888888] text-sm mb-8 leading-relaxed">
-          Provide your name and choose a unique username to get started.
-        </p>
-
-        {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold text-left">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleFinish} className="space-y-3">
+      {/* LEFT COLUMN: Clean Form */}
+      <div className="w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-black flex flex-col items-center justify-center p-8 relative">
+        <div className="w-full max-w-[340px]">
           
-          <input
-            type="text"
-            required
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-            className="w-full bg-[#111111] border border-white/5 focus:border-[#7e85fe] rounded-[10px] px-4 py-3.5 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
-          />
+          <div className="mb-10 text-left">
+            <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">
+              Setup Profile
+            </h1>
+            <p className="text-[#888888] text-sm leading-relaxed">
+              Let's create your developer identity.
+            </p>
+          </div>
 
-          <div className="relative">
-            <span className="absolute left-4 inset-y-0 flex items-center text-[#666666] font-medium text-sm">@</span>
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium text-left">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleFinish} className="space-y-4">
+            
             <input
               type="text"
               required
-              placeholder="username"
-              value={formData.username}
-              onChange={e => setFormData(prev => ({ ...prev, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") }))}
-              className="w-full bg-[#111111] border border-white/5 focus:border-[#7e85fe] rounded-[10px] pl-9 pr-12 py-3.5 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
+              placeholder="Full Name"
+              value={formData.fullName}
+              onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+              className="w-full bg-transparent border-b border-white/20 focus:border-white px-1 py-3 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
             />
-            <div className="absolute right-4 inset-y-0 flex items-center">
-              {isCheckingUsername && (
-                <div className="h-4 w-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
-              )}
-              {!isCheckingUsername && isUsernameAvailable === true && (
-                <span className="text-[#7EE8FA] font-bold text-sm">✓</span>
-              )}
-              {!isCheckingUsername && isUsernameAvailable === false && (
-                <span className="text-red-500 font-bold text-sm">✗</span>
-              )}
+
+            <div className="relative">
+              <span className="absolute left-1 inset-y-0 flex items-center text-[#666666] font-medium text-sm">@</span>
+              <input
+                type="text"
+                required
+                placeholder="username"
+                value={formData.username}
+                onChange={e => setFormData(prev => ({ ...prev, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") }))}
+                className="w-full bg-transparent border-b border-white/20 focus:border-white pl-6 pr-10 py-3 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
+              />
+              <div className="absolute right-1 inset-y-0 flex items-center">
+                {isCheckingUsername && (
+                  <div className="h-3 w-3 border-2 border-[#666] border-t-transparent rounded-full animate-spin" />
+                )}
+                {!isCheckingUsername && isUsernameAvailable === true && (
+                  <span className="text-white font-medium text-sm">✓</span>
+                )}
+                {!isCheckingUsername && isUsernameAvailable === false && (
+                  <span className="text-white font-medium text-sm">✗</span>
+                )}
+              </div>
             </div>
-          </div>
+            
+            <div className="pt-6">
+              <button
+                type="submit"
+                disabled={loading || isUsernameAvailable === false}
+                className="w-full bg-white text-black font-semibold rounded-full py-3.5 hover:bg-gray-200 transition-all text-sm flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  "Continue"
+                )}
+              </button>
+            </div>
+          </form>
 
-          <div className="h-4 text-left px-1 mt-1 mb-2">
-            {isUsernameAvailable === true && (
-              <span className="text-[11px] text-[#7EE8FA] font-medium">Username is available!</span>
-            )}
-            {isUsernameAvailable === false && (
-              <span className="text-[11px] text-red-500 font-medium">Username is already taken.</span>
-            )}
-          </div>
-          
-          <button
-            type="submit"
-            disabled={loading || isUsernameAvailable === false}
-            className="w-full bg-gradient-to-r from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] text-black font-bold rounded-[10px] py-3.5 mt-2 hover:opacity-90 transition-all text-sm flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
-          >
-            {loading ? (
-              <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-            ) : (
-              "Complete Setup"
-            )}
-          </button>
-        </form>
+        </div>
 
+        {/* Copyright Footer */}
+        <div className="absolute bottom-8 left-8 right-8 text-center md:text-left text-[#444444] text-xs font-medium">
+          © CollabSphere {new Date().getFullYear()}
+        </div>
+      </div>
+
+      {/* RIGHT COLUMN: ProfileCard Preview */}
+      <div className="w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-[#050505] border-t md:border-t-0 md:border-l border-white/5 relative overflow-hidden flex items-center justify-center p-8">
+        <ProfileCard 
+          name={formData.fullName || "Your Name"}
+          handle={formData.username || "username"}
+          title="Software Engineer"
+          status="Online"
+          contactText="Contact Me"
+          avatarUrl={user?.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&h=600&q=80"}
+          innerGradient="linear-gradient(145deg, #111111 0%, #000000 100%)"
+          behindGlowColor="rgba(255, 255, 255, 0.1)"
+        />
       </div>
 
     </div>
