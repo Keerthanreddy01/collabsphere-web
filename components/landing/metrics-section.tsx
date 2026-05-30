@@ -24,22 +24,23 @@ function AnimatedNumber({
   const [count, setCount] = useState(0);
   const [isScrambling, setIsScrambling] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  
+  // Use a ref to track if we've animated for the current value
+  const animatedForValue = useRef<number | null>(null);
   const rafRef = useRef<number>(0);
-
-  // Reset animation when end value changes so live data triggers a fresh count-up
-  useEffect(() => {
-    setHasAnimated(false);
-    setCount(0);
-  }, [safeEnd]);
 
   useEffect(() => {
     if (loading) return;
 
+    // If we've already animated to this exact value, do nothing
+    if (animatedForValue.current === safeEnd) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
+        if (entry.isIntersecting && animatedForValue.current !== safeEnd) {
+          animatedForValue.current = safeEnd;
+          setCount(0); // reset count before animating up
+          
           const duration = 2500;
           const startTime = performance.now();
           const animate = (currentTime: number) => {
@@ -57,12 +58,14 @@ function AnimatedNumber({
       },
       { threshold: 0.5 }
     );
+
     if (ref.current) observer.observe(ref.current);
+
     return () => {
       observer.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [safeEnd, hasAnimated, loading]);
+  }, [safeEnd, loading]);
 
   if (loading) {
     return (
