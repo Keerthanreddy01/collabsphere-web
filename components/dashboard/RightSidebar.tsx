@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { collection, query, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import Aurora from "@/components/Aurora";
 
 export default function RightSidebar() {
   const { user } = useAuth();
@@ -84,9 +85,19 @@ export default function RightSidebar() {
 
       {/* Get the App Poster */}
       <div className="px-4 mb-6 mt-auto">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-900/40 via-orange-800/10 to-black border border-orange-500/20 p-6 flex flex-col items-center text-center group shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl bg-black border border-orange-500/20 p-6 flex flex-col items-center text-center group shadow-2xl">
+          {/* Aurora Animated Background */}
+          <div className="absolute inset-0 z-0 opacity-50 mix-blend-screen pointer-events-none">
+            <Aurora
+              colorStops={["#FF7A00", "#FF4500", "#FF9D00"]}
+              blend={0.7}
+              amplitude={1.2}
+              speed={0.6}
+            />
+          </div>
+          
           {/* Ambient Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-orange-500/20 rounded-full blur-[50px] pointer-events-none"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-orange-500/20 rounded-full blur-[50px] pointer-events-none z-0"></div>
           
           {/* Big Phone Icon */}
           <div className="relative mb-5 z-10 w-16 h-16 bg-orange-500/10 rounded-2xl border border-orange-500/20 flex items-center justify-center backdrop-blur-sm shadow-inner">
