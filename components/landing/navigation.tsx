@@ -116,8 +116,8 @@ export function Navigation() {
                 <button
                   onClick={async () => {
                     await signOut()
-                    // After sign-out, replace history with login so back goes to landing
-                    router.replace('/login')
+                    // After sign-out, replace history with landing page
+                    router.replace('/')
                   }}
                   className="w-8 h-8 rounded-full 
                   bg-pink-500 flex items-center 

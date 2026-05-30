@@ -83,29 +83,40 @@ export async function fetchPlatformStats(): Promise<PlatformStats> {
       where('post_type', '==', 'looking_for')
     )
 
+    // Helper to safely fetch counts without failing the whole batch
+    const safeGetCount = async (q: any) => {
+      try {
+        const snap = await getCountFromServer(q)
+        return safeCount(snap.data().count)
+      } catch (err) {
+        console.warn('Failed to fetch count for query:', err)
+        return 0
+      }
+    }
+
     const [
-      buildersSnap,
-      projectsSnap,
-      collabSnap,
-      teamsSnap,
-      discussionsSnap,
-      countriesCount,
+      activeBuilders,
+      projectsLaunched,
+      openCollabRequests,
+      teamsFormed,
+      discussionsCreated,
+      countriesRepresented,
     ] = await Promise.all([
-      getCountFromServer(collection(db, 'builder_profiles')),
-      getCountFromServer(collection(db, 'projects')),
-      getCountFromServer(collabQuery),
-      getCountFromServer(collection(db, 'spaces')),
-      getCountFromServer(collection(db, 'posts')),
+      safeGetCount(collection(db, 'builder_profiles')),
+      safeGetCount(collection(db, 'projects')),
+      safeGetCount(collabQuery),
+      safeGetCount(collection(db, 'spaces')),
+      safeGetCount(collection(db, 'posts')),
       fetchCountriesRepresented(),
     ])
 
     return {
-      activeBuilders:       safeCount(buildersSnap.data().count),
-      projectsLaunched:     safeCount(projectsSnap.data().count),
-      openCollabRequests:   safeCount(collabSnap.data().count),
-      teamsFormed:          safeCount(teamsSnap.data().count),
-      discussionsCreated:   safeCount(discussionsSnap.data().count),
-      countriesRepresented: safeCount(countriesCount),
+      activeBuilders,
+      projectsLaunched,
+      openCollabRequests,
+      teamsFormed,
+      discussionsCreated,
+      countriesRepresented,
     }
   } catch (error) {
     console.error('[CollabSphere] Failed to fetch platform stats:', error)
