@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, browserLocalPersistence, setPersistence } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,6 +16,7 @@ const firebaseConfig = {
 let app: any = null
 let auth: any = null
 let db: any = null
+let storage: any = null
 
 if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
@@ -26,7 +28,8 @@ if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
     // ignore persistence errors during local/dev when auth is not fully configured
   }
   db = getFirestore(app)
+  storage = getStorage(app)
 }
 
-export { auth, db }
+export { auth, db, storage }
 export default app
