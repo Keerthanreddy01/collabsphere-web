@@ -23,7 +23,7 @@ export default function SignupPage() {
       const docRef = doc(db, "builder_profiles", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().onboarding_completed) {
-        router.push("/dashboard/home");
+        router.push("/dashboard/welcome");
       } else {
         router.push("/onboarding");
       }
