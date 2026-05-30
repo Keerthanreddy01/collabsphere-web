@@ -1,26 +1,40 @@
-'use client';
+"use client";
+
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
 import { useGLTF, useTexture, Environment, Lightformer, Text } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
-
 import * as THREE from 'three';
-import './Lanyard.css';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
-export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], fov = 20, transparent = true, userName = 'Builder' }: any) {
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
+export default function Lanyard({ 
+  position = [0, 0, 30], 
+  gravity = [0, -40, 0], 
+  fov = 20, 
+  transparent = true,
+  name = "",
+  username = "" 
+}: {
+  position?: [number, number, number];
+  gravity?: [number, number, number];
+  fov?: number;
+  transparent?: boolean;
+  name?: string;
+  username?: string;
+}) {
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <div className="lanyard-wrapper">
+    <div className="relative w-full h-full min-h-screen flex justify-center items-center">
       <Canvas
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
@@ -29,7 +43,7 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
       >
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-          <Band isMobile={isMobile} userName={userName} />
+          <Band isMobile={isMobile} name={name} username={username} />
         </Physics>
         <Environment blur={0.75}>
           <Lightformer
@@ -66,37 +80,35 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
   );
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, userName = "Builder" }) {
-  const band = useRef<any>();
-  const fixed = useRef<any>();
-  const j1 = useRef<any>();
-  const j2 = useRef<any>();
-  const j3 = useRef<any>();
-  const card = useRef<any>();
-
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, name = "", username = "" }) {
+  const band = useRef<any>(null);
+  const fixed = useRef<any>(null);
+  const j1 = useRef<any>(null);
+  const j2 = useRef<any>(null);
+  const j3 = useRef<any>(null);
+  const card = useRef<any>(null);
+  
   const vec = new THREE.Vector3();
   const ang = new THREE.Vector3();
   const rot = new THREE.Vector3();
   const dir = new THREE.Vector3();
   
-  const segmentProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 4, linearDamping: 4 } as any;
+  const segmentProps: any = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 4, linearDamping: 4 };
+  
   const { nodes, materials } = useGLTF('/lanyard/card.glb') as any;
   const texture = useTexture('/lanyard/lanyard.png');
   
   const [curve] = useState(
-    () =>
-      new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
+    () => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
   );
-  const [dragged, drag] = useState<any>(false);
+  
+  const [dragged, drag] = useState<THREE.Vector3 | false>(false);
   const [hovered, hover] = useState(false);
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
-  useSphericalJoint(j3, card, [
-    [0, 0, 0],
-    [0, 1.5, 0]
-  ]);
+  useSphericalJoint(j3, card, [[0, 0, 0], [0, 1.5, 0]]);
 
   useEffect(() => {
     if (hovered) {
@@ -156,11 +168,14 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, userName = "Build
             position={[0, -1.2, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
-            onPointerUp={e => ((e.target as any).releasePointerCapture(e.pointerId), drag(false))}
-            onPointerDown={e => (
-              (e.target as any).setPointerCapture(e.pointerId),
-              drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())))
-            )}
+            onPointerUp={(e) => {
+              (e.target as any).releasePointerCapture(e.pointerId);
+              drag(false);
+            }}
+            onPointerDown={(e) => {
+              (e.target as any).setPointerCapture(e.pointerId);
+              drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
+            }}
           >
             <mesh geometry={nodes.card.geometry}>
               <meshPhysicalMaterial
@@ -171,34 +186,35 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, userName = "Build
                 roughness={0.9}
                 metalness={0.8}
               />
+              
+              {/* Overlay Text for Name and Username */}
+              <group position={[0, 0.1, 0.011]}>
+                <Text
+                  position={[0, 0.05, 0]} 
+                  fontSize={0.08}
+                  color="#ffffff"
+                  anchorX="center"
+                  anchorY="middle"
+                  maxWidth={0.6}
+                  outlineWidth={0.002}
+                  outlineColor="#000000"
+                >
+                  {name || "Your Name"}
+                </Text>
+                <Text
+                  position={[0, -0.05, 0]} 
+                  fontSize={0.04}
+                  color="#FF512F"
+                  anchorX="center"
+                  anchorY="middle"
+                  maxWidth={0.6}
+                >
+                  {username ? `@${username}` : "@username"}
+                </Text>
+              </group>
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
-            {/* ID Card Text Overlay */}
-            <Text
-              position={[0, 0.05, 0.02]}
-              fontSize={0.08}
-              color="#111111"
-              font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff"
-              anchorX="center"
-              anchorY="middle"
-              maxWidth={0.8}
-              textAlign="center"
-              outlineWidth={0.005}
-              outlineColor="#ffffff"
-            >
-              {userName}
-            </Text>
-            <Text
-              position={[0, -0.05, 0.02]}
-              fontSize={0.04}
-              color="#555555"
-              font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff"
-              anchorX="center"
-              anchorY="middle"
-            >
-              CollabSphere Builder
-            </Text>
           </group>
         </RigidBody>
       </group>

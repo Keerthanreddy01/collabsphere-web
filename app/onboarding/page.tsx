@@ -6,6 +6,7 @@ import { db, auth } from "@/lib/firebase";
 import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
 import { Sparkles, ArrowRight } from "lucide-react";
+import Lanyard from "@/components/Lanyard";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -149,106 +150,118 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex items-center justify-center p-4 relative overflow-hidden selection:bg-[#FF512F] selection:text-white">
+    <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex flex-col md:flex-row overflow-hidden selection:bg-[#FF512F] selection:text-white">
       
-      {/* Background glowing effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#FF512F]/10 blur-[120px] mix-blend-screen animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[#F09819]/10 blur-[150px] mix-blend-screen" />
-      </div>
-
-      <div className="w-full max-w-md bg-[#111111]/80 backdrop-blur-3xl border border-[#262626] rounded-[24px] p-8 md:p-10 shadow-2xl relative z-10">
-        
-        {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF512F] to-[#F09819] text-white shadow-[0_0_30px_rgba(255,81,47,0.4)]">
-            <Sparkles className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">
-            Welcome aboard
-          </h2>
-          <p className="text-gray-400 text-sm">
-            Let's get your CollabSphere account set up. You can add more details to your profile later.
-          </p>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-semibold flex items-center gap-3 text-left">
-            <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleFinish} className="space-y-5 text-left">
+      {/* LEFT COLUMN: Form */}
+      <div className="w-full md:w-1/2 min-h-screen bg-black flex flex-col items-center justify-center p-8 border-r border-[#262626] relative z-10">
+        <div className="w-full max-w-md bg-[#111111]/80 backdrop-blur-3xl border border-[#262626] rounded-[24px] p-8 md:p-10 shadow-2xl relative">
           
-          <div>
-            <label className="block text-xs font-extrabold text-gray-500 uppercase tracking-widest mb-2">Full Name</label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Keerthan Reddy"
-              value={formData.fullName}
-              onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-              className="w-full bg-black border border-[#262626] focus:border-[#FF512F] focus:ring-1 focus:ring-[#FF512F] rounded-xl px-4 py-3.5 text-base outline-none transition-all text-white placeholder-gray-600 font-medium"
-            />
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF512F] to-[#F09819] text-white shadow-[0_0_30px_rgba(255,81,47,0.4)]">
+              <Sparkles className="w-6 h-6" />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-extrabold text-gray-500 uppercase tracking-widest mb-2">Username</label>
-            <div className="relative flex items-center">
-              <span className="absolute left-4 text-gray-500 font-bold select-none text-base">@</span>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-black text-white mb-2 tracking-tight">
+              Welcome aboard
+            </h2>
+            <p className="text-gray-400 text-sm">
+              Let's get your CollabSphere account set up. You can add more details to your profile later.
+            </p>
+          </div>
+
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-semibold flex items-center gap-3 text-left">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleFinish} className="space-y-5 text-left">
+            
+            <div>
+              <label className="block text-xs font-extrabold text-gray-500 uppercase tracking-widest mb-2">Full Name</label>
               <input
                 type="text"
                 required
-                placeholder="username"
-                value={formData.username}
-                onChange={e => setFormData(prev => ({ ...prev, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") }))}
-                className="w-full bg-black border border-[#262626] focus:border-[#FF512F] focus:ring-1 focus:ring-[#FF512F] rounded-xl pl-9 pr-12 py-3.5 text-base outline-none transition-all text-white placeholder-gray-600 font-medium"
+                placeholder="e.g. Keerthan Reddy"
+                value={formData.fullName}
+                onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                className="w-full bg-black border border-[#262626] focus:border-[#FF512F] focus:ring-1 focus:ring-[#FF512F] rounded-xl px-4 py-3.5 text-base outline-none transition-all text-white placeholder-gray-600 font-medium"
               />
-              <div className="absolute right-4 flex items-center">
-                {isCheckingUsername && (
-                  <div className="h-4 w-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-gray-500 uppercase tracking-widest mb-2">Username</label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-gray-500 font-bold select-none text-base">@</span>
+                <input
+                  type="text"
+                  required
+                  placeholder="username"
+                  value={formData.username}
+                  onChange={e => setFormData(prev => ({ ...prev, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") }))}
+                  className="w-full bg-black border border-[#262626] focus:border-[#FF512F] focus:ring-1 focus:ring-[#FF512F] rounded-xl pl-9 pr-12 py-3.5 text-base outline-none transition-all text-white placeholder-gray-600 font-medium"
+                />
+                <div className="absolute right-4 flex items-center">
+                  {isCheckingUsername && (
+                    <div className="h-4 w-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
+                  )}
+                  {!isCheckingUsername && isUsernameAvailable === true && (
+                    <span className="text-[#00FF00] font-bold text-base shadow-[0_0_10px_rgba(0,255,0,0.3)] rounded-full">✓</span>
+                  )}
+                  {!isCheckingUsername && isUsernameAvailable === false && (
+                    <span className="text-red-500 font-bold text-base shadow-[0_0_10px_rgba(255,0,0,0.3)] rounded-full">✗</span>
+                  )}
+                </div>
+              </div>
+              <div className="mt-2 h-4">
+                {isUsernameAvailable === true && (
+                  <span className="text-xs text-[#00FF00] font-bold block">Username is available!</span>
                 )}
-                {!isCheckingUsername && isUsernameAvailable === true && (
-                  <span className="text-[#00FF00] font-bold text-base shadow-[0_0_10px_rgba(0,255,0,0.3)] rounded-full">✓</span>
-                )}
-                {!isCheckingUsername && isUsernameAvailable === false && (
-                  <span className="text-red-500 font-bold text-base shadow-[0_0_10px_rgba(255,0,0,0.3)] rounded-full">✗</span>
+                {isUsernameAvailable === false && (
+                  <span className="text-xs text-red-500 font-bold block">Username is already taken.</span>
                 )}
               </div>
             </div>
-            <div className="mt-2 h-4">
-              {isUsernameAvailable === true && (
-                <span className="text-xs text-[#00FF00] font-bold block">Username is available!</span>
-              )}
-              {isUsernameAvailable === false && (
-                <span className="text-xs text-red-500 font-bold block">Username is already taken.</span>
-              )}
+
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={loading || isUsernameAvailable === false}
+                className="w-full bg-gradient-to-r from-[#FF512F] to-[#F09819] hover:from-[#e64627] hover:to-[#d98715] text-white rounded-xl h-14 text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,81,47,0.3)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <span>Enter CollabSphere</span>
+                    <ArrowRight className="w-4 h-4 text-white" />
+                  </>
+                )}
+              </button>
             </div>
-          </div>
+          </form>
+        </div>
+      </div>
 
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={loading || isUsernameAvailable === false}
-              className="w-full bg-gradient-to-r from-[#FF512F] to-[#F09819] hover:from-[#e64627] hover:to-[#d98715] text-white rounded-xl h-14 text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,81,47,0.3)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span>Enter CollabSphere</span>
-                  <ArrowRight className="w-4 h-4 text-white" />
-                </>
-              )}
-            </button>
-          </div>
-
-        </form>
-
+      {/* RIGHT COLUMN: Interactive 3D Lanyard ID Card */}
+      <div className="hidden md:flex w-1/2 h-screen bg-[#050505] relative overflow-hidden items-center justify-center">
+        {/* Background glowing effects for the 3D card */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#FF512F]/10 blur-[120px] mix-blend-screen animate-pulse" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[#F09819]/10 blur-[150px] mix-blend-screen" />
+        </div>
+        
+        {/* Lanyard Component overlay */}
+        <div className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing">
+          <Lanyard 
+            name={formData.fullName} 
+            username={formData.username} 
+          />
+        </div>
       </div>
     </div>
   );
