@@ -491,7 +491,7 @@ export default function DashboardHomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fafafa] to-[#ffffff] text-[#1D1E22] antialiased font-sans relative pb-12 lg:pb-16 overflow-x-hidden">
+    <div className="min-h-screen bg-[#E5EEFF] text-[#1D1E22] antialiased font-sans flex items-center justify-center p-4 lg:p-8 relative overflow-hidden">
       
       {/* Custom Styles and Heartbeat animation keyframes */}
       <style jsx global>{`
@@ -506,26 +506,27 @@ export default function DashboardHomePage() {
           50% { transform: scale(1.3); }
           100% { transform: scale(1); }
         }
+        
+        /* Hide scrollbar for clean UI */
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
 
-      {/* Subtle premium dot grid background pattern */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0 opacity-[0.5]"
-        style={{
-          backgroundImage: `radial-gradient(circle, #e5e7eb 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
-        }}
-      />
+      {/* Blurred gradient background mimicking the Dribbble shot */}
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#E2E8F0] via-[#CBD5E1] to-[#E2E8F0] z-0" />
+      <div className="absolute top-[10%] left-[5%] w-[800px] h-[800px] rounded-full bg-[#A78BFA]/30 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-[10%] right-[5%] w-[800px] h-[800px] rounded-full bg-[#60A5FA]/30 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#F472B6]/20 blur-[120px] pointer-events-none z-0" />
 
-      {/* Soft blur backgrounds */}
-      <div className="absolute top-[10%] left-[5%] w-[600px] h-[600px] rounded-full bg-[#7A5BFF]/6 blur-[120px] pointer-events-none z-0 animate-glow" />
-      <div className="absolute top-[40%] right-[5%] w-[700px] h-[700px] rounded-full bg-[#3B82F6]/6 blur-[140px] pointer-events-none z-0 animate-glow" />
-      <div className="absolute bottom-[20%] left-[10%] w-[500px] h-[500px] rounded-full bg-[#C4B5FD]/5 blur-[110px] pointer-events-none z-0 animate-glow" />
-
-      <div className="relative z-10 mx-auto max-w-[1440px] px-4 md:px-6 py-6 lg:pl-[304px]">
+      <div className="relative z-10 w-full max-w-[1440px] h-[90vh] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
         
-        {/* Main content grid */}
-        <div className="grid items-start grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6 xl:gap-8">
+        {/* Main content grid (Sidebar, Feed, Right Panel) */}
+        <div className="flex w-full h-full">
 
           {/* Sidebar */}
           <Sidebar 
@@ -548,7 +549,7 @@ export default function DashboardHomePage() {
           )}
 
           {/* Central Column */}
-          <main className="min-w-0 space-y-5">
+          <main className="flex-1 min-w-0 overflow-y-auto hide-scrollbar px-4 py-6 sm:px-6 lg:py-8 lg:px-8 bg-gray-50 border-l border-gray-100 space-y-6">
 
             {/* Mobile Header */}
             <div className="flex items-center justify-between bg-white/70 border border-white/40 rounded-2xl p-4 shadow-sm backdrop-blur-md lg:hidden">
@@ -882,20 +883,24 @@ export default function DashboardHomePage() {
               </div>
             )}
 
-            {/* Post Composer Redesign */}
-            <div id="post-composer" className="bg-white border border-[#e5e7eb] rounded-[16px] p-5 shadow-sm text-left relative z-10 space-y-3.5">
-              <div className="flex items-start gap-3">
+            {/* Post Composer Redesign - Dribbble Style */}
+            <div id="post-composer" className="bg-white rounded-[32px] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] text-left relative z-10 flex flex-col gap-3">
+              <div className="flex items-center gap-3 bg-gray-50 rounded-[24px] px-4 py-3">
                 <img
                   src={currentUser.imageUrl}
                   alt={currentUser.fullName}
-                  className="w-10 h-10 rounded-full object-cover border border-gray-150 shadow-sm shrink-0"
+                  className="w-10 h-10 rounded-full object-cover shrink-0"
                 />
-                <textarea
+                <input
                   id="composer-textarea"
-                  placeholder="What are you building today?"
+                  type="text"
+                  placeholder="Share something..."
                   value={composerContent}
                   onChange={(e) => setComposerContent(e.target.value)}
-                  className="flex-1 border-0 outline-none placeholder-gray-400 text-[15px] min-h-[80px] bg-transparent resize-none py-1 text-gray-800"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handlePostSubmit();
+                  }}
+                  className="flex-1 border-0 outline-none placeholder-gray-400 text-[14px] bg-transparent min-w-0"
                 />
               </div>
 
@@ -939,7 +944,7 @@ export default function DashboardHomePage() {
                 />
               </div>
 
-              <div className="border-t border-gray-100 my-2 pt-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-2">
                   {(['update', 'looking_for', 'build_log'] as const).map((type) => {
                     const label = type === 'update' ? 'Update' : type === 'looking_for' ? 'Looking For' : 'Build Log';
@@ -949,10 +954,10 @@ export default function DashboardHomePage() {
                         key={type}
                         type="button"
                         onClick={() => setComposerType(type)}
-                        className={`rounded-full px-4 py-1.5 text-sm font-medium cursor-pointer transition-all ${
+                        className={`rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
                           isActive
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            ? 'bg-black text-white'
+                            : 'text-gray-500 hover:text-black hover:bg-gray-100'
                         }`}
                       >
                         {label}
@@ -965,9 +970,9 @@ export default function DashboardHomePage() {
                   type="button"
                   onClick={handlePostSubmit}
                   disabled={!composerContent.trim()}
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold px-6 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-[#121315] hover:bg-black text-white font-bold px-6 py-2.5 rounded-full shadow-sm hover:scale-105 active:scale-95 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Post
+                  Send
                 </button>
               </div>
             </div>
@@ -1025,141 +1030,98 @@ export default function DashboardHomePage() {
                   let avatarRingColor = "";
 
                   if (post.post_type === 'update') {
-                    typeBadgeClass = "bg-blue-100 text-blue-700 font-semibold";
+                    typeBadgeClass = "text-blue-500 font-bold";
                     typeLabel = "Update";
-                    cardAccentStyle = "border-l-4 border-l-[#3b82f6]";
-                    avatarRingColor = "ring-[#3b82f6]";
+                    cardAccentStyle = "bg-[#EEF2F6]";
                   } else if (post.post_type === 'looking_for') {
-                    typeBadgeClass = "bg-purple-100 text-purple-700 font-semibold";
+                    typeBadgeClass = "text-orange-500 font-bold";
                     typeLabel = "Looking For";
-                    cardAccentStyle = "border-l-4 border-l-[#8b5cf6]";
-                    avatarRingColor = "ring-[#8b5cf6]";
+                    cardAccentStyle = "bg-[#FFF6E5]";
                   } else if (post.post_type === 'build_log') {
-                    typeBadgeClass = "bg-green-100 text-green-700 font-semibold";
+                    typeBadgeClass = "text-green-500 font-bold";
                     typeLabel = "Build Log";
-                    cardAccentStyle = "border-l-4 border-l-[#10b981]";
-                    avatarRingColor = "ring-[#10b981]";
+                    cardAccentStyle = "bg-[#E5F5E5]";
                   } else {
-                    typeBadgeClass = "bg-orange-100 text-orange-700 font-semibold";
+                    typeBadgeClass = "text-purple-500 font-bold";
                     typeLabel = "Project Update";
-                    cardAccentStyle = "border-l-4 border-l-[#f59e0b]";
-                    avatarRingColor = "ring-[#f59e0b]";
+                    cardAccentStyle = "bg-[#F3E8FF]";
                   }
 
                   return (
                     <div
                       key={post.id}
-                      className={`bg-white border border-[#e5e7eb] ${cardAccentStyle} rounded-[16px] px-6 py-5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[1px] transition-all duration-200 ease-in-out text-left relative group`}
+                      className={`${cardAccentStyle} rounded-[32px] p-6 hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 relative group text-left`}
                     >
                       {/* Post Header */}
-                      <div className="flex items-center justify-between gap-3 mb-3">
+                      <div className="flex items-center justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"}
                             alt={post.author_name}
                             referrerPolicy="no-referrer"
-                            onError={(e) => { const t = e.currentTarget as HTMLImageElement; t.onerror = null; t.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80" }}
-                            className={`w-10 h-10 rounded-full object-cover border border-white ring-2 ring-offset-2 ${avatarRingColor}`}
+                            className="w-10 h-10 rounded-full object-cover shadow-sm"
                           />
                           <div className="min-w-0 text-left">
-                            <p className="text-sm font-semibold text-gray-900 truncate leading-tight">{post.author_name}</p>
-                            <p className="text-gray-400 text-xs mt-0.5 truncate font-medium">
-                              @{post.author_username} · {timeAgo(post.created_at)}
+                            <p className="text-[15px] font-black text-gray-900 truncate leading-tight">{post.author_name}</p>
+                            <p className="text-gray-500 text-xs mt-0.5 truncate font-medium">
+                              {timeAgo(post.created_at)}
                             </p>
                           </div>
                         </div>
 
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 ${typeBadgeClass}`}>
-                          {typeLabel}
-                        </span>
+                        <button type="button" className="text-gray-400 hover:text-gray-600 px-2 py-1">
+                          <svg className="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                          </svg>
+                        </button>
                       </div>
 
                       {/* Content */}
                       <p 
-                        className="text-[15px] text-[#374151] leading-relaxed my-3 whitespace-pre-wrap font-medium"
+                        className="text-[15px] text-gray-700 leading-relaxed my-2 whitespace-pre-wrap font-medium pr-4"
                         style={{ lineHeight: '1.6' }}
                       >
                         {post.content}
                       </p>
 
-                      {/* Stack Tags */}
-                      {post.stack_tags && post.stack_tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-3">
-                          {post.stack_tags.map((tag: string) => (
-                            <span
-                              key={tag}
-                              className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold hover:bg-gray-200 cursor-pointer transition-colors"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Footer Action Bar */}
-                      <div className="flex items-center justify-between border-t border-gray-100 pt-3.5 mt-4">
-                        <div className="flex items-center gap-2">
-                          {/* Like Button */}
-                          <button
-                            type="button"
-                            onClick={() => handleLikeClick(post.id)}
-                            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                              isLiked 
-                                ? "text-pink-500 bg-pink-50 font-semibold" 
-                                : "text-gray-400 hover:text-pink-500 hover:bg-pink-50"
-                            }`}
-                          >
-                            <Heart className={`w-4 h-4 transition-transform ${
-                              isLiked 
-                                ? "fill-pink-500 text-pink-500 animate-[heartBeat_0.3s_ease-in-out]" 
-                                : "text-gray-400"
-                            }`} />
-                            <span>{likes.length}</span>
-                          </button>
-
-                          {/* Comment Count Button: Clickable drawer toggle */}
-                          <button
-                            type="button"
+                      {/* Footer Action Bar & Floating Reaction Bar */}
+                      <div className="flex items-center justify-between mt-8 relative">
+                        
+                        <div className="flex items-center gap-4 text-xs font-bold text-gray-500">
+                          <span className="flex items-center gap-1.5 cursor-pointer hover:text-gray-900 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            {(post.views || 0) + 1205}
+                          </span>
+                          <span className="flex items-center gap-1.5 cursor-pointer hover:text-gray-900 transition-colors">
+                            <Heart className={`w-4 h-4 ${isLiked ? "fill-pink-500 text-pink-500" : ""}`} />
+                            Like
+                          </span>
+                          <span 
+                            className="flex items-center gap-1.5 cursor-pointer hover:text-gray-900 transition-colors"
                             onClick={() => setExpandedComments(prev => ({ ...prev, [post.id]: !prev[post.id] }))}
-                            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                              isCommentSectionOpen 
-                                ? "text-blue-500 bg-blue-50" 
-                                : "text-gray-400 hover:text-blue-500 hover:bg-blue-50"
-                            }`}
                           >
-                            <MessageCircle className={`w-4 h-4 transition-colors ${
-                              isCommentSectionOpen ? "text-blue-500" : "text-gray-400"
-                            }`} />
-                            <span>{post.comments_count || 0}</span>
-                          </button>
+                            <MessageCircle className={`w-4 h-4 ${isCommentSectionOpen ? "text-blue-500 fill-blue-500" : ""}`} />
+                            Comment
+                          </span>
                         </div>
 
-                        {/* Share Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (navigator.share) {
-                              navigator.share({
-                                title: `${post.author_name} on Collabsphere`,
-                                text: post.content,
-                                url: window.location.href,
-                              });
-                            } else {
-                              navigator.clipboard.writeText(post.content);
-                              alert("Post content copied to clipboard!");
-                            }
-                          }}
-                          className="text-gray-400 hover:text-black transition"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 10.742l4.636-2.318M8.684 13.258l4.636 2.318M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </button>
+                        {/* Floating Reaction Pill */}
+                        <div className="absolute -bottom-2 -right-2 bg-white/70 backdrop-blur-md border border-white/50 rounded-full px-3 py-1.5 shadow-sm flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform z-10" onClick={() => handleLikeClick(post.id)}>
+                          <span className="text-sm select-none tracking-widest">🔥😲👍❤️</span>
+                          {isLiked && (
+                            <span className="bg-pink-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                              Woow!!! ✍️
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Expandable Comment Drawer with negative offsets to blend into the card edge seamlessly */}
+                      {/* Expandable Comment Drawer */}
                       {isCommentSectionOpen && (
-                        <div className="mt-4 pt-4 border-t border-[#f3f4f6] bg-[#f9fafb] -mx-6 px-6 -mb-5 pb-5 rounded-b-[16px] space-y-4 text-left animate-in fade-in duration-200">
+                        <div className="mt-8 pt-4 border-t border-black/5 space-y-4 text-left animate-in fade-in duration-200">
                           {/* Replies listing */}
                           <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
                             {(commentsMap[post.id] || []).map((reply) => (
@@ -1224,180 +1186,106 @@ export default function DashboardHomePage() {
 
           </main>
 
-          {/* Right Column */}
-          <aside className="min-w-0 self-start space-y-6">
+          {/* Right Sidebar - Suggestions and Stories */}
+          <aside className="hidden xl:block w-[340px] shrink-0 overflow-y-auto hide-scrollbar bg-white border-l border-gray-100 px-6 py-8 space-y-8">
             
-            {/* Online builders avatar stack */}
-            <div className="bg-white border border-[#e5e7eb] rounded-[28px] p-2.5 shadow-sm flex items-center justify-between gap-4 relative z-10">
-              <div className="flex items-center pl-1.5">
-                <div className="flex -space-x-1.5">
-                  {allProfiles.slice(0, 4).map((p, index) => (
-                    <img
-                      key={p.id || index}
-                      className="inline-block h-7.5 w-7.5 rounded-full ring-2 ring-white object-cover shadow-sm"
-                      src={p.avatar_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80"}
-                      alt="online builder"
-                    />
-                  ))}
+            {/* Stories Section */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-[15px] font-black text-gray-900 tracking-tight">Stories</h3>
+                <button type="button" className="text-gray-400 hover:text-gray-600">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+                {/* Add Story Button */}
+                <div className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group">
+                  <div className="w-14 h-14 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 group-hover:border-black group-hover:bg-gray-100 transition-colors">
+                    <Plus className="w-6 h-6 text-gray-400 group-hover:text-black transition-colors" />
+                  </div>
+                  <span className="text-[10px] font-bold text-gray-500 truncate w-14 text-center">Add Story</span>
                 </div>
-                <span className="text-[9px] font-black text-gray-500 ml-2 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200/50 shadow-sm">
-                  +{allProfiles.length}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  className="bg-[#121315] hover:bg-black text-[#F3F7FF] px-4.5 py-2.5 rounded-full text-xs font-black shadow-sm inline-flex items-center gap-1.5 active:scale-95 transition-all"
-                  onClick={handleNewPostClick}
-                >
-                  <Plus className="w-3.5 h-3.5 text-white font-black" />
-                  <span>New Post</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Dark glass sphere card */}
-            <div className="bg-[#121318] text-white rounded-[36px] p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-[280px] z-10 group">
-              <div className="absolute right-[-25px] bottom-[-20px] pointer-events-none select-none transition-transform duration-[4000ms] group-hover:scale-105 group-hover:rotate-12">
-                <svg className="w-[190px] h-[190px]" viewBox="0 0 200 200" fill="none">
-                  <defs>
-                    <radialGradient id="sphereGrad" cx="35%" cy="35%" r="65%">
-                      <stop offset="0%" stopColor="#CDFF3D" />
-                      <stop offset="40%" stopColor="#A3E635" />
-                      <stop offset="100%" stopColor="#1B4D08" />
-                    </radialGradient>
-                  </defs>
-                  
-                  <ellipse cx="100" cy="100" rx="90" ry="24" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" strokeDasharray="3 3" transform="rotate(-15 100 100)" />
-                  <ellipse cx="100" cy="100" rx="68" ry="16" stroke="rgba(255,255,255,0.15)" strokeWidth="1" transform="rotate(-15 100 100)" />
-                  
-                  <circle cx="100" cy="100" r="26" fill="url(#sphereGrad)" filter="drop-shadow(0 0 20px rgba(163,230,53,0.35))" />
-                  
-                  <path d="M 33 113 A 90 25 0 0 0 167 67" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" strokeLinecap="round" transform="rotate(-15 100 100)" />
-                  
-                  <path d="M40,55 L42,57 L40,59 L38,57 Z" fill="#CDFF3D" opacity="0.7" />
-                  <path d="M150,150 L152,152 L150,154 L148,152 Z" fill="#CDFF3D" opacity="0.6" />
-                  <path d="M165,30 L166.5,31.5 L165,33 L163.5,31.5 Z" fill="#fff" opacity="0.8" />
-                </svg>
-              </div>
-
-              <div className="space-y-4 max-w-[80%] text-left">
-                <h3 className="text-2xl font-bold leading-snug tracking-tight text-white font-sans">
-                  You don't<br />have to<br />build alone.
-                </h3>
-                <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                  Collabsphere connects you with verified builders through real project history, not LinkedIn fluff.
-                </p>
-              </div>
-
-              <div className="z-10 mt-6 text-left">
-                <button
-                  type="button"
-                  onClick={() => router.push("/builders")}
-                  className="bg-[#CDFF3D] hover:bg-[#B5E82F] text-black text-xs font-extrabold px-5 py-3 rounded-full flex items-center gap-1.5 shadow-md active:scale-95 transition-all group/cta"
-                >
-                  <span>Join the Movement</span>
-                  <span className="text-sm leading-none group-hover/cta:translate-x-1 transition-transform">→</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Trending Builders Widget */}
-            <div className="bg-white border border-[#e5e7eb] rounded-[32px] p-5 shadow-sm space-y-4 relative z-10">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-black tracking-tight font-sans">Trending Builders</span>
-                <button
-                  type="button"
-                  onClick={() => router.push("/builders")}
-                  className="text-xs font-bold text-[#7A5BFF] hover:underline"
-                >
-                  View all
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {trendingBuildersList.map((builder) => {
-                  const isConnected = myConnections.includes(builder.id);
-                  return (
-                    <div key={builder.id} className="flex items-center justify-between group cursor-pointer">
-                      <div className="flex items-center gap-3 min-w-0" onClick={() => router.push(`/builders`)}>
-                        <img
-                          src={builder.avatar}
-                          alt={builder.name}
-                          className="w-10 h-10 rounded-full object-cover border border-white shadow-sm shrink-0"
-                        />
-                        <div className="text-left min-w-0">
-                          <p className="text-sm font-bold text-black group-hover:text-[#7A5BFF] transition-colors leading-none truncate">{builder.name}</p>
-                          <p className="text-xs text-[#8A8B94] mt-1.5 truncate">@{builder.username}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-[10px] font-bold text-gray-400 truncate max-w-[80px]">{builder.role}</span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!isConnected) {
-                              handleConnectClick(builder.id);
-                            }
-                          }}
-                          disabled={isConnected || connectingBuilderId === builder.id}
-                          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
-                            isConnected 
-                              ? "bg-green-50 text-green-500 cursor-default animate-pulse"
-                              : "bg-gray-50 group-hover:bg-[#E9E7FF] text-gray-400 hover:text-[#7A5BFF] active:scale-95"
-                          }`}
-                        >
-                          {isConnected ? (
-                            <span className="text-xs font-bold font-sans">✓</span>
-                          ) : (
-                            <ArrowUpRight className="w-3.5 h-3.5" />
-                          )}
-                        </button>
-                      </div>
+                {/* Story Items */}
+                {allProfiles.slice(0, 6).map((p, index) => (
+                  <div key={p.id || index} className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group">
+                    <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 group-hover:scale-105 transition-transform">
+                      <img
+                        className="w-full h-full rounded-full border-2 border-white object-cover"
+                        src={p.avatar_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80"}
+                        alt="story"
+                      />
                     </div>
-                  );
-                })}
-                {trendingBuildersList.length === 0 && (
-                  <p className="text-[10px] text-gray-400 text-center font-medium">No other builders found.</p>
-                )}
-              </div>
-            </div>
-
-            {/* Active Hackathons Trophy Widget */}
-            <div className="bg-white border border-[#e5e7eb] rounded-[32px] p-5 shadow-sm space-y-4 relative z-10">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-black tracking-tight font-sans">Active Hackathons</span>
-                <button
-                  type="button"
-                  onClick={() => router.push("/hackathons")}
-                  className="text-xs font-bold text-[#7A5BFF] hover:underline"
-                >
-                  View all
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {fallbackHackathons.map((hackathon) => (
-                  <div key={hackathon.id} className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-gray-50/60 transition-all border border-transparent hover:border-gray-100">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8.5 h-8.5 rounded-xl ${hackathon.color} flex items-center justify-center text-white shrink-0 shadow-sm`}>
-                        <Trophy className="w-4.5 h-4.5 text-white" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-bold text-black leading-none">{hackathon.name}</p>
-                        <p className="text-[10px] text-[#8A8B94] mt-1.5 font-medium">{hackathon.date}</p>
-                      </div>
-                    </div>
-
-                    <div className="text-right shrink-0">
-                      <span className="text-[10px] font-bold text-[#7A5BFF] bg-[#E9E7FF] px-2 py-0.5 rounded-lg">{hackathon.builders} builders</span>
-                    </div>
+                    <span className="text-[10px] font-bold text-gray-700 truncate w-14 text-center">{p.username || "builder"}</span>
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Suggestions Section */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-[15px] font-black text-gray-900 tracking-tight">Suggestions</h3>
+                <button type="button" onClick={() => router.push("/builders")} className="text-xs font-bold text-blue-500 hover:underline">
+                  See All
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {trendingBuildersList.slice(0, 4).map((builder) => {
+                  const isConnected = myConnections.includes(builder.id);
+                  return (
+                    <div key={builder.id} className="flex items-center justify-between group">
+                      <div className="flex items-center gap-3 min-w-0 cursor-pointer" onClick={() => router.push(`/builders`)}>
+                        <img
+                          src={builder.avatar}
+                          alt={builder.name}
+                          className="w-10 h-10 rounded-full object-cover shadow-sm shrink-0"
+                        />
+                        <div className="text-left min-w-0">
+                          <p className="text-[13px] font-bold text-gray-900 leading-tight truncate">{builder.name}</p>
+                          <p className="text-[11px] text-gray-500 truncate">@{builder.username}</p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!isConnected) handleConnectClick(builder.id);
+                        }}
+                        disabled={isConnected || connectingBuilderId === builder.id}
+                        className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                          isConnected 
+                            ? "bg-gray-100 text-gray-500 cursor-default"
+                            : "bg-[#121315] hover:bg-black text-white active:scale-95 shadow-sm"
+                        }`}
+                      >
+                        {isConnected ? "Following" : "Follow"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Hackathons / Featured Section */}
+            <div className="bg-[#FFF6E5] rounded-[24px] p-5 shadow-sm relative overflow-hidden group">
+              <div className="relative z-10 flex flex-col items-start gap-2 text-left">
+                <span className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md">Live Hackathon</span>
+                <h4 className="text-lg font-black text-gray-900 leading-tight">Solana Global<br/>Hackathon</h4>
+                <p className="text-xs font-medium text-gray-600 mb-2">Build the future of Web3. $1M in prizes.</p>
+                <button
+                  type="button"
+                  onClick={() => router.push("/hackathons")}
+                  className="bg-white hover:bg-gray-50 text-orange-600 text-xs font-bold px-4 py-2 rounded-full shadow-sm active:scale-95 transition-all"
+                >
+                  Join Now
+                </button>
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-orange-400 rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity" />
             </div>
 
           </aside>
