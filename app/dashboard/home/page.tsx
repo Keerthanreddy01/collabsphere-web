@@ -21,14 +21,7 @@ import Sidebar from "@/components/Sidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { usePostViewTracker } from "@/hooks/usePostViewTracker";
 
-// Mock Stories Data
-const MOCK_STORIES = [
-  { username: "keerthan_reddy", avatar: "https://i.pravatar.cc/150?img=11", hasUnseen: true },
-  { username: "v_naa", avatar: "https://i.pravatar.cc/150?img=12", hasUnseen: true },
-  { username: "nagavaram_vrishin", avatar: "https://i.pravatar.cc/150?img=13", hasUnseen: false },
-  { username: "skinny.blxct", avatar: "https://i.pravatar.cc/150?img=14", hasUnseen: true },
-  { username: "l_ram_dayakar", avatar: "https://i.pravatar.cc/150?img=15", hasUnseen: false },
-];
+
 
 function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handleLikeClick: (id: string) => void }) {
   const ref = usePostViewTracker(post.id);
@@ -165,19 +158,37 @@ export default function DashboardHomePage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [posts, setPosts] = useState<any[]>([]);
+  const [stories, setStories] = useState<any[]>([]);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
 
   useEffect(() => {
-    const q = query(collection(db, "posts"), orderBy("created_at", "desc"), limit(50));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    // Fetch Posts
+    const qPosts = query(collection(db, "posts"), orderBy("created_at", "desc"), limit(50));
+    const unsubscribePosts = onSnapshot(qPosts, (snapshot) => {
       const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPosts(list);
     });
-    return () => unsubscribe();
-  }, []);
+
+    // Fetch Stories (mocking with real user profiles)
+    const qUsers = query(collection(db, "builder_profiles"), limit(8));
+    const unsubscribeUsers = onSnapshot(qUsers, (snapshot) => {
+      const list = snapshot.docs.map((doc, idx) => ({
+        id: doc.id,
+        username: doc.data().username || doc.data().email?.split('@')[0] || "builder",
+        avatar: doc.data().avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + doc.id,
+        hasUnseen: idx % 2 === 0 // mock unseen state for styling
+      }));
+      setStories(list.filter(u => u.id !== user?.uid)); // don't show self in this mock
+    });
+
+    return () => {
+      unsubscribePosts();
+      unsubscribeUsers();
+    };
+  }, [user]);
 
   const handleLikeClick = async (postId: string) => {
     if (!user) return;
@@ -209,7 +220,7 @@ export default function DashboardHomePage() {
 
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
-            {MOCK_STORIES.map((story, i) => (
+            {stories.map((story, i) => (
               <div key={i} className="flex flex-col items-center gap-1.5 cursor-pointer">
                 <div className={`w-[66px] h-[66px] rounded-full p-[2px] ${story.hasUnseen ? 'bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600' : 'bg-[#262626]'}`}>
                   <div className="w-full h-full bg-black rounded-full p-[2px]">

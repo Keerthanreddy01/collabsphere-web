@@ -1,18 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { collection, query, limit, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function RightSidebar() {
   const { user } = useAuth();
+  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const suggestedUsers = [
-    { username: "keerthan_reddy", name: "Keerthan Reddy", avatar: "https://i.pravatar.cc/150?img=11" },
-    { username: "v_naa", name: "V Naa", avatar: "https://i.pravatar.cc/150?img=12" },
-    { username: "nagavaram_vrishin", name: "Nagavaram Vrishin", avatar: "https://i.pravatar.cc/150?img=13" },
-    { username: "skinny.blxct", name: "Skinny Blxct", avatar: "https://i.pravatar.cc/150?img=14" },
-    { username: "l_ram_dayakar", name: "L Ram Dayakar Reddy", avatar: "https://i.pravatar.cc/150?img=15" },
-  ];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const q = query(collection(db, "builder_profiles"), limit(5));
+        const snapshot = await getDocs(q);
+        const users = snapshot.docs.map(doc => ({
+          id: doc.id,
+          username: doc.data().username || doc.data().email?.split('@')[0] || "user",
+          name: doc.data().full_name || "Builder",
+          avatar: doc.data().avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + doc.id,
+        }));
+        // Filter out current user if logged in
+        setSuggestedUsers(users.filter(u => u.id !== user?.uid));
+      } catch (error) {
+        console.error("Error fetching suggested users:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUsers();
+  }, [user]);
 
   return (
     <aside className="hidden xl:flex flex-col w-[320px] fixed right-0 top-0 bottom-0 bg-black pt-10 px-4 overflow-y-auto no-scrollbar border-l border-[#262626]">
@@ -40,21 +59,27 @@ export default function RightSidebar() {
       </div>
 
       {/* Suggested Users List */}
-      <div className="flex flex-col gap-4 mb-8 px-4">
-        {suggestedUsers.map((u, i) => (
-          <div key={i} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={u.avatar} alt={u.username} className="w-11 h-11 rounded-full object-cover" />
-              <div className="flex flex-col">
-                <span className="text-[14px] font-semibold text-white">{u.username}</span>
-                <span className="text-[12px] text-[#A8A8A8]">{u.name}</span>
+      <div className="flex flex-col gap-4 mb-8 px-4 min-h-[250px]">
+        {loading ? (
+          <div className="text-[12px] text-[#A8A8A8] text-center mt-4">Loading suggestions...</div>
+        ) : suggestedUsers.length > 0 ? (
+          suggestedUsers.map((u, i) => (
+            <div key={i} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img src={u.avatar} alt={u.username} className="w-11 h-11 rounded-full object-cover" />
+                <div className="flex flex-col">
+                  <span className="text-[14px] font-semibold text-white">{u.username}</span>
+                  <span className="text-[12px] text-[#A8A8A8]">{u.name}</span>
+                </div>
               </div>
+              <button className="text-[12px] font-semibold text-[#0095F6] hover:text-white transition-colors">
+                Follow
+              </button>
             </div>
-            <button className="text-[12px] font-semibold text-[#0095F6] hover:text-white transition-colors">
-              Follow
-            </button>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-[12px] text-[#A8A8A8] text-center mt-4">No suggestions right now.</div>
+        )}
       </div>
 
       {/* Footer Links */}
