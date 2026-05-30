@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
 const words = ["BUILD", "SHIP", "SCALE"];
 
@@ -108,6 +109,9 @@ export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
 
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -206,12 +210,27 @@ export function HeroSection() {
       >
         <div className="max-w-[1400px] mx-auto flex items-start gap-10 lg:gap-20">
           {[
-            { value: "2,400+", label: "Active Builders" },
-            { value: "180+", label: "Projects Launched" },
-            { value: "94%", label: "Collaboration Rate" },
+            {
+              value: isLoading ? "—" : stats.activeBuilders.toLocaleString() + "+",
+              label: "Active Builders",
+            },
+            {
+              value: isLoading ? "—" : stats.projectsLaunched.toLocaleString() + "+",
+              label: "Projects Launched",
+            },
+            {
+              value: isLoading ? "—" : stats.openCollabRequests.toLocaleString() + "+",
+              label: "Open Collab Requests",
+            },
           ].map((stat) => (
             <div key={stat.label} className="flex flex-col gap-2">
-              <span className="text-3xl lg:text-4xl font-display text-white">{stat.value}</span>
+              <span
+                className={`text-3xl lg:text-4xl font-display text-white tabular-nums transition-all duration-500 ${
+                  isLoading ? "opacity-40" : "opacity-100"
+                }`}
+              >
+                {stat.value}
+              </span>
               <span className="text-xs text-white/50 leading-tight">
                 {stat.label}
               </span>

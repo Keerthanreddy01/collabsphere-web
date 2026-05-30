@@ -1,31 +1,34 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
-const features = [
+// Static feature descriptions — values are injected at render time from live data
+const featureDescriptions = [
   {
     number: "01",
     title: "Team Matching v4",
     description: "Browse verified builders with real project history. No LinkedIn fluff, just world-class code audits.",
-    stats: { value: "2,400+", label: "verified builders" },
+    staticLabel: "verified builders",
   },
   {
     number: "02",
     title: "Build in Public",
     description: "Share progress with the community and attract high-tier collaborators in real-time.",
-    stats: { value: "94%", label: "collaboration rate" },
+    staticLabel: "open collab requests",
   },
   {
     number: "03",
     title: "Project Incubator",
     description: "The teams formed here are the CEOs of tomorrow. Start small, ship elite-grade software.",
-    stats: { value: "180+", label: "projects launched" },
+    staticLabel: "projects launched",
   },
   {
     number: "04",
     title: "Collab Rooms",
     description: "Private spaces for your core team to coordinate without the noise of fragmented platforms.",
-    stats: { value: "100%", label: "team sync" },
+    staticLabel: "team sync",
+    staticValue: "100%",
   },
 ];
 
@@ -132,6 +135,22 @@ export function FeaturesSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
+
+  // Map live values to each feature card
+  const liveValues = [
+    isLoading ? "—" : stats.activeBuilders.toLocaleString() + "+",
+    isLoading ? "—" : stats.openCollabRequests.toLocaleString() + "+",
+    isLoading ? "—" : stats.projectsLaunched.toLocaleString() + "+",
+    "100%", // team sync stays static
+  ];
+
+  const features = featureDescriptions.map((f, i) => ({
+    ...f,
+    stats: { value: liveValues[i], label: f.staticLabel },
+  }));
 
   useEffect(() => {
     const observer = new IntersectionObserver(

@@ -1,38 +1,39 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
-const metrics = [
-  { 
-    value: 2400, 
-    suffix: "+", 
-    prefix: "",
-    label: "Active Builders",
-    sublabel: "World-class developers and technical founders building the future together.",
-  },
-  { 
-    value: 180, 
-    suffix: "+", 
-    prefix: "",
-    label: "Projects Launched",
-    sublabel: "across all categories",
-  },
-  { 
-    value: 94, 
-    suffix: "%", 
-    prefix: "",
-    label: "Collaboration Rate",
-    sublabel: "Avg. team satisfaction",
-  },
-];
-
-function AnimatedNumber({ end, suffix = "", prefix = "" }: { end: number; suffix?: string; prefix?: string }) {
+// ─────────────────────────────────────────────────────────
+// AnimatedNumber
+// Counts up from 0 → `end` when the element enters the viewport.
+// Resets and replays whenever `end` changes (i.e. fresh data arrives).
+// ─────────────────────────────────────────────────────────
+function AnimatedNumber({
+  end,
+  suffix = "",
+  prefix = "",
+  loading = false,
+}: {
+  end: number;
+  suffix?: string;
+  prefix?: string;
+  loading?: boolean;
+}) {
   const [count, setCount] = useState(0);
   const [isScrambling, setIsScrambling] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const rafRef = useRef<number>(0);
+
+  // Reset animation when end value changes so live data triggers a fresh count-up
+  useEffect(() => {
+    setHasAnimated(false);
+    setCount(0);
+  }, [end]);
 
   useEffect(() => {
+    if (loading) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
@@ -45,16 +46,29 @@ function AnimatedNumber({ end, suffix = "", prefix = "" }: { end: number; suffix
             const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.floor(eased * end));
             setIsScrambling(progress < 0.8);
-            if (progress < 1) requestAnimationFrame(animate);
+            if (progress < 1) {
+              rafRef.current = requestAnimationFrame(animate);
+            }
           };
-          requestAnimationFrame(animate);
+          rafRef.current = requestAnimationFrame(animate);
         }
       },
       { threshold: 0.5 }
     );
     if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [end, hasAnimated]);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [end, hasAnimated, loading]);
+
+  if (loading) {
+    return (
+      <div ref={ref} className="inline-flex items-baseline">
+        <div className="h-10 w-24 bg-foreground/10 animate-pulse rounded" />
+      </div>
+    );
+  }
 
   const displayValue = count.toLocaleString();
 
@@ -78,6 +92,27 @@ function AnimatedNumber({ end, suffix = "", prefix = "" }: { end: number; suffix
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// Skeleton card for loading state
+// ─────────────────────────────────────────────────────────
+function SkeletonCard({ large = false }: { large?: boolean }) {
+  return (
+    <div
+      className={`bg-foreground/[0.02] border border-foreground/10 ${
+        large ? "p-10 lg:p-14" : "p-8"
+      } flex flex-col gap-4`}
+    >
+      <div className="h-12 w-32 bg-foreground/10 animate-pulse rounded" />
+      <div className="h-8 w-full bg-foreground/[0.05] animate-pulse rounded" />
+      <div className="h-4 w-24 bg-foreground/[0.05] animate-pulse rounded" />
+      <div className="h-3 w-40 bg-foreground/[0.04] animate-pulse rounded" />
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// GridBackground (unchanged from original)
+// ─────────────────────────────────────────────────────────
 function GridBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const timeRef = useRef(0);
@@ -143,6 +178,9 @@ function GridBackground() {
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// DotGraph (unchanged from original)
+// ─────────────────────────────────────────────────────────
 function DotGraph({
   color = "white",
   height = 32,
@@ -185,7 +223,9 @@ function DotGraph({
       const cols = Math.floor(W / 8);
 
       for (let i = 0; i < cols; i++) {
-        const raw = baseline + amplitude * Math.sin(i * freq1 + t) * Math.cos(i * freq2 + t * freqT);
+        const raw =
+          baseline +
+          amplitude * Math.sin(i * freq1 + t) * Math.cos(i * freq2 + t * freqT);
         const v = Math.max(0, Math.min(1, raw));
         const dotY = H - 4 - v * (H - 8);
         const x = i * 8 + 4;
@@ -194,9 +234,10 @@ function DotGraph({
 
         ctx.beginPath();
         ctx.arc(x, dotY, r, 0, Math.PI * 2);
-        ctx.fillStyle = color === "green"
-          ? `rgba(236, 168, 214, ${alpha})`
-          : `rgba(255, 255, 255, ${alpha})`;
+        ctx.fillStyle =
+          color === "green"
+            ? `rgba(236, 168, 214, ${alpha})`
+            : `rgba(255, 255, 255, ${alpha})`;
         ctx.fill();
       }
 
@@ -216,10 +257,16 @@ function DotGraph({
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// MetricsSection — live data wired up
+// ─────────────────────────────────────────────────────────
 export function MetricsSection() {
   const [time, setTime] = useState<Date | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
 
   useEffect(() => {
     setTime(new Date());
@@ -237,6 +284,40 @@ export function MetricsSection() {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
+
+  // The first card always shows Active Builders (primary hero metric)
+  const primaryMetric = {
+    value: stats.activeBuilders,
+    suffix: "",
+    prefix: "",
+    label: "Active Builders",
+    sublabel: "World-class developers and technical founders building the future together.",
+  };
+
+  // Secondary metrics shown in the 2-card row
+  const secondaryMetrics = [
+    {
+      value: stats.projectsLaunched,
+      suffix: "",
+      prefix: "",
+      label: "Projects Launched",
+      sublabel: "across all categories",
+    },
+    {
+      value: stats.openCollabRequests,
+      suffix: "",
+      prefix: "",
+      label: "Open Collab Requests",
+      sublabel: "builders looking for teammates",
+    },
+  ];
+
+  // Bottom ticker row — additional stats
+  const tickerMetrics = [
+    { value: stats.teamsFormed, label: "Teams Formed" },
+    { value: stats.discussionsCreated, label: "Discussions" },
+    { value: stats.countriesRepresented, label: "Countries" },
+  ];
 
   return (
     <section ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
@@ -256,9 +337,11 @@ export function MetricsSection() {
               </span>
             </div>
 
-            <h2 className={`text-6xl md:text-7xl lg:text-[140px] font-display tracking-tight leading-[0.95] transition-all duration-1000 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
+            <h2
+              className={`text-6xl md:text-7xl lg:text-[140px] font-display tracking-tight leading-[0.95] transition-all duration-1000 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
               BUILT THROUGH
               <br />
               <span className="text-muted-foreground">DEEP VISION.</span>
@@ -267,9 +350,11 @@ export function MetricsSection() {
         </div>
 
         {/* Organic graph image */}
-        <div className={`w-full mb-0 transition-all duration-1000 delay-200 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}>
+        <div
+          className={`w-full mb-0 transition-all duration-1000 delay-200 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/real-time-graph-INFmn3u0MlUwvNPynoIhwxtPaPjxM5.png"
             alt=""
@@ -280,59 +365,127 @@ export function MetricsSection() {
 
         {/* Metrics grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Large metric */}
-          <div className={`lg:col-span-1 bg-foreground/[0.02] border border-foreground/10 p-10 lg:p-14 transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-          }`}>
-            <div className="text-4xl md:text-5xl lg:text-6xl font-display tracking-tight mb-4 whitespace-nowrap overflow-hidden">
-              <AnimatedNumber end={metrics[0].value} suffix={metrics[0].suffix} prefix={metrics[0].prefix} />
+          {/* Primary (large) metric — Active Builders */}
+          {isLoading ? (
+            <div className="lg:col-span-1">
+              <SkeletonCard large />
             </div>
-            <div className="mb-6">
-              <DotGraph color="white" height={36} freq1={0.28} freq2={0.09} freqT={0.5} speed={0.018} baseline={0.35} amplitude={0.55} />
-            </div>
-            <div className="text-lg text-foreground mb-2">{metrics[0].label}</div>
-            <div className="text-sm text-muted-foreground font-mono">{metrics[0].sublabel}</div>
-          </div>
-
-          {/* Metrics */}
-          {metrics.slice(1).map((metric, index) => (
+          ) : (
             <div
-              key={metric.label}
-              className={`bg-foreground/[0.02] border border-foreground/10 p-8 flex flex-col items-start justify-between gap-6 transition-all duration-700 ${
+              className={`lg:col-span-1 bg-foreground/[0.02] border border-foreground/10 p-10 lg:p-14 transition-all duration-700 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
               }`}
-              style={{ transitionDelay: `${(index + 1) * 100}ms` }}
             >
-              <div className="w-full">
-                <div className="text-sm text-muted-foreground font-mono mb-2">{metric.sublabel}</div>
-                <div className="text-base text-foreground mb-3">{metric.label}</div>
-                <DotGraph
-                  color={index === 0 ? "green" : "white"}
-                  height={24}
-                  freq1={index === 0 ? 0.45 : 0.22}
-                  freq2={index === 0 ? 0.18 : 0.07}
-                  freqT={index === 0 ? 1.1 : 0.4}
-                  speed={index === 0 ? 0.032 : 0.015}
-                  baseline={index === 0 ? 0.4 : 0.25}
-                  amplitude={index === 0 ? 0.45 : 0.6}
+              <div className="text-4xl md:text-5xl lg:text-6xl font-display tracking-tight mb-4 whitespace-nowrap overflow-hidden">
+                <AnimatedNumber
+                  end={primaryMetric.value}
+                  suffix={primaryMetric.suffix}
+                  prefix={primaryMetric.prefix}
+                  loading={isLoading}
                 />
               </div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-display tracking-tight w-full">
-                <AnimatedNumber end={metric.value} suffix={metric.suffix} prefix={metric.prefix} />
+              <div className="mb-6">
+                <DotGraph
+                  color="white"
+                  height={36}
+                  freq1={0.28}
+                  freq2={0.09}
+                  freqT={0.5}
+                  speed={0.018}
+                  baseline={0.35}
+                  amplitude={0.55}
+                />
+              </div>
+              <div className="text-lg text-foreground mb-2">{primaryMetric.label}</div>
+              <div className="text-sm text-muted-foreground font-mono">
+                {primaryMetric.sublabel}
               </div>
             </div>
-          ))}
+          )}
+
+          {/* Secondary metrics */}
+          {isLoading
+            ? secondaryMetrics.map((_, i) => (
+                <div key={i}>
+                  <SkeletonCard />
+                </div>
+              ))
+            : secondaryMetrics.map((metric, index) => (
+                <div
+                  key={metric.label}
+                  className={`bg-foreground/[0.02] border border-foreground/10 p-8 flex flex-col items-start justify-between gap-6 transition-all duration-700 ${
+                    isVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-12"
+                  }`}
+                  style={{ transitionDelay: `${(index + 1) * 100}ms` }}
+                >
+                  <div className="w-full">
+                    <div className="text-sm text-muted-foreground font-mono mb-2">
+                      {metric.sublabel}
+                    </div>
+                    <div className="text-base text-foreground mb-3">{metric.label}</div>
+                    <DotGraph
+                      color={index === 0 ? "green" : "white"}
+                      height={24}
+                      freq1={index === 0 ? 0.45 : 0.22}
+                      freq2={index === 0 ? 0.18 : 0.07}
+                      freqT={index === 0 ? 1.1 : 0.4}
+                      speed={index === 0 ? 0.032 : 0.015}
+                      baseline={index === 0 ? 0.4 : 0.25}
+                      amplitude={index === 0 ? 0.45 : 0.6}
+                    />
+                  </div>
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-display tracking-tight w-full">
+                    <AnimatedNumber
+                      end={metric.value}
+                      suffix={metric.suffix}
+                      prefix={metric.prefix}
+                      loading={isLoading}
+                    />
+                  </div>
+                </div>
+              ))}
         </div>
 
-        {/* Bottom ticker */}
-        <div className={`mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-12 gap-y-4 text-sm font-mono text-muted-foreground transition-all duration-1000 delay-500 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}>
-          <span>Verified Builders</span>
-          <span>Real Project History</span>
-          <span>Stack Agnostic</span>
-          <span>Async-First</span>
-          <span className="text-foreground">Ship in public</span>
+        {/* Bottom ticker — Teams, Discussions, Countries + labels */}
+        <div
+          className={`mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-12 gap-y-6 text-sm font-mono text-muted-foreground transition-all duration-1000 delay-500 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {isLoading ? (
+            <>
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex flex-col gap-1">
+                  <div className="h-6 w-16 bg-foreground/10 animate-pulse rounded" />
+                  <div className="h-3 w-20 bg-foreground/[0.05] animate-pulse rounded" />
+                </div>
+              ))}
+              <span>Verified Builders</span>
+              <span>Real Project History</span>
+              <span>Stack Agnostic</span>
+              <span>Async-First</span>
+              <span className="text-foreground">Ship in public</span>
+            </>
+          ) : (
+            <>
+              {tickerMetrics.map((m) => (
+                <div key={m.label} className="flex flex-col gap-0.5">
+                  <span className="text-foreground text-lg font-display tabular-nums">
+                    {m.value.toLocaleString()}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{m.label}</span>
+                </div>
+              ))}
+              <span className="text-foreground/30 hidden lg:inline">·</span>
+              <span>Verified Builders</span>
+              <span>Real Project History</span>
+              <span>Stack Agnostic</span>
+              <span>Async-First</span>
+              <span className="text-foreground">Ship in public</span>
+            </>
+          )}
         </div>
       </div>
     </section>

@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
 export function CtaSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -70,7 +74,7 @@ export function CtaSection() {
                 </form>
 
                 <p className="text-sm text-muted-foreground font-mono">
-                  Join 2,400+ builders shipping elite projects.
+                  Join {isLoading ? "thousands of" : `${stats.activeBuilders.toLocaleString()}+`} builders shipping elite projects.
                 </p>
               </div>
 

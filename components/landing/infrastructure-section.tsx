@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
 const regions = [
   { name: "North America", nodes: 12, status: "operational" },
@@ -9,10 +10,79 @@ const regions = [
   { name: "South America", nodes: 3, status: "operational" },
 ];
 
+// Animated counter that counts up from 0 → end on viewport entry
+function AnimatedStat({
+  end,
+  suffix = "",
+  loading = false,
+  className = "",
+}: {
+  end: number;
+  suffix?: string;
+  loading?: boolean;
+  className?: string;
+}) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const rafRef = useRef<number>(0);
+
+  // Reset when live value changes
+  useEffect(() => {
+    setHasAnimated(false);
+    setCount(0);
+  }, [end]);
+
+  useEffect(() => {
+    if (loading) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          const duration = 2200;
+          const startTime = performance.now();
+          const animate = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 4);
+            setCount(Math.floor(eased * end));
+            if (progress < 1) rafRef.current = requestAnimationFrame(animate);
+          };
+          rafRef.current = requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [end, hasAnimated, loading]);
+
+  if (loading) {
+    return (
+      <span
+        className={`inline-block h-[1em] w-28 bg-foreground/10 animate-pulse rounded align-middle ${className}`}
+      />
+    );
+  }
+
+  return (
+    <span ref={ref} className={className}>
+      {count.toLocaleString()}
+      {suffix}
+    </span>
+  );
+}
+
 export function InfrastructureSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeRegion, setActiveRegion] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -35,23 +105,25 @@ export function InfrastructureSection() {
 
   return (
     <section id="infra" ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
-        {/* Background accent — retiré, remplacé par l'image sphère */}
-      
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="mb-20">
-          <span className={`inline-flex items-center gap-4 text-sm font-mono text-muted-foreground mb-8 transition-all duration-700 ${
-            isVisible ? "opacity-100" : "opacity-0"
-          }`}>
+          <span
+            className={`inline-flex items-center gap-4 text-sm font-mono text-muted-foreground mb-8 transition-all duration-700 ${
+              isVisible ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <span className="w-12 h-px bg-foreground/20" />
             PROJECT SHOWCASE v5.1 PRODUCTION-READY
           </span>
-          
+
           <div className="grid lg:grid-cols-[auto_1fr] gap-8 lg:gap-16 items-stretch">
-            {/* Image globe — colonne gauche, pleine hauteur */}
-            <div className={`w-48 lg:w-72 xl:w-80 shrink-0 transition-all duration-1000 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
+            {/* Image globe */}
+            <div
+              className={`w-48 lg:w-72 xl:w-80 shrink-0 transition-all duration-1000 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/world-3i68QNWJwmO7W19ztZWbevAwJQHzYL.png"
                 alt="Global network sphere"
@@ -59,19 +131,23 @@ export function InfrastructureSection() {
               />
             </div>
 
-            {/* Titre + description empilés */}
+            {/* Title + description */}
             <div className="flex flex-col justify-center">
-              <h2 className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}>
+              <h2
+                className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
+              >
                 GLOBAL METRICS
                 <br />
                 <span className="text-muted-foreground">BUILT THROUGH DEEP VISION.</span>
               </h2>
 
-              <p className={`mt-8 text-xl text-muted-foreground leading-relaxed max-w-lg transition-all duration-1000 delay-100 ${
-                isVisible ? "opacity-100" : "opacity-0"
-              }`}>
+              <p
+                className={`mt-8 text-xl text-muted-foreground leading-relaxed max-w-lg transition-all duration-1000 delay-100 ${
+                  isVisible ? "opacity-100" : "opacity-0"
+                }`}
+              >
                 The platform connecting elite builders to ship next-generation projects at scale.
               </p>
             </div>
@@ -80,13 +156,14 @@ export function InfrastructureSection() {
 
         {/* Main content grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Large stat card */}
-          <div className={`lg:col-span-2 relative p-8 lg:p-12 border border-foreground/10 bg-foreground/[0.02] overflow-hidden transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}>
+          {/* Large stat card — Active Builders */}
+          <div
+            className={`lg:col-span-2 relative p-8 lg:p-12 border border-foreground/10 bg-foreground/[0.02] overflow-hidden transition-all duration-700 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+          >
             {/* Animated dots background with connecting lines */}
             <div className="absolute inset-0 opacity-70">
-              {/* SVG for connecting lines */}
               <svg
                 className="absolute inset-0 w-full h-full"
                 style={{ pointerEvents: "none" }}
@@ -127,7 +204,6 @@ export function InfrastructureSection() {
                 })}
               </svg>
 
-              {/* Dots */}
               {[...Array(20)].map((_, i) => (
                 <div
                   key={i}
@@ -140,10 +216,15 @@ export function InfrastructureSection() {
                 />
               ))}
             </div>
-            
+
             <div className="relative z-10">
               <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-8xl lg:text-[10rem] font-display leading-none">2,400+</span>
+                <AnimatedStat
+                  end={stats.activeBuilders}
+                  suffix="+"
+                  loading={isLoading}
+                  className="text-8xl lg:text-[10rem] font-display leading-none"
+                />
                 <span className="text-2xl text-muted-foreground">Active Builders</span>
               </div>
               <p className="text-muted-foreground max-w-md">
@@ -154,39 +235,63 @@ export function InfrastructureSection() {
 
           {/* Stacked stat cards */}
           <div className="flex flex-col gap-6">
-            <div className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-100 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
-              <span className="text-5xl lg:text-6xl font-display">180+</span>
-              <span className="block text-sm text-muted-foreground mt-2">Projects Launched</span>
+            {/* Projects Launched */}
+            <div
+              className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-100 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
+              <AnimatedStat
+                end={stats.projectsLaunched}
+                suffix="+"
+                loading={isLoading}
+                className="text-5xl lg:text-6xl font-display"
+              />
+              <span className="block text-sm text-muted-foreground mt-2">
+                Projects Launched
+              </span>
             </div>
-            
-            <div className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-200 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
-              <span className="text-5xl lg:text-6xl font-display">48h</span>
-              <span className="block text-sm text-muted-foreground mt-2">Avg. Team Formed</span>
+
+            {/* Teams Formed */}
+            <div
+              className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-200 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
+              <AnimatedStat
+                end={stats.teamsFormed}
+                suffix="+"
+                loading={isLoading}
+                className="text-5xl lg:text-6xl font-display"
+              />
+              <span className="block text-sm text-muted-foreground mt-2">
+                Teams Formed
+              </span>
             </div>
           </div>
         </div>
 
         {/* Region list */}
-        <div className={`mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-1000 delay-300 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}>
+        <div
+          className={`mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-1000 delay-300 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
           {regions.map((region, index) => (
             <div
               key={region.name}
               className={`p-6 border transition-all duration-300 cursor-default ${
-                activeRegion === index 
-                  ? "border-foreground/30 bg-foreground/[0.04]" 
+                activeRegion === index
+                  ? "border-foreground/30 bg-foreground/[0.04]"
                   : "border-foreground/10"
               }`}
             >
               <div className="flex items-center gap-2 mb-3">
-                <span className={`w-2 h-2 rounded-full transition-colors ${
-                  activeRegion === index ? "bg-[#eca8d6]" : "bg-foreground/20"
-                }`} />
+                <span
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    activeRegion === index ? "bg-[#eca8d6]" : "bg-foreground/20"
+                  }`}
+                />
                 <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
                   {region.status}
                 </span>
