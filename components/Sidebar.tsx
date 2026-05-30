@@ -55,15 +55,15 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
       )}
 
       {/* Instagram-style Narrow Dark Sidebar (Expands on Hover) */}
-      <aside className={`group fixed left-0 top-0 bottom-0 z-50 w-[72px] hover:w-[244px] bg-black border-r border-[#262626] flex flex-col py-6 transition-all duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+      <aside className={`group fixed left-0 top-0 bottom-0 z-50 w-[72px] hover:w-[244px] bg-black border-r border-[#262626] flex flex-col py-6 transition-[width,transform] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-[width] overflow-x-hidden ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         
         {/* Top Logo */}
         <button 
           onClick={() => router.push('/dashboard/home')}
-          className="w-12 h-12 hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-center group-hover:justify-start px-0 group-hover:px-4 mb-8 hover:bg-[#1A1A1A] rounded-lg transition-all group/btn"
+          className="w-[48px] h-[48px] group-hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-start px-3 group-hover:px-4 mb-8 hover:bg-[#1A1A1A] rounded-lg transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden group/btn shrink-0"
         >
           <Activity className="w-6 h-6 text-white group-hover/btn:scale-105 transition-transform shrink-0" strokeWidth={2} />
-          <span className="ml-4 text-[18px] font-bold text-white whitespace-nowrap opacity-0 w-0 overflow-hidden group-hover:opacity-100 group-hover:w-auto transition-all duration-300">
+          <span className="ml-4 text-[18px] font-bold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
             CollabSphere
           </span>
         </button>
@@ -81,14 +81,14 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
                   router.push(item.route);
                   if (setIsSidebarOpen) setIsSidebarOpen(false);
                 }}
-                className="w-12 h-12 group-hover:w-full mx-auto flex items-center justify-center group-hover:justify-start px-0 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all group/btn"
+                className="w-[48px] h-[48px] group-hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-start px-3 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden group/btn shrink-0"
               >
                 <Icon 
                   className={`w-6 h-6 transition-transform group-hover/btn:scale-105 shrink-0 ${isActive ? "text-white fill-white" : "text-white"}`} 
                   strokeWidth={isActive ? 2.5 : 2} 
                   fill={isActive ? "currentColor" : "none"}
                 />
-                <span className={`ml-4 text-[15px] whitespace-nowrap opacity-0 w-0 overflow-hidden group-hover:opacity-100 group-hover:w-auto transition-all duration-300 ${isActive ? "font-bold text-white" : "font-medium text-white"}`}>
+                <span className={`ml-4 text-[15px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 ${isActive ? "font-bold text-white" : "font-medium text-white"}`}>
                   {item.label}
                 </span>
               </button>
@@ -98,10 +98,10 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
           {/* Profile Icon */}
           <button
             onClick={() => router.push('/profile')}
-            className="w-12 h-12 group-hover:w-full mx-auto flex items-center justify-center group-hover:justify-start px-0 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all"
+            className="w-[48px] h-[48px] group-hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-start px-3 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden shrink-0"
           >
             <img src={currentUser.imageUrl} alt="Profile" className="w-6 h-6 rounded-full object-cover shrink-0" />
-            <span className="ml-4 text-[15px] font-medium text-white whitespace-nowrap opacity-0 w-0 overflow-hidden group-hover:opacity-100 group-hover:w-auto transition-all duration-300">
+            <span className="ml-4 text-[15px] font-medium text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
               Profile
             </span>
           </button>
@@ -109,9 +109,9 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
 
         {/* Bottom Menu Icon */}
         <div className="mt-auto w-full px-2">
-          <button className="w-12 h-12 group-hover:w-full mx-auto flex items-center justify-center group-hover:justify-start px-0 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all group/btn">
+          <button className="w-[48px] h-[48px] group-hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-start px-3 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden group/btn shrink-0">
             <Menu className="w-6 h-6 text-white group-hover/btn:scale-105 transition-transform shrink-0" strokeWidth={2} />
-            <span className="ml-4 text-[15px] font-medium text-white whitespace-nowrap opacity-0 w-0 overflow-hidden group-hover:opacity-100 group-hover:w-auto transition-all duration-300">
+            <span className="ml-4 text-[15px] font-medium text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
               More
             </span>
           </button>
