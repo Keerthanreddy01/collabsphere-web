@@ -42,9 +42,10 @@ function AnimatedNumber({
           setCount(0); // reset count before animating up
           
           const duration = 2500;
-          const startTime = performance.now();
+          let startTime: number | null = null;
           const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
+            if (startTime === null) startTime = currentTime;
+            const elapsed = Math.max(0, currentTime - startTime);
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.floor(eased * safeEnd));

@@ -26,25 +26,28 @@ function AnimatedStat({
   const safeEnd = Math.max(0, isFinite(end) ? Math.floor(end) : 0);
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  
+  // Use a ref to track if we've animated for the current value
+  const animatedForValue = useRef<number | null>(null);
   const rafRef = useRef<number>(0);
-
-  // Reset when live value changes
-  useEffect(() => {
-    setHasAnimated(false);
-    setCount(0);
-  }, [safeEnd]);
 
   useEffect(() => {
     if (loading) return;
+
+    // If we've already animated to this exact value, do nothing
+    if (animatedForValue.current === safeEnd) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
+        if (entry.isIntersecting && animatedForValue.current !== safeEnd) {
+          animatedForValue.current = safeEnd;
+          setCount(0);
+          
           const duration = 2200;
-          const startTime = performance.now();
+          let startTime: number | null = null;
           const animate = (now: number) => {
-            const elapsed = now - startTime;
+            if (startTime === null) startTime = now;
+            const elapsed = Math.max(0, now - startTime);
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.floor(eased * safeEnd));
@@ -60,7 +63,7 @@ function AnimatedStat({
       observer.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [safeEnd, hasAnimated, loading]);
+  }, [safeEnd, loading]);
 
   if (loading) {
     return (
