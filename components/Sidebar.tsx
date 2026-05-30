@@ -91,109 +91,18 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
           })}
         </nav>
 
-        {/* Bottom Chat Widget Replica */}
-        <div className="mt-auto bg-white rounded-[24px] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col gap-3">
-          {/* Chat Header */}
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center">
-                <MessageSquare className="w-3 h-3 text-white" fill="white" />
-              </div>
-              <span className="font-bold text-[14px]">Chat</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-green-300 to-blue-300 border-2 border-white"></div>
-            </div>
+        {/* App Download Banner */}
+        <div className="mt-auto bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col items-center text-center gap-3">
+          <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center mb-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
           </div>
-
-          <div className="text-[10px] text-gray-400 font-medium flex items-center justify-between">
-            <span>Lukas is typing...</span>
-            <div className="flex -space-x-1">
-              <img src="https://i.pravatar.cc/100?img=1" className="w-4 h-4 rounded-full border border-white" />
-              <img src="https://i.pravatar.cc/100?img=2" className="w-4 h-4 rounded-full border border-white" />
-            </div>
-          </div>
-
-          {/* Messages Mock */}
-          <div className="flex flex-col gap-3">
-            
-            {/* Audio Message 1 */}
-            <div className="flex items-end gap-2">
-              <img src="https://i.pravatar.cc/100?img=3" className="w-6 h-6 rounded-full mb-1" />
-              <div className="flex flex-col gap-1">
-                <span className="text-[9px] text-gray-300 ml-1">Lukas</span>
-                <div className="bg-[#F4F5F7] rounded-full px-3 py-1.5 flex items-center gap-2">
-                  <Play className="w-3 h-3 text-gray-500" fill="currentColor" />
-                  <div className="flex items-center gap-0.5 h-3">
-                    <div className="w-0.5 h-full bg-gray-400 rounded-full"></div>
-                    <div className="w-0.5 h-1/2 bg-gray-400 rounded-full"></div>
-                    <div className="w-0.5 h-3/4 bg-gray-400 rounded-full"></div>
-                    <div className="w-0.5 h-1/3 bg-gray-400 rounded-full"></div>
-                    <div className="w-0.5 h-full bg-gray-400 rounded-full"></div>
-                  </div>
-                  <span className="text-[9px] text-gray-400 font-medium">0:11</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Audio Message 2 (You) */}
-            <div className="flex items-end gap-2 self-end flex-row-reverse">
-              <img src="https://i.pravatar.cc/100?img=4" className="w-6 h-6 rounded-full mb-1" />
-              <div className="flex flex-col items-end gap-1">
-                <span className="text-[9px] text-gray-300 mr-1">12:14 · You</span>
-                <div className="bg-gradient-to-r from-cyan-300 via-emerald-300 to-green-300 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-sm">
-                  <div className="flex items-center gap-0.5 h-3">
-                    <div className="w-0.5 h-1/2 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-full bg-white rounded-full"></div>
-                    <div className="w-0.5 h-3/4 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-1/3 bg-white rounded-full"></div>
-                  </div>
-                  <span className="text-[9px] text-black/70 font-bold">0:14</span>
-                  <div className="w-4 h-4 bg-white/30 rounded-full flex items-center justify-center">
-                    <Mic className="w-2.5 h-2.5 text-black" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Audio Message 3 */}
-            <div className="flex items-end gap-2">
-              <img src="https://i.pravatar.cc/100?img=5" className="w-6 h-6 rounded-full mb-1" />
-              <div className="flex flex-col gap-1">
-                <span className="text-[9px] text-gray-300 ml-1">Kelly · 12:15</span>
-                <div className="bg-[#F4F5F7] rounded-full px-3 py-1.5 flex items-center gap-2">
-                  <Play className="w-3 h-3 text-gray-500" fill="currentColor" />
-                  <div className="flex items-center gap-0.5 h-3">
-                    <div className="w-0.5 h-2/3 bg-gray-400 rounded-full"></div>
-                    <div className="w-0.5 h-full bg-gray-400 rounded-full"></div>
-                    <div className="w-0.5 h-1/2 bg-gray-400 rounded-full"></div>
-                  </div>
-                  <span className="text-[9px] text-gray-400 font-medium">0:08</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Text Message (You) */}
-            <div className="flex items-end gap-2 self-end flex-row-reverse">
-              <img src="https://i.pravatar.cc/100?img=4" className="w-6 h-6 rounded-full mb-1" />
-              <div className="flex flex-col items-end gap-1">
-                <span className="text-[9px] text-gray-300 mr-1">12:16 · You</span>
-                <div className="bg-gradient-to-r from-cyan-300 to-green-300 rounded-[12px] rounded-br-sm px-3 py-1.5 shadow-sm">
-                  <span className="text-[11px] font-bold text-gray-800">Great job guys, keep it up!</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Input Box */}
-          <div className="mt-2 bg-[#F4F5F7] rounded-full px-3 py-2 flex items-center gap-2">
-            <Paperclip className="w-3 h-3 text-gray-400" />
-            <input type="text" placeholder="Message..." className="bg-transparent text-[11px] flex-1 outline-none text-gray-700 placeholder:text-gray-400" />
-            <Smile className="w-3 h-3 text-gray-400" />
-            <Mic2 className="w-3 h-3 text-gray-400" />
-          </div>
-
+          <h3 className="text-[15px] font-bold text-gray-900">Get the App</h3>
+          <p className="text-[11px] font-medium text-gray-500 leading-relaxed mb-1">
+            Experience CollabSphere on your mobile device.
+          </p>
+          <button className="w-full bg-[#111111] text-white text-[13px] font-bold py-2.5 rounded-full hover:bg-black/80 transition-colors">
+            Download
+          </button>
         </div>
 
       </aside>
