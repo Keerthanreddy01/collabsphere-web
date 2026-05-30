@@ -26,28 +26,25 @@ function AnimatedStat({
   const safeEnd = Math.max(0, isFinite(end) ? Math.floor(end) : 0);
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  
-  // Use a ref to track if we've animated for the current value
-  const animatedForValue = useRef<number | null>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const rafRef = useRef<number>(0);
+
+  // Reset when live value changes
+  useEffect(() => {
+    setHasAnimated(false);
+    setCount(0);
+  }, [safeEnd]);
 
   useEffect(() => {
     if (loading) return;
-
-    // If we've already animated to this exact value, do nothing
-    if (animatedForValue.current === safeEnd) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && animatedForValue.current !== safeEnd) {
-          animatedForValue.current = safeEnd;
-          setCount(0);
-          
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
           const duration = 2200;
-          let startTime: number | null = null;
+          const startTime = performance.now();
           const animate = (now: number) => {
-            if (startTime === null) startTime = now;
-            const elapsed = Math.max(0, now - startTime);
+            const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.floor(eased * safeEnd));
@@ -63,7 +60,7 @@ function AnimatedStat({
       observer.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [safeEnd, loading]);
+  }, [safeEnd, hasAnimated, loading]);
 
   if (loading) {
     return (
@@ -114,9 +111,8 @@ export function InfrastructureSection() {
         {/* Header */}
         <div className="mb-20">
           <span
-            className={`inline-flex items-center gap-4 text-sm font-mono text-muted-foreground mb-8 transition-all duration-700 ${
-              isVisible ? "opacity-100" : "opacity-0"
-            }`}
+            className={`inline-flex items-center gap-4 text-sm font-mono text-muted-foreground mb-8 transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"
+              }`}
           >
             <span className="w-12 h-px bg-foreground/20" />
             PROJECT SHOWCASE v5.1 PRODUCTION-READY
@@ -125,9 +121,8 @@ export function InfrastructureSection() {
           <div className="grid lg:grid-cols-[auto_1fr] gap-8 lg:gap-16 items-stretch">
             {/* Image globe */}
             <div
-              className={`w-48 lg:w-72 xl:w-80 shrink-0 transition-all duration-1000 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className={`w-48 lg:w-72 xl:w-80 shrink-0 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
             >
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/world-3i68QNWJwmO7W19ztZWbevAwJQHzYL.png"
@@ -139,9 +134,8 @@ export function InfrastructureSection() {
             {/* Title + description */}
             <div className="flex flex-col justify-center">
               <h2
-                className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${
-                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                }`}
+                className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  }`}
               >
                 GLOBAL METRICS
                 <br />
@@ -149,9 +143,8 @@ export function InfrastructureSection() {
               </h2>
 
               <p
-                className={`mt-8 text-xl text-muted-foreground leading-relaxed max-w-lg transition-all duration-1000 delay-100 ${
-                  isVisible ? "opacity-100" : "opacity-0"
-                }`}
+                className={`mt-8 text-xl text-muted-foreground leading-relaxed max-w-lg transition-all duration-1000 delay-100 ${isVisible ? "opacity-100" : "opacity-0"
+                  }`}
               >
                 The platform connecting elite builders to ship next-generation projects at scale.
               </p>
@@ -163,9 +156,8 @@ export function InfrastructureSection() {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Large stat card — Active Builders */}
           <div
-            className={`lg:col-span-2 relative p-8 lg:p-12 border border-foreground/10 bg-foreground/[0.02] overflow-hidden transition-all duration-700 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
+            className={`lg:col-span-2 relative p-8 lg:p-12 border border-foreground/10 bg-foreground/[0.02] overflow-hidden transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
           >
             {/* Animated dots background with connecting lines */}
             <div className="absolute inset-0 opacity-70">
@@ -242,9 +234,8 @@ export function InfrastructureSection() {
           <div className="flex flex-col gap-6">
             {/* Projects Launched */}
             <div
-              className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-100 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
             >
               <AnimatedStat
                 end={stats.projectsLaunched}
@@ -259,9 +250,8 @@ export function InfrastructureSection() {
 
             {/* Teams Formed */}
             <div
-              className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-200 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className={`p-8 border border-foreground/10 bg-foreground/[0.02] transition-all duration-700 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
             >
               <AnimatedStat
                 end={stats.teamsFormed}
@@ -278,24 +268,21 @@ export function InfrastructureSection() {
 
         {/* Region list */}
         <div
-          className={`mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-1000 delay-300 ${
-            isVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-1000 delay-300 ${isVisible ? "opacity-100" : "opacity-0"
+            }`}
         >
           {regions.map((region, index) => (
             <div
               key={region.name}
-              className={`p-6 border transition-all duration-300 cursor-default ${
-                activeRegion === index
+              className={`p-6 border transition-all duration-300 cursor-default ${activeRegion === index
                   ? "border-foreground/30 bg-foreground/[0.04]"
                   : "border-foreground/10"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-2 mb-3">
                 <span
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    activeRegion === index ? "bg-[#eca8d6]" : "bg-foreground/20"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-colors ${activeRegion === index ? "bg-[#eca8d6]" : "bg-foreground/20"
+                    }`}
                 />
                 <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
                   {region.status}

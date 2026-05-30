@@ -24,28 +24,26 @@ function AnimatedNumber({
   const [count, setCount] = useState(0);
   const [isScrambling, setIsScrambling] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  
-  // Use a ref to track if we've animated for the current value
-  const animatedForValue = useRef<number | null>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const rafRef = useRef<number>(0);
+
+  // Reset animation when end value changes so live data triggers a fresh count-up
+  useEffect(() => {
+    setHasAnimated(false);
+    setCount(0);
+  }, [safeEnd]);
 
   useEffect(() => {
     if (loading) return;
 
-    // If we've already animated to this exact value, do nothing
-    if (animatedForValue.current === safeEnd) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && animatedForValue.current !== safeEnd) {
-          animatedForValue.current = safeEnd;
-          setCount(0); // reset count before animating up
-          
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
           const duration = 2500;
-          let startTime: number | null = null;
+          const startTime = performance.now();
           const animate = (currentTime: number) => {
-            if (startTime === null) startTime = currentTime;
-            const elapsed = Math.max(0, currentTime - startTime);
+            const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.floor(eased * safeEnd));
@@ -59,14 +57,12 @@ function AnimatedNumber({
       },
       { threshold: 0.5 }
     );
-
     if (ref.current) observer.observe(ref.current);
-
     return () => {
       observer.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [safeEnd, loading]);
+  }, [safeEnd, hasAnimated, loading]);
 
   if (loading) {
     return (
@@ -85,9 +81,8 @@ function AnimatedNumber({
         {displayValue.split("").map((char, i) => (
           <span
             key={i}
-            className={`inline-block transition-all duration-150 ${
-              isScrambling && char !== "," ? "blur-[1px]" : ""
-            }`}
+            className={`inline-block transition-all duration-150 ${isScrambling && char !== "," ? "blur-[1px]" : ""
+              }`}
           >
             {char}
           </span>
@@ -104,9 +99,8 @@ function AnimatedNumber({
 function SkeletonCard({ large = false }: { large?: boolean }) {
   return (
     <div
-      className={`bg-foreground/[0.02] border border-foreground/10 ${
-        large ? "p-10 lg:p-14" : "p-8"
-      } flex flex-col gap-4`}
+      className={`bg-foreground/[0.02] border border-foreground/10 ${large ? "p-10 lg:p-14" : "p-8"
+        } flex flex-col gap-4`}
     >
       <div className="h-12 w-32 bg-foreground/10 animate-pulse rounded" />
       <div className="h-8 w-full bg-foreground/[0.05] animate-pulse rounded" />
@@ -344,9 +338,8 @@ export function MetricsSection() {
             </div>
 
             <h2
-              className={`text-6xl md:text-7xl lg:text-[140px] font-display tracking-tight leading-[0.95] transition-all duration-1000 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className={`text-6xl md:text-7xl lg:text-[140px] font-display tracking-tight leading-[0.95] transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
             >
               BUILT THROUGH
               <br />
@@ -357,9 +350,8 @@ export function MetricsSection() {
 
         {/* Organic graph image */}
         <div
-          className={`w-full mb-0 transition-all duration-1000 delay-200 ${
-            isVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`w-full mb-0 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100" : "opacity-0"
+            }`}
         >
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/real-time-graph-INFmn3u0MlUwvNPynoIhwxtPaPjxM5.png"
@@ -378,9 +370,8 @@ export function MetricsSection() {
             </div>
           ) : (
             <div
-              className={`lg:col-span-1 bg-foreground/[0.02] border border-foreground/10 p-10 lg:p-14 transition-all duration-700 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-              }`}
+              className={`lg:col-span-1 bg-foreground/[0.02] border border-foreground/10 p-10 lg:p-14 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                }`}
             >
               <div className="text-4xl md:text-5xl lg:text-6xl font-display tracking-tight mb-4 whitespace-nowrap overflow-hidden">
                 <AnimatedNumber
@@ -412,53 +403,51 @@ export function MetricsSection() {
           {/* Secondary metrics */}
           {isLoading
             ? secondaryMetrics.map((_, i) => (
-                <div key={i}>
-                  <SkeletonCard />
-                </div>
-              ))
+              <div key={i}>
+                <SkeletonCard />
+              </div>
+            ))
             : secondaryMetrics.map((metric, index) => (
-                <div
-                  key={metric.label}
-                  className={`bg-foreground/[0.02] border border-foreground/10 p-8 flex flex-col items-start justify-between gap-6 transition-all duration-700 ${
-                    isVisible
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-12"
+              <div
+                key={metric.label}
+                className={`bg-foreground/[0.02] border border-foreground/10 p-8 flex flex-col items-start justify-between gap-6 transition-all duration-700 ${isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-12"
                   }`}
-                  style={{ transitionDelay: `${(index + 1) * 100}ms` }}
-                >
-                  <div className="w-full">
-                    <div className="text-sm text-muted-foreground font-mono mb-2">
-                      {metric.sublabel}
-                    </div>
-                    <div className="text-base text-foreground mb-3">{metric.label}</div>
-                    <DotGraph
-                      color={index === 0 ? "green" : "white"}
-                      height={24}
-                      freq1={index === 0 ? 0.45 : 0.22}
-                      freq2={index === 0 ? 0.18 : 0.07}
-                      freqT={index === 0 ? 1.1 : 0.4}
-                      speed={index === 0 ? 0.032 : 0.015}
-                      baseline={index === 0 ? 0.4 : 0.25}
-                      amplitude={index === 0 ? 0.45 : 0.6}
-                    />
+                style={{ transitionDelay: `${(index + 1) * 100}ms` }}
+              >
+                <div className="w-full">
+                  <div className="text-sm text-muted-foreground font-mono mb-2">
+                    {metric.sublabel}
                   </div>
-                  <div className="text-3xl md:text-4xl lg:text-5xl font-display tracking-tight w-full">
-                    <AnimatedNumber
-                      end={metric.value}
-                      suffix={metric.suffix}
-                      prefix={metric.prefix}
-                      loading={isLoading}
-                    />
-                  </div>
+                  <div className="text-base text-foreground mb-3">{metric.label}</div>
+                  <DotGraph
+                    color={index === 0 ? "green" : "white"}
+                    height={24}
+                    freq1={index === 0 ? 0.45 : 0.22}
+                    freq2={index === 0 ? 0.18 : 0.07}
+                    freqT={index === 0 ? 1.1 : 0.4}
+                    speed={index === 0 ? 0.032 : 0.015}
+                    baseline={index === 0 ? 0.4 : 0.25}
+                    amplitude={index === 0 ? 0.45 : 0.6}
+                  />
                 </div>
-              ))}
+                <div className="text-3xl md:text-4xl lg:text-5xl font-display tracking-tight w-full">
+                  <AnimatedNumber
+                    end={metric.value}
+                    suffix={metric.suffix}
+                    prefix={metric.prefix}
+                    loading={isLoading}
+                  />
+                </div>
+              </div>
+            ))}
         </div>
 
         {/* Bottom ticker — Teams, Discussions, Countries + labels */}
         <div
-          className={`mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-12 gap-y-6 text-sm font-mono text-muted-foreground transition-all duration-1000 delay-500 ${
-            isVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-12 gap-y-6 text-sm font-mono text-muted-foreground transition-all duration-1000 delay-500 ${isVisible ? "opacity-100" : "opacity-0"
+            }`}
         >
           {isLoading ? (
             <>
