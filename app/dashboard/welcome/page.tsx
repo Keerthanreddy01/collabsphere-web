@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import Lanyard from "@/components/Lanyard";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -30,9 +29,6 @@ export default function WelcomePage() {
           {user.displayName || "Builder"}, your ID card is ready.
         </p>
       </div>
-
-      {/* Lanyard Component handles its own canvas */}
-      <Lanyard position={[0, 0, 20]} gravity={[0, -40, 0]} userName={user.displayName || "Builder"} />
 
       <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10">
         <button 

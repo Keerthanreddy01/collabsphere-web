@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { db, auth } from "@/lib/firebase";
+import { db, storage } from "@/lib/firebase";
 import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuth } from "@/hooks/useAuth";
-import ProfileCard from "@/components/ProfileCard";
+import ReflectiveCard from "@/components/ReflectiveCard";
+
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -13,10 +18,14 @@ export default function OnboardingPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
+  const [avatarUploadUrl, setAvatarUploadUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
+    bio: "",
   });
 
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -41,11 +50,13 @@ export default function OnboardingPage() {
           setFormData({
             fullName: d.full_name || user.displayName || "",
             username: d.username || user.email?.split("@")[0] || "",
+            bio: d.bio || "",
           });
         } else {
           setFormData({
             fullName: user.displayName || "",
-            username: user.email?.split("@")[0] || ""
+            username: user.email?.split("@")[0] || "",
+            bio: "",
           });
         }
       }
@@ -108,6 +119,10 @@ export default function OnboardingPage() {
     setLoading(true);
     setError(null);
     try {
+      const avatarUrl =
+        avatarUploadUrl ||
+        user.photoURL ||
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80";
       await setDoc(
         doc(db, "builder_profiles", user.uid),
         {
@@ -115,8 +130,8 @@ export default function OnboardingPage() {
           email: user.email,
           full_name: formData.fullName || user.displayName || "Builder",
           username: formData.username,
-          avatar_url: user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
-          bio: "",
+          bio: formData.bio || "",
+          avatar_url: avatarUrl,
           location: "",
           skills: [],
           stack: [],
@@ -140,6 +155,53 @@ export default function OnboardingPage() {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreviewUrl) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+      }
+    };
+  }, [avatarPreviewUrl]);
+
+  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!storage || !user) {
+      setError("Storage is not configured.");
+      return;
+    }
+
+    if (!AVATAR_TYPES.includes(file.type)) {
+      setError("Use a JPG, PNG, or WEBP image.");
+      return;
+    }
+
+    if (file.size > MAX_AVATAR_BYTES) {
+      setError("Image must be 2MB or smaller.");
+      return;
+    }
+
+    setError(null);
+    const localUrl = URL.createObjectURL(file);
+    setAvatarPreviewUrl(localUrl);
+    setAvatarUploading(true);
+
+    try {
+      const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+      const path = `builder_avatars/${user.uid}/profile_${Date.now()}.${ext}`;
+      const ref = storageRef(storage, path);
+      await uploadBytes(ref, file, { contentType: file.type });
+      const downloadUrl = await getDownloadURL(ref);
+      setAvatarUploadUrl(downloadUrl);
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+      setError("Failed to upload image. Try again.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   if (authLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
@@ -148,6 +210,10 @@ export default function OnboardingPage() {
     );
   }
 
+  const displayName = formData.fullName || 'Your Name';
+  const displayHandle = formData.username || 'username';
+  const displayTitle = formData.bio.trim() || 'Software Engineer';
+
   return (
     <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex flex-col md:flex-row overflow-hidden selection:bg-white selection:text-black">
       
@@ -155,13 +221,38 @@ export default function OnboardingPage() {
       <div className="w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-black flex flex-col items-center justify-center p-8 relative">
         <div className="w-full max-w-[340px]">
           
-          <div className="mb-10 text-left">
-            <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">
-              Setup Profile
-            </h1>
-            <p className="text-[#888888] text-sm leading-relaxed">
-              Let's create your developer identity.
-            </p>
+          <div className="mb-10 flex items-start justify-between gap-4 text-left">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">
+                Setup Profile
+              </h1>
+              <p className="text-[#888888] text-sm leading-relaxed">
+                Let's create your developer identity.
+              </p>
+            </div>
+
+            <div className="shrink-0 text-right">
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleAvatarChange}
+                className="sr-only"
+              />
+              <label
+                htmlFor="avatar-upload"
+                title="Optional profile photo"
+                aria-label="Optional profile photo upload"
+                className={`inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/30 bg-white/5 text-sm font-semibold text-white transition hover:border-white/60 hover:bg-white/10 ${
+                  avatarUploading ? "pointer-events-none opacity-60" : ""
+                }`}
+              >
+                +
+              </label>
+              <div className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[#666666]">
+                Optional
+              </div>
+            </div>
           </div>
 
           {error && (
@@ -203,6 +294,23 @@ export default function OnboardingPage() {
                 )}
               </div>
             </div>
+
+            {avatarUploadUrl ? (
+              <div className="pt-1 text-xs text-[#8f8f8f]">Upload complete.</div>
+            ) : (
+              <div className="pt-1 text-xs text-[#666666]">JPG, PNG, or WEBP. Max 2MB.</div>
+            )}
+
+            <div>
+              <textarea
+                maxLength={120}
+                placeholder="Short bio (max 120 chars)"
+                value={formData.bio}
+                onChange={e => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                className="w-full resize-none bg-transparent border-b border-white/20 focus:border-white px-1 py-3 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
+                rows={2}
+              />
+            </div>
             
             <div className="pt-6">
               <button
@@ -222,23 +330,34 @@ export default function OnboardingPage() {
         </div>
 
         {/* Copyright Footer */}
-        <div className="absolute bottom-8 left-8 right-8 text-center md:text-left text-[#444444] text-xs font-medium">
+        <div className="absolute bottom-8 left-0 right-0 w-full text-center text-[#444444] text-xs font-medium">
           © CollabSphere {new Date().getFullYear()}
         </div>
       </div>
 
       {/* RIGHT COLUMN: ProfileCard Preview */}
       <div className="w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-[#050505] border-t md:border-t-0 md:border-l border-white/5 relative overflow-hidden flex items-center justify-center p-8">
-        <ProfileCard 
-          name={formData.fullName || "Your Name"}
-          handle={formData.username || "username"}
-          title="Software Engineer"
-          status="Online"
-          contactText="Contact Me"
-          avatarUrl={user?.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&h=600&q=80"}
-          innerGradient="linear-gradient(145deg, #111111 0%, #000000 100%)"
-          behindGlowColor="rgba(255, 255, 255, 0.1)"
-        />
+        <div className="w-full max-w-[320px]">
+          <ReflectiveCard
+            name={displayName}
+            title={displayTitle}
+            handle={displayHandle}
+            status="Online"
+            contactText="Contact Me"
+            overlayColor="rgba(0, 0, 0, 0.2)"
+            blurStrength={12}
+            glassDistortion={30}
+            metalness={1}
+            roughness={0.75}
+            displacementStrength={20}
+            noiseScale={1}
+            specularConstant={5}
+            grayscale={0.15}
+            color="#ffffff"
+            className="mx-auto"
+            style={{ height: 500, width: '100%' }}
+          />
+        </div>
       </div>
 
     </div>
