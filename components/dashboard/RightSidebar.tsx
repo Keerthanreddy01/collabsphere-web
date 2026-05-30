@@ -83,20 +83,17 @@ export default function RightSidebar() {
       </div>
 
       {/* Footer Links */}
-      <div className="px-4 mt-6 text-[12px] text-[#737373] leading-relaxed">
+      <div className="px-4 mt-6 text-[12px] text-[#737373] leading-relaxed pb-8">
         <nav className="flex flex-wrap gap-x-2 gap-y-1 mb-4">
           <a href="#" className="hover:underline">About</a> ·
           <a href="#" className="hover:underline">Help</a> ·
-          <a href="#" className="hover:underline">Press</a> ·
-          <a href="#" className="hover:underline">API</a> ·
-          <a href="#" className="hover:underline">Jobs</a> ·
+          <a href="#" className="hover:underline">Guidelines</a> ·
           <a href="#" className="hover:underline">Privacy</a> ·
           <a href="#" className="hover:underline">Terms</a> ·
-          <a href="#" className="hover:underline">Locations</a> ·
-          <a href="#" className="hover:underline">Language</a> ·
-          <a href="#" className="hover:underline">Meta Verified</a>
+          <a href="#" className="hover:underline">API</a> ·
+          <a href="#" className="hover:underline">Status</a>
         </nav>
-        <span>© 2026 INSTAGRAM FROM META</span>
+        <span>© 2026 COLLABSPHERE</span>
       </div>
 
     </aside>
