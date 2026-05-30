@@ -474,8 +474,8 @@ export default function DashboardHomePage() {
       <Sidebar isSidebarOpen={false} setIsSidebarOpen={() => {}} />
 
       {/* Main Feed Area */}
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[332px]">
-        <div className="w-full max-w-[470px] flex flex-col pt-8 pb-24 mx-auto">
+      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[340px]">
+        <div className="w-full max-w-[680px] flex flex-col pt-8 pb-24 mx-auto px-4">
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
             {stories.map((story, i) => (
