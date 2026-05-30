@@ -3,8 +3,8 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { 
-  MoreHorizontal, ImageIcon, Video, Mic, MapPin, 
+import {
+  MoreHorizontal, ImageIcon, Video, Mic, MapPin,
   Heart, MessageCircle, Share, Search, BadgeCheck,
   Rocket, LifeBuoy
 } from "lucide-react";
@@ -77,7 +77,7 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
       author_username: user.email?.split('@')[0] || "builder",
       content: newComment.trim(),
     };
-    
+
     // Optimistic
     setComments(prev => [...prev, { ...commentData, id: Date.now().toString() }]);
     setNewComment("");
@@ -107,7 +107,7 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
           <MoreHorizontal className="w-4 h-4" />
         </button>
       </div>
-      
+
       {postBadge && (
         <div className="mb-3">
           <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ${postBadge.color}`}>
@@ -119,7 +119,7 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
       <p className="text-[14px] font-medium text-[#334155] mb-2 whitespace-pre-wrap leading-relaxed">
         {displayContent}
       </p>
-      
+
       {isTruncated && (
         <button onClick={() => setIsExpanded(!isExpanded)} className="text-[#6366F1] text-[12px] font-bold hover:underline mb-3">
           {isExpanded ? "Show less" : "See more"}
@@ -139,15 +139,15 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <div className="flex items-center gap-6 text-[12px] font-bold text-[#64748B]">
           <span className="flex items-center gap-2">
-            <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> 
+            <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" /></svg>
             {post.views_count || 0}
           </span>
           <button onClick={() => handleLikeClick(post.id)} className={`flex items-center gap-2 transition-colors ${isLiked ? 'text-[#FF3366]' : 'hover:text-[#FF3366]'}`}>
-            <Heart className={`w-[18px] h-[18px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} /> 
+            <Heart className={`w-[18px] h-[18px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
             {likesCount} Like{likesCount !== 1 ? 's' : ''}
           </button>
           <button onClick={handleFetchComments} className={`flex items-center gap-2 transition-colors ${showComments ? 'text-[#6366F1]' : 'hover:text-[#0F172A]'}`}>
-            <MessageCircle className="w-[18px] h-[18px]" strokeWidth={2} /> 
+            <MessageCircle className="w-[18px] h-[18px]" strokeWidth={2} />
             {post.comments_count || 0} Comment{(post.comments_count || 0) !== 1 ? 's' : ''}
           </button>
         </div>
@@ -174,15 +174,15 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
           ) : (
             <p className="text-center text-xs text-gray-400 py-2">No comments yet. Be the first!</p>
           )}
-          
+
           <div className="flex gap-2 mt-2 items-center">
             <img src={user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=50&h=50&q=80"} alt="" className="w-7 h-7 rounded-full object-cover shadow-sm" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && submitComment()}
-              placeholder="Write a comment..." 
+              placeholder="Write a comment..."
               className="flex-1 bg-[#F1F5F9] rounded-full px-4 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#6366F1]"
             />
           </div>
@@ -195,15 +195,15 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
 export default function DashboardHomePage() {
   const router = useRouter();
   const { user, loading } = useAuth();
-  
+
   const [activeTab, setActiveTab] = useState<FeedTabKey>("recents");
   const [selectedTag, setSelectedTag] = useState("All");
   const [selectedType, setSelectedType] = useState<PostType>("all");
-  
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [following, setFollowing] = useState<string[]>([]); // Mock state for friends tab
-  
+
   const [composerContent, setComposerContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -262,11 +262,11 @@ export default function DashboardHomePage() {
       stack_tags: ["React"], // Default tag for now
       post_type: 'discussion', // Default type
     };
-    
+
     const tempId = `temp-${Date.now()}`;
     setPosts(prev => [{ id: tempId, ...newPostData, likes: [], comments_count: 0, views_count: 0, created_at: new Date().toISOString() }, ...prev]);
     setComposerContent("");
-    
+
     await createPost(newPostData as any);
     setIsSubmitting(false);
   };
@@ -278,7 +278,7 @@ export default function DashboardHomePage() {
     const likes = Array.isArray(post.likes) ? post.likes : [];
     const isLiked = likes.includes(user.uid);
     const newLikes = isLiked ? likes.filter((id: string) => id !== user.uid) : [...likes, user.uid];
-    
+
     setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: newLikes } : p));
     await likePost(postId, user.uid);
   };
@@ -296,9 +296,9 @@ export default function DashboardHomePage() {
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm lg:hidden" onClick={() => setIsSidebarOpen(false)} />}
 
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 px-4 sm:px-6 lg:pl-[104px]">
+      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 px-4 sm:px-6 lg:pl-[312px]">
         <div className="w-full max-w-[720px] flex flex-col pt-6 pb-32">
-          
+
           <header className="flex flex-col gap-4 mb-6 sticky top-0 bg-[#FAFAFC]/95 backdrop-blur-md py-4 z-30 shadow-[0_4px_30px_rgba(250,250,252,1)]">
             <div className="flex items-center justify-between">
               <h1 className="text-[28px] font-black tracking-tight">Feeds</h1>
@@ -352,9 +352,9 @@ export default function DashboardHomePage() {
                   <Search className="w-6 h-6 text-[#94A3B8]" />
                 </div>
                 <h3 className="text-[16px] font-bold text-[#0F172A] mb-1">
-                  {activeTab === 'friends' ? "Follow some builders to see their updates" : 
-                   selectedTag !== 'All' ? `No posts with #${selectedTag} yet` : 
-                   "Be the first to post something! 🚀"}
+                  {activeTab === 'friends' ? "Follow some builders to see their updates" :
+                    selectedTag !== 'All' ? `No posts with #${selectedTag} yet` :
+                      "Be the first to post something! 🚀"}
                 </h3>
                 <p className="text-[13px] text-[#64748B]">Check back later or adjust your filters.</p>
               </div>
@@ -370,12 +370,12 @@ export default function DashboardHomePage() {
             <div className="bg-white/90 backdrop-blur-2xl border border-white rounded-[32px] p-2.5 flex items-center justify-between shadow-[0_16px_40px_rgba(15,23,42,0.15)] pointer-events-auto">
               <div className="flex items-center gap-3 flex-1 min-w-0 pl-2">
                 <img src={user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=50&h=50&q=80"} alt="Avatar" className="w-9 h-9 rounded-full object-cover shrink-0 shadow-sm" />
-                <input 
+                <input
                   type="text"
                   value={composerContent}
                   onChange={(e) => setComposerContent(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handlePostSubmit()}
-                  placeholder="Share something with your network..." 
+                  placeholder="Share something with your network..."
                   className="w-full bg-transparent border-none focus:ring-0 text-[14px] font-medium text-[#0F172A] placeholder-[#94A3B8] outline-none"
                 />
               </div>
