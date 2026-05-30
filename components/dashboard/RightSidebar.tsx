@@ -65,7 +65,7 @@ export default function RightSidebar() {
 
   return (
     <aside className="hidden xl:flex w-[320px] shrink-0 flex-col gap-6 pl-4 py-6 sticky top-0 h-screen overflow-y-auto no-scrollbar pb-16">
-      
+
       {/* Trending Tags */}
       <div className="space-y-4">
         <h3 className="text-[16px] font-black text-[#0F172A] tracking-tight flex items-center gap-2">
@@ -116,7 +116,7 @@ export default function RightSidebar() {
           {hotProjects.length > 0 ? hotProjects.map((project, idx) => (
             <div key={idx} className="relative group cursor-pointer overflow-hidden bg-gradient-to-br from-[#1E293B] to-[#0F172A] p-4 rounded-[24px] shadow-[0_8px_20px_rgba(15,23,42,0.1)] border border-white/10 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#06B6D4]/20 rounded-full blur-2xl -z-0"></div>
-              
+
               <div className="relative z-10 flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 bg-[#0EA5E9] text-white px-2 py-0.5 rounded text-[10px] font-bold">
