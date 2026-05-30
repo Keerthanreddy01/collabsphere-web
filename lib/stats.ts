@@ -23,6 +23,17 @@ export interface PlatformStats {
 }
 
 /**
+ * Sanitizes a raw count from Firestore aggregate queries.
+ * getCountFromServer() returns -1 as a sentinel value when Firestore
+ * security rules block unauthenticated access without throwing an error.
+ * We always clamp to >= 0 to avoid displaying negative numbers in the UI.
+ */
+function safeCount(raw: number | null | undefined): number {
+  if (typeof raw !== 'number' || !isFinite(raw) || raw < 0) return 0
+  return Math.floor(raw)
+}
+
+/**
  * Fetches the count of unique country/location entries from builder_profiles.
  * The `location` field is a free-form string (e.g. "San Francisco, CA" or "India").
  * We treat each unique non-empty location string as a distinct region.
@@ -51,6 +62,7 @@ async function fetchCountriesRepresented(): Promise<number> {
 /**
  * Fetches all six platform metrics in parallel, minimising round-trips.
  * Uses `getCountFromServer` for collections that only need a count (O(1) reads).
+ * All returned values are sanitized — negative / -1 sentinel values become 0.
  */
 export async function fetchPlatformStats(): Promise<PlatformStats> {
   // Guard: if Firebase is not initialised (missing env vars), return zeros
@@ -88,12 +100,12 @@ export async function fetchPlatformStats(): Promise<PlatformStats> {
     ])
 
     return {
-      activeBuilders: buildersSnap.data().count,
-      projectsLaunched: projectsSnap.data().count,
-      openCollabRequests: collabSnap.data().count,
-      teamsFormed: teamsSnap.data().count,
-      discussionsCreated: discussionsSnap.data().count,
-      countriesRepresented: countriesCount,
+      activeBuilders:       safeCount(buildersSnap.data().count),
+      projectsLaunched:     safeCount(projectsSnap.data().count),
+      openCollabRequests:   safeCount(collabSnap.data().count),
+      teamsFormed:          safeCount(teamsSnap.data().count),
+      discussionsCreated:   safeCount(discussionsSnap.data().count),
+      countriesRepresented: safeCount(countriesCount),
     }
   } catch (error) {
     console.error('[CollabSphere] Failed to fetch platform stats:', error)

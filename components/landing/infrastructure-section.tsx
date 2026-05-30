@@ -22,6 +22,8 @@ function AnimatedStat({
   loading?: boolean;
   className?: string;
 }) {
+  // Clamp: Firebase can return -1 as a sentinel on permission errors
+  const safeEnd = Math.max(0, isFinite(end) ? Math.floor(end) : 0);
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -31,7 +33,7 @@ function AnimatedStat({
   useEffect(() => {
     setHasAnimated(false);
     setCount(0);
-  }, [end]);
+  }, [safeEnd]);
 
   useEffect(() => {
     if (loading) return;
@@ -45,7 +47,7 @@ function AnimatedStat({
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
-            setCount(Math.floor(eased * end));
+            setCount(Math.floor(eased * safeEnd));
             if (progress < 1) rafRef.current = requestAnimationFrame(animate);
           };
           rafRef.current = requestAnimationFrame(animate);
@@ -58,7 +60,7 @@ function AnimatedStat({
       observer.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [end, hasAnimated, loading]);
+  }, [safeEnd, hasAnimated, loading]);
 
   if (loading) {
     return (

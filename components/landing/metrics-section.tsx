@@ -19,6 +19,8 @@ function AnimatedNumber({
   prefix?: string;
   loading?: boolean;
 }) {
+  // Clamp: Firebase getCountFromServer returns -1 as a sentinel on permission errors
+  const safeEnd = Math.max(0, isFinite(end) ? Math.floor(end) : 0);
   const [count, setCount] = useState(0);
   const [isScrambling, setIsScrambling] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
@@ -29,7 +31,7 @@ function AnimatedNumber({
   useEffect(() => {
     setHasAnimated(false);
     setCount(0);
-  }, [end]);
+  }, [safeEnd]);
 
   useEffect(() => {
     if (loading) return;
@@ -44,7 +46,7 @@ function AnimatedNumber({
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
-            setCount(Math.floor(eased * end));
+            setCount(Math.floor(eased * safeEnd));
             setIsScrambling(progress < 0.8);
             if (progress < 1) {
               rafRef.current = requestAnimationFrame(animate);
@@ -60,7 +62,7 @@ function AnimatedNumber({
       observer.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [end, hasAnimated, loading]);
+  }, [safeEnd, hasAnimated, loading]);
 
   if (loading) {
     return (
