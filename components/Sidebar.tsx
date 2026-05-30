@@ -46,6 +46,11 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
     imageUrl: profile?.avatar_url || user?.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=keerthan",
   }), [user, profile]);
 
+  const handleLogout = async () => {
+    await signOut();
+    router.replace("/");
+  };
+
   const navItems = [
     { key: "home", label: "Feed", icon: Home, route: "/dashboard/home" },
     { key: "messages", label: "Messages", icon: MessageSquare, route: "/messages", badge: "6" },
