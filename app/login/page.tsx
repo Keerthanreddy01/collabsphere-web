@@ -6,7 +6,7 @@ import { signInWithGoogle, signInWithGithub, signInWithEmail } from "@/lib/auth"
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Github, Chrome, Twitter } from "lucide-react";
+import { Chrome, Sparkles } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -66,199 +66,104 @@ export default function LoginPage() {
     }
   };
 
-  const handleGithubSignIn = async () => {
-    setError(null);
-    try {
-      await signInWithGithub();
-    } catch (err: any) {
-      setError(err.message || "Failed to sign in with GitHub");
-    }
-  };
-
   return (
-    <div className="min-h-screen w-full relative flex items-center justify-center p-4 text-white font-sans antialiased overflow-hidden select-none">
+    <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex flex-col items-center justify-center p-4 selection:bg-[#7e85fe] selection:text-white">
       
-      {/* HIGH-PERFORMANCE 60FPS CSS TRANSITIONS (Hardware Accelerated) */}
-      <style>{`
-        @keyframes fadeInBg {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes fadeInUpCard {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        .animate-fade-in-bg {
-          animation: fadeInBg 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: opacity;
-        }
-        .animate-fade-in-card {
-          animation: fadeInUpCard 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: transform, opacity;
-        }
-      `}</style>
+      {/* Top Logo */}
+      <div className="flex flex-col items-center mb-12">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] flex items-center justify-center mb-3">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
+        <h1 className="text-xl font-bold tracking-tight">CollabSphere</h1>
+      </div>
 
-      {/* FULL-SCREEN SCENIC SUNSET BACKGROUND IMAGE (Sourced directly from user's loginpage.png) */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat opacity-0 animate-fade-in-bg"
-        style={{
-          backgroundImage: "url('/loginpage.png')"
-        }}
-      />
-      {/* Subtle dark overlay to match contrast */}
-      <div className="fixed inset-0 z-0 bg-black/10 pointer-events-none" />
+      {/* Decorative Cards (like Nuvio) */}
+      <div className="flex justify-center items-end gap-4 mb-16 h-[140px]">
+        {/* Left Card */}
+        <div className="w-[110px] h-[120px] rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden transform -rotate-6 translate-x-4 translate-y-2 shadow-2xl z-0">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200&auto=format&fit=crop" alt="art" className="w-full h-full object-cover opacity-80" />
+        </div>
+        {/* Center Card */}
+        <div className="w-[130px] h-[140px] rounded-xl bg-zinc-900 border border-zinc-700 overflow-hidden shadow-2xl z-10 scale-105">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=200&auto=format&fit=crop" alt="art" className="w-full h-full object-cover" />
+        </div>
+        {/* Right Card */}
+        <div className="w-[110px] h-[120px] rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden transform rotate-6 -translate-x-4 translate-y-2 shadow-2xl z-0">
+          <img src="https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=200&auto=format&fit=crop" alt="art" className="w-full h-full object-cover opacity-80" />
+        </div>
+      </div>
 
-      {/* MAIN FLOAT CONTAINER CARD */}
-      <div 
-        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row opacity-0 animate-fade-in-card"
-        style={{
-          boxShadow: "0 30px 60px rgba(0,0,0,0.5)"
-        }}
-      >
-        
-        {/* LEFT COLUMN: SOLID DARK FORM PANEL */}
-        <div 
-          className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative select-none"
-          style={{
-            background: "#0c0c0e",
-            borderRight: "1px solid rgba(255, 255, 255, 0.08)"
-          }}
-        >
+      <div className="w-full max-w-[340px] text-center">
+        <h2 className="text-3xl font-bold text-white mb-3">
+          Welcome to CollabSphere
+        </h2>
+        <p className="text-[#888888] text-sm mb-8 leading-relaxed">
+          Your platform to discover all developers.<br/>Sign in with email to get started.
+        </p>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold text-left">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleEmailSignIn} className="space-y-3">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full bg-[#111111] border border-white/5 focus:border-[#7e85fe] rounded-[10px] px-4 py-3.5 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
+          />
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full bg-[#111111] border border-white/5 focus:border-[#7e85fe] rounded-[10px] px-4 py-3.5 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
+          />
           
-          {/* Logo top left */}
-          <div 
-            className="absolute top-8 left-8 sm:left-12 flex items-center gap-2 group cursor-pointer"
-            onClick={() => router.push("/")}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] text-black font-bold rounded-[10px] py-3.5 mt-2 hover:opacity-90 transition-all text-sm flex items-center justify-center active:scale-[0.98]"
           >
-            <div className="flex items-center justify-center w-5 h-5 rounded-[6px] bg-white text-black font-black text-xs transition-transform group-hover:rotate-[30deg]">
-              <span className="leading-none select-none font-bold text-xs">*</span>
-            </div>
-            <span className="text-base font-black tracking-tight text-white font-sans">collabsphere</span>
-          </div>
-
-          {/* Form wrapper */}
-          <div className="w-full max-w-[340px] mx-auto text-left mt-8">
-            <h2 className="text-3xl font-bold text-white tracking-tight">
-              Welcome back
-            </h2>
-            <p className="text-white/40 text-xs mt-2 mb-8 leading-relaxed">
-              Create your builder profile and find your dream team.
-            </p>
-
-            {error && (
-              <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-bold">
-                {error}
-              </div>
+            {loading ? (
+              <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+            ) : (
+              "Sign in"
             )}
+          </button>
+        </form>
 
-            {/* Form */}
-            <form onSubmit={handleEmailSignIn} className="space-y-4">
-              <div>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter Email"
-                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
-                />
-              </div>
-
-              <div>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create Password"
-                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-white text-black font-semibold rounded-xl py-3.5 w-full hover:bg-[#f0f0f0] transition duration-200 text-sm flex items-center justify-center mt-2 cursor-pointer active:scale-[0.99]"
-              >
-                {loading ? (
-                  <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  "Sign In"
-                )}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-6">
-              <div className="h-px bg-white/10 flex-1" />
-              <span className="text-white/30 text-[10px] font-extrabold uppercase select-none tracking-widest shrink-0">
-                or sign in via
-              </span>
-              <div className="h-px bg-white/10 flex-1" />
-            </div>
-
-            {/* Social buttons */}
-            <div className="flex gap-2.5 mb-6">
-              <button
-                onClick={handleGoogleSignIn}
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-              >
-                <Chrome className="w-4 h-4 text-white shrink-0" />
-                <span>Google</span>
-              </button>
-              <button
-                onClick={handleGithubSignIn}
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-              >
-                <Github className="w-4 h-4 text-white shrink-0" />
-                <span>GitHub</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => alert("Twitter/X authentication coming soon!")}
-                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-              >
-                <Twitter className="w-4 h-4 text-white shrink-0" />
-                <span>Twitter</span>
-              </button>
-            </div>
-
-            {/* Switch routes */}
-            <p className="text-white/40 text-xs text-center">
-              Don't have an account?{" "}
-              <Link href="/signup" className="text-pink-500 hover:text-pink-400 font-semibold transition ml-0.5">
-                Sign up
-              </Link>
-            </p>
-
-          </div>
-
+        <div className="flex items-center gap-4 my-6">
+          <div className="h-px bg-white/10 flex-1" />
+          <span className="text-[#666666] text-xs font-medium">Or</span>
+          <div className="h-px bg-white/10 flex-1" />
         </div>
 
-        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape sharply and cleanly) */}
-        <div 
-          className="hidden md:flex w-full md:w-1/2 border-l border-white/10 relative overflow-hidden"
-          style={{
-            background: "rgba(255, 255, 255, 0.02)",
-            backdropFilter: "blur(0.5px)",
-            WebkitBackdropFilter: "blur(0.5px)"
-          }}
-        />
+        <button
+          onClick={handleGoogleSignIn}
+          type="button"
+          className="w-full bg-[#111111] border border-white/5 hover:bg-[#1a1a1a] transition-all text-white font-medium rounded-[10px] py-3.5 text-sm flex items-center justify-center gap-3 active:scale-[0.98]"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+            <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+            <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+            <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+          </svg>
+          Continue with Google
+        </button>
 
+        <p className="text-[#666666] text-xs text-center mt-6">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-white hover:text-[#7EE8FA] transition ml-1 font-semibold">
+            Sign up
+          </Link>
+        </p>
       </div>
 
     </div>
