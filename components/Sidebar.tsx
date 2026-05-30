@@ -3,19 +3,17 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  Home,
-  Search,
-  Compass,
-  PlaySquare,
-  MessageCircle,
-  Heart,
-  PlusSquare,
-  Menu,
-  Activity
-} from "lucide-react";
-import { db } from "@/lib/firebase";
+import { Home, Search, Compass, PlaySquare, MessageCircle, Heart, PlusSquare, Menu, LogOut, Settings, Activity } from "lucide-react";
+import { db, auth } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
   const router = useRouter();
@@ -108,12 +106,40 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
 
         {/* Bottom Menu Icon */}
         <div className="mt-auto w-full px-2">
-          <button className="w-[48px] h-[48px] group-hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-start px-3 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden group/btn shrink-0">
-            <Menu className="w-6 h-6 text-white group-hover/btn:scale-105 transition-transform shrink-0" strokeWidth={2} />
-            <span className="ml-4 text-[15px] font-medium text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-              More
-            </span>
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-[48px] h-[48px] group-hover:w-[220px] mx-auto group-hover:mx-3 flex items-center justify-start px-3 group-hover:px-4 rounded-lg hover:bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden group/btn shrink-0 outline-none">
+                <Menu className="w-6 h-6 text-white group-hover/btn:scale-105 transition-transform shrink-0" strokeWidth={2} />
+                <span className="ml-4 text-[15px] font-medium text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                  More
+                </span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              side="top" 
+              align="start" 
+              className="w-56 bg-[#1A1A1A] border-[#333] text-white p-2 rounded-xl mb-2"
+            >
+              <DropdownMenuItem 
+                className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-lg p-3 flex items-center"
+                onClick={() => router.push('/settings')}
+              >
+                <Settings className="w-5 h-5 mr-3" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-[#333] my-1" />
+              <DropdownMenuItem 
+                className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-lg p-3 flex items-center text-red-500 focus:text-red-500"
+                onClick={async () => {
+                  await signOut(auth);
+                  router.push('/');
+                }}
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
       </aside>
