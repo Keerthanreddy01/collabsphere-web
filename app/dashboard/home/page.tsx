@@ -296,7 +296,7 @@ export default function DashboardHomePage() {
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm lg:hidden" onClick={() => setIsSidebarOpen(false)} />}
 
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 px-4 sm:px-6 lg:pl-[312px]">
+      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 px-4 sm:px-6 lg:pl-[120px]">
         <div className="w-full max-w-[720px] flex flex-col pt-6 pb-32">
 
           <header className="flex flex-col gap-4 mb-6 sticky top-0 bg-[#FAFAFC]/95 backdrop-blur-md py-4 z-30 shadow-[0_4px_30px_rgba(250,250,252,1)]">
