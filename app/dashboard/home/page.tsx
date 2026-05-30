@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
@@ -10,9 +11,13 @@ import {
   Send,
   Bookmark,
   Search,
-  PlusSquare,
   Smile,
-  BadgeCheck
+  SendHorizonal,
+  BadgeCheck,
+  Image,
+  Video,
+  Mic,
+  X
 } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -21,6 +26,251 @@ import Sidebar from "@/components/Sidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { usePostViewTracker } from "@/hooks/usePostViewTracker";
 import ClickSpark from "@/components/ClickSpark";
+
+const POST_TYPES = [
+  { value: "update", label: "Update" },
+  { value: "looking_for", label: "Looking For" },
+  { value: "showcase", label: "Showcase" },
+  { value: "help_needed", label: "Help Needed" },
+  { value: "discussion", label: "Discussion" },
+];
+
+function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: () => void }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [content, setContent] = useState("");
+  const [postType, setPostType] = useState("looking_for");
+  const [stackTags, setStackTags] = useState("");
+  const [isPosting, setIsPosting] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setContent("");
+    setStackTags("");
+    setPostType("looking_for");
+  };
+
+  const submitPost = async () => {
+    const trimmed = content.trim();
+    if (!trimmed || isPosting) return;
+    setIsPosting(true);
+    const tags = stackTags
+      .split(" ")
+      .map((t) => t.replace(/^#/, "").trim())
+      .filter(Boolean);
+    const result = await createPost({
+      uid: user.uid,
+      author_name: user.displayName || "Builder",
+      author_email: user.email || "",
+      author_avatar: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`,
+      author_username: user.email?.split("@")[0] || "builder",
+      content: trimmed,
+      stack_tags: tags,
+      post_type: postType,
+    });
+    setIsPosting(false);
+    if (!result.error) {
+      closeModal();
+      onPostCreated();
+    }
+  };
+
+  const avatarSrc = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
+
+  const pillTypes = [
+    { value: "looking_for", label: "🔍 Looking For" },
+    { value: "showcase",    label: "🚀 Showcase" },
+    { value: "help_needed", label: "🆘 Help Needed" },
+    { value: "discussion",  label: "💬 Discussion" },
+  ];
+
+  return (
+    <>
+      {/* ── Dark overlay ── */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(4px)",
+            zIndex: 99,
+          }}
+          onClick={closeModal}
+        />
+      )}
+
+      {/* ── Centered Composer Modal ── */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "560px",
+            maxWidth: "90vw",
+            maxHeight: "480px",
+            background: "#1a1a1a",
+            borderRadius: "20px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            padding: "20px 24px",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            gap: "14px",
+            overflowY: "auto",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src={avatarSrc} alt="avatar" className="w-9 h-9 rounded-full object-cover border border-white/10 flex-shrink-0" />
+              <div>
+                <div className="text-[14px] font-semibold text-white leading-tight">{user.displayName || "Builder"}</div>
+                <div className="text-[11px] text-[#777] mt-0.5">
+                  {pillTypes.find(p => p.value === postType)?.label.replace(/^\S+\s/, "") || "Post"}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={closeModal}
+              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition flex-shrink-0"
+            >
+              <X className="w-4 h-4 text-white" />
+            </button>
+          </div>
+
+          {/* Post type pills */}
+          <div className="flex flex-wrap gap-2">
+            {pillTypes.map((t) => (
+              <button
+                key={t.value}
+                onClick={() => setPostType(t.value)}
+                style={{
+                  fontSize: "12px",
+                  padding: "4px 12px",
+                  borderRadius: "999px",
+                  fontWeight: 500,
+                  transition: "all 0.15s",
+                  background: postType === t.value ? "#fff" : "transparent",
+                  color: postType === t.value ? "#000" : "#9ca3af",
+                  border: postType === t.value ? "1px solid transparent" : "1px solid #4b5563",
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Textarea */}
+          <textarea
+            autoFocus
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="What are you building today?"
+            style={{ minHeight: "120px" }}
+            className="w-full resize-none bg-transparent border-none text-[15px] text-white placeholder:text-[#444] outline-none leading-relaxed"
+          />
+
+          {/* Stack tags */}
+          <input
+            type="text"
+            value={stackTags}
+            onChange={(e) => setStackTags(e.target.value)}
+            placeholder="#react #firebase #typescript"
+            className="w-full text-sm text-gray-400 placeholder:text-[#444] outline-none border-none"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              borderRadius: "8px",
+              padding: "8px 12px",
+            }}
+          />
+
+          {/* Footer */}
+          <div className="flex items-center justify-between border-t border-white/10 pt-3">
+            <div className="flex items-center gap-3">
+              <button className="text-white/40 hover:text-white/80 transition" title="Image"><Image className="w-5 h-5" /></button>
+              <button className="text-white/40 hover:text-white/80 transition" title="Video"><Video className="w-5 h-5" /></button>
+              <button className="text-white/40 hover:text-white/80 transition" title="Mic"><Mic className="w-5 h-5" /></button>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={closeModal}
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-white hover:bg-white/10 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitPost}
+                disabled={!content.trim() || isPosting}
+                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2 text-[13px] font-semibold text-black hover:bg-gray-200 transition disabled:opacity-40"
+              >
+                <SendHorizonal className="w-3.5 h-3.5" />
+                {isPosting ? "Posting..." : "Post"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Floating Pill Bar ── */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "16px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "50%",
+          maxWidth: "600px",
+          minWidth: "320px",
+          zIndex: 50,
+          background: "rgba(26,26,26,0.95)",
+          backdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "999px",
+          padding: "8px 16px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
+        <img
+          src={avatarSrc}
+          alt="avatar"
+          className="w-9 h-9 rounded-full object-cover border border-white/10 flex-shrink-0"
+        />
+        <button
+          onClick={openModal}
+          className="flex-1 text-left text-[14px] text-[#555] bg-transparent border-none outline-none cursor-text"
+        >
+          What are you building today?
+        </button>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <button onClick={openModal} className="text-white/40 hover:text-white/80 transition" title="Photo">
+            <Image className="w-5 h-5" />
+          </button>
+          <button onClick={openModal} className="text-white/40 hover:text-white/80 transition" title="Video">
+            <Video className="w-5 h-5" />
+          </button>
+          <button onClick={openModal} className="text-white/40 hover:text-white/80 transition" title="Voice">
+            <Mic className="w-5 h-5" />
+          </button>
+        </div>
+        <button
+          onClick={openModal}
+          className="rounded-full bg-white px-4 py-1.5 text-[13px] font-semibold text-black hover:bg-gray-200 transition flex-shrink-0"
+        >
+          Post
+        </button>
+      </div>
+    </>
+  );
+}
 
 
 
@@ -224,9 +474,8 @@ export default function DashboardHomePage() {
       <Sidebar isSidebarOpen={false} setIsSidebarOpen={() => {}} />
 
       {/* Main Feed Area */}
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[320px]">
-        <div className="w-full max-w-[470px] flex flex-col pt-8 pb-32 mx-auto">
-
+      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[332px]">
+        <div className="w-full max-w-[470px] flex flex-col pt-8 pb-24 mx-auto">
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
             {stories.map((story, i) => (
@@ -260,6 +509,9 @@ export default function DashboardHomePage() {
       </main>
 
       <RightSidebar />
+
+      {/* Fixed bottom composer bar + slide-up drawer */}
+      <BottomComposerBar user={user} onPostCreated={() => {}} />
     </div>
   );
 }
