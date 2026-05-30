@@ -5,13 +5,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard,
-  MessageSquare,
-  Globe2,
-  Users,
-  Image as ImageIcon,
-  Settings,
+  MessageCircle,
+  CalendarDays,
+  PieChart,
+  LayoutGrid,
   Bell,
-  Activity
+  Hexagon
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -42,34 +41,34 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
 
   const navItems = [
     { key: "home", icon: LayoutDashboard, route: "/dashboard/home" },
-    { key: "messages", icon: MessageSquare, route: "/messages" },
-    { key: "communities", icon: Globe2, route: "/forums" },
-    { key: "friends", icon: Users, route: "/friends" },
-    { key: "media", icon: ImageIcon, route: "/media" },
+    { key: "calendar", icon: CalendarDays, route: "/events" },
+    { key: "messages", icon: MessageCircle, route: "/messages" },
+    { key: "analytics", icon: PieChart, route: "/analytics" },
+    { key: "grid", icon: LayoutGrid, route: "/media" },
   ];
 
   return (
     <>
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden" 
+          className="fixed inset-0 z-40 bg-black/10 lg:hidden" 
           onClick={() => setIsSidebarOpen && setIsSidebarOpen(false)} 
         />
       )}
 
-      {/* Floating Glassmorphic Dock */}
-      <aside className={`fixed left-6 top-6 bottom-6 z-50 w-[80px] bg-white/40 backdrop-blur-2xl rounded-[40px] border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col items-center py-8 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-[150%] lg:translate-x-0"}`}>
+      {/* Fully transparent wrapper - buttons float directly on the background */}
+      <aside className={`fixed left-6 top-6 bottom-6 z-50 w-[80px] bg-transparent flex flex-col items-center pt-2 pb-6 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-[150%] lg:translate-x-0"}`}>
         
-        {/* Top Logo Button */}
+        {/* Top Logo Button - Abstract Hexagon to match the 'P' logo style */}
         <button 
           onClick={() => router.push('/dashboard/home')}
-          className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-10 hover:scale-105 transition-transform"
+          className="w-[52px] h-[52px] bg-white rounded-full flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.06)] mb-12 hover:scale-105 transition-transform"
         >
-          <Activity className="w-5 h-5 text-black" strokeWidth={2} />
+          <Hexagon className="w-5 h-5 text-black" strokeWidth={1.5} />
         </button>
 
-        {/* Navigation Icons */}
-        <nav className="flex flex-col gap-4">
+        {/* Navigation Icons Stack */}
+        <nav className="flex flex-col gap-5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.key === "home" || pathname === item.route;
@@ -81,13 +80,13 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
                   router.push(item.route);
                   if (setIsSidebarOpen) setIsSidebarOpen(false);
                 }}
-                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                className={`w-[52px] h-[52px] rounded-full flex items-center justify-center transition-all duration-300 ${
                   isActive 
-                    ? "bg-black text-white shadow-lg shadow-black/20 scale-105" 
-                    : "bg-white text-black shadow-sm hover:shadow-md hover:scale-105"
+                    ? "bg-[#111111] text-white shadow-xl shadow-black/20 scale-105" 
+                    : "bg-white text-[#111111] shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-md hover:scale-105"
                 }`}
               >
-                <Icon className="w-[22px] h-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+                <Icon className="w-[22px] h-[22px]" strokeWidth={isActive ? 2 : 1.5} />
               </button>
             );
           })}
@@ -97,14 +96,14 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
         <div className="mt-auto flex flex-col items-center gap-6">
           <button 
             onClick={() => router.push('/settings')}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105 transition-all"
+            className="w-[52px] h-[52px] bg-white rounded-full flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-md hover:scale-105 transition-all group"
           >
-            <Bell className="w-5 h-5 text-black" strokeWidth={2} />
+            <Bell className="w-[22px] h-[22px] text-[#111111] group-hover:fill-[#111111]/10" strokeWidth={1.5} />
           </button>
 
           <button 
             onClick={handleLogout}
-            className="w-12 h-12 rounded-full overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-all border-2 border-white"
+            className="w-[52px] h-[52px] rounded-full overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-all ring-2 ring-white"
           >
             <img src={currentUser.imageUrl} alt="Profile" className="w-full h-full object-cover" />
           </button>
