@@ -213,26 +213,25 @@ export default function DashboardHomePage() {
 
   // Fetch real-time posts (limit to 50 for popular tab scoring)
   useEffect(() => {
-    // In a real app, this should be paginated. For this algorithm requirement, we fetch top 50 recent.
-    let q = query(collection(db, "posts"), orderBy("created_at", "desc"), limit(50));
-    
-    // Applying type filter server-side if possible, else we filter client side
-    if (selectedType !== "all") {
-      q = query(collection(db, "posts"), where("post_type", "==", selectedType), orderBy("created_at", "desc"), limit(50));
-    }
-
+    // Fetch top 50 recent posts
+    const q = query(collection(db, "posts"), orderBy("created_at", "desc"), limit(50));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPosts(list);
     });
     return () => unsubscribe();
-  }, [selectedType]); // Refetch when type filter changes
+  }, []); // Only fetch once, apply filters client-side
 
-  // Client-side filtering and sorting based on Tabs and Tags
+  // Client-side filtering and sorting based on Tabs, Tags, and Types
   const processedFeed = useMemo(() => {
     let result = [...posts];
 
-    // 1. Tag Filter (Array Contains Simulation if not queried on server)
+    // 1. Post Type Filter
+    if (selectedType !== "all") {
+      result = result.filter(p => p.post_type === selectedType);
+    }
+
+    // 2. Tag Filter
     if (selectedTag !== "All") {
       result = result.filter(p => Array.isArray(p.stack_tags) && p.stack_tags.includes(selectedTag));
     }
