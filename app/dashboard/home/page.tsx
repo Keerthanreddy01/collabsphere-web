@@ -1,7 +1,5 @@
-"use client";
-
-import React from "react";
-import { useEffect, useState } from "react";
+"use client";import React, { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
@@ -36,18 +34,59 @@ const POST_TYPES = [
 ];
 
 function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: () => void }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [content, setContent] = useState("");
   const [postType, setPostType] = useState("looking_for");
   const [stackTags, setStackTags] = useState("");
   const [isPosting, setIsPosting] = useState(false);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const expand = () => {
+    if (!isExpanded) setIsExpanded(true);
+  };
+
+  const collapse = () => {
+    setIsExpanded(false);
     setContent("");
     setStackTags("");
     setPostType("looking_for");
+  };
+
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      if (isExpanded && containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        if (!content.trim() && !stackTags.trim()) {
+          setIsExpanded(false);
+        }
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isExpanded) {
+        if (!content.trim() && !stackTags.trim()) {
+          setIsExpanded(false);
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleDocumentClick);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isExpanded, content, stackTags]);
+
+  useEffect(() => {
+    if (isExpanded && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isExpanded]);
+
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = `${Math.min(e.target.scrollHeight, 200)}px`;
   };
 
   const submitPost = async () => {
@@ -66,209 +105,196 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
       author_username: user.email?.split("@")[0] || "builder",
       content: trimmed,
       stack_tags: tags,
-      post_type: postType,
+      post_type: postType as any,
     });
     setIsPosting(false);
     if (!result.error) {
-      closeModal();
+      collapse();
       onPostCreated();
     }
   };
 
   const avatarSrc = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
 
-  const pillTypes = [
-    { value: "looking_for", label: "🔍 Looking For" },
-    { value: "showcase",    label: "🚀 Showcase" },
-    { value: "help_needed", label: "🆘 Help Needed" },
-    { value: "discussion",  label: "💬 Discussion" },
-  ];
+  const hasContent = content.trim().length > 0;
+
+  const springTransition = {
+    type: "spring" as const,
+    stiffness: 220,
+    damping: 24,
+    mass: 1,
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 8 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { type: "spring" as const, stiffness: 300, damping: 24 } 
+    }
+  };
 
   return (
-    <>
-      {/* ── Dark overlay ── */}
-      {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.6)",
-            backdropFilter: "blur(4px)",
-            zIndex: 99,
-          }}
-          onClick={closeModal}
-        />
-      )}
-
-      {/* ── Centered Composer Modal ── */}
-      {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "560px",
-            maxWidth: "90vw",
-            maxHeight: "480px",
-            background: "#1a1a1a",
-            borderRadius: "20px",
-            border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-            padding: "20px 24px",
-            zIndex: 100,
-            display: "flex",
-            flexDirection: "column",
-            gap: "14px",
-            overflowY: "auto",
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={avatarSrc} alt="avatar" className="w-9 h-9 rounded-full object-cover border border-white/10 flex-shrink-0" />
-              <div>
-                <div className="text-[14px] font-semibold text-white leading-tight">{user.displayName || "Builder"}</div>
-                <div className="text-[11px] text-[#777] mt-0.5">
-                  {pillTypes.find(p => p.value === postType)?.label.replace(/^\S+\s/, "") || "Post"}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={closeModal}
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition flex-shrink-0"
-            >
-              <X className="w-4 h-4 text-white" />
-            </button>
-          </div>
-
-          {/* Post type pills */}
-          <div className="flex flex-wrap gap-2">
-            {pillTypes.map((t) => (
-              <button
-                key={t.value}
-                onClick={() => setPostType(t.value)}
-                style={{
-                  fontSize: "12px",
-                  padding: "4px 12px",
-                  borderRadius: "999px",
-                  fontWeight: 500,
-                  transition: "all 0.15s",
-                  background: postType === t.value ? "#fff" : "transparent",
-                  color: postType === t.value ? "#000" : "#9ca3af",
-                  border: postType === t.value ? "1px solid transparent" : "1px solid #4b5563",
-                  cursor: "pointer",
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Textarea */}
-          <textarea
-            autoFocus
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="What are you building today?"
-            style={{ minHeight: "120px" }}
-            className="w-full resize-none bg-transparent border-none text-[15px] text-white placeholder:text-[#444] outline-none leading-relaxed"
-          />
-
-          {/* Stack tags */}
-          <input
-            type="text"
-            value={stackTags}
-            onChange={(e) => setStackTags(e.target.value)}
-            placeholder="#react #firebase #typescript"
-            className="w-full text-sm text-gray-400 placeholder:text-[#444] outline-none border-none"
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              borderRadius: "8px",
-              padding: "8px 12px",
-            }}
-          />
-
-          {/* Footer */}
-          <div className="flex items-center justify-between border-t border-white/10 pt-3">
-            <div className="flex items-center gap-3">
-              <button className="text-white/40 hover:text-white/80 transition" title="Image"><Image className="w-5 h-5" /></button>
-              <button className="text-white/40 hover:text-white/80 transition" title="Video"><Video className="w-5 h-5" /></button>
-              <button className="text-white/40 hover:text-white/80 transition" title="Mic"><Mic className="w-5 h-5" /></button>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={closeModal}
-                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-white hover:bg-white/10 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={submitPost}
-                disabled={!content.trim() || isPosting}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2 text-[13px] font-semibold text-black hover:bg-gray-200 transition disabled:opacity-40"
-              >
-                <SendHorizonal className="w-3.5 h-3.5" />
-                {isPosting ? "Posting..." : "Post"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Floating Pill Bar ── */}
-      <div
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-end pointer-events-none w-full max-w-[600px] px-4">
+      <motion.div
+        ref={containerRef}
+        layout
+        layoutRoot
+        layoutId="composer"
+        initial={{ scale: 0.985, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={springTransition}
+        onClick={expand}
+        className="pointer-events-auto relative overflow-hidden"
         style={{
-          position: "fixed",
-          bottom: "16px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "50%",
-          maxWidth: "600px",
-          minWidth: "320px",
-          zIndex: 50,
-          background: "rgba(26,26,26,0.95)",
-          backdropFilter: "blur(12px)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "999px",
-          padding: "8px 16px",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
+          width: "100%",
+          background: "rgba(18,18,18,0.95)",
+          backdropFilter: isExpanded ? "blur(24px)" : "blur(10px)",
+          WebkitBackdropFilter: isExpanded ? "blur(24px)" : "blur(10px)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: "24px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+          cursor: isExpanded ? "default" : "text",
+          transform: "translateZ(0)",
+          willChange: "transform, opacity, height",
+          backfaceVisibility: "hidden",
         }}
       >
-        <img
-          src={avatarSrc}
-          alt="avatar"
-          className="w-9 h-9 rounded-full object-cover border border-white/10 flex-shrink-0"
-        />
-        <button
-          onClick={openModal}
-          className="flex-1 text-left text-[14px] text-[#555] bg-transparent border-none outline-none cursor-text"
-        >
-          What are you building today?
-        </button>
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <button onClick={openModal} className="text-white/40 hover:text-white/80 transition" title="Photo">
-            <Image className="w-5 h-5" />
-          </button>
-          <button onClick={openModal} className="text-white/40 hover:text-white/80 transition" title="Video">
-            <Video className="w-5 h-5" />
-          </button>
-          <button onClick={openModal} className="text-white/40 hover:text-white/80 transition" title="Voice">
-            <Mic className="w-5 h-5" />
-          </button>
-        </div>
-        <button
-          onClick={openModal}
-          className="rounded-full bg-white px-4 py-1.5 text-[13px] font-semibold text-black hover:bg-gray-200 transition flex-shrink-0"
-        >
-          Post
-        </button>
-      </div>
-    </>
+        <AnimatePresence mode="wait">
+          {!isExpanded ? (
+            <motion.div
+              key="collapsed"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.15 } }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-center gap-3 px-4 py-3"
+            >
+              <img
+                src={avatarSrc}
+                alt="avatar"
+                className="w-8 h-8 rounded-full object-cover border border-white/5 flex-shrink-0"
+              />
+              <div className="flex-1 text-[15px] text-[#777] font-medium truncate">
+                What are you building today?
+              </div>
+              <button
+                disabled
+                className="rounded-full bg-white/10 px-4 py-1.5 text-[14px] font-semibold text-white/40 transition flex-shrink-0"
+              >
+                Post
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="expanded"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={{
+                hidden: { opacity: 0, scale: 0.985 },
+                visible: {
+                  opacity: 1,
+                  scale: 1,
+                  transition: {
+                    delayChildren: 0.05,
+                    staggerChildren: 0.04,
+                  }
+                }
+              }}
+              className="flex flex-col gap-4 p-5"
+            >
+              {/* Header */}
+              <motion.div variants={itemVariants} className="flex items-center gap-3">
+                <img
+                  src={avatarSrc}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full object-cover border border-white/5 flex-shrink-0"
+                />
+                <div className="flex flex-col">
+                  <span className="text-[15px] font-semibold text-white leading-tight">
+                    {user.displayName || "Builder"}
+                  </span>
+                  <span className="text-[13px] text-[#888]">
+                    @{user.email?.split("@")[0] || "builder"}
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Textarea */}
+              <motion.div variants={itemVariants}>
+                <textarea
+                  ref={textareaRef}
+                  value={content}
+                  onChange={handleInput}
+                  placeholder="What are you building today?"
+                  className="w-full resize-none bg-transparent border-none text-[16px] text-white placeholder:text-[#555] placeholder:transition-all placeholder:duration-[180ms] placeholder:ease-out focus:placeholder:opacity-50 focus:placeholder:-translate-y-[2px] outline-none leading-relaxed transition-all duration-[180ms] ease-out focus:shadow-[0_0_0_1px_rgba(255,255,255,.08),0_0_20px_rgba(255,255,255,.04)] focus:bg-white/[0.02] p-3 -mx-3 rounded-xl"
+                  style={{
+                    minHeight: "80px",
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                  }}
+                />
+              </motion.div>
+
+              {/* Tags Input */}
+              <motion.div variants={itemVariants}>
+                <input
+                  type="text"
+                  value={stackTags}
+                  onChange={(e) => setStackTags(e.target.value)}
+                  placeholder="#react #typescript #firebase"
+                  className="w-full text-[14px] text-[#4ea8ff] placeholder:text-[#444] bg-transparent border-none outline-none p-2 -mx-2 rounded-lg focus:bg-white/[0.02] transition-colors duration-[180ms]"
+                />
+              </motion.div>
+
+              {/* Footer Toolbar */}
+              <motion.div variants={itemVariants} className="flex items-center justify-between pt-2 border-t border-white/10 mt-1">
+                <div className="flex items-center gap-1 -ml-2">
+                  <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Image">
+                    <Image className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
+                  </button>
+                  <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Video">
+                    <Video className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
+                  </button>
+                  <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Voice">
+                    <Mic className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      collapse();
+                    }}
+                    className="text-[14px] font-medium text-[#777] hover:text-white transition"
+                  >
+                    Cancel
+                  </button>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={springTransition}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      submitPost();
+                    }}
+                    disabled={!hasContent || isPosting}
+                    className={`rounded-full px-5 py-1.5 text-[14px] font-bold transition-colors ${
+                      hasContent && !isPosting
+                        ? "bg-white text-black hover:bg-gray-200"
+                        : "bg-white/20 text-white/40 cursor-not-allowed"
+                    }`}
+                  >
+                    {isPosting ? "Posting..." : "Post"}
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }
 
@@ -324,90 +350,107 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
   };
 
   return (
-    <article ref={ref} className="bg-black border-b border-[#262626] sm:border sm:rounded-[4px] sm:mb-4 pb-4">
-      {/* Post Header */}
-      <div className="flex items-center justify-between p-3">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600 p-[2px]">
-            <img src={post.author_avatar} alt={post.author_name} className="w-full h-full rounded-full object-cover border-2 border-black" />
-          </div>
-          <div className="flex items-center gap-1.5 text-[14px]">
-            <span className="font-semibold text-white hover:text-[#A8A8A8] cursor-pointer">{post.author_username}</span>
-            {post.author_username && <BadgeCheck className="w-3.5 h-3.5 text-[#0095F6]" fill="currentColor" stroke="black" />}
-            <span className="text-[#A8A8A8]">•</span>
-            <span className="text-[#A8A8A8]">{timeAgo(post.created_at)}</span>
+    <article ref={ref} className="group relative bg-[#09090b] border-b border-[#262626] sm:border sm:border-white/[0.08] sm:rounded-[20px] sm:mb-5 p-5 transition-all hover:border-white/[0.15]">
+      <div className="flex gap-4">
+        {/* Avatar Column */}
+        <div className="flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden border border-white/10 shadow-sm cursor-pointer hover:opacity-80 transition-opacity">
+            <img src={post.author_avatar} alt={post.author_name} className="w-full h-full object-cover" />
           </div>
         </div>
-        <button className="text-white hover:text-[#A8A8A8]">
-          <MoreHorizontal className="w-5 h-5" />
-        </button>
-      </div>
 
-      {/* Post Content */}
-      <div className="w-full px-3 pt-2 pb-3">
-        <p className="text-[15px] leading-relaxed text-white whitespace-pre-wrap break-words">
-          {displayContent}
-        </p>
-        {isTruncated && !isExpanded && (
-          <button onClick={() => setIsExpanded(true)} className="text-[#A8A8A8] text-[14px] font-medium mt-1 hover:text-white">more</button>
-        )}
-      </div>
-
-      {/* Post Actions */}
-      <div className="flex items-center justify-between px-3 pb-2 border-t border-[#262626] pt-3">
-        <div className="flex items-center gap-6">
-          <ClickSpark
-            sparkColor='#FF3040'
-            sparkSize={6}
-            sparkRadius={12}
-            sparkCount={6}
-            duration={400}
-          >
-            <button onClick={() => handleLikeClick(post.id)} className={`transition-colors flex items-center gap-2 text-[14px] font-semibold hover:opacity-70 ${isLiked ? 'text-[#FF3040]' : 'text-white'}`}>
-              <Heart className={`w-[22px] h-[22px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
-              {likesCount > 0 && likesCount}
+        {/* Content Column */}
+        <div className="flex-1 min-w-0">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2 text-[14px]">
+              <span className="font-bold text-white hover:underline cursor-pointer truncate">
+                {post.author_username}
+              </span>
+              <span className="text-[#555]">·</span>
+              <span className="text-[#A8A8A8] whitespace-nowrap hover:underline cursor-pointer">
+                {timeAgo(post.created_at)}
+              </span>
+            </div>
+            <button className="text-[#555] hover:text-white transition-colors opacity-0 group-hover:opacity-100">
+              <MoreHorizontal className="w-4 h-4" />
             </button>
-          </ClickSpark>
-          <button onClick={handleFetchComments} className="text-white hover:opacity-70 flex items-center gap-2 text-[14px] font-semibold">
-            <MessageCircle className="w-[22px] h-[22px]" strokeWidth={2} style={{ transform: 'scaleX(-1)' }} />
-            {post.comments_count > 0 && post.comments_count}
-          </button>
-          <button className="text-white hover:opacity-70">
-            <Send className="w-[22px] h-[22px]" strokeWidth={2} />
-          </button>
-        </div>
-        <button className="text-white hover:opacity-70">
-          <Bookmark className="w-[22px] h-[22px]" strokeWidth={2} />
-        </button>
-      </div>
+          </div>
 
-      {/* Comments Preview */}
-      {(post.comments_count > 0 || comments.length > 0) && (
-        <button onClick={handleFetchComments} className="px-3 text-[14px] text-[#A8A8A8] mt-1 hover:text-white">
-          View all {post.comments_count || comments.length} comments
-        </button>
-      )}
+          {/* Post Text */}
+          <p className="text-[15px] leading-[1.6] text-white/90 whitespace-pre-wrap break-words mt-1 mb-3">
+            {displayContent}
+            {isTruncated && !isExpanded && (
+              <button onClick={() => setIsExpanded(true)} className="text-blue-400 hover:text-blue-300 ml-1 font-medium">more</button>
+            )}
+          </p>
 
-      {/* Inline Add Comment */}
-      <div className="px-3 mt-2 flex items-center justify-between border-t border-[#262626] pt-2">
-        <div className="flex items-center gap-3 w-full">
-          <Smile className="w-5 h-5 text-white" strokeWidth={2} />
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && submitComment()}
-            placeholder="Add a comment..."
-            className="w-full bg-transparent border-none text-[14px] text-white placeholder-[#A8A8A8] focus:outline-none focus:ring-0"
-          />
+          {/* Actions Bar */}
+          <div className="flex items-center gap-6 mt-4">
+            <ClickSpark
+              sparkColor='#FF3040'
+              sparkSize={5}
+              sparkRadius={10}
+              sparkCount={5}
+              duration={400}
+            >
+              <button onClick={() => handleLikeClick(post.id)} className={`group/btn flex items-center gap-2 text-[13px] font-medium transition-colors ${isLiked ? 'text-[#FF3040]' : 'text-[#777] hover:text-[#FF3040]'}`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${isLiked ? 'bg-[#FF3040]/10' : 'group-hover/btn:bg-[#FF3040]/10'}`}>
+                  <Heart className={`w-[18px] h-[18px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
+                </div>
+                {likesCount > 0 && likesCount}
+              </button>
+            </ClickSpark>
+
+            <button onClick={handleFetchComments} className="group/btn flex items-center gap-2 text-[13px] font-medium text-[#777] hover:text-blue-400 transition-colors">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors group-hover/btn:bg-blue-400/10">
+                <MessageCircle className="w-[18px] h-[18px]" strokeWidth={2} />
+              </div>
+              {post.comments_count > 0 && post.comments_count}
+            </button>
+
+            <button className="group/btn flex items-center gap-2 text-[13px] font-medium text-[#777] hover:text-green-400 transition-colors">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors group-hover/btn:bg-green-400/10">
+                <Send className="w-[18px] h-[18px]" strokeWidth={2} />
+              </div>
+            </button>
+
+            <button className="group/btn ml-auto flex items-center gap-2 text-[13px] font-medium text-[#777] hover:text-yellow-400 transition-colors">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors group-hover/btn:bg-yellow-400/10">
+                <Bookmark className="w-[18px] h-[18px]" strokeWidth={2} />
+              </div>
+            </button>
+          </div>
+
+          {/* Comments Preview */}
+          {(post.comments_count > 0 || comments.length > 0) && (
+            <button onClick={handleFetchComments} className="text-[13px] text-[#555] mt-2 hover:text-white transition-colors font-medium">
+              Show replies ({post.comments_count || comments.length})
+            </button>
+          )}
+
+          {/* Inline Add Comment */}
+          <div className="mt-4 flex items-center gap-3">
+            <div className="w-6 h-6 rounded-full bg-white/10 overflow-hidden border border-white/10 flex-shrink-0">
+              <img src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} alt="" className="w-full h-full object-cover" />
+            </div>
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && submitComment()}
+              placeholder="Reply to this post..."
+              className="flex-1 bg-white/[0.02] border border-white/[0.08] rounded-full px-4 py-2 text-[13px] text-white placeholder-[#777] focus:outline-none focus:border-white/20 focus:bg-white/[0.04] transition-all"
+            />
+            <button
+              onClick={submitComment}
+              disabled={!newComment.trim() || isCommenting}
+              className="text-white/40 hover:text-white font-medium text-[13px] disabled:opacity-50 transition-colors px-2"
+            >
+              Reply
+            </button>
+          </div>
         </div>
-        <button 
-          onClick={submitComment}
-          disabled={!newComment.trim() || isCommenting}
-          className="text-[#0095F6] font-semibold text-[14px] disabled:opacity-50"
-        >
-          Post
-        </button>
       </div>
     </article>
   );
@@ -471,7 +514,7 @@ export default function DashboardHomePage() {
 
   return (
     <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
-      <Sidebar isSidebarOpen={false} setIsSidebarOpen={() => {}} />
+      <Sidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
 
       {/* Main Feed Area */}
       <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[340px]">
@@ -511,7 +554,7 @@ export default function DashboardHomePage() {
       <RightSidebar />
 
       {/* Fixed bottom composer bar + slide-up drawer */}
-      <BottomComposerBar user={user} onPostCreated={() => {}} />
+      <BottomComposerBar user={user} onPostCreated={() => { }} />
     </div>
   );
 }

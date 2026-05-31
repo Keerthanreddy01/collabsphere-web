@@ -34,7 +34,7 @@ export default function SignupPage() {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
       if (user) {
         checkAndRedirect(user.uid);
       }

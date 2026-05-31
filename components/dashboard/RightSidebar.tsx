@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { collection, query, limit, getDocs, where, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { getUserProjects } from "@/lib/projects";
-import { ChevronRight, Circle, Settings2, SquarePlus, Smartphone, Store, WandSparkles } from "lucide-react";
+import { ChevronRight, Circle, Settings2, SquarePlus, Smartphone, Store, WandSparkles, BookOpen, Rocket, Globe, Terminal, Layout, Cpu } from "lucide-react";
 
 type Builder = {
   id: string;
@@ -193,25 +193,61 @@ export default function RightSidebar() {
 
       </div>
 
-      {/* ── App Banner — ALWAYS pinned at bottom, never scrolls away ── */}
-      <section className="flex-shrink-0 rounded-[18px] border border-violet-400/20 bg-gradient-to-br from-[#1e0a3c] to-[#0f172a] p-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-violet-500/20 border border-violet-400/20">
-            <Smartphone className="size-4 text-violet-300" />
-          </div>
-          <div>
-            <div className="text-[13px] font-bold text-white leading-tight">Get the CollabSphere App</div>
-            <div className="text-[11px] text-white/50 leading-tight">Collaborate anywhere</div>
-          </div>
+      {/* ── Premium Poster Card ── */}
+      <section className="group relative flex-shrink-0 overflow-hidden rounded-[24px] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.4)] border border-white/10 transition-all duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.6)] hover:border-white/20">
+        
+        {/* Premium Aurora Background */}
+        <div className="absolute inset-0 bg-[#030303]" />
+        
+        {/* Aurora Gradients */}
+        <div className="absolute inset-0 overflow-hidden opacity-50 group-hover:opacity-75 transition-opacity duration-[1500ms] mix-blend-screen">
+          <div className="absolute inset-[-60%] bg-[conic-gradient(from_0deg_at_50%_50%,#3b82f6_0deg,#a855f7_120deg,#06b6d4_240deg,#3b82f6_360deg)] blur-[60px] animate-[spin_12s_linear_infinite] opacity-40" />
+          <div className="absolute inset-[-60%] bg-[conic-gradient(from_180deg_at_50%_50%,#10b981_0deg,#6366f1_120deg,#ec4899_240deg,#10b981_360deg)] blur-[80px] animate-[spin_18s_linear_infinite_reverse] opacity-30" />
         </div>
-        <div className="flex gap-2">
-          <button className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-3 py-2 text-[11px] font-bold text-black transition hover:bg-gray-100">
-            <Store className="size-3" />
-            App Store
-          </button>
-          <button className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-[11px] font-bold text-white transition hover:bg-white/20">
-            <WandSparkles className="size-3" />
-            Google Play
+        
+        {/* Subtle Grid Pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA0KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-50" />
+
+        {/* Noise Texture */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay" />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-start h-full">
+          {/* Header/Logo Area */}
+          <div className="flex items-center gap-2 mb-6 opacity-80">
+            <Globe className="size-4 text-white" />
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-white/90">
+              CollabSphere
+            </span>
+          </div>
+
+          {/* Typography */}
+          <h4 className="text-[22px] font-bold leading-[1.1] text-white tracking-tight mb-3">
+            Build together.<br />
+            Ship faster.
+          </h4>
+          
+          <p className="text-[13px] font-medium text-white/60 leading-relaxed mb-6 max-w-[90%]">
+            Join builders, developers, designers and creators.
+          </p>
+
+          {/* Floating Community Icons (Decorative) */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3 opacity-20 group-hover:opacity-40 transition-opacity duration-700 blur-[1px]">
+             <div className="w-6 h-6 rounded-lg bg-white/10 rotate-12 flex items-center justify-center backdrop-blur-md">
+               <Terminal className="size-3 text-white" />
+             </div>
+             <div className="w-5 h-5 rounded-lg bg-white/10 -rotate-6 flex items-center justify-center backdrop-blur-md -ml-3">
+               <Layout className="size-2.5 text-white" />
+             </div>
+             <div className="w-7 h-7 rounded-lg bg-white/10 rotate-6 flex items-center justify-center backdrop-blur-md ml-2">
+               <Cpu className="size-3.5 text-white" />
+             </div>
+          </div>
+
+          {/* CTA Button */}
+          <button className="mt-auto relative w-full flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white h-[40px] px-6 text-[13px] font-bold text-black transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-[0_0_24px_rgba(255,255,255,0.1)]">
+            <Smartphone className="size-4" />
+            Download App
           </button>
         </div>
       </section>

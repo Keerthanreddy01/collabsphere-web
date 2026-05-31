@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
       if (user) {
         checkAndRedirect(user.uid);
       }
@@ -68,7 +68,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full bg-black text-white font-sans antialiased flex flex-col items-center justify-center p-4 selection:bg-[#7e85fe] selection:text-white">
-      
+
       {/* Top Logo */}
       <div className="flex flex-col items-center mb-12">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] flex items-center justify-center mb-3">
@@ -98,7 +98,7 @@ export default function LoginPage() {
           Welcome to CollabSphere
         </h2>
         <p className="text-[#888888] text-sm mb-8 leading-relaxed">
-          Your platform to discover all developers.<br/>Sign in with email to get started.
+          Your platform to discover all developers.<br />Sign in with email to get started.
         </p>
 
         {error && (
@@ -124,7 +124,7 @@ export default function LoginPage() {
             placeholder="Password"
             className="w-full bg-[#111111] border border-white/5 focus:border-[#7e85fe] rounded-[10px] px-4 py-3.5 text-sm text-white placeholder-[#666666] outline-none transition-all font-medium"
           />
-          
+
           <button
             type="submit"
             disabled={loading}
