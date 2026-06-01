@@ -12,12 +12,68 @@ export default function SettingsPage() {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Profile");
+  const [profile, setProfile] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    bio: "",
+    location: "",
+    role: "",
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/");
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchProfile = async () => {
+        const { db } = await import("@/lib/firebase");
+        const { doc, getDoc } = await import("firebase/firestore");
+        const docRef = doc(db, "builder_profiles", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfile(data);
+          setFormData({
+            fullName: data.full_name || data.display_name || user.displayName || "",
+            bio: data.bio || "",
+            location: data.location || "",
+            role: data.role || "",
+          });
+        }
+      };
+      fetchProfile();
+    }
+  }, [user]);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setIsSaving(true);
+    setMessage(null);
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { doc, updateDoc } = await import("firebase/firestore");
+      const docRef = doc(db, "builder_profiles", user.uid);
+      await updateDoc(docRef, {
+        full_name: formData.fullName,
+        bio: formData.bio,
+        location: formData.location,
+        role: formData.role,
+        updated_at: new Date().toISOString()
+      });
+      setMessage({ type: 'success', text: 'Profile updated successfully.' });
+    } catch (err: any) {
+      console.error("Error updating profile:", err);
+      setMessage({ type: 'error', text: 'Failed to update profile.' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (loading || !user) {
     return <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">Loading...</div>;
@@ -89,9 +145,84 @@ export default function SettingsPage() {
             >
               <h2 className="text-xl font-bold text-white mb-6">{activeTab} Settings</h2>
               
-              <div className="text-[#777] text-[14px]">
-                {activeTab} content will be implemented here.
-              </div>
+              {message && (
+                <div className={`mb-6 p-4 rounded-xl text-sm font-medium border ${
+                  message.type === 'success' 
+                    ? 'bg-green-500/10 border-green-500/20 text-green-400' 
+                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                }`}>
+                  {message.text}
+                </div>
+              )}
+
+              {activeTab === "Profile" && (
+                <form onSubmit={handleSave} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-sm font-medium text-white/80">Full Name</label>
+                      <input
+                        type="text"
+                        value={formData.fullName}
+                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        className="w-full bg-[#111] border border-white/5 focus:border-[#7e85fe] rounded-xl h-11 px-4 text-white placeholder:text-white/20 outline-none transition-all text-sm font-medium"
+                        placeholder="Your full name"
+                      />
+                    </div>
+                    
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-sm font-medium text-white/80">Role</label>
+                      <input
+                        type="text"
+                        value={formData.role}
+                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                        className="w-full bg-[#111] border border-white/5 focus:border-[#7e85fe] rounded-xl h-11 px-4 text-white placeholder:text-white/20 outline-none transition-all text-sm font-medium"
+                        placeholder="e.g. Full Stack Developer"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-sm font-medium text-white/80">Location</label>
+                      <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        className="w-full bg-[#111] border border-white/5 focus:border-[#7e85fe] rounded-xl h-11 px-4 text-white placeholder:text-white/20 outline-none transition-all text-sm font-medium"
+                        placeholder="e.g. San Francisco, CA"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-sm font-medium text-white/80">Bio</label>
+                      <textarea
+                        value={formData.bio}
+                        onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                        className="w-full bg-[#111] border border-white/5 focus:border-[#7e85fe] rounded-xl p-4 text-white placeholder:text-white/20 outline-none transition-all text-sm font-medium resize-none min-h-[100px]"
+                        placeholder="Tell us about yourself..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/[0.06] flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={isSaving}
+                      className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all text-sm flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
+                    >
+                      {isSaving ? (
+                        <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        "Save Changes"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {activeTab !== "Profile" && (
+                <div className="text-[#777] text-[14px]">
+                  {activeTab} content will be implemented here.
+                </div>
+              )}
             </motion.div>
           </div>
 
