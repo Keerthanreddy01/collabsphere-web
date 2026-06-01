@@ -20,7 +20,7 @@ export default function LoginPage() {
       const docRef = doc(db, "builder_profiles", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().onboarding_completed) {
-        router.push("/dashboard/welcome");
+        router.push("/dashboard/home");
       } else {
         router.push("/onboarding");
       }

@@ -43,7 +43,7 @@ export default function OnboardingPage() {
       const docRef = doc(db, "builder_profiles", user.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().onboarding_completed) {
-        router.push("/dashboard/welcome");
+        router.push("/dashboard/home");
       } else {
         if (docSnap.exists()) {
           const d = docSnap.data();
@@ -146,7 +146,7 @@ export default function OnboardingPage() {
         },
         { merge: true }
       );
-      router.push("/dashboard/welcome");
+      router.push("/dashboard/home");
     } catch (err: any) {
       console.error("Error saving profile:", err);
       setError("Failed to save profile. Try again.");

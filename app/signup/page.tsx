@@ -6,24 +6,75 @@ import { signInWithGoogle, signInWithGithub, signUpWithEmail } from "@/lib/auth"
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Github, Chrome, Twitter } from "lucide-react";
+import { Github, Chrome, Zap, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
+
+function StepItem({ number, text, active }: { number: number, text: string, active?: boolean }) {
+  return (
+    <div className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${active ? 'bg-white text-black border border-white' : 'bg-brand-dark text-white border border-transparent'}`}>
+      <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold shrink-0 ${active ? 'bg-black text-white' : 'bg-white/10 text-white/40'}`}>
+        {number}
+      </div>
+      <span className="font-medium text-sm">{text}</span>
+    </div>
+  );
+}
+
+function SocialButton({ icon: Icon, label, onClick }: { icon: any, label: string, onClick?: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className="flex items-center justify-center gap-2 bg-black border border-white/10 rounded-xl h-12 hover:bg-white/5 transition-colors cursor-pointer text-sm font-semibold text-white">
+      <Icon className="w-4 h-4 shrink-0" />
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function InputGroup({ label, placeholder, type, helper, value, onChange, id }: any) {
+  const [show, setShow] = useState(false);
+  const isPassword = type === "password";
+  const actualType = isPassword ? (show ? "text" : "password") : type;
+
+  return (
+    <div className="flex flex-col gap-1.5 w-full">
+      <label htmlFor={id} className="text-sm font-medium text-white">{label}</label>
+      <div className="relative">
+        <input
+          id={id}
+          type={actualType}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          className="w-full bg-[#111] border-none rounded-xl h-11 px-4 text-white placeholder:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
+        />
+        {isPassword && (
+          <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-pointer">
+            {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        )}
+      </div>
+      {helper && <p className="text-xs text-white/30 mt-1">{helper}</p>}
+    </div>
+  );
+}
 
 export default function SignupPage() {
   const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [stack, setStack] = useState("");
+
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(false);
 
   const checkAndRedirect = async (uid: string) => {
     try {
       const docRef = doc(db, "builder_profiles", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().onboarding_completed) {
-        router.push("/dashboard/welcome");
+        router.push("/dashboard/home");
       } else {
         router.push("/onboarding");
       }
@@ -45,15 +96,9 @@ export default function SignupPage() {
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (!agreeTerms) {
-      setError("You must agree to the Terms & Privacy Policy");
+    if (password.length < 8) {
+      setError("Password requires at least 8 characters.");
       return;
     }
 
@@ -63,10 +108,7 @@ export default function SignupPage() {
       if (error) {
         setError(error.message);
       } else {
-        setSuccess("Success! Please check your email to confirm your registration.");
-        setTimeout(() => {
-          router.push("/login");
-        }, 5000);
+        router.push("/onboarding");
       }
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
@@ -94,223 +136,116 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen w-full relative flex items-center justify-center p-4 text-white font-sans antialiased overflow-hidden select-none">
+    <main className="flex min-h-screen w-full bg-black selection:bg-white/30 p-2 transition-all duration-500 lg:h-screen lg:overflow-hidden lg:p-4">
       
-      {/* HIGH-PERFORMANCE 60FPS CSS TRANSITIONS (Hardware Accelerated) */}
-      <style>{`
-        @keyframes fadeInBg {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes fadeInUpCard {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        .animate-fade-in-bg {
-          animation: fadeInBg 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: opacity;
-        }
-        .animate-fade-in-card {
-          animation: fadeInUpCard 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: transform, opacity;
-        }
-      `}</style>
-
-      {/* FULL-SCREEN SCENIC SUNSET BACKGROUND IMAGE (Sourced directly from user's loginpage.png) */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat opacity-0 animate-fade-in-bg"
-        style={{
-          backgroundImage: "url('/loginpage.png')"
-        }}
-      />
-      {/* Subtle dark overlay to match contrast */}
-      <div className="fixed inset-0 z-0 bg-black/10 pointer-events-none" />
-
-      {/* MAIN FLOAT CONTAINER CARD */}
-      <div 
-        className="relative z-10 w-full max-w-[1000px] min-h-[600px] md:h-[620px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row opacity-0 animate-fade-in-card"
-        style={{
-          boxShadow: "0 30px 60px rgba(0,0,0,0.5)"
-        }}
-      >
-        
-        {/* LEFT COLUMN: SOLID DARK FORM PANEL */}
-        <div 
-          className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative select-none"
-          style={{
-            background: "#0c0c0e",
-            borderRight: "1px solid rgba(255, 255, 255, 0.08)"
-          }}
+      {/* Left Column (Hero & Background Video) */}
+      <div className="relative hidden lg:flex flex-col items-center justify-end pb-32 px-12 rounded-3xl overflow-hidden shadow-2xl h-full w-[52%] shrink-0">
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          className="absolute inset-0 w-full h-full object-cover z-0"
         >
-          
-          {/* Logo top left */}
-          <div 
-            className="absolute top-8 left-8 sm:left-12 flex items-center gap-2 group cursor-pointer"
-            onClick={() => router.push("/")}
-          >
-            <div className="flex items-center justify-center w-5 h-5 rounded-[6px] bg-white text-black font-black text-xs transition-transform group-hover:rotate-[30deg]">
-              <span className="leading-none select-none font-bold text-xs">*</span>
-            </div>
-            <span className="text-base font-black tracking-tight text-white font-sans">collabsphere</span>
-          </div>
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260506_081238_406ed0e3-5d83-436e-a512-0bbff7ec5b95.mp4" type="video/mp4" />
+        </video>
 
-          {/* Form wrapper */}
-          <div className="w-full max-w-[340px] mx-auto text-left mt-8">
-            <h2 className="text-3xl font-bold text-white tracking-tight">
-              Sign up
-            </h2>
-            <p className="text-white/40 text-xs mt-2 mb-8 leading-relaxed">
-              Create your builder profile and find your dream team.
-            </p>
-
-            {error && (
-              <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-bold">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="mb-5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs text-center font-bold">
-                {success}
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleEmailSignUp} className="space-y-4">
-              <div>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter Email"
-                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
-                />
-              </div>
-
-              <div>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create Password"
-                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
-                />
-              </div>
-
-              <div>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm Password"
-                  className="w-full bg-[#17171c] border border-white/5 text-white rounded-xl px-4 py-3.5 placeholder-white/20 focus:border-purple-500/50 focus:ring-3 focus:ring-purple-500/15 outline-none transition duration-200 text-sm"
-                />
-              </div>
-
-              {/* Terms Checkbox */}
-              <div className="flex items-center gap-2.5 py-1 text-left">
-                <input
-                  id="terms"
-                  type="checkbox"
-                  checked={agreeTerms}
-                  onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="accent-pink-500 w-4 h-4 rounded border-white/10 bg-white/5 cursor-pointer shrink-0"
-                />
-                <label htmlFor="terms" className="text-white/40 text-[10px] font-semibold select-none cursor-pointer">
-                  I Agree To The Terms & Privacy Policy
-                </label>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-white text-black font-semibold rounded-xl py-3.5 w-full hover:bg-[#f0f0f0] transition duration-200 text-sm flex items-center justify-center mt-2 cursor-pointer active:scale-[0.99]"
-              >
-                {loading ? (
-                  <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  "Create Account"
-                )}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-6">
-              <div className="h-px bg-white/10 flex-1" />
-              <span className="text-white/30 text-[10px] font-extrabold uppercase select-none tracking-widest shrink-0">
-                or sign up via
-              </span>
-              <div className="h-px bg-white/10 flex-1" />
-            </div>
-
-            {/* Social buttons */}
-            <div className="flex gap-2.5 mb-6">
-              <button
-                onClick={handleGoogleSignIn}
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-              >
-                <Chrome className="w-4 h-4 text-white shrink-0" />
-                <span>Google</span>
-              </button>
-              <button
-                onClick={handleGithubSignIn}
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-              >
-                <Github className="w-4 h-4 text-white shrink-0" />
-                <span>GitHub</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => alert("Twitter/X authentication coming soon!")}
-                className="flex-1 flex items-center justify-center gap-2 bg-[#17171c] border border-white/5 rounded-xl py-3 text-white hover:bg-white/10 transition text-xs font-semibold cursor-pointer"
-              >
-                <Twitter className="w-4 h-4 text-white shrink-0" />
-                <span>Twitter</span>
-              </button>
-            </div>
-
-            {/* Switch routes */}
-            <p className="text-white/40 text-xs text-center">
-              Already have an account?{" "}
-              <Link href="/login" className="text-pink-500 hover:text-pink-400 font-semibold transition ml-0.5">
-                Login
-              </Link>
-            </p>
-
-          </div>
-
-        </div>
-
-        {/* RIGHT COLUMN: TRANSLUCENT GLASS (Reveals background Sunset computer landscape sharply and cleanly) */}
-        <div 
-          className="hidden md:flex w-full md:w-1/2 border-l border-white/10 relative overflow-hidden"
-          style={{
-            background: "rgba(255, 255, 255, 0.02)",
-            backdropFilter: "blur(0.5px)",
-            WebkitBackdropFilter: "blur(0.5px)"
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
           }}
-        />
+          className="relative z-10 w-full max-w-xs space-y-8"
+        >
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }} className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-white fill-white" />
+            <span className="text-xl font-semibold tracking-tight text-white">CollabSphere</span>
+          </motion.div>
 
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}>
+            <h1 className="text-4xl font-medium tracking-tight whitespace-nowrap text-white">Build Together.</h1>
+            <p className="text-white/60 text-sm leading-relaxed mt-2 px-4">
+              Join a community of developers building, showcasing, and growing together.
+            </p>
+          </motion.div>
+
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }} className="space-y-3">
+            <StepItem number={1} text="Create your builder profile" active={true} />
+            <StepItem number={2} text="Set your stack & skills" />
+            <StepItem number={3} text="Start collaborating" />
+          </motion.div>
+        </motion.div>
       </div>
 
-    </div>
+      {/* Right Column (Sign Up Form) */}
+      <div className="flex-1 flex flex-col items-center justify-center py-12 lg:py-6 px-4 sm:px-12 lg:px-16 xl:px-24 overflow-y-auto lg:overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full max-w-xl space-y-8 lg:space-y-6 sm:space-y-10"
+        >
+          <div>
+            <h2 className="text-3xl font-medium tracking-tight text-white">Join CollabSphere</h2>
+            <p className="text-white/40 text-sm mt-1.5">Connect with builders, share projects, find collaborators.</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <SocialButton icon={Chrome} label="Google" onClick={handleGoogleSignIn} />
+            <SocialButton icon={Github} label="GitHub" onClick={handleGithubSignIn} />
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="h-px bg-white/10 flex-1" />
+            <span className="bg-black px-4 text-xs font-medium text-white/40 uppercase tracking-widest shrink-0">Or</span>
+            <div className="h-px bg-white/10 flex-1" />
+          </div>
+
+          {error && (
+            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-bold">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleEmailSignUp} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <InputGroup label="First Name" placeholder="John" id="firstName" value={firstName} onChange={(e: any) => setFirstName(e.target.value)} type="text" />
+              <InputGroup label="Last Name" placeholder="Doe" id="lastName" value={lastName} onChange={(e: any) => setLastName(e.target.value)} type="text" />
+            </div>
+            
+            <InputGroup label="Username" placeholder="@yourhandle" id="username" value={username} onChange={(e: any) => setUsername(e.target.value)} type="text" />
+            
+            <InputGroup label="Email" placeholder="you@example.com" id="email" value={email} onChange={(e: any) => setEmail(e.target.value)} type="email" />
+            
+            <InputGroup label="Password" placeholder="••••••••" id="password" value={password} onChange={(e: any) => setPassword(e.target.value)} type="password" helper="Requires at least 8 characters." />
+            
+            <InputGroup label="Stack Tags" placeholder="Your main stack: React, Node, Python..." id="stack" value={stack} onChange={(e: any) => setStack(e.target.value)} type="text" helper="You can update this later in your profile." />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 bg-white text-black font-semibold rounded-xl hover:bg-white/90 active:scale-[0.98] mt-4 transition-all flex items-center justify-center cursor-pointer"
+            >
+              {loading ? (
+                <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+              ) : (
+                "Create Builder Account"
+              )}
+            </button>
+          </form>
+
+          <p className="text-sm text-white/40">
+            Already a builder?{" "}
+            <Link href="/login" className="text-white hover:underline transition-colors">
+              Log in
+            </Link>
+          </p>
+
+        </motion.div>
+      </div>
+
+    </main>
   );
 }
