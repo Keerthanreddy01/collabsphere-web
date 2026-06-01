@@ -148,12 +148,12 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
         className="pointer-events-auto relative overflow-hidden"
         style={{
           width: "100%",
-          background: "rgba(18,18,18,0.95)",
-          backdropFilter: isExpanded ? "blur(24px)" : "blur(10px)",
-          WebkitBackdropFilter: isExpanded ? "blur(24px)" : "blur(10px)",
+          background: "rgba(255,255,255,0.03)",
+          backdropFilter: isExpanded ? "blur(32px)" : "blur(16px)",
+          WebkitBackdropFilter: isExpanded ? "blur(32px)" : "blur(16px)",
           border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "24px",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+          borderRadius: "28px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
           cursor: isExpanded ? "default" : "text",
           transform: "translateZ(0)",
           willChange: "transform, opacity, height",
@@ -350,8 +350,11 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
   };
 
   return (
-    <article ref={ref} className="group relative bg-[#09090b] border-b border-[#262626] sm:border sm:border-white/[0.08] sm:rounded-[20px] sm:mb-5 p-5 transition-all hover:border-white/[0.15]">
-      <div className="flex gap-4">
+    <article ref={ref} className="group relative bg-white/[0.02] border border-white/[0.05] hover:border-white/[0.1] hover:bg-white/[0.03] sm:rounded-[24px] mb-5 p-6 backdrop-blur-[12px] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] overflow-hidden">
+      {/* Subtle top glare */}
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      <div className="flex gap-4 relative z-10">
         {/* Avatar Column */}
         <div className="flex-shrink-0">
           <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden border border-white/10 shadow-sm cursor-pointer hover:opacity-80 transition-opacity">
@@ -506,14 +509,21 @@ export default function DashboardHomePage() {
 
   if (loading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
+      <div className="flex min-h-screen items-center justify-center bg-[#050505]">
         <div className="w-8 h-8 animate-spin rounded-full border-4 border-[#0095F6] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#050505] text-white font-sans overflow-hidden relative selection:bg-blue-500/30 selection:text-white">
+      {/* Background Gradients & Grid */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-[20%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.06)_0,transparent_50%)] blur-[80px]" />
+        <div className="absolute bottom-[10%] right-[30%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.06)_0,transparent_50%)] blur-[80px]" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA0KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-20" />
+      </div>
+
       <Sidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
 
       {/* Main Feed Area */}
