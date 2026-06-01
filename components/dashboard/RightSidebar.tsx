@@ -113,7 +113,11 @@ export default function RightSidebar() {
                 Online
               </div>
             </div>
-            <button className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/10" title="Profile settings">
+            <button 
+              onClick={() => router.push('/settings')}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/10" 
+              title="Profile settings"
+            >
               <Settings2 className="size-4" />
             </button>
           </div>
