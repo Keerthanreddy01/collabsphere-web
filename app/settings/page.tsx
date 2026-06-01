@@ -257,9 +257,42 @@ export default function SettingsPage() {
                 </div>
               )}
 
-              {activeTab !== "Profile" && activeTab !== "Account" && (
-                <div className="text-[#777] text-[14px]">
-                  {activeTab} content will be implemented here.
+              {activeTab === "Notifications" && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium text-white mb-2">Notification Preferences</h3>
+                  <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.05] rounded-[16px]">
+                    <div>
+                      <h4 className="text-sm font-medium text-white">Email Notifications</h4>
+                      <p className="text-xs text-white/50 mt-1">Receive weekly digests and updates via email.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.05] rounded-[16px]">
+                    <div>
+                      <h4 className="text-sm font-medium text-white">In-App Notifications</h4>
+                      <p className="text-xs text-white/50 mt-1">Receive notifications inside CollabSphere.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "Security" && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium text-white mb-2">Security Settings</h3>
+                  <div className="p-4 bg-white/[0.02] border border-white/[0.05] rounded-[16px] space-y-3">
+                    <h4 className="text-sm font-medium text-white">Two-Factor Authentication (2FA)</h4>
+                    <p className="text-xs text-white/50">Add an extra layer of security to your account.</p>
+                    <button className="px-4 py-2 bg-white/10 text-white text-xs font-semibold rounded-lg hover:bg-white/20 transition-all">
+                      Enable 2FA
+                    </button>
+                  </div>
                 </div>
               )}
             </motion.div>
