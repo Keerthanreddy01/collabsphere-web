@@ -218,7 +218,46 @@ export default function SettingsPage() {
                 </form>
               )}
 
-              {activeTab !== "Profile" && (
+              {activeTab === "Account" && (
+                <div className="space-y-8">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium text-white">Email Address</h3>
+                    <p className="text-sm text-white/50">Your email address is used to sign in to CollabSphere.</p>
+                    <div className="flex flex-col gap-1.5">
+                      <input
+                        type="email"
+                        value={user?.email || ""}
+                        disabled
+                        className="w-full bg-[#111] border border-white/5 rounded-xl h-11 px-4 text-white/50 outline-none cursor-not-allowed text-sm font-medium"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4 pt-6 border-t border-white/[0.06]">
+                    <h3 className="text-lg font-medium text-white">Password</h3>
+                    <p className="text-sm text-white/50">Change your password to keep your account secure.</p>
+                    <button
+                      type="button"
+                      className="px-6 py-2.5 bg-white/5 text-white font-semibold rounded-full border border-white/10 hover:bg-white/10 transition-all text-sm active:scale-[0.98]"
+                    >
+                      Change Password
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4 pt-6 border-t border-red-500/10">
+                    <h3 className="text-lg font-medium text-red-400">Danger Zone</h3>
+                    <p className="text-sm text-white/50">Permanently delete your account and all associated data.</p>
+                    <button
+                      type="button"
+                      className="px-6 py-2.5 bg-red-500/10 text-red-400 font-semibold rounded-full border border-red-500/20 hover:bg-red-500/20 transition-all text-sm active:scale-[0.98]"
+                    >
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab !== "Profile" && activeTab !== "Account" && (
                 <div className="text-[#777] text-[14px]">
                   {activeTab} content will be implemented here.
                 </div>
