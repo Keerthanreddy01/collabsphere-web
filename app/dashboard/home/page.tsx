@@ -427,8 +427,26 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
           {/* Comments Preview */}
           {(post.comments_count > 0 || comments.length > 0) && (
             <button onClick={handleFetchComments} className="text-[13px] text-[#555] mt-2 hover:text-white transition-colors font-medium">
-              Show replies ({post.comments_count || comments.length})
+              {showComments ? "Hide replies" : `Show replies (${Math.max(post.comments_count || 0, comments.length)})`}
             </button>
+          )}
+
+          {/* Render Comments */}
+          {showComments && comments.length > 0 && (
+            <div className="mt-4 space-y-4 pl-3 border-l-2 border-white/[0.05]">
+              {comments.map((comment) => (
+                <div key={comment.id} className="flex gap-3 group/comment">
+                  <img src={comment.author_avatar} alt={comment.author_name} className="w-7 h-7 rounded-full object-cover bg-white/5 flex-shrink-0 border border-white/5" />
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <div className="flex items-center gap-2 text-[13px]">
+                      <span className="font-bold text-white hover:underline cursor-pointer truncate">{comment.author_username}</span>
+                      <span className="text-[#A8A8A8] text-[12px]">{timeAgo(comment.created_at || new Date().toISOString())}</span>
+                    </div>
+                    <p className="text-[14px] text-white/90 mt-0.5 break-words whitespace-pre-wrap leading-[1.5]">{comment.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
 
           {/* Inline Add Comment */}
