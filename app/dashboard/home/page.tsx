@@ -100,7 +100,6 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
     const result = await createPost({
       uid: user.uid,
       author_name: user.displayName || "Builder",
-      author_email: user.email || "",
       author_avatar: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`,
       author_username: user.email?.split("@")[0] || "builder",
       content: trimmed,
