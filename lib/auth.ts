@@ -11,6 +11,7 @@ import {
   browserLocalPersistence,
   setPersistence
 } from 'firebase/auth'
+import { logSecurityEvent } from './security-logger'
 
 const googleProvider = new GoogleAuthProvider()
 googleProvider.addScope('email')
@@ -124,8 +125,12 @@ export async function signInWithGithub() {
 export async function signInWithEmail(email: string, password: string) {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password)
+    // Log successful sign-in for audit trail
+    await logSecurityEvent({ uid: result.user.uid, event: 'sign_in_success', method: 'email' })
     return { data: { user: result.user }, error: null }
   } catch (error: any) {
+    // Log failed attempt (no uid — user is unauthenticated)
+    await logSecurityEvent({ event: 'sign_in_failure', method: 'email', metadata: { code: error.code } })
     // Map to friendly message — never expose raw Firebase error
     return { data: null, error: { message: mapAuthError(error.code), code: error.code } }
   }
@@ -134,6 +139,7 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signUpWithEmail(email: string, password: string) {
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password)
+    await logSecurityEvent({ uid: result.user.uid, event: 'sign_up_success', method: 'email' })
     return { data: { user: result.user }, error: null }
   } catch (error: any) {
     return { data: null, error: { message: mapAuthError(error.code), code: error.code } }
@@ -142,7 +148,9 @@ export async function signUpWithEmail(email: string, password: string) {
 
 export async function signOut() {
   try {
+    const uid = auth.currentUser?.uid
     await firebaseSignOut(auth)
+    if (uid) await logSecurityEvent({ uid, event: 'sign_out' })
     return { error: null }
   } catch (error: any) {
     return { error: { message: 'Failed to sign out. Please try again.' } }
