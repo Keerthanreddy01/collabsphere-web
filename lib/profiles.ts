@@ -4,6 +4,7 @@ import {
   collection, getDocs, query, 
   where, orderBy, addDoc, getCountFromServer
 } from 'firebase/firestore'
+import { sanitizeShortText, sanitizeUrl, sanitizeProfileUpdate } from './sanitize'
 
 export async function getProfile(userId: string) {
   try {
@@ -27,15 +28,25 @@ export async function createProfile(profile: {
   stack?: string[]
 }) {
   try {
+    // Sanitize user-supplied fields before storing
+    const safeProfile = {
+      uid:        profile.uid,
+      email:      profile.email || '',
+      full_name:  sanitizeShortText(profile.full_name),
+      avatar_url: sanitizeUrl(profile.avatar_url),
+      username:   sanitizeShortText(profile.username),
+      stack:      Array.isArray(profile.stack)
+                    ? profile.stack.map(sanitizeShortText).slice(0, 20)
+                    : [],
+    }
     await setDoc(doc(db, 'builder_profiles', profile.uid), {
       availability: 'open',
       onboarding_completed: false,
-      stack: [],
-      ...profile,
+      ...safeProfile,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
-    return { data: profile, error: null }
+    return { data: safeProfile, error: null }
   } catch (error) {
     return { data: null, error }
   }
@@ -43,15 +54,17 @@ export async function createProfile(profile: {
 
 export async function updateProfile(
   userId: string,
-  updates: object
+  updates: Record<string, unknown>
 ) {
   try {
+    // Whitelist + sanitize: blocks protected fields (uid, email, etc.)
+    const safeUpdates = sanitizeProfileUpdate(updates)
     const docRef = doc(db, 'builder_profiles', userId)
     await updateDoc(docRef, {
-      ...updates,
+      ...safeUpdates,
       updated_at: new Date().toISOString(),
     })
-    return { data: updates, error: null }
+    return { data: safeUpdates, error: null }
   } catch (error) {
     return { data: null, error }
   }

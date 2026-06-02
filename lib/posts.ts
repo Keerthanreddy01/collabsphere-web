@@ -4,11 +4,12 @@ import {
   query, orderBy, doc, updateDoc,
   increment, getDoc, arrayUnion, arrayRemove
 } from 'firebase/firestore'
+import { sanitizePost } from './sanitize'
 
 export async function createPost(post: {
   uid: string
   author_name: string
-  author_email: string
+  // author_email intentionally removed — do NOT store email in post documents (PII)
   author_avatar: string
   author_username: string
   content: string
@@ -16,10 +17,12 @@ export async function createPost(post: {
   post_type: 'update' | 'looking_for' | 'build_log'
 }) {
   try {
+    // Sanitize all user-provided content before storing
+    const safePost = sanitizePost(post as Record<string, unknown>)
     const docRef = await addDoc(
       collection(db, 'posts'),
       {
-        ...post,
+        ...safePost,
         likes: [],
         comments_count: 0,
         views: 0,
