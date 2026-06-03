@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Rocket } from "lucide-react";
+import Sidebar from "@/components/Sidebar";
+import { getAllProjects, ProjectData } from "@/lib/projects";
+import { useAuth } from "@/hooks/useAuth";
 
 const projects = [
   {
@@ -75,24 +78,44 @@ const statusColors: Record<string, string> = {
 };
 
 export default function ShowcasePage() {
+  const { user } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [hovered, setHovered] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [fetchedProjects, setFetchedProjects] = useState<any[]>([]);
 
   useEffect(() => {
     const t = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    async function loadProjects() {
+      const { data } = await getAllProjects();
+      if (data && data.length > 0) {
+        setFetchedProjects(data);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  const displayProjects = fetchedProjects.length > 0 ? fetchedProjects : projects;
+
   return (
-    <main className="min-h-screen bg-black text-white">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md">
-        <Link href="/" className="inline-flex items-center gap-3 text-white/60 hover:text-white transition-colors group">
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-mono">COLLABSPHERE™</span>
-        </Link>
-        <span className="text-xs font-mono text-white/30 tracking-widest">PROJECT SHOWCASE</span>
-      </nav>
+    <div className="flex h-screen bg-black text-white overflow-hidden selection:bg-white/30">
+      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+      
+      <main className="flex-1 h-full overflow-y-auto no-scrollbar relative lg:pl-[72px]">
+        {/* Nav */}
+        <nav className="sticky top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md">
+          <div className="flex items-center gap-4">
+            <button className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
+              <Rocket className="w-5 h-5 text-white" />
+            </button>
+            <span className="text-sm font-mono">COLLABSPHERE™</span>
+          </div>
+          <span className="text-xs font-mono text-white/30 tracking-widest">PROJECT SHOWCASE</span>
+        </nav>
 
       {/* Hero */}
       <section className="relative pt-40 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
@@ -134,16 +157,16 @@ export default function ShowcasePage() {
                 <ArrowUpRight className="w-5 h-5" />
               </div>
             </div>
-            <p className="text-white/60 max-w-2xl leading-relaxed mb-10 text-lg">{projects[0].description}</p>
+            <p className="text-white/60 max-w-2xl leading-relaxed mb-10 text-lg">{displayProjects[0].description}</p>
             <div className="flex flex-wrap items-center gap-8">
               <div className="flex flex-wrap gap-2">
-                {projects[0].stack.map((s) => (
+                {displayProjects[0].stack.map((s: string) => (
                   <span key={s} className="text-xs font-mono px-3 py-1.5 border border-white/10 text-white/40">{s}</span>
                 ))}
               </div>
               <div className="flex items-center gap-2 text-sm text-white/40 font-mono">
                 <span>BUILT BY</span>
-                {projects[0].team.map((t) => (
+                {displayProjects[0].team.map((t: string) => (
                   <span key={t} className="text-white/70">{t}</span>
                 ))}
               </div>
@@ -155,7 +178,7 @@ export default function ShowcasePage() {
       {/* Rest of projects */}
       <section className="px-6 lg:px-12 pb-40 max-w-[1400px] mx-auto">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projects.slice(1).map((project, i) => (
+          {displayProjects.slice(1).map((project: any, i: number) => (
             <div
               key={project.id}
               onMouseEnter={() => setHovered(i)}
@@ -176,7 +199,7 @@ export default function ShowcasePage() {
                 <p className="text-sm text-white/40 mb-4">{project.tagline}</p>
                 <p className="text-sm text-white/50 leading-relaxed mb-6">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.stack.map((s) => (
+                  {project.stack.map((s: string) => (
                     <span key={s} className="text-[10px] font-mono px-2 py-0.5 border border-white/10 text-white/30">{s}</span>
                   ))}
                 </div>
@@ -194,7 +217,7 @@ export default function ShowcasePage() {
         <div className={`mt-20 text-center transition-all duration-1000 delay-700 ${isVisible ? "opacity-100" : "opacity-0"}`}>
           <p className="text-white/30 text-sm font-mono mb-6">180+ projects shipped and counting</p>
           <Link
-            href="/"
+            href="/create"
             className="inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-sm font-mono hover:border-white hover:bg-white hover:text-black transition-all duration-300 group"
           >
             START YOUR PROJECT
@@ -202,6 +225,7 @@ export default function ShowcasePage() {
           </Link>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }
