@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { Home, Search, Compass, PlaySquare, MessageCircle, Heart, PlusSquare, Menu, LogOut, Settings, Activity } from "lucide-react";
+import { LayoutDashboard, Telescope, Rocket, MessageSquare, Bell, PlusCircle, Menu, LogOut, Settings, Activity } from "lucide-react";
 import { db, auth } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { signOut } from "firebase/auth";
@@ -34,12 +34,12 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
   }), [user, profile]);
 
   const navItems = [
-    { key: "home", label: "Feed", icon: Home, route: "/dashboard/home" },
-    { key: "search", label: "Search", icon: Search, route: "/search" },
-    { key: "explore", label: "Explore", icon: Compass, route: "/explore" },
-    { key: "messages", label: "Messages", icon: MessageCircle, route: "/messages" },
-    { key: "notifications", label: "Notifications", icon: Heart, route: "/notifications" },
-    { key: "create", label: "Post", icon: PlusSquare, route: "/create" },
+    { key: "home", label: "Dashboard", icon: LayoutDashboard, route: "/dashboard/home" },
+    { key: "explore", label: "Discover", icon: Telescope, route: "/explore" },
+    { key: "showcase", label: "Showcase", icon: Rocket, route: "/showcase" },
+    { key: "messages", label: "Discussions", icon: MessageSquare, route: "/messages" },
+    { key: "notifications", label: "Alerts", icon: Bell, route: "/notifications" },
+    { key: "create", label: "Launch", icon: PlusCircle, route: "/create" },
   ];
 
   return (
