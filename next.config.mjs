@@ -37,8 +37,8 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts: self + Google Fonts
       "font-src 'self' https://fonts.gstatic.com",
-      // Images: self + data URIs + dicebear avatars + Firebase Storage + CloudFront
-      "img-src 'self' data: blob: https://*.googleusercontent.com https://*.googleapis.com https://api.dicebear.com https://*.firebasestorage.app https://*.cloudfront.net",
+      // Images: self + data URIs + dicebear avatars + Firebase Storage + CloudFront + GitHub avatars
+      "img-src 'self' data: blob: https://*.googleusercontent.com https://*.googleapis.com https://api.dicebear.com https://*.firebasestorage.app https://*.cloudfront.net https://*.githubusercontent.com",
       // Media: self + CloudFront (video)
       "media-src 'self' https://*.cloudfront.net",
       // Connect (API calls): self + Firebase + Google APIs
@@ -62,6 +62,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '**.googleusercontent.com' },
       { protocol: 'https', hostname: 'api.dicebear.com' },
       { protocol: 'https', hostname: '**.firebasestorage.app' },
+      { protocol: 'https', hostname: '**.githubusercontent.com' },
     ],
   },
   async headers() {
