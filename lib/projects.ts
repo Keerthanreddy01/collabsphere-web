@@ -5,13 +5,33 @@ import {
   doc, updateDoc, deleteDoc
 } from 'firebase/firestore'
 
-export async function createProject(project: object) {
+import { sanitizeShortText, sanitizeBio } from "./sanitize";
+
+export interface ProjectData {
+  uid: string;
+  name: string;
+  tagline: string;
+  description: string;
+  stack: string[];
+  team: string[];
+  github_url?: string;
+  live_url?: string;
+  status: "SHIPPED" | "LIVE" | "BETA" | "OPEN SOURCE";
+  author_name?: string;
+  author_avatar?: string;
+}
+
+export async function createProject(project: ProjectData) {
   try {
     const docRef = await addDoc(
       collection(db, 'projects'), 
       {
         ...project,
+        name: sanitizeShortText(project.name),
+        tagline: sanitizeShortText(project.tagline),
+        description: sanitizeBio(project.description),
         created_at: new Date().toISOString(),
+        likes: [],
       }
     )
     return { data: { id: docRef.id }, error: null }
