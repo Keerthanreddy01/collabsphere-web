@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ROOT .gitignore — CollabSphere Monorepo
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── SECRETS — NEVER COMMIT THESE ─────────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+*.pem
+*.key
+serviceAccountKey.json
+firebase-adminsdk-*.json
+
+# ── Dependencies ──────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+build/
+.next/
+out/
+**/.next/
+**/dist/
+
+# ── TypeScript cache ──────────────────────────────────────────────────────────
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ── OS & Editor junk ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/settings.json
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Vercel / deployment ───────────────────────────────────────────────────────
+.vercel/
+
+# ── v0 sandbox files ──────────────────────────────────────────────────────────
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+.clerk/
