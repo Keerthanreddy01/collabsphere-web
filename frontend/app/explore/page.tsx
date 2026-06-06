@@ -73,8 +73,8 @@ export default function ExplorePage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-white animate-spin" />
-          <span className="text-white/30 text-sm">Loading explore…</span>
+          <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-white animate-spin" />
+          <span className="text-white/30 text-base">Loading explore…</span>
         </div>
       </div>
     );
@@ -85,33 +85,33 @@ export default function ExplorePage() {
 
       {/* Ambient background */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.06)_0,transparent_60%)]" />
-        <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0,transparent_60%)]" />
+        <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.06)_0,transparent_60%)]" />
+        <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0,transparent_60%)]" />
       </div>
 
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
       <main className="flex-1 flex justify-center h-full overflow-y-auto scrollbar-hide relative z-10 lg:pl-[72px] xl:pr-[340px]">
-        <div className="w-full max-w-[640px] flex flex-col">
+        <div className="w-full max-w-[760px] flex flex-col">
 
           {/* ── Sticky Search + Category Header ─────────────────────────────── */}
           <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
 
             {/* Search bar */}
-            <div className="px-4 pt-4 pb-3">
+            <div className="px-6 pt-5 pb-4">
               <motion.div
                 animate={{ scale: searchFocused ? 1.01 : 1 }}
                 transition={{ duration: 0.2 }}
-                className={`flex items-center gap-3 bg-white/[0.06] border rounded-2xl px-4 py-3 transition-all duration-200 ${searchFocused ? "border-white/20 bg-white/[0.08]" : "border-white/[0.06]"}`}
+                className={`flex items-center gap-4 bg-white/[0.06] border rounded-2xl px-5 py-4 transition-all duration-200 ${searchFocused ? "border-white/20 bg-white/[0.08]" : "border-white/[0.06]"}`}
               >
-                <Search className={`w-4 h-4 shrink-0 transition-colors duration-200 ${searchFocused ? "text-white" : "text-white/30"}`} />
+                <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-white" : "text-white/30"}`} />
                 <input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
                   placeholder="Search builders, projects, topics…"
-                  className="flex-1 bg-transparent text-[14px] text-white placeholder-white/25 outline-none"
+                  className="flex-1 bg-transparent text-[16px] text-white placeholder-white/25 outline-none"
                 />
                 <AnimatePresence>
                   {searchQuery && (
@@ -120,7 +120,7 @@ export default function ExplorePage() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       onClick={() => setSearchQuery("")}
-                      className="text-white/30 hover:text-white text-xs transition-colors"
+                      className="text-white/30 hover:text-white text-sm transition-colors"
                     >✕</motion.button>
                   )}
                 </AnimatePresence>
@@ -128,18 +128,18 @@ export default function ExplorePage() {
             </div>
 
             {/* Category pills */}
-            <div className="flex items-center gap-1 px-4 pb-0 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-2 px-6 pb-0 overflow-x-auto scrollbar-hide">
               {CATEGORIES.map(({ label, icon: Icon }) => (
                 <button
                   key={label}
                   onClick={() => setActiveCategory(label)}
-                  className={`flex items-center gap-1.5 px-4 py-2.5 rounded-none text-[13px] font-medium whitespace-nowrap transition-all duration-200 border-b-2 ${
+                  className={`flex items-center gap-2 px-5 py-3 rounded-none text-[15px] font-medium whitespace-nowrap transition-all duration-200 border-b-[3px] ${
                     activeCategory === label
                       ? "text-white border-white"
                       : "text-white/40 border-transparent hover:text-white/70"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-4 h-4" />
                   {label}
                 </button>
               ))}
@@ -156,12 +156,12 @@ export default function ExplorePage() {
 
             {/* ── Trending Topics ── */}
             <motion.section variants={stagger.item} className="border-b border-white/[0.06]">
-              <div className="flex items-center justify-between px-4 pt-5 pb-3">
-                <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-orange-400" />
-                  <span className="text-[15px] font-bold text-white">Trending in Dev</span>
+              <div className="flex items-center justify-between px-6 pt-6 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <Flame className="w-5 h-5 text-orange-400" />
+                  <span className="text-[18px] font-bold text-white">Trending in Dev</span>
                 </div>
-                <button className="text-[13px] text-blue-400 hover:text-blue-300 transition-colors">See all</button>
+                <button className="text-[15px] text-blue-400 hover:text-blue-300 transition-colors">See all</button>
               </div>
 
               <div className="divide-y divide-white/[0.04]">
@@ -169,21 +169,21 @@ export default function ExplorePage() {
                   <motion.button
                     key={topic.tag}
                     whileHover={{ backgroundColor: "rgba(255,255,255,0.03)" }}
-                    className="w-full px-4 py-3.5 flex items-center justify-between group text-left transition-colors"
+                    className="w-full px-6 py-4 flex items-center justify-between group text-left transition-colors"
                   >
-                    <div className="flex flex-col gap-0.5">
+                    <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-white/30">{i + 1} · {topic.category}</span>
+                        <span className="text-[13px] text-white/30">{i + 1} · {topic.category}</span>
                         {topic.hot && (
-                          <span className="text-[10px] font-bold text-orange-400/80 bg-orange-400/10 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                            <Zap className="w-2.5 h-2.5" /> HOT
+                          <span className="text-[11px] font-bold text-orange-400/80 bg-orange-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Zap className="w-3 h-3" /> HOT
                           </span>
                         )}
                       </div>
-                      <span className="text-[14px] font-bold text-white group-hover:text-white/90">#{topic.tag}</span>
-                      <span className="text-[12px] text-white/30">{topic.posts} posts</span>
+                      <span className="text-[16px] font-bold text-white group-hover:text-white/90">#{topic.tag}</span>
+                      <span className="text-[14px] text-white/30">{topic.posts} posts</span>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/40 transition-colors" />
+                    <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-white/40 transition-colors" />
                   </motion.button>
                 ))}
               </div>
@@ -191,12 +191,12 @@ export default function ExplorePage() {
 
             {/* ── Suggested Builders (Instagram-style cards) ── */}
             <motion.section variants={stagger.item} className="border-b border-white/[0.06]">
-              <div className="flex items-center justify-between px-4 pt-5 pb-3">
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-blue-400" />
-                  <span className="text-[15px] font-bold text-white">Who to Follow</span>
+              <div className="flex items-center justify-between px-6 pt-6 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <Users className="w-5 h-5 text-blue-400" />
+                  <span className="text-[18px] font-bold text-white">Who to Follow</span>
                 </div>
-                <button className="text-[13px] text-blue-400 hover:text-blue-300 transition-colors">See all</button>
+                <button className="text-[15px] text-blue-400 hover:text-blue-300 transition-colors">See all</button>
               </div>
 
               <div className="divide-y divide-white/[0.04]">
@@ -204,25 +204,25 @@ export default function ExplorePage() {
                   <motion.div
                     key={builder.handle}
                     whileHover={{ backgroundColor: "rgba(255,255,255,0.03)" }}
-                    className="px-4 py-3.5 flex items-center gap-3 transition-colors"
+                    className="px-6 py-4 flex items-center gap-4 transition-colors"
                   >
                     <div className="relative shrink-0">
                       <img
                         src={builder.avatar}
                         alt={builder.name}
-                        className="w-10 h-10 rounded-full bg-white/10 object-cover"
+                        className="w-12 h-12 rounded-full bg-white/10 object-cover"
                       />
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-black" />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-[3px] border-black" />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1">
-                        <span className="text-[14px] font-bold text-white truncate">{builder.name}</span>
-                        {builder.verified && <Verified className="w-3.5 h-3.5 text-blue-400 shrink-0 fill-blue-400" />}
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[16px] font-bold text-white truncate">{builder.name}</span>
+                        {builder.verified && <Verified className="w-4 h-4 text-blue-400 shrink-0 fill-blue-400" />}
                       </div>
-                      <p className="text-[12px] text-white/40 truncate">@{builder.handle} · {builder.followers} followers</p>
-                      <p className="text-[12px] text-white/50 mt-0.5 flex items-center gap-1">
-                        <Rocket className="w-3 h-3 text-purple-400" />
+                      <p className="text-[14px] text-white/40 truncate">@{builder.handle} · {builder.followers} followers</p>
+                      <p className="text-[14px] text-white/50 mt-1 flex items-center gap-1.5">
+                        <Rocket className="w-3.5 h-3.5 text-purple-400" />
                         Building: {builder.building}
                       </p>
                     </div>
@@ -230,7 +230,7 @@ export default function ExplorePage() {
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setFollowed(prev => ({ ...prev, [builder.handle]: !prev[builder.handle] }))}
-                      className={`shrink-0 px-4 py-1.5 rounded-full text-[13px] font-bold transition-all duration-200 border ${
+                      className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${
                         followed[builder.handle]
                           ? "bg-transparent border-white/20 text-white/60 hover:border-red-500/40 hover:text-red-400"
                           : "bg-white border-white text-black hover:bg-white/90"
@@ -245,27 +245,27 @@ export default function ExplorePage() {
 
             {/* ── Popular Discussions (Twitter/X-style feed) ── */}
             <motion.section variants={stagger.item}>
-              <div className="flex items-center gap-2 px-4 pt-5 pb-3 border-b border-white/[0.06]">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                <span className="text-[15px] font-bold text-white">Popular Discussions</span>
+              <div className="flex items-center gap-2.5 px-6 pt-6 pb-4 border-b border-white/[0.06]">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+                <span className="text-[18px] font-bold text-white">Popular Discussions</span>
               </div>
 
               <div className="divide-y divide-white/[0.06]">
                 {trendingPosts.length === 0 ? (
                   /* Empty state */
-                  <div className="flex flex-col items-center justify-center py-20 gap-4">
-                    <div className="w-16 h-16 rounded-full bg-white/[0.04] flex items-center justify-center">
-                      <Sparkles className="w-7 h-7 text-white/20" />
+                  <div className="flex flex-col items-center justify-center py-24 gap-5">
+                    <div className="w-20 h-20 rounded-full bg-white/[0.04] flex items-center justify-center">
+                      <Sparkles className="w-8 h-8 text-white/20" />
                     </div>
                     <div className="text-center">
-                      <p className="text-white font-bold text-[16px]">Nothing here yet</p>
-                      <p className="text-white/30 text-[14px] mt-1">Be the first to start a discussion.</p>
+                      <p className="text-white font-bold text-[18px]">Nothing here yet</p>
+                      <p className="text-white/30 text-[15px] mt-1.5">Be the first to start a discussion.</p>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => router.push("/create")}
-                      className="px-6 py-2.5 bg-white text-black text-[14px] font-bold rounded-full hover:bg-white/90 transition-colors"
+                      className="px-8 py-3 bg-white text-black text-[15px] font-bold rounded-full hover:bg-white/90 transition-colors"
                     >
                       Post something
                     </motion.button>
@@ -281,7 +281,7 @@ export default function ExplorePage() {
           </motion.div>
 
           {/* Bottom spacer */}
-          <div className="h-24" />
+          <div className="h-32" />
         </div>
       </main>
 
@@ -323,43 +323,43 @@ function PostCard({ post, index }: { post: any; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.35, ease: EASE }}
       whileHover={{ backgroundColor: "rgba(255,255,255,0.02)" }}
-      className="px-4 py-4 flex gap-3 cursor-pointer group transition-colors"
+      className="px-6 py-5 flex gap-4 cursor-pointer group transition-colors"
     >
       {/* Avatar column */}
       <div className="shrink-0">
-        <img src={avatar} alt={post.author_username} className="w-10 h-10 rounded-full bg-white/10" />
+        <img src={avatar} alt={post.author_username} className="w-12 h-12 rounded-full bg-white/10" />
       </div>
 
       {/* Content column */}
       <div className="flex-1 min-w-0">
         {/* Header row */}
-        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-          <span className="text-[14px] font-bold text-white hover:underline cursor-pointer">
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+          <span className="text-[16px] font-bold text-white hover:underline cursor-pointer">
             {post.author_username || "builder"}
           </span>
-          <span className="text-[14px] text-white/30">·</span>
-          <span className="text-[14px] text-white/30">{timeAgo(post.created_at)}</span>
+          <span className="text-[15px] text-white/30">·</span>
+          <span className="text-[15px] text-white/30">{timeAgo(post.created_at)}</span>
           {post.post_type && (
-            <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-full bg-white/[0.05] ${TYPE_COLORS[post.post_type] || "text-white/50"}`}>
+            <span className={`text-[13px] font-semibold px-2.5 py-0.5 rounded-full bg-white/[0.05] ${TYPE_COLORS[post.post_type] || "text-white/50"}`}>
               {post.post_type.replace(/_/g, " ")}
             </span>
           )}
-          <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-white hover:bg-white/10 rounded-full p-1">
-            <MoreHorizontal className="w-4 h-4" />
+          <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-white hover:bg-white/10 rounded-full p-1.5">
+            <MoreHorizontal className="w-5 h-5" />
           </button>
         </div>
 
         {/* Post content */}
-        <p className="text-[15px] leading-[1.6] text-white/90 mb-3 break-words">
+        <p className="text-[17px] leading-[1.6] text-white/90 mb-4 break-words">
           {post.content}
         </p>
 
         {/* Action bar */}
-        <div className="flex items-center justify-between max-w-[320px] -ml-1.5">
+        <div className="flex items-center justify-between max-w-[400px] -ml-2">
 
           {/* Reply */}
           <ActionButton
-            icon={<MessageCircle className="w-[18px] h-[18px]" />}
+            icon={<MessageCircle className="w-[20px] h-[20px]" />}
             count={replies}
             color="group-hover/btn:text-blue-400"
             hoverBg="group-hover/btn:bg-blue-400/10"
@@ -367,7 +367,7 @@ function PostCard({ post, index }: { post: any; index: number }) {
 
           {/* Repost */}
           <ActionButton
-            icon={<Repeat2 className="w-[18px] h-[18px]" />}
+            icon={<Repeat2 className="w-[20px] h-[20px]" />}
             count={reposts}
             color="group-hover/btn:text-green-400"
             hoverBg="group-hover/btn:bg-green-400/10"
@@ -376,16 +376,17 @@ function PostCard({ post, index }: { post: any; index: number }) {
           {/* Like */}
           <motion.button
             whileTap={{ scale: 0.85 }}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setLiked(p => !p);
               setLikeCount(p => liked ? p - 1 : p + 1);
             }}
             className="flex items-center gap-1.5 group/btn"
           >
-            <span className={`p-1.5 rounded-full transition-colors ${liked ? "bg-red-500/10" : "group-hover/btn:bg-red-500/10"}`}>
-              <Heart className={`w-[18px] h-[18px] transition-all ${liked ? "text-red-500 fill-red-500 scale-110" : "text-white/40 group-hover/btn:text-red-400"}`} />
+            <span className={`p-2 rounded-full transition-colors ${liked ? "bg-red-500/10" : "group-hover/btn:bg-red-500/10"}`}>
+              <Heart className={`w-[20px] h-[20px] transition-all ${liked ? "text-red-500 fill-red-500 scale-110" : "text-white/40 group-hover/btn:text-red-400"}`} />
             </span>
-            <span className={`text-[13px] transition-colors ${liked ? "text-red-500" : "text-white/40 group-hover/btn:text-red-400"}`}>
+            <span className={`text-[14px] transition-colors ${liked ? "text-red-500" : "text-white/40 group-hover/btn:text-red-400"}`}>
               {likeCount}
             </span>
           </motion.button>
@@ -393,18 +394,21 @@ function PostCard({ post, index }: { post: any; index: number }) {
           {/* Bookmark */}
           <motion.button
             whileTap={{ scale: 0.85 }}
-            onClick={() => setBookmarked(p => !p)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setBookmarked(p => !p)
+            }}
             className="group/btn"
           >
-            <span className={`p-1.5 rounded-full block transition-colors ${bookmarked ? "bg-blue-400/10" : "group-hover/btn:bg-blue-400/10"}`}>
-              <BookmarkPlus className={`w-[18px] h-[18px] transition-all ${bookmarked ? "text-blue-400 fill-blue-400" : "text-white/40 group-hover/btn:text-blue-400"}`} />
+            <span className={`p-2 rounded-full block transition-colors ${bookmarked ? "bg-blue-400/10" : "group-hover/btn:bg-blue-400/10"}`}>
+              <BookmarkPlus className={`w-[20px] h-[20px] transition-all ${bookmarked ? "text-blue-400 fill-blue-400" : "text-white/40 group-hover/btn:text-blue-400"}`} />
             </span>
           </motion.button>
 
           {/* Views */}
-          <div className="flex items-center gap-1 text-white/25">
-            <Share className="w-[15px] h-[15px]" />
-            <span className="text-[12px]">{views > 999 ? `${(views / 1000).toFixed(1)}K` : views}</span>
+          <div className="flex items-center gap-1.5 text-white/25">
+            <Share className="w-[18px] h-[18px]" />
+            <span className="text-[13px]">{views > 999 ? `${(views / 1000).toFixed(1)}K` : views}</span>
           </div>
         </div>
       </div>
@@ -417,10 +421,10 @@ function ActionButton({ icon, count, color, hoverBg }: {
 }) {
   return (
     <motion.button whileTap={{ scale: 0.85 }} className={`flex items-center gap-1.5 group/btn`}>
-      <span className={`p-1.5 rounded-full block transition-colors ${hoverBg}`}>
+      <span className={`p-2 rounded-full block transition-colors ${hoverBg}`}>
         <span className={`block text-white/40 transition-colors ${color}`}>{icon}</span>
       </span>
-      <span className={`text-[13px] text-white/40 transition-colors ${color}`}>{count}</span>
+      <span className={`text-[14px] text-white/40 transition-colors ${color}`}>{count}</span>
     </motion.button>
   );
 }
