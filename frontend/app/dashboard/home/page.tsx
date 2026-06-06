@@ -42,6 +42,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
+  const [showInstructions, setShowInstructions] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -60,6 +61,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
     setPostType("looking_for");
     setAudioBlob(null);
     setMicError(null);
+    setShowInstructions(false);
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
@@ -104,6 +106,18 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
       if (timerRef.current) clearInterval(timerRef.current);
     } else {
       try {
+        if (typeof navigator !== 'undefined' && navigator.permissions) {
+          try {
+            const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+            if (permissionStatus.state === 'denied') {
+              setMicError('🔒 Microphone is blocked by your browser. To fix:\n1. Click the lock 🔒 icon in the address bar\n2. Go to Site Settings → Microphone → Allow\n3. Refresh the page and try again');
+              return;
+            }
+          } catch (pErr) {
+            console.warn("Permissions query not supported or failed:", pErr);
+          }
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
@@ -127,8 +141,8 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
           setRecordingTime(prev => prev + 1);
         }, 1000);
       } catch (err: any) {
-        setMicError("🎙️ Microphone access denied. Please allow it in your browser address bar → click the 🔒 icon → Permissions → Microphone → Allow.");
-        console.error("Microphone access denied:", err);
+        setMicError('🔒 Microphone is blocked by your browser. To fix:\n1. Click the lock 🔒 icon in the address bar\n2. Go to Site Settings → Microphone → Allow\n3. Refresh the page and try again');
+        console.warn("Microphone access blocked (suppressed console.error to prevent Next.js overlay):", err);
       }
     }
   };
@@ -314,20 +328,53 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="bg-red-500/10 border border-red-500/20 text-red-400 text-[13px] px-3.5 py-2.5 rounded-xl flex items-start gap-2.5"
+                    className="bg-[#3b0f11] border border-[#7f1d1d] text-white text-[13px] px-4 py-3 rounded-xl flex flex-col gap-2 shadow-lg w-full"
                   >
-                    <span className="flex-1 leading-relaxed text-left">
-                      {micError}
-                    </span>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setMicError(null);
-                      }}
-                      className="text-red-400/60 hover:text-red-400 transition-colors p-0.5 rounded flex-shrink-0"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 leading-relaxed text-left">
+                        <div className="font-semibold flex items-center gap-1.5 text-red-200">
+                          <span>🔒 Microphone is blocked by your browser. To fix:</span>
+                        </div>
+                        <ol className="list-decimal list-inside mt-2 space-y-1.5 text-white/90 font-normal">
+                          <li>Click the lock 🔒 icon in the address bar</li>
+                          <li>Go to Site Settings → Microphone → Allow</li>
+                          <li>Refresh the page and try again</li>
+                        </ol>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowInstructions(!showInstructions);
+                          }}
+                          className="text-red-200 hover:text-white text-[12px] font-semibold transition-colors underline bg-red-950/60 px-2 py-1 rounded border border-red-800/30"
+                        >
+                          How to fix →
+                        </button>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMicError(null);
+                          }}
+                          className="text-white/60 hover:text-white transition-colors p-1 rounded hover:bg-white/5"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {showInstructions && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="text-[12px] text-white/80 bg-black/35 p-3 rounded-lg border border-[#7f1d1d]/40 mt-1 font-normal leading-relaxed text-left space-y-1"
+                      >
+                        <p className="font-semibold text-white">Browser Permission Troubleshooting:</p>
+                        <p>• <strong>Chrome / Brave:</strong> Copy and open <code>chrome://settings/content/microphone</code> in a new tab, check that microphone access is enabled, and remove <code>localhost:3000</code> from the blocked list.</p>
+                        <p>• <strong>Firefox:</strong> Click the microphone/lock icon in the address bar, click the 'X' next to Blocked Temporarily, and refresh.</p>
+                        <p>• <strong>Safari:</strong> Go to Safari Settings → Websites → Microphone, and select Allow for this website.</p>
+                      </motion.div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
