@@ -61,3 +61,20 @@ __v0_jsx-dev-runtime.ts
 
 # ── Misc ──────────────────────────────────────────────────────────────────────
 .clerk/
+
+# ── Stray root-level Next.js files (belong inside frontend/ only) ─────────────
+/app/
+/components/
+/hooks/
+/lib/
+/public/
+/styles/
+/next-env.d.ts
+/next.config.mjs
+/postcss.config.mjs
+/components.json
+/tsconfig.json
+/pnpm-lock.yaml
+/test.js
+/update_onboarding.py
+/.env.example
