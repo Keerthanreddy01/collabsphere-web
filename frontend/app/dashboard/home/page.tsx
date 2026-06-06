@@ -39,12 +39,14 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   const [stackTags, setStackTags] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const expand = () => {
     if (!isExpanded) setIsExpanded(true);
@@ -59,6 +61,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
+      if (timerRef.current) clearInterval(timerRef.current);
     }
   };
 
@@ -95,6 +98,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
+      if (timerRef.current) clearInterval(timerRef.current);
     } else {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -115,8 +119,16 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
         mediaRecorder.start();
         setIsRecording(true);
         setAudioBlob(null);
-      } catch (err) {
-        console.error("Microphone access denied:", err);
+        setRecordingTime(0);
+        timerRef.current = setInterval(() => {
+          setRecordingTime(prev => prev + 1);
+        }, 1000);
+      } catch (err: any) {
+        if (err.name === 'NotAllowedError') {
+          alert('Please allow microphone access in your browser settings.');
+        } else {
+          console.error("Microphone access denied:", err);
+        }
       }
     }
   };
@@ -213,7 +225,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                 className="w-8 h-8 rounded-full object-cover border border-white/5 flex-shrink-0"
               />
               <div className="flex-1 text-[15px] text-[#777] font-medium truncate">
-                What are you building today?
+                What are you building today? 🎙️
               </div>
               <button
                 disabled
@@ -264,7 +276,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                   ref={textareaRef}
                   value={content}
                   onChange={handleInput}
-                  placeholder="What are you building today?"
+                  placeholder="What are you building today? 🎙️"
                   className="w-full resize-none bg-transparent border-none text-[16px] text-white placeholder:text-[#555] placeholder:transition-all placeholder:duration-[180ms] placeholder:ease-out focus:placeholder:opacity-50 focus:placeholder:-translate-y-[2px] outline-none leading-relaxed transition-all duration-[180ms] ease-out focus:shadow-[0_0_0_1px_rgba(255,255,255,.08),0_0_20px_rgba(255,255,255,.04)] focus:bg-white/[0.02] p-3 -mx-3 rounded-xl"
                   style={{
                     minHeight: "80px",
@@ -303,11 +315,16 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); toggleRecording(); }}
-                    className={`p-2 rounded-full transition group relative ${isRecording ? 'text-red-500 bg-red-500/10' : 'text-[#00b0f0] hover:bg-[#00b0f0]/10'}`} 
+                    className={`p-2 rounded-full transition group relative flex items-center gap-2 ${isRecording ? 'text-red-500 bg-red-500/10' : 'text-[#00b0f0] hover:bg-[#00b0f0]/10'}`} 
                     title={isRecording ? "Stop Recording" : "Voice"}
                   >
                     <Mic className={`w-[18px] h-[18px] transition-transform ${isRecording ? 'animate-pulse' : 'group-hover:scale-110'}`} />
-                    {isRecording && <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />}
+                    {isRecording && (
+                      <span className="text-red-500 text-[13px] font-bold flex items-center gap-1.5 whitespace-nowrap pr-1">
+                        <span className="w-2 h-2 bg-red-500 rounded-full animate-ping" />
+                        {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                      </span>
+                    )}
                   </button>
                 </div>
                 <div className="flex items-center gap-3">
