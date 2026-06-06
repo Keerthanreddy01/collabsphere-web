@@ -1,59 +1,58 @@
-# CollabSphere — Monorepo Root
+<div align="center">
 
-> Developer collaboration platform. Frontend (Next.js) + Backend (Express API) live side by side.
+<pre>
+      .  *  .  . *       *    .        .
+    *   .    *       .   *    .    *
+  .    *      .   *      .  *   .       *
+      _..-======-.._
+  * .-'            '-. *
+   /                  \
+  /    CollabSphere    \  *
+ |                      |
+  \                    /
+   \                  /  *
+  * '-._          _.-'
+        `========`  *
+    .   *      .       *    .    *
+</pre>
 
-## Repo Layout
+# 🪐 CollabSphere
 
-```
-collabsphere/
-├── frontend/            ← Next.js 16 app (React 19, TypeScript, Firebase client)
-│   ├── app/             ← Next.js App Router pages & layouts
-│   ├── components/      ← Reusable UI components
-│   ├── hooks/           ← Custom React hooks
-│   ├── lib/             ← Firebase client SDK helpers & utilities
-│   ├── public/          ← Static assets (images, icons, fonts)
-│   ├── styles/          ← Global CSS
-│   └── ...config files
-│
-├── backend/             ← Express REST API (TypeScript, Firebase Admin SDK)
-│   ├── src/
-│   │   ├── config/      ← Env config + Firebase Admin init
-│   │   ├── controllers/ ← HTTP request handlers
-│   │   ├── middleware/  ← Auth, error, rate-limit, logging
-│   │   ├── models/      ← TypeScript interfaces + Zod schemas
-│   │   ├── repositories/← Firestore CRUD queries
-│   │   ├── routes/      ← Express routers
-│   │   ├── services/    ← Business logic
-│   │   ├── types/       ← Shared TypeScript types
-│   │   ├── utils/       ← Pure helpers
-│   │   ├── app.ts       ← Express app setup
-│   │   └── server.ts    ← Server entry point
-│   └── tests/           ← Jest + Supertest tests
-│
-└── README.md            ← This file
-```
+### The future of developer collaboration.
 
-## Quick Start
+<br/>
 
-```bash
-# Frontend
-cd frontend
-npm install
-npm run dev        # http://localhost:3000
+<p align="center">
+  <a href="https://collabsphere-web.vercel.app/">
+    <img src="https://img.shields.io/badge/Status-Stealth_Mode_//_Cooking...-black?style=for-the-badge&logo=vercel" alt="Status" />
+  </a>
+</p>
 
-# Backend
-cd backend
-npm install
-cp .env.example .env
-npm run dev        # http://localhost:5000
-```
+<br/>
 
-## Tech Stack
+> **CollabSphere** is a next-generation platform for builders, designers, and creators to connect, brainstorm, and ship faster together. 
 
-| Layer    | Tech |
-|----------|------|
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS, shadcn/ui |
-| Backend  | Express 4, TypeScript, Firebase Admin SDK |
-| Database | Firebase Firestore |
-| Auth     | Firebase Authentication |
-| Deploy   | Vercel (frontend) · Railway / Render (backend) |
+<br/>
+
+---
+
+### 🚧 What's inside the forge?
+
+The repository is currently undergoing massive architectural upgrades. We are building a high-performance monorepo utilizing:
+* **Frontend**: Next.js 16 (Turbopack), React 19, Framer Motion, Tailwind CSS
+* **Backend**: Node.js, Express, Firebase Admin SDK
+* **Database**: Cloud Firestore
+
+*Source code is currently heavily volatile while we finalize the core features.*
+
+<br/>
+
+### 🚀 ETA: Coming Soon
+
+We're crafting something special. Star/Watch the repository to be notified when we officially open the doors.
+
+<br/>
+
+[**View the Live Alpha**](https://collabsphere-web.vercel.app)
+
+</div>
