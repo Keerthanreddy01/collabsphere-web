@@ -298,7 +298,7 @@ function PostCard({ post, index }: { post: any; index: number }) {
 
   const timeAgo = (ts: any) => {
     if (!ts) return "now";
-    const secs = Math.floor((Date.now() - ts.toMillis?.() ?? Date.now()) / 1000);
+    const secs = Math.floor((Date.now() - (ts.toMillis?.() ?? Date.now())) / 1000);
     if (secs < 60) return `${secs}s`;
     if (secs < 3600) return `${Math.floor(secs / 60)}m`;
     if (secs < 86400) return `${Math.floor(secs / 3600)}h`;

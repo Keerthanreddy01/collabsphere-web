@@ -11,6 +11,11 @@ export function useAuth() {
   const router = useRouter()
 
   useEffect(() => {
+    // Guard: auth is null when Firebase env vars are missing
+    if (!auth) {
+      setLoading(false)
+      return
+    }
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser)
       setLoading(false)
