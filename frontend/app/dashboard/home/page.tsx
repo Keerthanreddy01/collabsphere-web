@@ -41,6 +41,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [micError, setMicError] = useState<string | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -58,6 +59,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
     setStackTags("");
     setPostType("looking_for");
     setAudioBlob(null);
+    setMicError(null);
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
@@ -95,6 +97,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   }, [isExpanded]);
 
   const toggleRecording = async () => {
+    setMicError(null);
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
@@ -124,11 +127,8 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
           setRecordingTime(prev => prev + 1);
         }, 1000);
       } catch (err: any) {
-        if (err.name === 'NotAllowedError') {
-          alert('Please allow microphone access in your browser settings.');
-        } else {
-          console.error("Microphone access denied:", err);
-        }
+        setMicError("🎙️ Microphone access denied. Please allow it in your browser address bar → click the 🔒 icon → Permissions → Microphone → Allow.");
+        console.error("Microphone access denied:", err);
       }
     }
   };
@@ -225,7 +225,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                 className="w-8 h-8 rounded-full object-cover border border-white/5 flex-shrink-0"
               />
               <div className="flex-1 text-[15px] text-[#777] font-medium truncate">
-                What are you building today? 🎙️
+                What are you building today?
               </div>
               <button
                 disabled
@@ -276,7 +276,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                   ref={textareaRef}
                   value={content}
                   onChange={handleInput}
-                  placeholder="What are you building today? 🎙️"
+                  placeholder="What are you building today?"
                   className="w-full resize-none bg-transparent border-none text-[16px] text-white placeholder:text-[#555] placeholder:transition-all placeholder:duration-[180ms] placeholder:ease-out focus:placeholder:opacity-50 focus:placeholder:-translate-y-[2px] outline-none leading-relaxed transition-all duration-[180ms] ease-out focus:shadow-[0_0_0_1px_rgba(255,255,255,.08),0_0_20px_rgba(255,255,255,.04)] focus:bg-white/[0.02] p-3 -mx-3 rounded-xl"
                   style={{
                     minHeight: "80px",
@@ -307,11 +307,47 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                 </motion.div>
               )}
 
+              {/* Mic Error Banner */}
+              <AnimatePresence>
+                {micError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    className="bg-red-500/10 border border-red-500/20 text-red-400 text-[13px] px-3.5 py-2.5 rounded-xl flex items-start gap-2.5"
+                  >
+                    <span className="flex-1 leading-relaxed text-left">
+                      {micError}
+                    </span>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMicError(null);
+                      }}
+                      className="text-red-400/60 hover:text-red-400 transition-colors p-0.5 rounded flex-shrink-0"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Footer Toolbar */}
               <motion.div variants={itemVariants} className="flex items-center justify-between pt-2 border-t border-white/10 mt-1">
                 <div className="flex items-center gap-1 -ml-2">
                   <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Image">
                     <Image className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      collapse();
+                    }}
+                    className="text-[14px] font-medium text-[#777] hover:text-white transition"
+                  >
+                    Cancel
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); toggleRecording(); }}
@@ -325,17 +361,6 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                         {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
                       </span>
                     )}
-                  </button>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      collapse();
-                    }}
-                    className="text-[14px] font-medium text-[#777] hover:text-white transition"
-                  >
-                    Cancel
                   </button>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
