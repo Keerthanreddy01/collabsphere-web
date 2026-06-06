@@ -40,9 +40,11 @@ const CATEGORIES = [
   { label: "Global", icon: Globe, active: false },
 ];
 
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 const stagger = {
   container: { animate: { transition: { staggerChildren: 0.06 } } },
-  item: { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } } },
+  item: { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } } },
 };
 
 export default function ExplorePage() {
@@ -319,7 +321,7 @@ function PostCard({ post, index }: { post: any; index: number }) {
     <motion.article
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: index * 0.04, duration: 0.35, ease: EASE }}
       whileHover={{ backgroundColor: "rgba(255,255,255,0.02)" }}
       className="px-4 py-4 flex gap-3 cursor-pointer group transition-colors"
     >
