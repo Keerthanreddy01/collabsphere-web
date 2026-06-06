@@ -94,11 +94,20 @@ export async function sendMessage(data: MessageData) {
 export function subscribeToChats(userId: string, callback: (chats: any[]) => void) {
   const q = query(
     collection(db, "conversations"),
-    where("participants", "array-contains", userId),
-    orderBy("lastMessageTime", "desc")
+    where("participants", "array-contains", userId)
   );
   return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    list.sort((a: any, b: any) => {
+      const timeA = a.lastMessageTime?.toDate 
+        ? a.lastMessageTime.toDate().getTime() 
+        : new Date(a.lastMessageTime || 0).getTime();
+      const timeB = b.lastMessageTime?.toDate 
+        ? b.lastMessageTime.toDate().getTime() 
+        : new Date(b.lastMessageTime || 0).getTime();
+      return timeB - timeA;
+    });
+    callback(list);
   });
 }
 
