@@ -13,7 +13,6 @@ import {
   SendHorizonal,
   BadgeCheck,
   Image,
-  Video,
   Mic,
   X
 } from "lucide-react";
@@ -39,9 +38,13 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   const [postType, setPostType] = useState("looking_for");
   const [stackTags, setStackTags] = useState("");
   const [isPosting, setIsPosting] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const expand = () => {
     if (!isExpanded) setIsExpanded(true);
@@ -52,6 +55,11 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
     setContent("");
     setStackTags("");
     setPostType("looking_for");
+    setAudioBlob(null);
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    }
   };
 
   useEffect(() => {
@@ -82,6 +90,36 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
       textareaRef.current.focus();
     }
   }, [isExpanded]);
+
+  const toggleRecording = async () => {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        audioChunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunksRef.current.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          setAudioBlob(blob);
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+        setAudioBlob(null);
+      } catch (err) {
+        console.error("Microphone access denied:", err);
+      }
+    }
+  };
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -115,7 +153,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
 
   const avatarSrc = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
 
-  const hasContent = content.trim().length > 0;
+  const hasContent = content.trim().length > 0 || audioBlob !== null;
 
   const springTransition = {
     type: "spring" as const,
@@ -247,17 +285,29 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                 />
               </motion.div>
 
+              {/* Audio Preview */}
+              {audioBlob && (
+                <motion.div variants={itemVariants} className="flex items-center gap-3 bg-white/[0.04] p-3 rounded-lg border border-white/10 w-fit">
+                  <audio src={URL.createObjectURL(audioBlob)} controls className="h-8 max-w-[200px]" />
+                  <button onClick={() => setAudioBlob(null)} className="p-1.5 rounded-full text-[#777] hover:bg-white/10 hover:text-white transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </motion.div>
+              )}
+
               {/* Footer Toolbar */}
               <motion.div variants={itemVariants} className="flex items-center justify-between pt-2 border-t border-white/10 mt-1">
                 <div className="flex items-center gap-1 -ml-2">
                   <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Image">
                     <Image className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
                   </button>
-                  <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Video">
-                    <Video className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
-                  </button>
-                  <button className="p-2 rounded-full text-[#00b0f0] hover:bg-[#00b0f0]/10 transition group" title="Voice">
-                    <Mic className="w-[18px] h-[18px] group-hover:scale-110 transition-transform" />
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); toggleRecording(); }}
+                    className={`p-2 rounded-full transition group relative ${isRecording ? 'text-red-500 bg-red-500/10' : 'text-[#00b0f0] hover:bg-[#00b0f0]/10'}`} 
+                    title={isRecording ? "Stop Recording" : "Voice"}
+                  >
+                    <Mic className={`w-[18px] h-[18px] transition-transform ${isRecording ? 'animate-pulse' : 'group-hover:scale-110'}`} />
+                    {isRecording && <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />}
                   </button>
                 </div>
                 <div className="flex items-center gap-3">
