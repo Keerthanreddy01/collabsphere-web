@@ -134,38 +134,38 @@ export default function MessagesPage() {
         {/* COLUMN 1: INBOXES (240px) */}
         <div className="w-[220px] bg-[#090909] border-r border-white/5 flex flex-col h-full shrink-0">
           <div className="p-5 pb-2">
-            <h2 className="text-[22px] font-bold text-white tracking-tight mb-6">Conversations</h2>
+            <h2 className="text-xl font-bold text-white tracking-tight mb-6">Conversations</h2>
             
             <div className="flex flex-col gap-1 text-[13px] font-semibold text-white/60">
-              <div className="flex items-center justify-between px-3 py-2 bg-white/[0.04] text-white rounded-lg cursor-pointer border border-white/5">
+              <div className="flex items-center justify-between px-3 py-2 bg-violet-600/10 text-white rounded-xl border border-violet-500/20 cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.05)]">
                 <div className="flex items-center gap-3">
                   <UserCircle2 className="w-4 h-4 text-violet-400" />
-                  <span>Assigned to me</span>
+                  <span className="font-semibold text-white">Assigned to me</span>
                 </div>
-                <div className="w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold">
+                <div className="w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold shadow-[0_0_8px_rgba(139,92,246,0.4)]">
                   8
                 </div>
               </div>
-              <div className="flex items-center justify-between px-3 py-2 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer transition-colors">
+              <div className="flex items-center justify-between px-3 py-2 hover:bg-white/[0.03] hover:text-white rounded-xl cursor-pointer transition-all border border-transparent hover:border-white/5">
                 <div className="flex items-center gap-3">
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Transfers</span>
+                  <ArrowLeft className="w-4 h-4 text-white/40" />
+                  <span className="text-white/70">Transfers</span>
                 </div>
-                <div className="w-5 h-5 rounded-full bg-white/[0.06] text-white/60 flex items-center justify-center text-[10px] font-bold">
+                <div className="w-5 h-5 rounded-full bg-white/5 border border-white/10 text-white/50 flex items-center justify-center text-[10px] font-bold">
                   3
                 </div>
               </div>
-              <div className="flex items-center px-3 py-2 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer transition-colors">
+              <div className="flex items-center px-3 py-2 hover:bg-white/[0.03] hover:text-white rounded-xl cursor-pointer transition-all border border-transparent hover:border-white/5">
                 <div className="flex items-center gap-3">
-                  <Zap className="w-4 h-4" />
-                  <span>Offline</span>
+                  <Zap className="w-4 h-4 text-white/40" />
+                  <span className="text-white/70">Offline</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="mt-4 px-5">
-            <h3 className="text-[14px] font-bold text-white mb-2">Inboxes</h3>
+            <h3 className="text-[10px] font-black tracking-widest text-white/35 uppercase mb-3">Inboxes</h3>
             <div className="flex flex-col gap-0.5 text-[13px] text-white/50 font-medium">
               <div className="flex items-center justify-between py-1.5 px-3 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer group">
                 <span>Head Office</span>
@@ -198,20 +198,18 @@ export default function MessagesPage() {
         <div className="w-[340px] bg-[#090909] border-r border-white/5 flex flex-col h-full shrink-0">
           <div className="p-5 border-b border-white/5">
             {/* Top Stats */}
-            <div className="flex items-center justify-between text-[9px] text-white/40 font-bold uppercase tracking-wider mb-5">
-              <div className="flex flex-col items-center">
-                <span className="text-[12px] text-white">24</span>
-                <span>In Progress</span>
+            <div className="grid grid-cols-3 gap-1 bg-white/[0.02] border border-white/5 rounded-xl p-2.5 text-[9px] text-white/45 font-bold uppercase tracking-wider mb-5">
+              <div className="flex flex-col items-center justify-center py-1">
+                <span className="text-[14px] font-black text-white leading-none mb-1">24</span>
+                <span className="scale-[0.9] origin-center text-center whitespace-nowrap text-white/40">In Progress</span>
               </div>
-              <div className="w-[1px] h-6 bg-white/10"></div>
-              <div className="flex flex-col items-center">
-                <span className="text-[12px] text-white">7</span>
-                <span>Waiting</span>
+              <div className="flex flex-col items-center justify-center py-1 border-x border-white/5">
+                <span className="text-[14px] font-black text-violet-400 leading-none mb-1">7</span>
+                <span className="scale-[0.9] origin-center text-center whitespace-nowrap text-white/40">Waiting</span>
               </div>
-              <div className="w-[1px] h-6 bg-white/10"></div>
-              <div className="flex flex-col items-center">
-                <span className="text-[12px] text-white">97</span>
-                <span>CSAT</span>
+              <div className="flex flex-col items-center justify-center py-1">
+                <span className="text-[14px] font-black text-emerald-400 leading-none mb-1">97</span>
+                <span className="scale-[0.9] origin-center text-center whitespace-nowrap text-white/40">CSAT</span>
               </div>
             </div>
 
@@ -239,7 +237,7 @@ export default function MessagesPage() {
           <div className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-1">
             {filteredChats.map(chat => {
               const otherUid = chat.participants.find((p: string) => p !== currentUid);
-              const otherProfile = profiles[otherUid] || { username: "Builder" };
+              const otherProfile = profiles[otherUid] || {};
               const isActive = activeChatId === chat.id;
               
               // Simulate random statuses for UI mockup
@@ -249,10 +247,10 @@ export default function MessagesPage() {
                 <div 
                   key={chat.id} 
                   onClick={() => setActiveChatId(chat.id)}
-                  className={`flex flex-col gap-2 p-3 rounded-xl cursor-pointer transition-colors border ${
+                  className={`flex flex-col gap-2 p-3 rounded-xl cursor-pointer transition-all duration-300 border ${
                     isActive 
-                      ? 'bg-white/[0.06] border-white/10' 
-                      : 'bg-transparent border-transparent hover:bg-white/[0.03]'
+                      ? 'bg-violet-600/10 border-violet-500/20 shadow-[0_4px_20px_rgba(139,92,246,0.05)]' 
+                      : 'bg-transparent border-transparent hover:bg-white/[0.03] hover:border-white/5'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -275,7 +273,7 @@ export default function MessagesPage() {
                     </div>
                   </div>
 
-                  <span className={`text-[12px] leading-snug truncate ${needsAccept ? 'text-white' : 'text-white/40'}`}>
+                  <span className={`text-[12px] leading-snug truncate ${needsAccept ? 'text-white font-medium' : 'text-white/40'}`}>
                     {chat.lastMessage || "Started a new conversation..."}
                   </span>
 
@@ -297,7 +295,7 @@ export default function MessagesPage() {
 
         {/* COLUMN 3: ACTIVE CHAT (flex-1) */}
         <div className="flex-1 flex flex-col h-full bg-[#050505] relative z-0">
-          {!activeRecipientProfile ? (
+          {!activeChatId ? (
             <div className="flex-1 flex items-center justify-center text-white/30">
               <p>Select a conversation</p>
             </div>
@@ -308,14 +306,14 @@ export default function MessagesPage() {
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <img 
-                      src={activeRecipientProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeRecipientProfile.id}`}
+                      src={activeRecipientProfile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeId}`}
                       className="w-9 h-9 rounded-full object-cover border border-white/10 bg-white/5"
                       alt=""
                     />
                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#090909]"></div>
                   </div>
                   <span className="text-[16px] font-bold text-white tracking-tight">
-                    {activeRecipientProfile.full_name || activeRecipientProfile.username}
+                    {activeRecipientProfile?.full_name || activeRecipientProfile?.username}
                   </span>
                   <button className="p-1 text-white/40 hover:text-white transition-colors">
                     <Plus className="w-4 h-4" />
@@ -344,7 +342,7 @@ export default function MessagesPage() {
               <div className="absolute inset-0 z-[-1] opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/notebook-dark.png')]" />
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 no-scrollbar">
                 <div className="flex justify-center mb-4">
                   <span className="text-[11px] text-white/45 font-medium">Live Chat Conversation with <span className="text-white">You</span> - Today, 23:36</span>
                 </div>
@@ -354,47 +352,36 @@ export default function MessagesPage() {
                   const timeStr = formatMessageTime(msg.timestamp);
 
                   return (
-                    <div key={msg.id || i} className={`flex max-w-[85%] ${isMe ? 'self-end' : 'self-start'} gap-3`}>
-                      {!isMe && (
-                        <img 
-                          src={activeRecipientProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeRecipientProfile.id}`} 
-                          className="w-8 h-8 rounded-full object-cover shrink-0 mt-1 border border-white/10" 
-                          alt="" 
-                        />
-                      )}
+                    <div key={msg.id || i} className={`flex max-w-[85%] ${isMe ? 'self-end flex-row-reverse' : 'self-start'} gap-3`}>
+                      <img 
+                        src={isMe ? (user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUid}`) : (activeRecipientProfile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeId}`)} 
+                        className="w-8 h-8 rounded-full object-cover shrink-0 mt-1 border border-white/10" 
+                        alt="" 
+                      />
                       
                       <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                         <div className="flex items-center gap-2 mb-1.5 text-[11px] text-white/40">
                           {isMe ? (
                             <>
-                              <span>Sent by Live Chat • {timeStr} • seen <strong className="text-white/80">You</strong></span>
+                              <span>Sent by Live Chat • {timeStr} • seen <strong className="text-white/60">You</strong></span>
                             </>
                           ) : (
                             <>
-                              <strong className="text-white font-bold text-[13px]">{activeRecipientProfile.full_name || activeRecipientProfile.username}</strong>
-                              <span>Sent by Live Chat</span>
-                              <MessageSquare className="w-3 h-3 text-white/40" />
-                              <span>{timeStr}</span>
+                              <strong className="text-white/80 font-bold text-[12px]">{activeRecipientProfile?.full_name || activeRecipientProfile?.username}</strong>
+                              <span>Sent by Live Chat • {timeStr}</span>
+                              <MessageSquare className="w-3 h-3 text-white/30" />
                             </>
                           )}
                         </div>
 
-                        <div className={`px-4 py-3 rounded-xl text-[13.5px] leading-relaxed max-w-full break-words border ${
+                        <div className={`px-4 py-2.5 rounded-2xl text-[13.5px] leading-relaxed max-w-full break-words border transition-all ${
                           isMe 
-                            ? 'bg-violet-600/10 text-white border-violet-500/20' 
-                            : 'bg-[#121212] border-white/5 text-white/90'
+                            ? 'bg-violet-600/10 text-white border-violet-500/20 rounded-tr-none shadow-[0_4px_16px_rgba(139,92,246,0.1)]' 
+                            : 'bg-white/[0.02] border-white/5 text-white/90 rounded-tl-none'
                         }`}>
                           {msg.content}
                         </div>
                       </div>
-
-                      {isMe && (
-                        <img 
-                          src={user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUid}`} 
-                          className="w-8 h-8 rounded-full object-cover shrink-0 mt-1 border border-white/10" 
-                          alt="" 
-                        />
-                      )}
                     </div>
                   );
                 })}
@@ -404,7 +391,7 @@ export default function MessagesPage() {
               {/* Message Composer */}
               <div className="p-4 bg-[#090909]/60 border-t border-white/5 shrink-0">
                 <div className="flex items-center gap-4 mb-3 border-b border-white/5 pb-3 text-[12px] font-semibold text-white/40">
-                  <button className="flex items-center gap-1.5 text-white bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-md">
+                  <button className="flex items-center gap-1.5 text-white bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors">
                     <MessageSquare className="w-4 h-4 text-violet-400" /> Live Chat <ChevronDown className="w-3 h-3" />
                   </button>
                   <button className="flex items-center gap-1.5 hover:text-white transition-colors">
@@ -443,7 +430,7 @@ export default function MessagesPage() {
                           <button 
                             type="submit" 
                             disabled={!newMessage.trim()}
-                            className="bg-violet-600 text-white text-[13px] font-bold px-4 py-2 rounded-l-md hover:bg-violet-500 disabled:opacity-30 transition-colors"
+                            className="bg-violet-600 text-white text-[13px] font-bold px-4 py-2 rounded-l-md hover:bg-violet-500 disabled:opacity-30 transition-colors shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                           >
                             Send
                           </button>
@@ -484,11 +471,11 @@ export default function MessagesPage() {
                 
                 {/* Recent Conversation */}
                 <div className="mb-6">
-                  <div className="flex items-center justify-between text-[14px] font-bold text-white mb-3">
+                  <div className="flex items-center justify-between text-[11px] font-black tracking-widest text-white/35 uppercase mb-4">
                     <span>Recent Conversation</span>
-                    <ChevronDown className="w-4 h-4 text-white/40" />
+                    <ChevronDown className="w-3.5 h-3.5 text-white/35" />
                   </div>
-                  <div className="flex flex-col gap-3 text-[12px]">
+                  <div className="flex flex-col gap-3 text-[12px] bg-white/[0.01] border border-white/5 p-3.5 rounded-2xl">
                     <div>
                       <div className="flex items-center gap-1.5 text-white font-semibold mb-1">
                         <MessageSquare className="w-3.5 h-3.5 text-violet-400" /> Chat • Active with You <CheckCircle2 className="w-3.5 h-3.5 text-white/40" />
@@ -498,25 +485,27 @@ export default function MessagesPage() {
                         <span>1d</span>
                       </div>
                     </div>
+                    <div className="w-full h-px bg-white/5 my-1"></div>
                     <div>
                       <div className="flex items-center gap-1.5 text-white/40 font-semibold mb-1">
-                        <Phone className="w-3.5 h-3.5" /> SMS • Closed by Laura Bischoff <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                        <Phone className="w-3.5 h-3.5" /> SMS • Closed by Laura <CheckCircle2 className="w-3.5 h-3.5 text-green-500/80" />
                       </div>
                       <div className="flex justify-between text-white/35">
                         <span className="truncate pr-2">Okay, Laura. Will do the advis...</span>
                         <span>2d</span>
                       </div>
                     </div>
+                    <div className="w-full h-px bg-white/5 my-1"></div>
                     <div>
                       <div className="flex items-center gap-1.5 text-white/40 font-semibold mb-1">
-                        <Mail className="w-3.5 h-3.5" /> Email • Closed by Jean Talis <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                        <Mail className="w-3.5 h-3.5" /> Email • Closed by Jean <CheckCircle2 className="w-3.5 h-3.5 text-green-500/80" />
                       </div>
                       <div className="flex justify-between text-white/35">
                         <span className="truncate pr-2">Nevermind, Adam. Thank you!...</span>
                         <span>1w</span>
                       </div>
                     </div>
-                    <button className="text-violet-400 font-medium text-left mt-1 hover:underline">Show more</button>
+                    <button className="text-violet-400 font-semibold text-left mt-2 hover:underline">Show more</button>
                   </div>
                 </div>
 
@@ -524,47 +513,57 @@ export default function MessagesPage() {
 
                 {/* Profile */}
                 <div className="mb-6">
-                  <div className="flex items-center justify-between text-[14px] font-bold text-white mb-4">
+                  <div className="flex items-center justify-between text-[11px] font-black tracking-widest text-white/35 uppercase mb-4">
                     <span>Profile</span>
-                    <ChevronDown className="w-4 h-4 text-white/40" />
+                    <ChevronDown className="w-3.5 h-3.5 text-white/35" />
                   </div>
                   
-                  <div className="flex flex-col gap-3 text-[12px]">
-                    <div className="flex gap-2">
-                      <Phone className="w-4 h-4 text-white/40 shrink-0" />
-                      <div className="flex flex-col gap-1.5 w-full text-white/60">
-                        <div className="flex justify-between"><span>Phone</span> <span className="text-white/30">Add</span></div>
-                        <div className="flex justify-between text-white"><span>Whatsapp</span> <span>650-513-0514 <Star className="w-3 h-3 inline text-violet-400" /></span></div>
-                        <div className="flex justify-between text-white"><span>Home</span> <span>613-555-0168 <XCircle className="w-3 h-3 inline text-red-500" /></span></div>
-                        <div className="flex justify-between text-white"><span>Office/Wor...</span> <span>613-555-0145</span></div>
+                  <div className="flex flex-col gap-4 text-[12px] bg-white/[0.01] border border-white/5 p-4 rounded-2xl">
+                    <div className="flex gap-2.5">
+                      <Phone className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                      <div className="flex flex-col gap-2 w-full text-white/60">
+                        <div className="flex justify-between font-mono text-[9px] text-white/30 uppercase tracking-wider"><span>Phone</span> <span className="text-white/30 cursor-pointer hover:text-white">Add</span></div>
+                        <div className="flex justify-between text-white font-medium"><span>Whatsapp</span> <span className="flex items-center gap-1">650-513-0514 <Star className="w-3 h-3 fill-violet-400 text-violet-400" /></span></div>
+                        <div className="flex justify-between text-white/70"><span>Home</span> <span className="flex items-center gap-1">613-555-0168 <XCircle className="w-3 h-3 text-red-500/80" /></span></div>
+                        <div className="flex justify-between text-white/70"><span>Office</span> <span>613-555-0145</span></div>
                       </div>
                     </div>
 
-                    <div className="flex gap-2 mt-2">
-                      <Mail className="w-4 h-4 text-white/40 shrink-0" />
-                      <div className="flex flex-col gap-1.5 w-full text-white/60">
-                        <div className="flex justify-between"><span>Email</span> <span className="text-white/30">Add</span></div>
-                        <div className="flex justify-between text-white"><span>Work</span> <span className="truncate max-w-[120px]">robertfox@startrek.com</span></div>
+                    <div className="w-full h-px bg-white/5"></div>
+
+                    <div className="flex gap-2.5">
+                      <Mail className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                      <div className="flex flex-col gap-2 w-full text-white/60">
+                        <div className="flex justify-between font-mono text-[9px] text-white/30 uppercase tracking-wider"><span>Email</span> <span className="text-white/30 cursor-pointer hover:text-white">Add</span></div>
+                        <div className="flex justify-between text-white font-medium"><span>Work</span> <span className="truncate max-w-[140px] hover:underline cursor-pointer">{activeRecipientProfile.email || "robertfox@startrek.com"}</span></div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-white/60 mt-2">
-                      <User className="w-4 h-4 text-white/40 shrink-0" />
-                      <span className="flex-1">Assigned to</span>
-                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nida" className="w-4 h-4 rounded-full" alt=""/>
-                      <span className="text-white truncate max-w-[80px]">Nida Hanin Dary</span>
+                    <div className="w-full h-px bg-white/5"></div>
+
+                    <div className="flex items-center gap-2.5 text-white/60">
+                      <User className="w-4 h-4 text-white/30 shrink-0" />
+                      <span className="flex-1 font-mono text-[9px] text-white/30 uppercase tracking-wider">Assigned to</span>
+                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nida" className="w-4 h-4 rounded-full border border-white/10" alt=""/>
+                      <span className="text-white font-medium truncate max-w-[80px]">Nida Hanin</span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-white/60">
-                      <div className="w-4 flex justify-center"><div className="w-2 h-2 rounded-full bg-green-500"></div></div>
-                      <span className="flex-1">Status</span>
-                      <span className="text-white">Online</span>
+                    <div className="w-full h-px bg-white/5"></div>
+
+                    <div className="flex items-center gap-2.5 text-white/60">
+                      <div className="w-4 flex justify-center"><div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div></div>
+                      <span className="flex-1 font-mono text-[9px] text-white/30 uppercase tracking-wider">Status</span>
+                      <span className="text-white font-medium">Online</span>
                     </div>
 
-                    <div className="flex gap-2 text-white/60">
-                      <MapPin className="w-4 h-4 text-white/40 shrink-0" />
-                      <span className="w-20 shrink-0">Location</span>
-                      <span className="text-white text-right leading-tight">51th street avenue, Adelaide, Australia. 35129</span>
+                    <div className="w-full h-px bg-white/5"></div>
+
+                    <div className="flex gap-2.5">
+                      <MapPin className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                      <div className="flex flex-col gap-1 w-full text-white/60">
+                        <span className="font-mono text-[9px] text-white/30 uppercase tracking-wider">Location</span>
+                        <span className="text-white text-left leading-normal mt-0.5">Adelaide, Australia</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -573,9 +572,9 @@ export default function MessagesPage() {
 
                 {/* Tags */}
                 <div>
-                  <div className="flex items-center justify-between text-[14px] font-bold text-white mb-4">
+                  <div className="flex items-center justify-between text-[11px] font-black tracking-widest text-white/35 uppercase mb-4">
                     <span>Tags</span>
-                    <ChevronDown className="w-4 h-4 text-white/40" />
+                    <ChevronDown className="w-3.5 h-3.5 text-white/35" />
                   </div>
                   <div className="relative">
                     <input 
@@ -590,7 +589,7 @@ export default function MessagesPage() {
               </div>
             </>
           ) : (
-            <div className="p-5 text-center text-white/30 text-sm mt-10">
+            <div className="p-5 text-center text-white/35 text-sm mt-10">
               Select a conversation to view profile details.
             </div>
           )}
