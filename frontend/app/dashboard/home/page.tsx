@@ -199,7 +199,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   };
 
   return (
-    <div className="fixed bottom-[80px] md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center justify-end pointer-events-none w-full max-w-[600px] px-4">
+    <div className="hidden md:flex flex-col w-full mb-6 relative z-40">
       <motion.div
         ref={containerRef}
         layout
@@ -613,6 +613,18 @@ export default function DashboardHomePage() {
   const { user, loading } = useAuth();
   const [posts, setPosts] = useState<any[]>([]);
   const [stories, setStories] = useState<any[]>([]);
+  const [showComposerModal, setShowComposerModal] = useState(false);
+
+  useEffect(() => {
+    // Check if we need to open the compose modal
+    if (typeof window !== 'undefined') {
+      const shouldOpen = sessionStorage.getItem('openCompose');
+      if (shouldOpen === 'true') {
+        setShowComposerModal(true);
+        sessionStorage.removeItem('openCompose');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
@@ -673,11 +685,15 @@ export default function DashboardHomePage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA0KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-20" />
       </div>
 
-      <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
+      <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} onMobileCreateClick={() => setShowComposerModal(true)} />
 
       {/* Main Feed Area */}
       <main className="flex-1 flex justify-center h-full overflow-y-auto overflow-x-hidden no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
-        <div className="w-full max-w-full md:max-w-[680px] flex flex-col pt-8 pb-[140px] mx-auto px-4 overflow-x-hidden">
+        <div className="w-full max-w-full md:max-w-[680px] flex flex-col pt-8 pb-20 md:pb-24 mx-auto px-4 overflow-x-hidden">
+          
+          {/* Desktop Composer (Hidden on mobile) */}
+          <BottomComposerBar user={user} onPostCreated={() => { }} />
+
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
             {stories.map((story, i) => (
@@ -712,8 +728,50 @@ export default function DashboardHomePage() {
 
       <RightSidebar />
 
-      {/* Fixed bottom composer bar + slide-up drawer */}
-      <BottomComposerBar user={user} onPostCreated={() => { }} />
+      {/* Mobile Composer Modal */}
+      <AnimatePresence>
+        {showComposerModal && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 md:hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowComposerModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-full bg-[#111] sm:rounded-[24px] rounded-t-[24px] border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+                <button
+                  onClick={() => setShowComposerModal(false)}
+                  className="text-white/60 hover:text-white text-[15px] font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled
+                  className="bg-white text-black px-4 py-1.5 rounded-full text-[14px] font-semibold disabled:opacity-50 transition-colors"
+                >
+                  Post
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 flex gap-3">
+                <img src={user.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.uid} alt="avatar" className="w-10 h-10 rounded-full object-cover border border-white/10 flex-shrink-0" />
+                <textarea
+                  autoFocus
+                  placeholder="What are you building today?"
+                  className="w-full bg-transparent text-white text-[16px] placeholder:text-white/30 resize-none outline-none min-h-[120px]"
+                />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
