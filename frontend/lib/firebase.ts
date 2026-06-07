@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, browserLocalPersistence, setPersistence } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, initializeFirestore, setLogLevel } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
@@ -27,7 +27,14 @@ if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   } catch (e) {
     // ignore persistence errors during local/dev when auth is not fully configured
   }
-  db = getFirestore(app)
+  try {
+    db = initializeFirestore(app, {
+      experimentalForceLongPolling: true,
+    })
+  } catch (e) {
+    db = getFirestore(app)
+  }
+  setLogLevel('error')
   storage = getStorage(app)
 }
 
