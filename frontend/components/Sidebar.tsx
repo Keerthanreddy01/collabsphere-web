@@ -56,7 +56,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
       {!isSidebarOpen && (
         <button 
           onClick={() => setIsSidebarOpen && setIsSidebarOpen(true)}
-          className="md:hidden fixed top-4 left-4 z-40 p-2.5 bg-black/80 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/10 transition-colors"
+          className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#111] rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors"
         >
           <Menu className="w-6 h-6" />
         </button>
@@ -229,7 +229,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
       </aside>
 
       {/* Bottom Navigation for Mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-black border-t border-[#262626] flex items-center justify-around px-2 py-3 pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0a] border-t border-[#262626] flex items-center justify-around px-2 py-3 pb-safe">
         {bottomNavItems.map((item) => {
           const isActive = item.key === "home" ? pathname === "/dashboard/home" : pathname.startsWith(item.route);
           

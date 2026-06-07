@@ -199,7 +199,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-end pointer-events-none w-full max-w-[600px] px-4">
+    <div className="fixed bottom-[80px] md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center justify-end pointer-events-none w-full max-w-[600px] px-4">
       <motion.div
         ref={containerRef}
         layout
@@ -667,8 +667,8 @@ export default function DashboardHomePage() {
 
   return (
     <div className="flex h-screen bg-[#050505] text-white font-sans overflow-hidden relative selection:bg-blue-500/30 selection:text-white">
-      {/* Background Gradients & Grid */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* Background Gradients & Grid (Removed blobs to fix mobile overlap) */}
+      <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
         <div className="absolute top-0 left-[20%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.06)_0,transparent_50%)] blur-[80px]" />
         <div className="absolute bottom-[10%] right-[30%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.06)_0,transparent_50%)] blur-[80px]" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA0KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-20" />
@@ -677,8 +677,8 @@ export default function DashboardHomePage() {
       <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
 
       {/* Main Feed Area */}
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px]">
-        <div className="w-full max-w-[680px] flex flex-col pt-8 pb-24 mx-auto px-4">
+      <main className="flex-1 flex justify-center h-full overflow-y-auto overflow-x-hidden no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
+        <div className="w-full max-w-full md:max-w-[680px] flex flex-col pt-8 pb-[140px] mx-auto px-4 overflow-x-hidden">
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
             {stories.map((story, i) => (
