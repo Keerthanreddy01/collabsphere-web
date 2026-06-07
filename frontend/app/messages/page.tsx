@@ -16,10 +16,17 @@ import {
   Search, SlidersHorizontal, Plus, Star, ArrowLeft, MoreHorizontal,
   Phone, Mail, MapPin, Monitor, Paperclip, Smile, Mic, Zap, 
   ChevronDown, CheckCircle2, XCircle, UserCircle2, Clock, ChevronRight,
-  MessageSquare, User
+  MessageSquare, User, Send, Hash, Info
 } from "lucide-react";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+
+const inboxFilters = [
+  { id: "assigned", label: "Assigned (8)" },
+  { id: "transfers", label: "Transfers (3)" },
+  { id: "inboxes", label: "Inboxes" },
+  { id: "offline", label: "Offline" }
+];
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -34,6 +41,8 @@ export default function MessagesPage() {
   
   const [searchQuery, setSearchQuery] = useState("");
   const [profiles, setProfiles] = useState<Record<string, any>>({});
+  const [activeFilter, setActiveFilter] = useState("assigned");
+  const [showDetails, setShowDetails] = useState(true);
   
   const currentUid = user?.uid || "";
 
@@ -97,9 +106,9 @@ export default function MessagesPage() {
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     const diffMins = Math.floor((Date.now() - date.getTime()) / 60000);
     if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffMins < 60) return `${diffMins}m ago`;
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours} hour ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
     return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
   };
 
@@ -122,168 +131,121 @@ export default function MessagesPage() {
   }
 
   if (loading || !user) {
-    return <div className="flex h-screen bg-[#050505]" />;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#050505]">
+        <div className="w-8 h-8 animate-spin rounded-full border border-violet-500/30 border-t-violet-500" />
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-screen bg-[#050505] text-[#e0e0e0] font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#050505] text-[#e0e0e0] font-sans overflow-hidden selection:bg-violet-500/20 selection:text-white relative">
+      {/* Subtle background ambient details */}
+      <div className="absolute inset-0 z-0 pointer-events-none hidden md:block overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.02)_0,transparent_60%)] blur-[100px]" />
+      </div>
+
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       
       <main className="flex-1 flex h-full overflow-hidden relative z-10 md:pl-[72px] bg-[#050505]">
         
-        {/* COLUMN 1: INBOXES (240px) */}
-        <div className="w-[220px] bg-[#090909] border-r border-white/5 flex flex-col h-full shrink-0">
-          <div className="p-5 pb-2">
-            <h2 className="text-xl font-bold text-white tracking-tight mb-6">Conversations</h2>
+        {/* ====================================================
+            COLUMN 1: DISCUSSIONS & CHAT LIST (320px)
+            ==================================================== */}
+        <div className="w-[320px] bg-[#050505] border-r border-white/[0.06] flex flex-col h-full shrink-0 relative z-20">
+          
+          {/* Header */}
+          <div className="p-6 pb-4 flex flex-col">
+            <h1 className="font-display text-4xl font-light text-white tracking-tight mb-6 select-none">
+              Inbox
+            </h1>
             
-            <div className="flex flex-col gap-1 text-[13px] font-semibold text-white/60">
-              <div className="flex items-center justify-between px-3 py-2 bg-violet-600/10 text-white rounded-xl border border-violet-500/20 cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.05)]">
-                <div className="flex items-center gap-3">
-                  <UserCircle2 className="w-4 h-4 text-violet-400" />
-                  <span className="font-semibold text-white">Assigned to me</span>
-                </div>
-                <div className="w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold shadow-[0_0_8px_rgba(139,92,246,0.4)]">
-                  8
-                </div>
-              </div>
-              <div className="flex items-center justify-between px-3 py-2 hover:bg-white/[0.03] hover:text-white rounded-xl cursor-pointer transition-all border border-transparent hover:border-white/5">
-                <div className="flex items-center gap-3">
-                  <ArrowLeft className="w-4 h-4 text-white/40" />
-                  <span className="text-white/70">Transfers</span>
-                </div>
-                <div className="w-5 h-5 rounded-full bg-white/5 border border-white/10 text-white/50 flex items-center justify-center text-[10px] font-bold">
-                  3
-                </div>
-              </div>
-              <div className="flex items-center px-3 py-2 hover:bg-white/[0.03] hover:text-white rounded-xl cursor-pointer transition-all border border-transparent hover:border-white/5">
-                <div className="flex items-center gap-3">
-                  <Zap className="w-4 h-4 text-white/40" />
-                  <span className="text-white/70">Offline</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 px-5">
-            <h3 className="text-[10px] font-black tracking-widest text-white/35 uppercase mb-3">Inboxes</h3>
-            <div className="flex flex-col gap-0.5 text-[13px] text-white/50 font-medium">
-              <div className="flex items-center justify-between py-1.5 px-3 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer group">
-                <span>Head Office</span>
-                <span className="w-2 h-2 rounded-full bg-violet-500 group-hover:scale-110 transition-transform"></span>
-              </div>
-              <div className="flex items-center py-1.5 px-3 relative cursor-pointer text-white">
-                <div className="absolute left-0 top-1 bottom-1 w-[3px] bg-violet-500 rounded-r-md"></div>
-                <span>New Phone</span>
-              </div>
-              <div className="flex items-center py-1.5 px-3 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer">
-                <span>Trade-ins</span>
-              </div>
-              <div className="flex items-center py-1.5 px-3 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer">
-                <span>Repair</span>
-              </div>
-              
-              <div className="flex items-center justify-between py-1.5 px-3 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer mt-2">
-                <span>Crowfoot Terrace</span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex items-center justify-between py-1.5 px-3 hover:bg-white/[0.03] hover:text-white rounded-lg cursor-pointer">
-                <span>Deerfoot City</span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* COLUMN 2: CHAT LIST (340px) */}
-        <div className="w-[340px] bg-[#090909] border-r border-white/5 flex flex-col h-full shrink-0">
-          <div className="p-5 border-b border-white/5">
-            {/* Top Stats */}
-            <div className="grid grid-cols-3 gap-1 bg-white/[0.02] border border-white/5 rounded-xl p-2.5 text-[9px] text-white/45 font-bold uppercase tracking-wider mb-5">
-              <div className="flex flex-col items-center justify-center py-1">
-                <span className="text-[14px] font-black text-white leading-none mb-1">24</span>
-                <span className="scale-[0.9] origin-center text-center whitespace-nowrap text-white/40">In Progress</span>
-              </div>
-              <div className="flex flex-col items-center justify-center py-1 border-x border-white/5">
-                <span className="text-[14px] font-black text-violet-400 leading-none mb-1">7</span>
-                <span className="scale-[0.9] origin-center text-center whitespace-nowrap text-white/40">Waiting</span>
-              </div>
-              <div className="flex flex-col items-center justify-center py-1">
-                <span className="text-[14px] font-black text-emerald-400 leading-none mb-1">97</span>
-                <span className="scale-[0.9] origin-center text-center whitespace-nowrap text-white/40">CSAT</span>
-              </div>
+            {/* Filter Tabs */}
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-3 border-b border-white/5 mb-4 text-[11px] font-mono tracking-wider text-white/40">
+              {inboxFilters.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveFilter(f.id)}
+                  className={`px-2.5 py-1 rounded-full transition-all shrink-0 uppercase ${
+                    activeFilter === f.id
+                      ? "text-white bg-white/5 border border-white/10 font-bold"
+                      : "hover:text-white border border-transparent"
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
             </div>
 
-            {/* Search and Filters */}
+            {/* Search and Action bar */}
             <div className="flex items-center gap-2">
               <div className="relative flex-1 group">
                 <input
                   type="text"
-                  placeholder="Search ..."
+                  placeholder="Search chats..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-md py-2 pl-9 pr-3 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.05] transition-all"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-2 pl-9 pr-3 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.04] transition-all"
                 />
                 <Search className="w-4 h-4 text-white/30 absolute left-3 top-2.5" />
               </div>
-              <button className="p-2 text-white/60 hover:text-white transition-colors bg-white/[0.03] rounded-md border border-white/10">
-                <SlidersHorizontal className="w-4 h-4" />
-              </button>
-              <button className="p-2 bg-violet-600 text-white rounded-md hover:bg-violet-500 transition-colors shadow-lg shadow-violet-500/20">
+              <button className="p-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)]">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-1">
+          {/* Conversations Cards List */}
+          <div className="flex-1 overflow-y-auto no-scrollbar px-3 space-y-1.5 pb-8">
             {filteredChats.map(chat => {
               const otherUid = chat.participants.find((p: string) => p !== currentUid);
               const otherProfile = profiles[otherUid] || {};
               const isActive = activeChatId === chat.id;
-              
-              // Simulate random statuses for UI mockup
               const needsAccept = chat.id.charCodeAt(0) % 3 === 0 && !isActive;
 
               return (
                 <div 
                   key={chat.id} 
                   onClick={() => setActiveChatId(chat.id)}
-                  className={`flex flex-col gap-2 p-3 rounded-xl cursor-pointer transition-all duration-300 border ${
+                  className={`flex flex-col gap-2.5 p-4 rounded-2xl cursor-pointer transition-all duration-300 border ${
                     isActive 
-                      ? 'bg-violet-600/10 border-violet-500/20 shadow-[0_4px_20px_rgba(139,92,246,0.05)]' 
-                      : 'bg-transparent border-transparent hover:bg-white/[0.03] hover:border-white/5'
+                      ? 'bg-white/[0.04] border-white/10 shadow-[0_4px_20px_rgba(255,255,255,0.02)]' 
+                      : 'bg-transparent border-transparent hover:bg-white/[0.02] hover:border-white/5'
                   }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-3">
                     <div className="relative shrink-0">
                       <img 
                         src={otherProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUid}`} 
-                        className="w-10 h-10 rounded-full object-cover border border-white/10 bg-white/5" 
+                        className="w-8 h-8 rounded-full object-cover border border-white/10" 
                         alt="" 
                       />
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#090909]"></div>
+                      <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full border border-[#050505]"></div>
                     </div>
                     
-                    <div className="flex flex-col flex-1 min-w-0">
-                      <span className="text-[14px] font-bold text-white truncate">
-                        {otherProfile.full_name || otherProfile.username}
-                      </span>
-                      <span className="text-[11px] text-violet-400 font-medium mt-0.5">
-                        {formatMessageTime(chat.lastMessageTime)}
-                      </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline justify-between gap-1">
+                        <span className="text-[13.5px] font-bold text-white truncate">
+                          {otherProfile.full_name || otherProfile.username}
+                        </span>
+                        <span className="text-[10px] text-white/30 font-medium">
+                          {formatMessageTime(chat.lastMessageTime)}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <span className={`text-[12px] leading-snug truncate ${needsAccept ? 'text-white font-medium' : 'text-white/40'}`}>
+                  <span className={`text-[12px] truncate leading-normal block ${needsAccept ? 'text-white font-medium' : 'text-white/40'}`}>
                     {chat.lastMessage || "Started a new conversation..."}
                   </span>
 
                   {needsAccept && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <button className="flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-full border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 text-[12px] font-bold transition-colors">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Accept
+                    <div className="flex items-center gap-2 mt-1">
+                      <button className="flex-1 py-1 flex items-center justify-center gap-1 rounded-full border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10 text-[11px] font-mono tracking-wider uppercase transition-colors">
+                        Accept
                       </button>
-                      <button className="flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-full border border-red-500/30 text-red-400 hover:bg-red-500/10 text-[12px] font-bold transition-colors">
-                        <XCircle className="w-3.5 h-3.5" /> Decline
+                      <button className="flex-1 py-1 flex items-center justify-center gap-1 rounded-full border border-white/10 text-white/40 hover:bg-white/5 text-[11px] font-mono tracking-wider uppercase transition-colors">
+                        Decline
                       </button>
                     </div>
                   )}
@@ -293,153 +255,133 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        {/* COLUMN 3: ACTIVE CHAT (flex-1) */}
-        <div className="flex-1 flex flex-col h-full bg-[#050505] relative z-0">
+        {/* ====================================================
+            COLUMN 2: ACTIVE CHAT PANE (flex-1)
+            ==================================================== */}
+        <div className="flex-1 flex flex-col h-full bg-[#050505] relative z-10">
           {!activeChatId ? (
-            <div className="flex-1 flex items-center justify-center text-white/30">
-              <p>Select a conversation</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-8 select-none">
+              <MessageSquare className="w-10 h-10 text-white/10 mb-4 stroke-[1.25]" />
+              <h2 className="font-display text-2xl font-light text-white mb-1">Select a Conversation</h2>
+              <p className="text-sm text-white/30 max-w-xs leading-relaxed">Choose a direct thread from your inbox to review logs or send messages.</p>
             </div>
           ) : (
             <>
               {/* Header */}
-              <div className="h-[72px] border-b border-white/5 flex items-center justify-between px-6 shrink-0 bg-[#090909]/60 backdrop-blur-md z-10">
-                <div className="flex items-center gap-3">
+              <div className="h-[76px] border-b border-white/[0.06] flex items-center justify-between px-8 shrink-0 bg-[#050505]/80 backdrop-blur-md z-10">
+                <div className="flex items-center gap-4">
                   <div className="relative">
                     <img 
                       src={activeRecipientProfile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeId}`}
-                      className="w-9 h-9 rounded-full object-cover border border-white/10 bg-white/5"
+                      className="w-9 h-9 rounded-full object-cover border border-white/10"
                       alt=""
                     />
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#090909]"></div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full border border-[#050505]"></div>
                   </div>
-                  <span className="text-[16px] font-bold text-white tracking-tight">
-                    {activeRecipientProfile?.full_name || activeRecipientProfile?.username}
-                  </span>
-                  <button className="p-1 text-white/40 hover:text-white transition-colors">
-                    <Plus className="w-4 h-4" />
-                  </button>
+                  <div className="min-w-0">
+                    <h2 className="font-display text-xl font-light text-white tracking-tight leading-tight">
+                      {activeRecipientProfile?.full_name || activeRecipientProfile?.username}
+                    </h2>
+                    <span className="text-[11px] font-mono text-white/30 uppercase tracking-widest block mt-0.5">
+                      Live Conversation Thread
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-white/40">
-                  <button className="p-2 hover:text-white hover:bg-white/[0.05] rounded-md transition-colors">
-                    <Star className="w-5 h-5" />
-                  </button>
-                  <button className="p-2 hover:text-white hover:bg-white/[0.05] rounded-md transition-colors">
-                    <ArrowLeft className="w-5 h-5" />
-                  </button>
-                  <button className="p-2 hover:text-white hover:bg-white/[0.05] rounded-md transition-colors">
-                    <MoreHorizontal className="w-5 h-5" />
+                <div className="flex items-center gap-1.5">
+                  <button 
+                    onClick={() => setShowDetails(!showDetails)}
+                    className={`p-2 rounded-xl transition-all border ${
+                      showDetails 
+                        ? "bg-white/5 border-white/10 text-white" 
+                        : "bg-transparent border-transparent text-white/40 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Info className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
               {/* Chat Subheader Notice */}
-              <div className="bg-white/[0.01] border-b border-white/5 py-2 px-6 text-center text-[11px] text-white/40 font-medium shrink-0">
-                Live Chat Conversation with <span className="text-white">Jean Talis, Ahmed Dinejad, Soka Bjanci</span> | April 18, 03:31 PM
+              <div className="bg-white/[0.01] border-b border-white/5 py-2 px-8 text-[11px] text-white/35 font-mono uppercase tracking-wider shrink-0 flex items-center justify-between">
+                <span>Jean Talis, Ahmed Dinejad, Soka Bjanci</span>
+                <span className="text-white/20">April 18, 03:31 PM</span>
               </div>
 
-              {/* Background texture matching mockup */}
-              <div className="absolute inset-0 z-[-1] opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/notebook-dark.png')]" />
-
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 no-scrollbar">
-                <div className="flex justify-center mb-4">
-                  <span className="text-[11px] text-white/45 font-medium">Live Chat Conversation with <span className="text-white">You</span> - Today, 23:36</span>
+              <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 no-scrollbar relative">
+                
+                {/* Beautiful grid overlay */}
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAxNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvC3ZnPg==')] pointer-events-none select-none" />
+                
+                <div className="flex justify-center mb-4 z-10">
+                  <span className="text-[10px] font-mono tracking-widest bg-white/[0.03] border border-white/5 px-3 py-1 rounded-full text-white/40 uppercase">
+                    Today
+                  </span>
                 </div>
 
-                {messages.map((msg, i) => {
-                  const isMe = msg.senderId === currentUid;
-                  const timeStr = formatMessageTime(msg.timestamp);
+                <div className="space-y-6 z-10 flex flex-col">
+                  {messages.map((msg, i) => {
+                    const isMe = msg.senderId === currentUid;
+                    const timeStr = formatMessageTime(msg.timestamp);
 
-                  return (
-                    <div key={msg.id || i} className={`flex max-w-[85%] ${isMe ? 'self-end flex-row-reverse' : 'self-start'} gap-3`}>
-                      <img 
-                        src={isMe ? (user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUid}`) : (activeRecipientProfile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeId}`)} 
-                        className="w-8 h-8 rounded-full object-cover shrink-0 mt-1 border border-white/10" 
-                        alt="" 
-                      />
-                      
-                      <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                        <div className="flex items-center gap-2 mb-1.5 text-[11px] text-white/40">
-                          {isMe ? (
-                            <>
-                              <span>Sent by Live Chat • {timeStr} • seen <strong className="text-white/60">You</strong></span>
-                            </>
-                          ) : (
-                            <>
-                              <strong className="text-white/80 font-bold text-[12px]">{activeRecipientProfile?.full_name || activeRecipientProfile?.username}</strong>
-                              <span>Sent by Live Chat • {timeStr}</span>
-                              <MessageSquare className="w-3 h-3 text-white/30" />
-                            </>
-                          )}
-                        </div>
+                    return (
+                      <div key={msg.id || i} className={`flex max-w-[85%] ${isMe ? 'self-end flex-row-reverse' : 'self-start'} gap-3.5 items-start`}>
+                        <img 
+                          src={isMe ? (user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUid}`) : (activeRecipientProfile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeId}`)} 
+                          className="w-7 h-7 rounded-full object-cover shrink-0 border border-white/10 mt-0.5" 
+                          alt="" 
+                        />
+                        
+                        <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[11px] font-mono tracking-wider text-white/30 uppercase">
+                              {isMe ? "You" : (activeRecipientProfile?.full_name || activeRecipientProfile?.username)}
+                            </span>
+                            <span className="text-[9px] font-mono text-white/20">
+                              {timeStr}
+                            </span>
+                          </div>
 
-                        <div className={`px-4 py-2.5 rounded-2xl text-[13.5px] leading-relaxed max-w-full break-words border transition-all ${
-                          isMe 
-                            ? 'bg-violet-600/10 text-white border-violet-500/20 rounded-tr-none shadow-[0_4px_16px_rgba(139,92,246,0.1)]' 
-                            : 'bg-white/[0.02] border-white/5 text-white/90 rounded-tl-none'
-                        }`}>
-                          {msg.content}
+                          <div className={`px-4 py-2.5 rounded-2xl text-[13.5px] leading-relaxed max-w-full break-words transition-all border ${
+                            isMe 
+                              ? 'bg-violet-600/10 text-white border-violet-500/20 rounded-tr-none shadow-[0_4px_20px_rgba(139,92,246,0.05)]' 
+                              : 'bg-white/[0.02] border-white/5 text-white/90 rounded-tl-none'
+                          }`}>
+                            {msg.content}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
                 <div ref={messagesEndRef} />
               </div>
 
               {/* Message Composer */}
-              <div className="p-4 bg-[#090909]/60 border-t border-white/5 shrink-0">
-                <div className="flex items-center gap-4 mb-3 border-b border-white/5 pb-3 text-[12px] font-semibold text-white/40">
-                  <button className="flex items-center gap-1.5 text-white bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors">
-                    <MessageSquare className="w-4 h-4 text-violet-400" /> Live Chat <ChevronDown className="w-3 h-3" />
-                  </button>
-                  <button className="flex items-center gap-1.5 hover:text-white transition-colors">
-                    <Plus className="w-4 h-4" /> Create Task
-                  </button>
-                  <div className="ml-auto flex items-center gap-2">
-                    <span>Private Note</span>
-                    <div className="w-8 h-4 bg-white/10 rounded-full relative cursor-pointer">
-                      <div className="absolute left-0.5 top-0.5 w-3 h-3 bg-white/45 rounded-full"></div>
+              <div className="p-6 bg-[#050505] border-t border-white/[0.06] shrink-0">
+                <form onSubmit={handleSendMessage} className="bg-white/[0.02] border border-white/10 rounded-2xl p-2 focus-within:border-white/20 transition-all flex flex-col gap-2">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder={`Write a message to ${activeRecipientProfile?.full_name || activeRecipientProfile?.username}...`}
+                    className="w-full bg-transparent text-[13.5px] text-white placeholder-white/20 outline-none py-2 px-3"
+                  />
+                  
+                  <div className="flex items-center justify-between border-t border-white/5 pt-2 px-2">
+                    <div className="flex items-center gap-2 text-white/30">
+                      <button type="button" className="p-2 hover:text-white hover:bg-white/5 rounded-xl transition-colors"><Paperclip className="w-4 h-4" /></button>
+                      <button type="button" className="p-2 hover:text-white hover:bg-white/5 rounded-xl transition-colors"><Smile className="w-4 h-4" /></button>
                     </div>
-                  </div>
-                </div>
 
-                <form onSubmit={handleSendMessage} className="flex items-center gap-3">
-                  <div className="flex-1 bg-transparent flex flex-col">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Send a message ..."
-                      className="w-full bg-transparent text-[14px] text-white placeholder-white/30 outline-none py-2"
-                    />
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center gap-4 text-white/30">
-                        <button type="button" className="hover:text-white transition-colors"><Paperclip className="w-4 h-4" /></button>
-                        <button type="button" className="hover:text-white transition-colors">@</button>
-                        <button type="button" className="hover:text-white transition-colors"><Smile className="w-4 h-4" /></button>
-                        <button type="button" className="hover:text-white transition-colors"><Mic className="w-4 h-4" /></button>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <button type="button" className="p-2 text-violet-400 hover:bg-white/[0.05] rounded-md transition-colors mr-2">
-                          <Zap className="w-4 h-4" />
-                        </button>
-                        <div className="flex items-center">
-                          <button 
-                            type="submit" 
-                            disabled={!newMessage.trim()}
-                            className="bg-violet-600 text-white text-[13px] font-bold px-4 py-2 rounded-l-md hover:bg-violet-500 disabled:opacity-30 transition-colors shadow-[0_0_15px_rgba(139,92,246,0.2)]"
-                          >
-                            Send
-                          </button>
-                          <button type="button" className="bg-violet-700 text-white px-2 py-2 rounded-r-md hover:bg-violet-600 border-l border-violet-500/30 transition-colors">
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                    <button 
+                      type="submit" 
+                      disabled={!newMessage.trim()}
+                      className="h-8 w-8 rounded-xl bg-violet-600 text-white flex items-center justify-center hover:bg-violet-500 disabled:opacity-30 disabled:pointer-events-none transition-all shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </form>
               </div>
@@ -447,153 +389,113 @@ export default function MessagesPage() {
           )}
         </div>
 
-        {/* COLUMN 4: PROFILE DETAILS (280px) */}
-        <div className="w-[280px] bg-[#090909] border-l border-white/5 flex flex-col h-full shrink-0">
-          {activeRecipientProfile ? (
-            <>
-              <div className="h-[72px] border-b border-white/5 flex items-center justify-between px-5">
-                <div className="flex items-center gap-3">
-                  <img 
-                    src={activeRecipientProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeRecipientProfile.id}`}
-                    className="w-8 h-8 rounded-full object-cover border border-white/10"
-                    alt=""
-                  />
-                  <span className="text-[15px] font-bold text-white tracking-tight">
-                    {activeRecipientProfile.full_name || activeRecipientProfile.username}
-                  </span>
-                </div>
-                <button className="text-white/40 hover:text-white">
-                  <MoreHorizontal className="w-5 h-5" />
-                </button>
+        {/* ====================================================
+            COLUMN 3: PROFILE DETAILS (300px)
+            ==================================================== */}
+        {showDetails && activeChatId && activeRecipientProfile && (
+          <div className="w-[300px] bg-[#050505] border-l border-white/[0.06] flex flex-col h-full shrink-0 overflow-y-auto no-scrollbar relative z-20">
+            <div className="p-6">
+              <h3 className="text-[10px] font-mono tracking-widest text-white/35 uppercase mb-6">Profile Info</h3>
+              
+              <div className="flex flex-col items-center text-center mb-6">
+                <img 
+                  src={activeRecipientProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeRecipientProfile.id}`}
+                  className="w-16 h-16 rounded-full object-cover border border-white/10 bg-white/5 mb-3"
+                  alt=""
+                />
+                <h4 className="font-display text-xl font-light text-white tracking-tight leading-tight">
+                  {activeRecipientProfile.full_name || activeRecipientProfile.username}
+                </h4>
+                <span className="text-[11px] font-mono text-white/30 uppercase tracking-widest mt-1 block">
+                  Active Builder
+                </span>
               </div>
 
-              <div className="flex-1 overflow-y-auto no-scrollbar p-5">
+              <div className="space-y-6">
                 
                 {/* Recent Conversation */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-[11px] font-black tracking-widest text-white/35 uppercase mb-4">
-                    <span>Recent Conversation</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-white/35" />
-                  </div>
-                  <div className="flex flex-col gap-3 text-[12px] bg-white/[0.01] border border-white/5 p-3.5 rounded-2xl">
+                <div>
+                  <h5 className="text-[9px] font-mono tracking-widest text-white/30 uppercase mb-3">Recent Interaction</h5>
+                  <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3.5 space-y-2.5 font-mono text-[11px] text-white/50">
                     <div>
-                      <div className="flex items-center gap-1.5 text-white font-semibold mb-1">
-                        <MessageSquare className="w-3.5 h-3.5 text-violet-400" /> Chat • Active with You <CheckCircle2 className="w-3.5 h-3.5 text-white/40" />
-                      </div>
-                      <div className="flex justify-between text-white/45">
-                        <span className="truncate pr-2">Hello, I need help on my custo...</span>
-                        <span>1d</span>
-                      </div>
+                      <div className="text-white font-bold mb-0.5">Chat Session</div>
+                      <div className="text-[10px] text-white/30">Active with You • 1d ago</div>
                     </div>
-                    <div className="w-full h-px bg-white/5 my-1"></div>
+                    <div className="w-full h-px bg-white/5"></div>
                     <div>
-                      <div className="flex items-center gap-1.5 text-white/40 font-semibold mb-1">
-                        <Phone className="w-3.5 h-3.5" /> SMS • Closed by Laura <CheckCircle2 className="w-3.5 h-3.5 text-green-500/80" />
-                      </div>
-                      <div className="flex justify-between text-white/35">
-                        <span className="truncate pr-2">Okay, Laura. Will do the advis...</span>
-                        <span>2d</span>
-                      </div>
+                      <div className="text-white/40 mb-0.5">SMS Message</div>
+                      <div className="text-[10px] text-white/30">Closed by Laura • 2d ago</div>
                     </div>
-                    <div className="w-full h-px bg-white/5 my-1"></div>
+                    <div className="w-full h-px bg-white/5"></div>
                     <div>
-                      <div className="flex items-center gap-1.5 text-white/40 font-semibold mb-1">
-                        <Mail className="w-3.5 h-3.5" /> Email • Closed by Jean <CheckCircle2 className="w-3.5 h-3.5 text-green-500/80" />
-                      </div>
-                      <div className="flex justify-between text-white/35">
-                        <span className="truncate pr-2">Nevermind, Adam. Thank you!...</span>
-                        <span>1w</span>
-                      </div>
-                    </div>
-                    <button className="text-violet-400 font-semibold text-left mt-2 hover:underline">Show more</button>
-                  </div>
-                </div>
-
-                <div className="w-full h-[1px] bg-white/5 mb-6"></div>
-
-                {/* Profile */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-[11px] font-black tracking-widest text-white/35 uppercase mb-4">
-                    <span>Profile</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-white/35" />
-                  </div>
-                  
-                  <div className="flex flex-col gap-4 text-[12px] bg-white/[0.01] border border-white/5 p-4 rounded-2xl">
-                    <div className="flex gap-2.5">
-                      <Phone className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                      <div className="flex flex-col gap-2 w-full text-white/60">
-                        <div className="flex justify-between font-mono text-[9px] text-white/30 uppercase tracking-wider"><span>Phone</span> <span className="text-white/30 cursor-pointer hover:text-white">Add</span></div>
-                        <div className="flex justify-between text-white font-medium"><span>Whatsapp</span> <span className="flex items-center gap-1">650-513-0514 <Star className="w-3 h-3 fill-violet-400 text-violet-400" /></span></div>
-                        <div className="flex justify-between text-white/70"><span>Home</span> <span className="flex items-center gap-1">613-555-0168 <XCircle className="w-3 h-3 text-red-500/80" /></span></div>
-                        <div className="flex justify-between text-white/70"><span>Office</span> <span>613-555-0145</span></div>
-                      </div>
-                    </div>
-
-                    <div className="w-full h-px bg-white/5"></div>
-
-                    <div className="flex gap-2.5">
-                      <Mail className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                      <div className="flex flex-col gap-2 w-full text-white/60">
-                        <div className="flex justify-between font-mono text-[9px] text-white/30 uppercase tracking-wider"><span>Email</span> <span className="text-white/30 cursor-pointer hover:text-white">Add</span></div>
-                        <div className="flex justify-between text-white font-medium"><span>Work</span> <span className="truncate max-w-[140px] hover:underline cursor-pointer">{activeRecipientProfile.email || "robertfox@startrek.com"}</span></div>
-                      </div>
-                    </div>
-
-                    <div className="w-full h-px bg-white/5"></div>
-
-                    <div className="flex items-center gap-2.5 text-white/60">
-                      <User className="w-4 h-4 text-white/30 shrink-0" />
-                      <span className="flex-1 font-mono text-[9px] text-white/30 uppercase tracking-wider">Assigned to</span>
-                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nida" className="w-4 h-4 rounded-full border border-white/10" alt=""/>
-                      <span className="text-white font-medium truncate max-w-[80px]">Nida Hanin</span>
-                    </div>
-
-                    <div className="w-full h-px bg-white/5"></div>
-
-                    <div className="flex items-center gap-2.5 text-white/60">
-                      <div className="w-4 flex justify-center"><div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div></div>
-                      <span className="flex-1 font-mono text-[9px] text-white/30 uppercase tracking-wider">Status</span>
-                      <span className="text-white font-medium">Online</span>
-                    </div>
-
-                    <div className="w-full h-px bg-white/5"></div>
-
-                    <div className="flex gap-2.5">
-                      <MapPin className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                      <div className="flex flex-col gap-1 w-full text-white/60">
-                        <span className="font-mono text-[9px] text-white/30 uppercase tracking-wider">Location</span>
-                        <span className="text-white text-left leading-normal mt-0.5">Adelaide, Australia</span>
-                      </div>
+                      <div className="text-white/40 mb-0.5">Email Channel</div>
+                      <div className="text-[10px] text-white/30">Closed by Jean • 1w ago</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="w-full h-[1px] bg-white/5 mb-6"></div>
+                <div className="w-full h-px bg-white/5"></div>
+
+                {/* Profile Details List */}
+                <div>
+                  <h5 className="text-[9px] font-mono tracking-widest text-white/30 uppercase mb-3">Contact Metadata</h5>
+                  <div className="space-y-4 font-mono text-[10px] text-white/35">
+                    
+                    <div className="space-y-1">
+                      <span className="block tracking-wider uppercase text-white/20">Email Address</span>
+                      <span className="text-white font-sans text-xs font-medium block truncate hover:underline cursor-pointer">
+                        {activeRecipientProfile.email || "robertfox@startrek.com"}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="block tracking-wider uppercase text-white/20">Whatsapp</span>
+                      <span className="text-white text-[12px] font-sans font-medium block">
+                        650-513-0514
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="block tracking-wider uppercase text-white/20">Assigned Node Owner</span>
+                      <span className="text-white/70 text-xs font-sans font-medium block">
+                        Nida Hanin
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="block tracking-wider uppercase text-white/20">Geographical Location</span>
+                      <span className="text-white/70 text-xs font-sans font-medium block leading-normal">
+                        Adelaide, Australia
+                      </span>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div className="w-full h-px bg-white/5"></div>
 
                 {/* Tags */}
                 <div>
-                  <div className="flex items-center justify-between text-[11px] font-black tracking-widest text-white/35 uppercase mb-4">
-                    <span>Tags</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-white/35" />
+                  <h5 className="text-[9px] font-mono tracking-widest text-white/30 uppercase mb-3">Categorization Tags</h5>
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    <span className="px-2 py-0.5 border border-white/10 bg-white/[0.02] text-white/50 text-[10px] rounded-md font-mono uppercase">Developer</span>
+                    <span className="px-2 py-0.5 border border-white/10 bg-white/[0.02] text-white/50 text-[10px] rounded-md font-mono uppercase">VIP</span>
                   </div>
                   <div className="relative">
                     <input 
                       type="text" 
-                      placeholder="Type to search or add new tag ..." 
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-md py-2 pl-8 pr-3 text-[12px] text-white placeholder-white/30 outline-none focus:border-violet-500/50 transition-all"
+                      placeholder="Add tag..." 
+                      className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-2 pl-7 pr-3 text-[11px] text-white placeholder-white/20 outline-none focus:border-violet-500/50 transition-all font-mono"
                     />
-                    <Search className="w-3.5 h-3.5 text-white/30 absolute left-2.5 top-2.5" />
+                    <Search className="w-3.5 h-3.5 text-white/20 absolute left-2.5 top-2.5" />
                   </div>
                 </div>
 
               </div>
-            </>
-          ) : (
-            <div className="p-5 text-center text-white/35 text-sm mt-10">
-              Select a conversation to view profile details.
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
       </main>
     </div>
   );
