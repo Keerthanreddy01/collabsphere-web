@@ -82,7 +82,7 @@ export default function CreateProjectPage() {
 
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-      <main className="flex-1 h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px]">
+      <main className="flex-1 h-full overflow-y-auto no-scrollbar relative z-10 md:pl-[72px]">
         <div className="w-full max-w-[800px] pt-12 pb-24 mx-auto px-6">
           
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">

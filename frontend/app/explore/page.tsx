@@ -91,7 +91,7 @@ export default function ExplorePage() {
 
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-      <main className="flex-1 flex justify-center h-full overflow-y-auto scrollbar-hide relative z-10 lg:pl-[72px] xl:pr-[340px]">
+      <main className="flex-1 flex justify-center h-full overflow-y-auto scrollbar-hide relative z-10 md:pl-[72px] xl:pr-[340px]">
         <div className="w-full max-w-[760px] flex flex-col">
 
           {/* ── Sticky Search + Category Header ─────────────────────────────── */}

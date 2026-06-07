@@ -106,18 +106,16 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
       if (timerRef.current) clearInterval(timerRef.current);
     } else {
       try {
-        if (typeof navigator !== 'undefined' && navigator.permissions) {
-          try {
-            const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-            if (permissionStatus.state === 'denied') {
-              setMicError('🔒 Microphone is blocked by your browser. To fix:\n1. Click the lock 🔒 icon in the address bar\n2. Go to Site Settings → Microphone → Allow\n3. Refresh the page and try again');
-              return;
-            }
-          } catch (pErr) {
-            console.warn("Permissions query not supported or failed:", pErr);
-          }
+        const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        if (permissionStatus.state === 'denied') {
+          setMicError('Microphone is blocked. Click the 🔒 lock icon in your browser address bar → Site Settings → Microphone → Allow → then refresh the page.');
+          return;
         }
+      } catch (err) {
+        // Ignore permission query error
+      }
 
+      try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
@@ -141,8 +139,11 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
           setRecordingTime(prev => prev + 1);
         }, 1000);
       } catch (err: any) {
-        setMicError('🔒 Microphone is blocked by your browser. To fix:\n1. Click the lock 🔒 icon in the address bar\n2. Go to Site Settings → Microphone → Allow\n3. Refresh the page and try again');
-        console.warn("Microphone access blocked (suppressed console.error to prevent Next.js overlay):", err);
+        if (err.name === 'NotAllowedError' || err.message?.includes('Permission denied')) {
+          setMicError('Microphone is blocked. Click the 🔒 lock icon in your browser address bar → Site Settings → Microphone → Allow → then refresh the page.');
+        } else {
+          setMicError('Could not start microphone. Please check your system settings.');
+        }
       }
     }
   };
@@ -331,15 +332,8 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                     className="bg-[#3b0f11] border border-[#7f1d1d] text-white text-[13px] px-4 py-3 rounded-xl flex flex-col gap-2 shadow-lg w-full"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 leading-relaxed text-left">
-                        <div className="font-semibold flex items-center gap-1.5 text-red-200">
-                          <span>🔒 Microphone is blocked by your browser. To fix:</span>
-                        </div>
-                        <ol className="list-decimal list-inside mt-2 space-y-1.5 text-white/90 font-normal">
-                          <li>Click the lock 🔒 icon in the address bar</li>
-                          <li>Go to Site Settings → Microphone → Allow</li>
-                          <li>Refresh the page and try again</li>
-                        </ol>
+                      <div className="flex-1 leading-relaxed text-left text-red-200 font-medium">
+                        {micError}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <button 
@@ -683,7 +677,7 @@ export default function DashboardHomePage() {
       <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
 
       {/* Main Feed Area */}
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 lg:pl-[72px] xl:pr-[340px]">
+      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px]">
         <div className="w-full max-w-[680px] flex flex-col pt-8 pb-24 mx-auto px-4">
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
