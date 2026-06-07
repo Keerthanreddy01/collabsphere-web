@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
+export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreateClick }: any) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
@@ -236,7 +236,18 @@ export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
           return (
             <button
               key={item.key}
-              onClick={() => router.push(item.route)}
+              onClick={() => {
+                if (item.key === "create") {
+                  if (onMobileCreateClick) {
+                    onMobileCreateClick();
+                  } else {
+                    if (typeof window !== 'undefined') sessionStorage.setItem('openCompose', 'true');
+                    router.push('/dashboard/home');
+                  }
+                } else {
+                  router.push(item.route);
+                }
+              }}
               className="flex flex-col items-center justify-center p-2 rounded-xl hover:bg-white/5 transition-colors w-[60px]"
             >
               {item.key === "profile" ? (
