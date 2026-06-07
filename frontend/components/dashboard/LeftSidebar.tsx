@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
+export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreateClick }: any) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
@@ -262,6 +262,7 @@ export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
                   strokeWidth: isActive ? 2.5 : 2,
                   fill: isActive ? "currentColor" : "none"
                 })
+
               )}
               <span className={`text-[10px] ${isActive ? "text-white font-bold" : "text-white/50 font-medium"}`}>
                 {item.label}
@@ -270,17 +271,6 @@ export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }: any) {
           );
         })}
       </div>
-    </>
-  );
-}
-              )}
-<span className={`text-[10px] ${isActive ? "text-white font-bold" : "text-white/50 font-medium"}`}>
-  {item.label}
-</span>
-            </button >
-          );
-        })}
-      </div >
     </>
   );
 }
