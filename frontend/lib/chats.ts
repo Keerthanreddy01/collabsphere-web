@@ -152,3 +152,27 @@ export async function markConversationAsRead(chatId: string, userId: string) {
     console.error("Error marking conversation as read:", err);
   }
 }
+
+/**
+ * Toggles a message reaction in Firestore
+ */
+export async function toggleMessageReaction(chatId: string, messageId: string, emoji: string, userId: string, currentReactions: any) {
+  try {
+    const messageRef = doc(db, "messages", chatId, "messages", messageId);
+    const reactions = currentReactions ? { ...currentReactions } : {};
+    const users = reactions[emoji] ? [...reactions[emoji]] : [];
+    
+    if (users.includes(userId)) {
+      reactions[emoji] = users.filter((uid: string) => uid !== userId);
+      if (reactions[emoji].length === 0) {
+        delete reactions[emoji];
+      }
+    } else {
+      reactions[emoji] = [...users, userId];
+    }
+    
+    await updateDoc(messageRef, { reactions });
+  } catch (err) {
+    console.error("Error toggling reaction:", err);
+  }
+}
