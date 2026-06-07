@@ -92,7 +92,7 @@ export default function ExplorePage() {
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
       <main className="flex-1 flex justify-center h-full overflow-y-auto scrollbar-hide overflow-x-hidden relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
-        <div className="w-full max-w-full md:max-w-[760px] flex flex-col pb-20 md:pb-0 overflow-x-hidden">
+        <div className="w-full max-w-[760px] flex flex-col pb-[80px] md:pb-0 overflow-x-hidden">
 
           {/* ── Sticky Search + Category Header ─────────────────────────────── */}
           <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
@@ -133,11 +133,10 @@ export default function ExplorePage() {
                 <button
                   key={label}
                   onClick={() => setActiveCategory(label)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-none text-[15px] font-medium whitespace-nowrap transition-all duration-200 border-b-[3px] ${
-                    activeCategory === label
+                  className={`flex items-center gap-2 px-5 py-3 rounded-none text-[15px] font-medium whitespace-nowrap transition-all duration-200 border-b-[3px] ${activeCategory === label
                       ? "text-white border-white"
                       : "text-white/40 border-transparent hover:text-white/70"
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   {label}
@@ -230,11 +229,10 @@ export default function ExplorePage() {
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setFollowed(prev => ({ ...prev, [builder.handle]: !prev[builder.handle] }))}
-                      className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${
-                        followed[builder.handle]
+                      className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${followed[builder.handle]
                           ? "bg-transparent border-white/20 text-white/60 hover:border-red-500/40 hover:text-red-400"
                           : "bg-white border-white text-black hover:bg-white/90"
-                      }`}
+                        }`}
                     >
                       {followed[builder.handle] ? "Following" : "Follow"}
                     </motion.button>
