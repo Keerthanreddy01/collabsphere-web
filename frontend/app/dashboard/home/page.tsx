@@ -1,4 +1,4 @@
-"use client";import React, { useEffect, useState, useRef } from "react";
+"use client"; import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -43,7 +43,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -191,15 +191,15 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
 
   const itemVariants = {
     hidden: { opacity: 0, y: 8 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: "spring" as const, stiffness: 300, damping: 24 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring" as const, stiffness: 300, damping: 24 }
     }
   };
 
   return (
-    <div className="hidden md:flex flex-col w-full mb-6 relative z-40">
+    <div className="fixed bottom-[80px] md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center justify-end pointer-events-none w-full max-w-[600px] px-4">
       <motion.div
         ref={containerRef}
         layout
@@ -336,7 +336,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                         {micError}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowInstructions(!showInstructions);
@@ -345,7 +345,7 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                         >
                           How to fix →
                         </button>
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setMicError(null);
@@ -356,9 +356,9 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                         </button>
                       </div>
                     </div>
-                    
+
                     {showInstructions && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         className="text-[12px] text-white/80 bg-black/35 p-3 rounded-lg border border-[#7f1d1d]/40 mt-1 font-normal leading-relaxed text-left space-y-1"
@@ -390,9 +390,9 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     onClick={(e) => { e.stopPropagation(); toggleRecording(); }}
-                    className={`p-2 rounded-full transition group relative flex items-center gap-2 ${isRecording ? 'text-red-500 bg-red-500/10' : 'text-[#00b0f0] hover:bg-[#00b0f0]/10'}`} 
+                    className={`p-2 rounded-full transition group relative flex items-center gap-2 ${isRecording ? 'text-red-500 bg-red-500/10' : 'text-[#00b0f0] hover:bg-[#00b0f0]/10'}`}
                     title={isRecording ? "Stop Recording" : "Voice"}
                   >
                     <Mic className={`w-[18px] h-[18px] transition-transform ${isRecording ? 'animate-pulse' : 'group-hover:scale-110'}`} />
@@ -412,11 +412,10 @@ function BottomComposerBar({ user, onPostCreated }: { user: any; onPostCreated: 
                       submitPost();
                     }}
                     disabled={!hasContent || isPosting}
-                    className={`rounded-full px-5 py-1.5 text-[14px] font-bold transition-colors ${
-                      hasContent && !isPosting
+                    className={`rounded-full px-5 py-1.5 text-[14px] font-bold transition-colors ${hasContent && !isPosting
                         ? "bg-white text-black hover:bg-gray-200"
                         : "bg-white/20 text-white/40 cursor-not-allowed"
-                    }`}
+                      }`}
                   >
                     {isPosting ? "Posting..." : "Post"}
                   </motion.button>
@@ -485,7 +484,7 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
     <article ref={ref} className="group relative bg-white/[0.02] border border-white/[0.05] hover:border-white/[0.1] hover:bg-white/[0.03] sm:rounded-[24px] mb-5 p-6 backdrop-blur-[12px] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] overflow-hidden">
       {/* Subtle top glare */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
+
       <div className="flex gap-4 relative z-10">
         {/* Avatar Column */}
         <div className="flex-shrink-0">
@@ -593,12 +592,12 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && submitComment()}
               placeholder="Reply to this post..."
-              className="flex-1 min-w-0 bg-white/[0.02] border border-white/[0.08] rounded-full px-4 py-2 text-[13px] text-white placeholder-[#777] focus:outline-none focus:border-white/20 focus:bg-white/[0.04] transition-all"
+              className="flex-1 bg-white/[0.02] border border-white/[0.08] rounded-full px-4 py-2 text-[13px] text-white placeholder-[#777] focus:outline-none focus:border-white/20 focus:bg-white/[0.04] transition-all"
             />
             <button
               onClick={submitComment}
               disabled={!newComment.trim() || isCommenting}
-              className="flex-shrink-0 text-white/40 hover:text-white font-medium text-[13px] disabled:opacity-50 transition-colors px-2"
+              className="text-white/40 hover:text-white font-medium text-[13px] disabled:opacity-50 transition-colors px-2"
             >
               Reply
             </button>
@@ -614,16 +613,6 @@ export default function DashboardHomePage() {
   const { user, loading } = useAuth();
   const [posts, setPosts] = useState<any[]>([]);
   const [stories, setStories] = useState<any[]>([]);
-  const [showComposerModal, setShowComposerModal] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (sessionStorage.getItem('openCompose') === 'true') {
-        setShowComposerModal(true);
-        sessionStorage.removeItem('openCompose');
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
@@ -684,15 +673,11 @@ export default function DashboardHomePage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA0KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-20" />
       </div>
 
-      <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} onMobileCreateClick={() => setShowComposerModal(true)} />
+      <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
 
       {/* Main Feed Area */}
       <main className="flex-1 flex justify-center h-full overflow-y-auto overflow-x-hidden no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
-        <div className="w-full max-w-full md:max-w-[680px] flex flex-col pt-8 pb-20 md:pb-24 mx-auto px-4 overflow-x-hidden">
-          
-          {/* Desktop Composer (Hidden on mobile) */}
-          <BottomComposerBar user={user} onPostCreated={() => { }} />
-
+        <div className="w-full max-w-full md:max-w-[680px] flex flex-col pt-8 pb-[140px] mx-auto px-4 overflow-x-hidden">
           {/* Stories Reel Mock */}
           <div className="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 sm:px-0">
             {stories.map((story, i) => (
@@ -726,6 +711,9 @@ export default function DashboardHomePage() {
       </main>
 
       <RightSidebar />
+
+      {/* Fixed bottom composer bar + slide-up drawer */}
+      <BottomComposerBar user={user} onPostCreated={() => { }} />
     </div>
   );
 }
