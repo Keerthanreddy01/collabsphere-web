@@ -54,10 +54,10 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="flex h-screen bg-[#050505] text-white font-sans overflow-hidden relative selection:bg-blue-500/30 selection:text-white">
+    <div className="flex min-h-screen bg-[#050505] text-white font-sans overflow-x-hidden relative selection:bg-blue-500/30 selection:text-white">
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-      <main className="flex-1 flex justify-center h-full overflow-y-auto no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px]">
+      <main className="flex-1 flex justify-center min-h-screen overflow-y-visible relative z-10 md:pl-[72px] xl:pr-[340px]">
         <div className="w-full max-w-[680px] flex flex-col pt-8 pb-24 mx-auto px-4">
           
           <div className="flex items-center justify-between mb-8">

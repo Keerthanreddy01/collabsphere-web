@@ -102,10 +102,10 @@ export default function ShowcasePage() {
   const displayProjects = fetchedProjects.length > 0 ? fetchedProjects : projects;
 
   return (
-    <div className="flex h-screen bg-black text-white overflow-hidden selection:bg-white/30">
+    <div className="flex min-h-screen bg-black text-white overflow-x-hidden selection:bg-white/30">
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       
-      <main className="flex-1 h-full overflow-y-auto no-scrollbar relative md:pl-[72px]">
+      <main className="flex-1 min-h-screen overflow-y-visible relative md:pl-[72px]">
         {/* Nav */}
         <nav className="sticky top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md">
           <div className="flex items-center gap-4">

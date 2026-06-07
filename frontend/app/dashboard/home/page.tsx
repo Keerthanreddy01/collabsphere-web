@@ -677,7 +677,7 @@ export default function DashboardHomePage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#050505] text-white font-sans overflow-hidden relative selection:bg-blue-500/30 selection:text-white">
+    <div className="flex min-h-screen bg-[#050505] text-white font-sans overflow-x-hidden relative selection:bg-blue-500/30 selection:text-white">
       {/* Background Gradients & Grid (Removed blobs to fix mobile overlap) */}
       <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
         <div className="absolute top-0 left-[20%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.06)_0,transparent_50%)] blur-[80px]" />
@@ -688,7 +688,7 @@ export default function DashboardHomePage() {
       <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} onMobileCreateClick={() => setShowComposerModal(true)} />
 
       {/* Main Feed Area */}
-      <main className="flex-1 flex justify-center h-full overflow-y-auto overflow-x-hidden no-scrollbar relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
+      <main className="flex-1 flex justify-center min-h-screen overflow-y-visible relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
         <div className="w-full max-w-full md:max-w-[680px] flex flex-col pt-8 pb-20 md:pb-24 mx-auto px-4 overflow-x-hidden">
           
           {/* Desktop Composer (Hidden on mobile) */}

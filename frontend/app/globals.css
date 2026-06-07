@@ -4,15 +4,32 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Scrollbar Hiding Classes */
+/* Scrollbar Hiding Utilities for Tailwind v4 */
+@utility no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+/* Fallback Standard CSS Classes */
 .no-scrollbar::-webkit-scrollbar,
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 .no-scrollbar,
 .scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 :root {
   --background: oklch(0.06 0.008 260);

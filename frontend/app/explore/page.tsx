@@ -81,7 +81,7 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="flex h-screen bg-black text-white font-sans overflow-hidden relative selection:bg-white/20 selection:text-white">
+    <div className="flex min-h-screen bg-black text-white font-sans overflow-x-hidden relative selection:bg-white/20 selection:text-white">
 
       {/* Ambient background (Removed blobs to fix mobile overlap) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden hidden md:block">
@@ -91,7 +91,7 @@ export default function ExplorePage() {
 
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-      <main className="flex-1 flex justify-center h-full overflow-y-auto scrollbar-hide overflow-x-hidden relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
+      <main className="flex-1 flex justify-center min-h-screen overflow-y-visible relative z-10 md:pl-[72px] xl:pr-[340px] w-full max-w-full">
         <div className="w-full max-w-[760px] flex flex-col pb-[80px] md:pb-0 overflow-x-hidden">
 
           {/* ── Sticky Search + Category Header ─────────────────────────────── */}

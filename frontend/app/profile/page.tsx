@@ -60,10 +60,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-hidden">
+    <div className="flex min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden">
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       
-      <main className="flex-1 lg:ml-[72px] h-screen overflow-y-auto no-scrollbar relative">
+      <main className="flex-1 lg:ml-[72px] min-h-screen overflow-y-visible relative">
         <div className="max-w-4xl mx-auto px-4 py-8 md:px-8 pb-32">
           
           {/* Top Actions */}

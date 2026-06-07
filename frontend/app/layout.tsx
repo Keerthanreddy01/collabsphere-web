@@ -33,6 +33,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <style dangerouslySetInnerHTML={{__html: `
+          .no-scrollbar::-webkit-scrollbar,
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none !important;
+          }
+          .no-scrollbar,
+          .scrollbar-hide {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+          }
+        `}} />
+      </head>
       <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         {children}
         <Analytics />
