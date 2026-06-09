@@ -74,7 +74,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
       {/* Sidebar (X style) */}
       <aside 
         className={`
-          group fixed left-0 top-0 bottom-0 z-50 
+          group fixed md:sticky left-0 top-0 bottom-0 md:h-screen z-50 
           w-[72px] md:w-[72px] xl:w-[275px]
           flex flex-col py-6 
           transition-[width,transform] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] 

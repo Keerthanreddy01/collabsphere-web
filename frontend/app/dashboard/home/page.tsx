@@ -414,152 +414,154 @@ export default function DashboardHomePage() {
   const avatarSrc = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
 
   return (
-    <div className="flex h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-blue-500/30 selection:text-white relative">
-      <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
+    <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-blue-500/30 selection:text-white relative">
+      <div className="flex w-full max-w-[1250px] h-screen relative">
+        <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
 
-      <main 
-        className="flex-1 flex h-full overflow-hidden relative z-10 md:pl-[72px] xl:pl-[275px] bg-[#000000] justify-center"
-        style={{ 
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-          fontSize: "15px",
-          lineHeight: "1.5"
-        }}
-      >
-        {/* Constrained layout matching X's 3-column style */}
-        <div className="flex w-full max-w-[950px] h-full bg-[#000000] relative z-10">
-          
-          {/* COLUMN 1: FEED (max-width 600px, borders left/right) */}
-          <div className="w-full md:w-[600px] md:min-w-[600px] flex-1 border-r border-[#2f3336] border-l border-[#2f3336] flex flex-col h-full overflow-y-auto no-scrollbar bg-[#000000]">
+        <main 
+          className="flex-1 flex h-full overflow-hidden relative z-10 bg-[#000000] min-w-0"
+          style={{ 
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+            fontSize: "15px",
+            lineHeight: "1.5"
+          }}
+        >
+          {/* Constrained layout matching X's 3-column style */}
+          <div className="flex w-full h-full bg-[#000000] relative z-10">
             
-            {/* Sticky Header with For You / Following Tabs */}
-            <div 
-              className="sticky top-0 z-40 flex flex-col w-full shrink-0"
-              style={{
-                background: "rgba(0, 0, 0, 0.72)",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
-              }}
-            >
-              <div className="flex h-[53px] items-center">
-                <button className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer">
-                  <span className="text-[15px] font-bold text-white">For you</span>
-                  <div className="absolute bottom-0 w-[56px] h-1 bg-[#1d9bf0] rounded-full" />
-                </button>
-                <button className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer">
-                  <span className="text-[15px] font-bold text-[#71767b]">Following</span>
-                </button>
+            {/* COLUMN 1: FEED (max-width 600px, borders left/right) */}
+            <div className="w-full md:w-[600px] md:min-w-[600px] flex-1 border-r border-[#2f3336] border-l border-[#2f3336] flex flex-col h-full overflow-y-auto no-scrollbar bg-[#000000]">
+              
+              {/* Sticky Header with For You / Following Tabs */}
+              <div 
+                className="sticky top-0 z-40 flex flex-col w-full shrink-0"
+                style={{
+                  background: "rgba(0, 0, 0, 0.72)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
+                }}
+              >
+                <div className="flex h-[53px] items-center">
+                  <button className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer">
+                    <span className="text-[15px] font-bold text-white">For you</span>
+                    <div className="absolute bottom-0 w-[56px] h-1 bg-[#1d9bf0] rounded-full" />
+                  </button>
+                  <button className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer">
+                    <span className="text-[15px] font-bold text-[#71767b]">Following</span>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Composer (X style) */}
-            <div className="border-b border-[#2f3336] p-4 bg-[#000000] shrink-0">
-              <div className="flex gap-3">
-                <img
-                  src={avatarSrc}
-                  alt="avatar"
-                  className="w-10 h-10 rounded-full object-cover bg-neutral-800 shrink-0"
-                />
-                <div className="flex-1 flex flex-col">
-                  <textarea
-                    ref={textareaRef}
-                    value={content}
-                    onChange={handleInput}
-                    placeholder="What is happening?!"
-                    className="w-full bg-transparent text-white text-[18px] placeholder-[#71767b] outline-none resize-none pt-1 min-h-[50px] border-none focus:ring-0 leading-relaxed"
+              {/* Composer (X style) */}
+              <div className="border-b border-[#2f3336] p-4 bg-[#000000] shrink-0">
+                <div className="flex gap-3">
+                  <img
+                    src={avatarSrc}
+                    alt="avatar"
+                    className="w-10 h-10 rounded-full object-cover bg-neutral-800 shrink-0"
                   />
-                  <input
-                    type="text"
-                    value={stackTags}
-                    onChange={(e) => setStackTags(e.target.value)}
-                    placeholder="Add tech stack tags (e.g. #react #nextjs)"
-                    className="w-full text-[14px] text-[#1d9bf0] placeholder-[#71767b]/50 bg-transparent border-none outline-none py-1 focus:ring-0"
-                  />
-                  
-                  {/* Toolbar - photo, gif, poll, emoji, schedule, location, flag */}
-                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#2f3336]/50">
-                    <div className="flex items-center gap-1 text-[#1d9bf0]">
-                      {/* Photo */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Media">
-                        <Image className="w-5 h-5 text-[#1d9bf0]" />
-                      </button>
-                      {/* GIF */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer flex items-center justify-center" title="GIF">
-                        <span className="font-extrabold text-[12px] border border-[#1d9bf0] rounded px-1 py-0.5 leading-none select-none text-[#1d9bf0]">GIF</span>
-                      </button>
-                      {/* Poll */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Poll">
-                        <BarChart4 className="w-5 h-5 text-[#1d9bf0]" />
-                      </button>
-                      {/* Emoji */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Emoji">
-                        <Smile className="w-5 h-5 text-[#1d9bf0]" />
-                      </button>
-                      {/* Schedule */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Schedule">
-                        <Calendar className="w-5 h-5 text-[#1d9bf0]" />
-                      </button>
-                      {/* Location */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Location">
-                        <MapPin className="w-5 h-5 text-[#1d9bf0]" />
-                      </button>
-                      {/* Flag */}
-                      <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Tag">
-                        <Flag className="w-5 h-5 text-[#1d9bf0]" />
-                      </button>
-                      {/* Voice (custom premium status feature) */}
-                      <button 
-                        onClick={toggleRecording}
-                        className={`p-2 rounded-full transition-colors bg-transparent border-none cursor-pointer ${isRecording ? "bg-red-500/10 text-red-500" : "hover:bg-[#1d9bf0]/10"}`} 
-                        title="Voice status"
-                      >
-                        <Mic className={`w-5 h-5 ${isRecording ? "animate-pulse" : "text-[#1d9bf0]"}`} />
-                      </button>
-                      {isRecording && (
-                        <span className="text-red-500 text-[13px] font-bold flex items-center gap-1.5 whitespace-nowrap pl-1">
-                          {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-                        </span>
-                      )}
-                    </div>
+                  <div className="flex-1 flex flex-col">
+                    <textarea
+                      ref={textareaRef}
+                      value={content}
+                      onChange={handleInput}
+                      placeholder="What is happening?!"
+                      className="w-full bg-transparent text-white text-[18px] placeholder-[#71767b] outline-none resize-none pt-1 min-h-[50px] border-none focus:ring-0 leading-relaxed"
+                    />
+                    <input
+                      type="text"
+                      value={stackTags}
+                      onChange={(e) => setStackTags(e.target.value)}
+                      placeholder="Add tech stack tags (e.g. #react #nextjs)"
+                      className="w-full text-[14px] text-[#1d9bf0] placeholder-[#71767b]/50 bg-transparent border-none outline-none py-1 focus:ring-0"
+                    />
+                    
+                    {/* Toolbar - photo, gif, poll, emoji, schedule, location, flag */}
+                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#2f3336]/50">
+                      <div className="flex items-center gap-1 text-[#1d9bf0]">
+                        {/* Photo */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Media">
+                          <Image className="w-5 h-5 text-[#1d9bf0]" />
+                        </button>
+                        {/* GIF */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer flex items-center justify-center" title="GIF">
+                          <span className="font-extrabold text-[12px] border border-[#1d9bf0] rounded px-1 py-0.5 leading-none select-none text-[#1d9bf0]">GIF</span>
+                        </button>
+                        {/* Poll */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Poll">
+                          <BarChart4 className="w-5 h-5 text-[#1d9bf0]" />
+                        </button>
+                        {/* Emoji */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Emoji">
+                          <Smile className="w-5 h-5 text-[#1d9bf0]" />
+                        </button>
+                        {/* Schedule */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Schedule">
+                          <Calendar className="w-5 h-5 text-[#1d9bf0]" />
+                        </button>
+                        {/* Location */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Location">
+                          <MapPin className="w-5 h-5 text-[#1d9bf0]" />
+                        </button>
+                        {/* Flag */}
+                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Tag">
+                          <Flag className="w-5 h-5 text-[#1d9bf0]" />
+                        </button>
+                        {/* Voice (custom premium status feature) */}
+                        <button 
+                          onClick={toggleRecording}
+                          className={`p-2 rounded-full transition-colors bg-transparent border-none cursor-pointer ${isRecording ? "bg-red-500/10 text-red-500" : "hover:bg-[#1d9bf0]/10"}`} 
+                          title="Voice status"
+                        >
+                          <Mic className={`w-5 h-5 ${isRecording ? "animate-pulse" : "text-[#1d9bf0]"}`} />
+                        </button>
+                        {isRecording && (
+                          <span className="text-red-500 text-[13px] font-bold flex items-center gap-1.5 whitespace-nowrap pl-1">
+                            {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={submitPost}
-                        disabled={(!content.trim() && !audioBlob) || isPosting}
-                        className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 disabled:pointer-events-none rounded-full px-5 py-1.5 text-[15px] font-bold transition-all border-none cursor-pointer"
-                      >
-                        {isPosting ? "Posting..." : "Post"}
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={submitPost}
+                          disabled={(!content.trim() && !audioBlob) || isPosting}
+                          className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 disabled:pointer-events-none rounded-full px-5 py-1.5 text-[15px] font-bold transition-all border-none cursor-pointer"
+                        >
+                          {isPosting ? "Posting..." : "Post"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+                {micError && (
+                  <div className="mt-2 text-red-500 text-xs">{micError}</div>
+                )}
               </div>
-              {micError && (
-                <div className="mt-2 text-red-500 text-xs">{micError}</div>
-              )}
+
+              {/* Feed Posts */}
+              <div className="flex flex-col bg-[#000000] pb-24">
+                {posts.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <Search className="w-12 h-12 text-[#71767b] mb-4" />
+                    <h3 className="text-[16px] font-bold text-white mb-1">No posts yet</h3>
+                    <p className="text-[13px] text-[#71767b]">When people post, you'll see them here.</p>
+                  </div>
+                ) : (
+                  posts.map((post) => (
+                    <PostCard key={post.id} post={post} user={user} handleLikeClick={handleLikeClick} />
+                  ))
+                )}
+              </div>
             </div>
 
-            {/* Feed Posts */}
-            <div className="flex flex-col bg-[#000000] pb-24">
-              {posts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <Search className="w-12 h-12 text-[#71767b] mb-4" />
-                  <h3 className="text-[16px] font-bold text-white mb-1">No posts yet</h3>
-                  <p className="text-[13px] text-[#71767b]">When people post, you'll see them here.</p>
-                </div>
-              ) : (
-                posts.map((post) => (
-                  <PostCard key={post.id} post={post} user={user} handleLikeClick={handleLikeClick} />
-                ))
-              )}
-            </div>
+            {/* COLUMN 2: RIGHT SIDEBAR */}
+            <RightSidebar />
+
           </div>
-
-          {/* COLUMN 2: RIGHT SIDEBAR */}
-          <RightSidebar />
-
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

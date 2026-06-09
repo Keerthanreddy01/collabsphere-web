@@ -74,16 +74,17 @@ export default function CreateProjectPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#050505] text-white font-sans overflow-hidden relative selection:bg-white/30 selection:text-black">
-      {/* Background Gradients */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-[20%] w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.04)_0,transparent_50%)] blur-[100px]" />
-      </div>
+    <div className="flex justify-center min-h-screen bg-[#050505] text-white font-sans overflow-hidden relative selection:bg-white/30 selection:text-black">
+      <div className="flex w-full max-w-[1250px] min-h-screen relative">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-0 left-[20%] w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.04)_0,transparent_50%)] blur-[100px]" />
+        </div>
 
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-      <main className="flex-1 h-full overflow-y-auto no-scrollbar relative z-10 md:pl-[72px]">
-        <div className="w-full max-w-[800px] pt-12 pb-24 mx-auto px-6">
+        <main className="flex-1 h-full overflow-y-auto no-scrollbar relative z-10 min-w-0">
+          <div className="w-full max-w-[600px] pt-12 pb-24 mx-auto px-6 border-r border-l border-white/[0.06] bg-[#050505]">
           
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(59,130,246,0.3)]">
@@ -257,8 +258,9 @@ export default function CreateProjectPage() {
             )}
           </AnimatePresence>
 
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

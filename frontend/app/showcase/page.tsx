@@ -102,10 +102,12 @@ export default function ShowcasePage() {
   const displayProjects = fetchedProjects.length > 0 ? fetchedProjects : projects;
 
   return (
-    <div className="flex min-h-screen bg-black text-white overflow-x-hidden selection:bg-white/30">
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      
-      <main className="flex-1 min-h-screen overflow-y-visible relative md:pl-[72px]">
+    <div className="flex justify-center min-h-screen bg-black text-white overflow-x-hidden selection:bg-white/30 relative">
+      <div className="flex w-full max-w-[1250px] min-h-screen relative">
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+        
+        <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
+          <div className="w-full max-w-[900px] mx-auto border-r border-l border-white/[0.06] bg-black min-h-screen">
         {/* Nav */}
         <nav className="sticky top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md">
           <div className="flex items-center gap-4">
@@ -225,7 +227,9 @@ export default function ShowcasePage() {
           </Link>
         </div>
       </section>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

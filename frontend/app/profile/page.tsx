@@ -60,11 +60,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden">
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      
-      <main className="flex-1 lg:ml-[72px] min-h-screen overflow-y-visible relative">
-        <div className="max-w-4xl mx-auto px-4 py-8 md:px-8 pb-32">
+    <div className="flex justify-center min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden relative">
+      <div className="flex w-full max-w-[1250px] min-h-screen relative">
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+        
+        <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
+          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-32 border-r border-l border-white/[0.06] bg-[#050505] min-h-screen">
           
           {/* Top Actions */}
           <motion.div 
@@ -208,8 +209,9 @@ export default function ProfilePage() {
             </motion.div>
 
           </motion.div>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

@@ -150,19 +150,20 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-[#1d9bf0]/25 selection:text-white relative">
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      
-      <main 
-        className="flex-1 flex h-full overflow-hidden relative z-10 md:pl-[72px] bg-[#000000] justify-center"
-        style={{ 
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-          fontSize: '15px',
-          lineHeight: '1.5'
-        }}
-      >
-        {/* Overall messages page wrapper - constrained max-width 1200px, centered */}
-        <div className="flex w-full max-w-[1200px] h-full bg-[#000000] relative z-10">
+    <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-[#1d9bf0]/25 selection:text-white relative">
+      <div className="flex w-full max-w-[1250px] h-screen relative">
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+        
+        <main 
+          className="flex-1 flex h-full overflow-hidden relative z-10 bg-[#000000] min-w-0"
+          style={{ 
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+            fontSize: '15px',
+            lineHeight: '1.5'
+          }}
+        >
+          {/* Overall messages page wrapper - constrained max-width 1200px, centered */}
+          <div className="flex w-full h-full bg-[#000000] relative z-10">
           
           {/* COLUMN 1: CHAT THREADS LIST (350px wide fixed - always visible) */}
           <div className="w-[350px] min-w-[350px] border-r border-[#2f3336] flex flex-col h-full shrink-0 bg-[#000000]">
@@ -487,6 +488,7 @@ export default function MessagesPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

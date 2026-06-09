@@ -118,11 +118,12 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden">
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+    <div className="flex justify-center min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden relative">
+      <div className="flex w-full max-w-[1250px] min-h-screen relative">
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-      <main className="flex-1 lg:ml-[72px] min-h-screen overflow-y-visible relative">
-        <div className="max-w-4xl mx-auto px-4 py-8 md:px-8 pb-32">
+        <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
+          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-32 border-r border-l border-white/[0.06] bg-[#050505] min-h-screen">
 
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Settings</h1>
@@ -336,5 +337,6 @@ export default function SettingsPage() {
         </div>
       </main>
     </div>
-  );
+  </div>
+);
 }
