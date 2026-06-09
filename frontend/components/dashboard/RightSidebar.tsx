@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { collection, query, limit, getDocs } from "firebase/firestore";
+import { collection, query, limit, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { getUserProjects } from "@/lib/projects";
 import { 
   Search, MoreHorizontal, Cpu, Flame, Users, Star, 
-  Terminal, ArrowUpRight, Volume2, Zap, ArrowRight, ShieldCheck 
+  Terminal, ArrowUpRight, Volume2, Zap, ArrowRight, ShieldCheck,
+  Smartphone
 } from "lucide-react";
 
 type Builder = {
@@ -36,6 +37,22 @@ export default function RightSidebar() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [waitlistCount, setWaitlistCount] = useState(247);
+
+  useEffect(() => {
+    if (!db) return;
+    const coll = collection(db, "app_waitlist");
+    const unsubscribe = onSnapshot(
+      coll,
+      (snapshot) => {
+        setWaitlistCount(snapshot.size || 247);
+      },
+      (error) => {
+        console.error("Error listening to waitlist:", error);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -113,8 +130,79 @@ export default function RightSidebar() {
         <Search className="w-4 h-4 text-white/40 absolute left-4.5 top-3.5 group-focus-within:text-[#6366f1] transition-colors" />
       </div>
 
+      {/* Mobile App Pre-registration Card - Premium Redesign */}
+      <section 
+        className="relative overflow-hidden w-full shrink-0 group rounded-3xl p-[1px] cursor-pointer"
+        onClick={() => window.open("/pre-register", "_blank")}
+      >
+        {/* Animated Gradient Border */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-indigo-600 opacity-50 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+        
+        {/* Inner Content Container */}
+        <div className="relative bg-[#0a0a0a]/90 backdrop-blur-xl rounded-3xl p-5 h-full border border-white/5 flex flex-col gap-3">
+          
+          {/* Animated Glow in background */}
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all duration-700 pointer-events-none" />
+          
+          {/* Top Row: Badge & Icon */}
+          <div className="flex justify-between items-center w-full relative z-10">
+            <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-2.5 py-1 rounded-full">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+              </span>
+              <span className="text-purple-300 text-[10px] font-bold uppercase tracking-wider">Mobile App</span>
+            </div>
+            <div className="p-1.5 bg-white/5 rounded-full text-white/50 group-hover:text-white transition-colors duration-300">
+              <Smartphone className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Heading */}
+          <div className="relative z-10 mt-1">
+            <h3 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+              CollabSphere Go
+            </h3>
+            <p className="text-xs text-white/50 mt-1 leading-relaxed">
+              Take your builder journey anywhere. Pre-register for early access.
+            </p>
+          </div>
+
+          {/* Live counter & Progress */}
+          <div className="relative z-10 mt-2 bg-white/5 rounded-xl p-3 border border-white/5 group-hover:border-purple-500/20 transition-colors duration-300">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-xs text-white/70 font-medium">Waitlist Goal</span>
+              <span className="text-xs font-bold text-purple-400 flex items-center gap-1">
+                🔥 {waitlistCount}
+              </span>
+            </div>
+            <div className="w-full bg-white/10 rounded-full h-1.5">
+              <div 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full relative transition-all duration-1000 ease-out"
+                style={{ width: `${Math.min((waitlistCount / 500) * 100, 100)}%` }}
+              >
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white rounded-full shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+              </div>
+            </div>
+            <div className="text-[10px] text-white/40 mt-1.5 text-right font-medium tracking-wide">500 BUILDERS</div>
+          </div>
+
+          {/* Button */}
+          <div
+            className="relative z-10 w-full mt-2 bg-white text-black hover:bg-gray-100 text-sm rounded-xl py-2.5 font-bold transition-all duration-300 active:scale-[0.98] text-center shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          >
+            Pre-register Now
+          </div>
+
+          {/* Bottom text */}
+          <p className="text-[10px] text-white/30 text-center relative z-10 mt-1">
+            Available soon on iOS & Android
+          </p>
+        </div>
+      </section>
+
       {/* 2. Premium upgrade card (Pro Builder Workspace) */}
-      <section className={`${glassCardStyle} relative overflow-hidden group`}>
+      <section className={`${glassCardStyle} relative overflow-hidden shrink-0`}>
         {/* Ambient background glow */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.15)_0,transparent_75%)] pointer-events-none group-hover:scale-125 transition-transform duration-500" />
         
