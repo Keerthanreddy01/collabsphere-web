@@ -146,7 +146,7 @@ function WaitlistFormContent() {
           </span>
         </div>
 
-        <h1 className="font-syncopate text-white text-[40px] lg:text-[56px] font-extrabold leading-[1.1] tracking-tighter mb-4 uppercase">
+        <h1 className="font-syne text-white text-[50px] lg:text-[70px] font-extrabold leading-[0.9] tracking-tighter mb-4 uppercase">
           THE APP <br/> IS COMING
         </h1>
         
@@ -154,28 +154,18 @@ function WaitlistFormContent() {
           Pre-register to jump the queue. We're launching the next generation of builder collaboration tools on iOS and Android.
         </p>
 
-        {/* Numbers + Progress */}
-        <div className="mt-8 lg:mt-16 w-full max-w-md">
-          <div className="flex items-baseline gap-4 lg:gap-6 mb-4">
-            <div className="font-syne text-[#063CB9] text-[56px] lg:text-[80px] leading-none font-black tracking-tighter drop-shadow-[0_0_15px_rgba(6,60,185,0.3)]">
+        {/* Minimalist Waitlist Stat */}
+        <div className="mt-10 lg:mt-12 flex items-center gap-4 border border-white/10 rounded-2xl p-4 bg-white/5 backdrop-blur-sm w-max">
+          <div className="w-12 h-12 rounded-full bg-[#063CB9] flex items-center justify-center text-xl shadow-[0_0_15px_rgba(6,60,185,0.5)]">
+            🔥
+          </div>
+          <div className="pr-2">
+            <div className="font-syne text-white text-[28px] font-bold leading-none mb-1">
               {animatedCount.toLocaleString()}
             </div>
-            <div className="font-syncopate text-white/80 text-[14px] lg:text-[18px] font-bold uppercase leading-[1.2] tracking-tight">
-              Builders<br/>Waiting
+            <div className="font-syncopate text-white/50 text-[10px] uppercase tracking-widest">
+              Builders Waiting
             </div>
-          </div>
-          
-          <div className="w-full h-2 lg:h-3 bg-white/10 rounded-full overflow-hidden">
-            <motion.div 
-              className="h-full bg-[#063CB9] rounded-full shadow-[0_0_20px_rgba(6,60,185,0.8)]"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-            />
-          </div>
-          <div className="flex justify-between text-white/40 text-[10px] lg:text-[11px] font-syncopate uppercase tracking-widest mt-4">
-            <span>Milestone Progress</span>
-            <span>Goal: {milestone.toLocaleString()}</span>
           </div>
         </div>
         
