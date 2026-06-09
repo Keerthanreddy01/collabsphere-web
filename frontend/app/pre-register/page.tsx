@@ -123,107 +123,105 @@ function WaitlistFormContent() {
   return (
     <div className="relative z-10 w-full max-w-md">
       {/* 1. App logo/back header */}
-      <div className="flex items-center justify-between mb-8 px-2">
+      <div className="flex items-center justify-between mb-10 px-2 w-full">
         <a 
           href="/dashboard/home" 
-          className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium"
+          className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Home</span>
+          <span>Home</span>
         </a>
-        <div className="flex items-center gap-1.5 font-bold tracking-tight text-white text-sm">
-          <Smartphone className="w-4 h-4 text-emerald-400" />
-          <span>CollabSphere <span className="text-emerald-400">Mobile</span></span>
+        <div className="font-syncopate text-white text-[12px] font-bold uppercase tracking-widest">
+          CollabSphere
         </div>
       </div>
 
-      {/* Main Glass Card */}
+      {/* Pill */}
+      <div className="flex justify-center w-full mb-10 relative z-10">
+        <div className="border border-[#D4F842] rounded-full px-5 py-2 bg-black">
+          <span className="font-syne text-white text-[11px] uppercase tracking-[0.2em] font-bold">
+            Official Mobile Beta
+          </span>
+        </div>
+      </div>
+
+      {/* Main Arch Card */}
       <div 
-        className="w-full bg-[#ffffff]/[0.02] border border-white/[0.08] rounded-[24px] p-8 md:p-10 backdrop-blur-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative overflow-hidden"
+        className="w-full bg-[#D4F842] rounded-t-[100px] rounded-b-xl p-8 md:p-12 relative z-10 flex flex-col items-center shadow-[0_0_60px_rgba(212,248,66,0.15)]"
       >
-        {/* Subtle interior glow */}
-        <div className="absolute -top-12 -left-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        {/* Toggle graphic in top right */}
+        <div className="absolute top-8 right-8 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
+          <div className="bg-white w-4.5 h-4.5 rounded-full" />
+        </div>
 
         <AnimatePresence mode="wait">
           {!success ? (
-            <motion.div
+              <motion.div
               key="form"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
+              className="w-full flex flex-col items-center pt-4"
             >
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 rounded-full px-4 py-1 text-xs font-mono font-bold tracking-wide mb-6 border border-emerald-500/20 animate-pulse">
-                <span>🚀 Soon on Play Store & App Store</span>
-              </div>
-
               {/* Title */}
-              <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight mb-3">
-                Build Together, <br />
-                <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                  Anywhere.
-                </span>
+              <h1 className="font-syne text-[#063CB9] text-[40px] md:text-[56px] font-extrabold leading-[1.1] tracking-tighter mb-4 uppercase text-center mt-4">
+                The App Is <br/> Coming
               </h1>
-
-              {/* Description */}
-              <p className="text-white/50 text-sm leading-relaxed mb-6">
-                CollabSphere is coming to mobile. Pre-register to get early access, exclusive beta features, and jump the launch queue.
+              
+              <p className="font-sans text-black/70 text-sm leading-relaxed mb-8 text-center font-medium max-w-sm mx-auto">
+                Pre-register to jump the queue. We're launching soon.
               </p>
 
-              {/* Live Progress Bar Card */}
-              <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4 mb-6">
-                <div className="flex items-center justify-between text-xs font-bold text-white mb-2">
-                  <span className="flex items-center gap-1.5 text-emerald-300">
-                    <span>🔥</span> 
-                    <span>{animatedCount.toLocaleString()} builders waiting</span>
-                  </span>
-                  <span className="text-emerald-400">{progressPercent}%</span>
+              {/* Progress Bar styled for lime green bg */}
+              <div className="w-full bg-black/5 border border-black/10 rounded-2xl p-5 mb-8">
+                <div className="flex items-center justify-between text-[11px] font-bold text-black mb-3 font-syncopate tracking-wider">
+                  <span>🔥 {animatedCount.toLocaleString()} WAITING</span>
+                  <span className="text-[#063CB9]">{progressPercent}%</span>
                 </div>
                 {/* Track */}
-                <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden mb-1.5">
+                <div className="w-full h-2 bg-black/10 rounded-full overflow-hidden mb-2">
                   <motion.div 
-                    className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"
+                    className="h-full bg-[#063CB9] rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercent}%` }}
                     transition={{ duration: 1.2, ease: "easeOut" }}
                   />
                 </div>
-                <div className="text-[10px] text-white/40 flex items-center justify-between">
-                  <span>Milestone Progress</span>
-                  <span>Next unlock at {milestone.toLocaleString()} 🎯</span>
+                <div className="text-[10px] text-black/40 font-syncopate tracking-widest text-center uppercase mt-3">
+                  Goal: {milestone.toLocaleString()} Builders
                 </div>
               </div>
 
               {/* Submission Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5 w-full">
                 <div>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="w-full bg-white/5 border border-white/10 focus:border-emerald-500 rounded-xl px-4 py-3.5 text-white placeholder-white/30 outline-none transition-colors"
+                    placeholder="ENTER YOUR EMAIL"
+                    className="w-full bg-white/50 border-2 border-black/10 focus:border-[#063CB9] rounded-xl px-5 py-4 text-black placeholder-black/40 outline-none transition-colors font-syne font-bold text-sm tracking-wide text-center"
                   />
                 </div>
 
                 {/* Platform selector */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-white/60 pl-1">Target Platform</label>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-syncopate font-bold text-black/50 uppercase tracking-widest text-center block w-full">Select Platform</label>
                   <div className="grid grid-cols-3 gap-2">
                     {(["android", "ios", "both"] as const).map((p) => {
                       const isActive = platform === p;
-                      const label = p === "android" ? "📱 Android" : p === "ios" ? "🍎 iOS" : "Both";
+                      const label = p === "android" ? "Android" : p === "ios" ? "iOS" : "Both";
                       return (
                         <button
                           key={p}
                           type="button"
                           onClick={() => setPlatform(p)}
-                          className={`py-2 px-3 rounded-lg text-xs font-bold transition-all border-none cursor-pointer ${
+                          className={`py-3 px-3 rounded-xl text-[11px] font-syncopate font-bold uppercase tracking-wider transition-all border-none cursor-pointer ${
                             isActive 
-                              ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20" 
-                              : "bg-white/5 text-white/50 hover:bg-white/10"
+                              ? "bg-[#063CB9] text-white shadow-md shadow-[#063CB9]/20" 
+                              : "bg-black/5 text-black/50 hover:bg-black/10"
                           }`}
                         >
                           {label}
@@ -234,21 +232,18 @@ function WaitlistFormContent() {
                 </div>
 
                 {errorMsg && (
-                  <p className="text-red-400 text-xs pl-1 font-semibold">{errorMsg}</p>
+                  <p className="text-red-500 text-xs text-center font-bold font-sans">{errorMsg}</p>
                 )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-bold rounded-xl py-3.5 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer border-none"
+                  className="w-full bg-[#063CB9] hover:bg-[#052b82] text-white font-syncopate font-bold rounded-xl py-4 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-[#063CB9]/20 flex items-center justify-center gap-2 cursor-pointer border-none uppercase tracking-widest text-[12px]"
                 >
                   {loading ? (
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <>
-                      <span>Pre-Register Now</span>
-                      <span>🚀</span>
-                    </>
+                    <span>Pre-Register Now</span>
                   )}
                 </button>
               </form>
@@ -259,42 +254,45 @@ function WaitlistFormContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              className="text-center"
+              className="text-center w-full pt-4"
             >
               {/* Checkmark Animation */}
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-400 shadow-lg shadow-emerald-500/10"
+                className="w-20 h-20 bg-[#063CB9]/10 border-[3px] border-[#063CB9] rounded-full flex items-center justify-center mx-auto mb-8 text-[#063CB9] shadow-lg shadow-[#063CB9]/10"
               >
-                <Check className="w-8 h-8 stroke-[3]" />
+                <Check className="w-10 h-10 stroke-[3]" />
               </motion.div>
 
-              <h2 className="text-2xl font-black text-white tracking-tight mb-2">
-                You're #{position.toLocaleString()} in line! 🎉
+              <h2 className="font-syne text-[#063CB9] text-[48px] font-extrabold tracking-tighter leading-none mb-3 text-center">
+                #{position.toLocaleString()}
               </h2>
-              <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto mb-8">
-                We'll email you at <span className="text-emerald-300 font-bold">{email}</span> when the mobile beta launches.
+              <div className="font-syncopate text-black text-[18px] font-bold tracking-tight uppercase text-center mb-6">
+                You're in line
+              </div>
+              
+              <p className="text-black/60 text-sm leading-relaxed max-w-xs mx-auto mb-10 font-sans font-medium">
+                We'll email you at <span className="text-[#063CB9] font-bold">{email}</span> when the beta launches.
               </p>
 
               {/* Referral section */}
-              <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 text-left mb-6">
-                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block mb-2 font-mono flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-emerald-400" />
-                  Move up the line — share your link:
+              <div className="bg-black/5 border border-black/10 rounded-2xl p-6 text-left mb-6">
+                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest block mb-4 font-syncopate text-center">
+                  Move up the line — share link
                 </span>
                 
-                <div className="flex gap-2 items-center bg-white/5 border border-white/10 rounded-xl p-2 pl-3">
+                <div className="flex gap-2 items-center bg-white/50 border border-black/10 rounded-xl p-2 pl-4">
                   <input
                     type="text"
                     readOnly
                     value={referralLink}
-                    className="bg-transparent text-xs text-white/70 outline-none flex-1 font-mono select-all border-none"
+                    className="bg-transparent text-sm text-black outline-none flex-1 font-mono select-all border-none font-bold"
                   />
                   <button
                     onClick={copyToClipboard}
-                    className="p-2 bg-emerald-600/30 hover:bg-emerald-600 text-emerald-300 hover:text-white rounded-lg transition-colors border-none cursor-pointer shrink-0"
+                    className="p-3 bg-[#063CB9]/10 hover:bg-[#063CB9] text-[#063CB9] hover:text-white rounded-lg transition-colors border-none cursor-pointer shrink-0"
                     title="Copy Link"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -302,24 +300,24 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Social Share Buttons */}
-                <div className="flex gap-2.5 mt-4">
+                <div className="flex gap-3 mt-4">
                   <a
                     href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere%20mobile!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-white rounded-full py-2 text-xs font-bold transition-all text-decoration-none"
+                    className="flex-1 flex items-center justify-center gap-2 border-2 border-black/10 hover:border-[#063CB9] bg-transparent text-black rounded-xl py-3 text-xs font-bold transition-all text-decoration-none font-syncopate uppercase tracking-widest"
                   >
-                    <Twitter className="w-3.5 h-3.5 fill-current" />
-                    <span>Share on X</span>
+                    <Twitter className="w-4 h-4 fill-current" />
+                    <span>X</span>
                   </a>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-white rounded-full py-2 text-xs font-bold transition-all text-decoration-none"
+                    className="flex-1 flex items-center justify-center gap-2 border-2 border-black/10 hover:border-[#063CB9] bg-transparent text-black rounded-xl py-3 text-xs font-bold transition-all text-decoration-none font-syncopate uppercase tracking-widest"
                   >
-                    <Linkedin className="w-3.5 h-3.5 fill-current" />
-                    <span>LinkedIn</span>
+                    <Linkedin className="w-4 h-4 fill-current" />
+                    <span>In</span>
                   </a>
                 </div>
               </div>
@@ -328,16 +326,16 @@ function WaitlistFormContent() {
         </AnimatePresence>
 
         {/* Bottom Social Proof Ticker */}
-        <div className="border-t border-white/[0.05] mt-6 pt-5">
-          <p className="text-white/30 text-[11px] text-center tracking-normal leading-normal font-medium flex items-center justify-center gap-1">
+        <div className="border-t border-black/10 mt-8 pt-6 w-full">
+          <p className="text-black/40 text-[11px] text-center tracking-normal leading-normal font-bold flex items-center justify-center gap-1 font-syncopate uppercase">
             <span>🧑</span>
             {recentSignups.map((name, i) => (
               <span key={i}>
-                <span className="text-white/50 hover:text-emerald-300 transition-colors font-semibold">{name}</span>
-                {i < recentSignups.length - 1 ? <span className="text-white/25 mx-1">·</span> : null}
+                <span className="text-black/70 hover:text-[#063CB9] transition-colors">{name}</span>
+                {i < recentSignups.length - 1 ? <span className="text-black/20 mx-1">·</span> : null}
               </span>
             ))}
-            <span className="text-white/25 ml-1">just joined</span>
+            <span className="text-black/40 ml-1">just joined</span>
           </p>
         </div>
       </div>
@@ -347,21 +345,24 @@ function WaitlistFormContent() {
 
 export default function PreRegisterPage() {
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-6 relative overflow-hidden font-sans select-none">
-      {/* SideRays Background Effect */}
-      <SideRays
-        speed={2.5}
-        rayColor1="#10b981"
-        rayColor2="#3b82f6"
-        intensity={2}
-        spread={2}
-        origin="top-right"
-        tilt={0}
-        saturation={1.5}
-        blend={0.75}
-        falloff={1.6}
-        opacity={0.6}
-      />
+    <div 
+      className="min-h-screen bg-black text-white flex items-center justify-center p-6 relative overflow-hidden font-sans select-none"
+      style={{
+        backgroundImage: `repeating-radial-gradient(circle at 50% 100%, transparent 0, transparent 8px, rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 9px)`
+      }}
+    >
+      <style dangerouslySetInnerHTML={{__html: `
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Syncopate:wght@400;700&display=swap');
+        .font-syne { font-family: 'Syne', sans-serif; }
+        .font-syncopate { font-family: 'Syncopate', sans-serif; }
+      `}} />
+
+      {/* Massive Faded Background Text */}
+      <div className="fixed bottom-0 w-full overflow-hidden flex justify-center pointer-events-none opacity-[0.08] z-0">
+        <div className="font-syncopate text-[#D4F842] text-[12vw] font-bold uppercase tracking-tighter whitespace-nowrap leading-none translate-y-1/4 italic">
+          CollabSphere
+        </div>
+      </div>
 
       <Suspense fallback={
         <div className="flex flex-col items-center justify-center relative z-10">
