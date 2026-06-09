@@ -131,87 +131,67 @@ export default function RightSidebar() {
         <Search className="w-4 h-4 text-white/40 absolute left-4.5 top-3.5 group-focus-within:text-[#6366f1] transition-colors" />
       </div>
 
-      {/* Mobile App Pre-registration Card - Premium Redesign */}
+      {/* Mobile App Pre-registration Card - Custom Graphic Design */}
       <section 
-        className="relative overflow-hidden w-full shrink-0 group rounded-3xl p-[1px] cursor-pointer"
+        className="relative overflow-hidden w-full shrink-0 rounded-[24px] cursor-pointer flex flex-col items-center pt-8 pb-6 px-4 bg-black border border-white/10 group shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
         onClick={() => window.open("/pre-register", "_blank")}
+        style={{
+          backgroundImage: `repeating-radial-gradient(circle at 50% 100%, transparent 0, transparent 6px, rgba(255,255,255,0.1) 6px, rgba(255,255,255,0.1) 7px)`
+        }}
       >
-        {/* Animated Gradient Border */}
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500 opacity-50 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+        <style dangerouslySetInnerHTML={{__html: `
+          @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Syncopate:wght@400;700&display=swap');
+          .font-syne { font-family: 'Syne', sans-serif; }
+          .font-syncopate { font-family: 'Syncopate', sans-serif; }
+        `}} />
+
+        {/* Top Header */}
+        <h3 className="font-syncopate text-white text-[13px] uppercase tracking-widest mb-3 relative z-10 font-bold">
+          CollabSphere
+        </h3>
         
-        {/* Inner Content Container */}
-        <div className="relative bg-[#0a0a0a]/90 backdrop-blur-xl rounded-3xl p-5 h-full border border-white/5 flex flex-col gap-3 overflow-hidden">
+        {/* Pill */}
+        <div className="border border-[#D4F842] rounded-full px-4 py-1 mb-8 relative z-10 bg-black">
+          <span className="font-syne text-white text-[10px] uppercase tracking-[0.2em] font-bold">
+            Official Mobile Launch
+          </span>
+        </div>
+
+        {/* Center Arch Shape */}
+        <div className="w-[88%] bg-[#D4F842] rounded-t-[70px] rounded-b-md relative z-10 pt-10 pb-8 px-4 flex flex-col items-center shadow-[0_0_30px_rgba(212,248,66,0.1)] group-hover:shadow-[0_0_50px_rgba(212,248,66,0.25)] transition-shadow duration-500">
           
-          {/* SideRays Background Effect */}
-          <SideRays
-            speed={2.5}
-            rayColor1="#10b981"
-            rayColor2="#3b82f6"
-            intensity={2}
-            spread={2}
-            origin="top-right"
-            tilt={0}
-            saturation={1.5}
-            blend={0.75}
-            falloff={1.6}
-            opacity={0.6}
-            className="group-hover:opacity-100 transition-opacity duration-700"
-          />
-
-          {/* Top Row: Badge & Icon */}
-          <div className="flex justify-between items-center w-full relative z-10">
-            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-              </span>
-              <span className="text-emerald-300 text-[10px] font-semibold tracking-wide">Mobile App</span>
-            </div>
-            <div className="p-1.5 bg-white/5 rounded-full text-white/50 group-hover:text-white transition-colors duration-300">
-              <Smartphone className="w-3.5 h-3.5" />
-            </div>
+          {/* Toggle graphic in top right */}
+          <div className="absolute top-6 right-6 bg-[#063CB9] w-9 h-4.5 rounded-full p-[2px] flex items-center justify-end">
+            <div className="bg-white w-3.5 h-3.5 rounded-full" />
           </div>
 
-          {/* Heading */}
-          <div className="relative z-10 mt-1">
-            <h3 className="text-[17px] font-semibold text-white tracking-wide">
-              CollabSphere Go
-            </h3>
-            <p className="text-[13px] text-white/60 mt-1.5 leading-relaxed font-light">
-              Take your builder journey anywhere. Pre-register for early access.
-            </p>
+          {/* Numbers */}
+          <div className="font-syne text-[#063CB9] text-[56px] leading-none font-extrabold tracking-tighter mt-1">
+            {waitlistCount < 10 ? `0${waitlistCount}` : waitlistCount}
+          </div>
+          
+          {/* DAYS TO GO / BUILDERS WAITING */}
+          <div className="font-syncopate text-black text-[22px] leading-none font-bold tracking-tight mt-2 uppercase w-full text-center">
+            Builders
+          </div>
+          <div className="font-syncopate text-[#063CB9] text-[22px] leading-none font-bold tracking-tight mt-1 uppercase w-full text-center">
+            Waiting
           </div>
 
-          {/* Live counter & Progress */}
-          <div className="relative z-10 mt-2 bg-white/5 rounded-xl p-3 border border-white/5 group-hover:border-emerald-500/20 transition-colors duration-300">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[11px] text-white/70 font-medium">Waitlist Goal</span>
-              <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
-                🔥 {waitlistCount}
-              </span>
+          {/* Link */}
+          <div className="mt-8 text-center flex flex-col items-center">
+            <div className="text-black text-[12px] font-medium mb-1 font-sans">Join the wait list</div>
+            <div className="text-[#063CB9] text-[10px] font-medium font-sans border-b border-[#063CB9]/40 pb-[1px] hover:border-[#063CB9] transition-colors">
+              collabsphere.app/mobile
             </div>
-            <div className="w-full bg-white/10 rounded-full h-1">
-              <div 
-                className="bg-gradient-to-r from-emerald-400 to-blue-500 h-1 rounded-full relative transition-all duration-1000 ease-out"
-                style={{ width: `${Math.min((waitlistCount / 500) * 100, 100)}%` }}
-              >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-              </div>
-            </div>
-            <div className="text-[9px] text-white/40 mt-1.5 text-right font-medium tracking-wider">500 BUILDERS</div>
           </div>
+        </div>
 
-          {/* Button */}
-          <div
-            className="relative z-10 w-full mt-2 bg-white text-gray-900 hover:bg-gray-100 text-[13px] rounded-xl py-2.5 font-semibold transition-all duration-300 active:scale-[0.98] text-center shadow-lg"
-          >
-            Pre-register Now
+        {/* Faded bottom text */}
+        <div className="absolute bottom-0 w-full overflow-hidden flex flex-col items-center justify-end pointer-events-none">
+          <div className="font-syncopate text-[#D4F842] opacity-[0.08] text-[40px] font-bold uppercase tracking-tighter transform translate-y-4 italic whitespace-nowrap">
+            The App Is Coming
           </div>
-
-          {/* Bottom text */}
-          <p className="text-[10px] text-white/30 text-center relative z-10 mt-1">
-            Available soon on iOS & Android
-          </p>
         </div>
       </section>
 
