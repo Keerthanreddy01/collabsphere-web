@@ -124,9 +124,9 @@ function WaitlistFormContent() {
     <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col justify-center px-8 lg:px-20 relative h-full py-16 lg:py-0">
+      <div className="flex-1 flex flex-col justify-center px-8 lg:px-24 relative h-full py-16 lg:py-0">
         {/* Header inside left panel */}
-        <div className="absolute top-10 left-8 lg:left-20 flex items-center gap-6">
+        <div className="absolute top-10 left-8 lg:left-24 flex items-center gap-6">
           <a 
             href="/dashboard/home" 
             className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
@@ -139,43 +139,35 @@ function WaitlistFormContent() {
           </div>
         </div>
 
-        {/* Pill */}
-        <div className="border border-[#D4F842] rounded-full px-5 py-2 inline-flex w-max mb-6 lg:mb-10 bg-black backdrop-blur-md">
-          <span className="font-syne text-[#D4F842] text-[11px] uppercase tracking-[0.2em] font-bold">
-            Official Mobile Beta
-          </span>
+        <div className="font-syncopate text-[#D4F842] text-[12px] uppercase tracking-[0.3em] font-bold mb-6">
+          Official Mobile Beta
         </div>
 
-        <h1 className="font-syne text-white text-[50px] lg:text-[70px] font-extrabold leading-[0.9] tracking-tighter mb-4 uppercase">
-          THE APP <br/> IS COMING
+        <h1 className="font-syne text-white text-[50px] lg:text-[80px] font-bold leading-[0.9] tracking-tighter mb-6">
+          The app is <br/> coming.
         </h1>
         
-        <p className="font-sans text-white/60 text-sm lg:text-base leading-relaxed max-w-md font-medium mt-4 lg:mt-6">
-          Pre-register to jump the queue. We're launching the next generation of builder collaboration tools on iOS and Android.
+        <p className="font-sans text-white/50 text-[16px] lg:text-[18px] leading-relaxed max-w-md font-medium">
+          We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
         </p>
 
-        {/* Minimalist Waitlist Stat */}
-        <div className="mt-10 lg:mt-12 flex items-center gap-4 border border-white/10 rounded-2xl p-4 bg-white/5 backdrop-blur-sm w-max">
-          <div className="w-12 h-12 rounded-full bg-[#063CB9] flex items-center justify-center text-xl shadow-[0_0_15px_rgba(6,60,185,0.5)]">
-            🔥
+        {/* Minimalist Waitlist Stat - PURE TYPOGRAPHY */}
+        <div className="mt-12 lg:mt-16 pt-8 border-t border-white/10 max-w-md">
+          <div className="font-syne text-white text-[50px] lg:text-[70px] font-bold leading-none tracking-tighter mb-2">
+            {animatedCount.toLocaleString()}
           </div>
-          <div className="pr-2">
-            <div className="font-syne text-white text-[28px] font-bold leading-none mb-1">
-              {animatedCount.toLocaleString()}
-            </div>
-            <div className="font-syncopate text-white/50 text-[10px] uppercase tracking-widest">
-              Builders Waiting
-            </div>
+          <div className="font-syncopate text-[#063CB9] text-[11px] lg:text-[12px] uppercase tracking-[0.2em] font-bold">
+            Builders on the waitlist
           </div>
         </div>
         
         {/* Ticker at bottom left */}
-        <div className="absolute bottom-10 left-8 lg:left-20 max-w-md hidden lg:block">
+        <div className="absolute bottom-10 left-8 lg:left-24 max-w-md hidden lg:block">
           <p className="text-white/30 text-[10px] tracking-widest font-bold flex items-center gap-2 font-syncopate uppercase">
             <span>🧑</span>
             {recentSignups.map((name, i) => (
               <span key={i}>
-                <span className="text-white/60 hover:text-[#063CB9] transition-colors">{name}</span>
+                <span className="text-white/60 hover:text-white transition-colors">{name}</span>
                 {i < recentSignups.length - 1 ? <span className="text-white/20 mx-1">·</span> : null}
               </span>
             ))}
