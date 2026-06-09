@@ -10,6 +10,7 @@ import {
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
+import SideRays from "@/components/ui/SideRays";
 
 function WaitlistFormContent() {
   const searchParams = useSearchParams();
@@ -93,7 +94,7 @@ function WaitlistFormContent() {
           particleCount: 150,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ["#a855f7", "#ec4899", "#3b82f6"]
+          colors: ["#10b981", "#3b82f6", "#06b6d4"]
         });
       } else {
         setErrorMsg(res.message);
@@ -131,8 +132,8 @@ function WaitlistFormContent() {
           <span>Back to Home</span>
         </a>
         <div className="flex items-center gap-1.5 font-bold tracking-tight text-white text-sm">
-          <Smartphone className="w-4 h-4 text-purple-400" />
-          <span>CollabSphere <span className="text-purple-400">Mobile</span></span>
+          <Smartphone className="w-4 h-4 text-emerald-400" />
+          <span>CollabSphere <span className="text-emerald-400">Mobile</span></span>
         </div>
       </div>
 
@@ -141,7 +142,7 @@ function WaitlistFormContent() {
         className="w-full bg-[#ffffff]/[0.02] border border-white/[0.08] rounded-[24px] p-8 md:p-10 backdrop-blur-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative overflow-hidden"
       >
         {/* Subtle interior glow */}
-        <div className="absolute -top-12 -left-12 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -left-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
         <AnimatePresence mode="wait">
           {!success ? (
@@ -153,14 +154,14 @@ function WaitlistFormContent() {
               transition={{ duration: 0.3 }}
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-purple-500/20 text-purple-300 rounded-full px-4 py-1 text-xs font-mono font-bold tracking-wide mb-6 border border-purple-500/20 animate-pulse">
+              <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 rounded-full px-4 py-1 text-xs font-mono font-bold tracking-wide mb-6 border border-emerald-500/20 animate-pulse">
                 <span>🚀 Soon on Play Store & App Store</span>
               </div>
 
               {/* Title */}
               <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight mb-3">
                 Build Together, <br />
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
                   Anywhere.
                 </span>
               </h1>
@@ -173,16 +174,16 @@ function WaitlistFormContent() {
               {/* Live Progress Bar Card */}
               <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4 mb-6">
                 <div className="flex items-center justify-between text-xs font-bold text-white mb-2">
-                  <span className="flex items-center gap-1.5 text-purple-300">
+                  <span className="flex items-center gap-1.5 text-emerald-300">
                     <span>🔥</span> 
                     <span>{animatedCount.toLocaleString()} builders waiting</span>
                   </span>
-                  <span className="text-purple-400">{progressPercent}%</span>
+                  <span className="text-emerald-400">{progressPercent}%</span>
                 </div>
                 {/* Track */}
                 <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden mb-1.5">
                   <motion.div 
-                    className="h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"
+                    className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercent}%` }}
                     transition={{ duration: 1.2, ease: "easeOut" }}
@@ -203,7 +204,7 @@ function WaitlistFormContent() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="w-full bg-white/5 border border-white/10 focus:border-purple-500 rounded-xl px-4 py-3.5 text-white placeholder-white/30 outline-none transition-colors"
+                    className="w-full bg-white/5 border border-white/10 focus:border-emerald-500 rounded-xl px-4 py-3.5 text-white placeholder-white/30 outline-none transition-colors"
                   />
                 </div>
 
@@ -221,7 +222,7 @@ function WaitlistFormContent() {
                           onClick={() => setPlatform(p)}
                           className={`py-2 px-3 rounded-lg text-xs font-bold transition-all border-none cursor-pointer ${
                             isActive 
-                              ? "bg-purple-600 text-white shadow-md shadow-purple-600/20" 
+                              ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20" 
                               : "bg-white/5 text-white/50 hover:bg-white/10"
                           }`}
                         >
@@ -239,7 +240,7 @@ function WaitlistFormContent() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl py-3.5 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2 cursor-pointer border-none"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-bold rounded-xl py-3.5 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer border-none"
                 >
                   {loading ? (
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -265,7 +266,7 @@ function WaitlistFormContent() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-16 h-16 bg-purple-600/20 border-2 border-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 text-purple-400 shadow-lg shadow-purple-500/10"
+                className="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-400 shadow-lg shadow-emerald-500/10"
               >
                 <Check className="w-8 h-8 stroke-[3]" />
               </motion.div>
@@ -274,13 +275,13 @@ function WaitlistFormContent() {
                 You're #{position.toLocaleString()} in line! 🎉
               </h2>
               <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto mb-8">
-                We'll email you at <span className="text-purple-300 font-bold">{email}</span> when the mobile beta launches.
+                We'll email you at <span className="text-emerald-300 font-bold">{email}</span> when the mobile beta launches.
               </p>
 
               {/* Referral section */}
               <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 text-left mb-6">
-                <span className="text-xs font-bold text-purple-300 uppercase tracking-wider block mb-2 font-mono flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-purple-400" />
+                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block mb-2 font-mono flex items-center gap-1.5">
+                  <Award className="w-4 h-4 text-emerald-400" />
                   Move up the line — share your link:
                 </span>
                 
@@ -293,7 +294,7 @@ function WaitlistFormContent() {
                   />
                   <button
                     onClick={copyToClipboard}
-                    className="p-2 bg-purple-600/30 hover:bg-purple-600 text-purple-300 hover:text-white rounded-lg transition-colors border-none cursor-pointer shrink-0"
+                    className="p-2 bg-emerald-600/30 hover:bg-emerald-600 text-emerald-300 hover:text-white rounded-lg transition-colors border-none cursor-pointer shrink-0"
                     title="Copy Link"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -332,7 +333,7 @@ function WaitlistFormContent() {
             <span>🧑</span>
             {recentSignups.map((name, i) => (
               <span key={i}>
-                <span className="text-white/50 hover:text-purple-300 transition-colors font-semibold">{name}</span>
+                <span className="text-white/50 hover:text-emerald-300 transition-colors font-semibold">{name}</span>
                 {i < recentSignups.length - 1 ? <span className="text-white/25 mx-1">·</span> : null}
               </span>
             ))}
@@ -347,15 +348,25 @@ function WaitlistFormContent() {
 export default function PreRegisterPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-6 relative overflow-hidden font-sans select-none">
-      {/* Abstract Glowing Orb Background */}
-      <div 
-        className="w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.18)_0,transparent_70%)] rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none blur-[60px]" 
+      {/* SideRays Background Effect */}
+      <SideRays
+        speed={2.5}
+        rayColor1="#10b981"
+        rayColor2="#3b82f6"
+        intensity={2}
+        spread={2}
+        origin="top-right"
+        tilt={0}
+        saturation={1.5}
+        blend={0.75}
+        falloff={1.6}
+        opacity={0.6}
       />
 
       <Suspense fallback={
-        <div className="flex flex-col items-center justify-center">
-          <div className="w-10 h-10 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin mb-4" />
-          <span className="text-sm font-mono text-purple-300">Loading CollabSphere Waitlist...</span>
+        <div className="flex flex-col items-center justify-center relative z-10">
+          <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4" />
+          <span className="text-sm font-mono text-emerald-300">Loading CollabSphere Waitlist...</span>
         </div>
       }>
         <WaitlistFormContent />

@@ -11,6 +11,7 @@ import {
   Terminal, ArrowUpRight, Volume2, Zap, ArrowRight, ShieldCheck,
   Smartphone
 } from "lucide-react";
+import SideRays from "@/components/ui/SideRays";
 
 type Builder = {
   id: string;
@@ -136,60 +137,73 @@ export default function RightSidebar() {
         onClick={() => window.open("/pre-register", "_blank")}
       >
         {/* Animated Gradient Border */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-indigo-600 opacity-50 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500 opacity-50 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
         
         {/* Inner Content Container */}
-        <div className="relative bg-[#0a0a0a]/90 backdrop-blur-xl rounded-3xl p-5 h-full border border-white/5 flex flex-col gap-3">
+        <div className="relative bg-[#0a0a0a]/90 backdrop-blur-xl rounded-3xl p-5 h-full border border-white/5 flex flex-col gap-3 overflow-hidden">
           
-          {/* Animated Glow in background */}
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all duration-700 pointer-events-none" />
-          
+          {/* SideRays Background Effect */}
+          <SideRays
+            speed={2.5}
+            rayColor1="#10b981"
+            rayColor2="#3b82f6"
+            intensity={2}
+            spread={2}
+            origin="top-right"
+            tilt={0}
+            saturation={1.5}
+            blend={0.75}
+            falloff={1.6}
+            opacity={0.6}
+            className="group-hover:opacity-100 transition-opacity duration-700"
+          />
+
           {/* Top Row: Badge & Icon */}
           <div className="flex justify-between items-center w-full relative z-10">
-            <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-2.5 py-1 rounded-full">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
               </span>
-              <span className="text-purple-300 text-[10px] font-bold uppercase tracking-wider">Mobile App</span>
+              <span className="text-emerald-300 text-[10px] font-semibold tracking-wide">Mobile App</span>
             </div>
             <div className="p-1.5 bg-white/5 rounded-full text-white/50 group-hover:text-white transition-colors duration-300">
-              <Smartphone className="w-4 h-4" />
+              <Smartphone className="w-3.5 h-3.5" />
             </div>
           </div>
 
           {/* Heading */}
           <div className="relative z-10 mt-1">
-            <h3 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+            <h3 className="text-[17px] font-semibold text-white tracking-wide">
               CollabSphere Go
             </h3>
-            <p className="text-xs text-white/50 mt-1 leading-relaxed">
+            <p className="text-[13px] text-white/60 mt-1.5 leading-relaxed font-light">
               Take your builder journey anywhere. Pre-register for early access.
             </p>
           </div>
 
           {/* Live counter & Progress */}
-          <div className="relative z-10 mt-2 bg-white/5 rounded-xl p-3 border border-white/5 group-hover:border-purple-500/20 transition-colors duration-300">
-            <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs text-white/70 font-medium">Waitlist Goal</span>
-              <span className="text-xs font-bold text-purple-400 flex items-center gap-1">
+          <div className="relative z-10 mt-2 bg-white/5 rounded-xl p-3 border border-white/5 group-hover:border-emerald-500/20 transition-colors duration-300">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-[11px] text-white/70 font-medium">Waitlist Goal</span>
+              <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
                 🔥 {waitlistCount}
               </span>
             </div>
-            <div className="w-full bg-white/10 rounded-full h-1.5">
+            <div className="w-full bg-white/10 rounded-full h-1">
               <div 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full relative transition-all duration-1000 ease-out"
+                className="bg-gradient-to-r from-emerald-400 to-blue-500 h-1 rounded-full relative transition-all duration-1000 ease-out"
                 style={{ width: `${Math.min((waitlistCount / 500) * 100, 100)}%` }}
               >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white rounded-full shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
               </div>
             </div>
-            <div className="text-[10px] text-white/40 mt-1.5 text-right font-medium tracking-wide">500 BUILDERS</div>
+            <div className="text-[9px] text-white/40 mt-1.5 text-right font-medium tracking-wider">500 BUILDERS</div>
           </div>
 
           {/* Button */}
           <div
-            className="relative z-10 w-full mt-2 bg-white text-black hover:bg-gray-100 text-sm rounded-xl py-2.5 font-bold transition-all duration-300 active:scale-[0.98] text-center shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+            className="relative z-10 w-full mt-2 bg-white text-gray-900 hover:bg-gray-100 text-[13px] rounded-xl py-2.5 font-semibold transition-all duration-300 active:scale-[0.98] text-center shadow-lg"
           >
             Pre-register Now
           </div>
