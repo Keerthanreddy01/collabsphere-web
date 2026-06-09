@@ -146,7 +146,7 @@ function WaitlistFormContent() {
           </span>
         </div>
 
-        <h1 className="font-syne text-white text-[50px] lg:text-[90px] font-extrabold leading-[0.9] tracking-tighter mb-4 uppercase">
+        <h1 className="font-syncopate text-white text-[5vw] lg:text-[7vw] font-extrabold leading-[0.9] tracking-tighter mb-4 uppercase">
           THE APP <br/> IS COMING
         </h1>
         
@@ -156,8 +156,8 @@ function WaitlistFormContent() {
 
         {/* Numbers + Progress */}
         <div className="mt-8 lg:mt-16 w-full max-w-md">
-          <div className="flex items-baseline gap-4 mb-4">
-            <div className="font-syne text-[#063CB9] text-[64px] lg:text-[100px] leading-none font-black tracking-tighter drop-shadow-[0_0_20px_rgba(6,60,185,0.3)]">
+          <div className="flex items-baseline gap-6 lg:gap-8 mb-4">
+            <div className="font-syncopate text-[#063CB9] text-[64px] lg:text-[140px] leading-none font-black tracking-tighter drop-shadow-[0_0_20px_rgba(6,60,185,0.3)]">
               {animatedCount.toLocaleString()}
             </div>
             <div className="font-syncopate text-white/80 text-[18px] lg:text-[24px] font-bold uppercase leading-[1.1] tracking-tight">
@@ -195,10 +195,10 @@ function WaitlistFormContent() {
       </div>
 
       {/* RIGHT PANEL - The Arch Form */}
-      <div className="w-full lg:w-[450px] xl:w-[550px] bg-[#D4F842] rounded-t-[60px] lg:rounded-t-none lg:rounded-l-[80px] min-h-[70vh] lg:h-full relative flex flex-col justify-center px-8 lg:px-14 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 lg:py-0 lg:overflow-y-auto">
+      <div className="w-full lg:w-[450px] xl:w-[600px] bg-[#D4F842] rounded-t-[60px] lg:rounded-t-none lg:rounded-l-[80px] min-h-[70vh] lg:h-full relative flex flex-col justify-center px-8 lg:px-16 xl:px-20 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 lg:py-0 lg:overflow-y-auto">
         {/* Toggle graphic */}
-        <div className="absolute top-8 right-8 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
-          <div className="bg-white w-4 h-4 rounded-full" />
+        <div className="absolute top-8 right-8 lg:top-12 lg:right-12 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
+          <div className="bg-white w-[18px] h-[18px] rounded-full" />
         </div>
 
         <AnimatePresence mode="wait">
