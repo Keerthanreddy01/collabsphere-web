@@ -31,8 +31,8 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      // Scripts: self + Next.js inline + Firebase SDKs
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com",
+      // Scripts: self + Next.js inline + Firebase SDKs + EmailJS
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://cdn.emailjs.com",
       // Styles: self + inline (needed for Tailwind)
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts: self + Google Fonts
@@ -41,10 +41,10 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://*.googleusercontent.com https://*.googleapis.com https://api.dicebear.com https://*.firebasestorage.app https://*.cloudfront.net https://*.githubusercontent.com",
       // Media: self + CloudFront (video)
       "media-src 'self' https://*.cloudfront.net",
-      // Connect (API calls): self + Firebase + Google APIs
-      "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com",
-      // Frames: Google auth popup
-      "frame-src https://accounts.google.com https://*.firebaseapp.com",
+      // Connect (API calls): self + Firebase + Google APIs + EmailJS
+      "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com https://api.emailjs.com",
+      // Frames: self + Google auth popup
+      "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com",
       // No plugins
       "object-src 'none'",
       // Base URI restriction
