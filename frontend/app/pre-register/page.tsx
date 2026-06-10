@@ -13,6 +13,27 @@ import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist
 import SideRays from "@/components/ui/SideRays";
 import emailjs from '@emailjs/browser';
 
+const sendConfirmationEmail = async (
+  email: string, 
+  platform: string
+) => {
+  try {
+    await emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+      {
+        to_email: email,
+        user_name: email.split('@')[0],
+        platform: platform,
+      },
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+    );
+    console.log('Email sent successfully');
+  } catch (error) {
+    console.error('Email error:', error);
+  }
+};
+
 function WaitlistFormContent() {
   const searchParams = useSearchParams();
   const referredBy = searchParams.get("ref");
@@ -86,20 +107,8 @@ function WaitlistFormContent() {
     try {
       const res = await joinWaitlist(email, platform, referredBy);
       if (res.success) {
-        try {
-          await emailjs.send(
-            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-            process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-            {
-              name: email.split('@')[0],
-              email: email,
-              platform: platform,
-            },
-            process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-          );
-        } catch (emailErr) {
-          console.error('Email failed silently:', emailErr);
-        }
+        // 2. Send confirmation email
+        await sendConfirmationEmail(email, platform);
 
         setPosition(res.position);
         setRefCode(res.refCode);
