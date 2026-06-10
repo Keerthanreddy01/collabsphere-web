@@ -64,8 +64,16 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
   return (
     <motion.aside 
       initial={false}
-      animate={{ width: isExpanded ? 260 : (isMobile ? 70 : 80) }}
-      className="sticky left-0 top-0 h-[100dvh] z-50 flex flex-col bg-[#0f0f0f] border-r border-[#1a1a1a] shrink-0"
+      animate={{ 
+        width: isExpanded ? 260 : (isMobile ? 70 : 80),
+        height: isExpanded ? "100dvh" : "calc(100dvh - 32px)",
+        marginTop: isExpanded ? 0 : 16,
+        marginLeft: isExpanded ? 0 : 16,
+        marginRight: isExpanded ? 0 : 16,
+        borderRadius: isExpanded ? 0 : 28,
+      }}
+      transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+      className={`sticky left-0 top-0 z-50 flex flex-col bg-[#0f0f0f] shrink-0 border-[#1a1a1a] ${isExpanded ? "border-r" : "border shadow-2xl"} overflow-visible`}
     >
       {/* Unique Vertical Toggle Button (Hidden on Mobile) */}
       {!isMobile && (
