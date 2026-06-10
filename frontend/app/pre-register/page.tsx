@@ -55,9 +55,6 @@ function WaitlistFormContent() {
 
   // Live total count from Firestore
   const [totalCount, setTotalCount] = useState(0);
-  // Animated count up state
-  const [animatedCount, setAnimatedCount] = useState(0);
-  // Recent 3 signups
   const [recentSignups, setRecentSignups] = useState<string[]>([]);
 
   // Listen to Firestore waitlist updates for real-time counters
@@ -70,43 +67,7 @@ function WaitlistFormContent() {
     return () => unsub();
   }, []);
 
-  // Animate count with a scrambling effect on mount/change
-  useEffect(() => {
-    if (totalCount === 0) return;
-    
-    let isMounted = true;
-    const duration = 2500; // 2.5 seconds
-    const intervalTime = 50; // Update every 50ms
-    let startTime: number | null = null;
-    let lastUpdateTime: number = 0;
-    let frameId: number;
-
-    const animate = (timestamp: number) => {
-      if (!isMounted) return;
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-
-      if (elapsed < duration) {
-        if (timestamp - lastUpdateTime > intervalTime) {
-          // Generate a random number with the same number of digits
-          const max = Math.pow(10, totalCount.toString().length) - 1;
-          setAnimatedCount(Math.floor(Math.random() * max));
-          lastUpdateTime = timestamp;
-        }
-        frameId = requestAnimationFrame(animate);
-      } else {
-        // Settle on real count
-        setAnimatedCount(totalCount);
-      }
-    };
-    
-    frameId = requestAnimationFrame(animate);
-
-    return () => {
-      isMounted = false;
-      cancelAnimationFrame(frameId);
-    };
-  }, [totalCount]);
+  // We no longer need animatedCount state or effects. We use ScrambleText directly.
 
   // Fetch recent signups on mount
   useEffect(() => {
@@ -160,8 +121,8 @@ function WaitlistFormContent() {
   };
 
   // Milestone Calculations
-  const milestone = Math.ceil((animatedCount + 1) / 500) * 500 || 1500;
-  const progressPercent = Math.min(100, Math.floor((animatedCount / milestone) * 100)) || 82;
+  const milestone = Math.ceil((totalCount + 1) / 500) * 500 || 1500;
+  const progressPercent = Math.min(100, Math.floor((totalCount / milestone) * 100)) || 82;
 
   return (
     <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
@@ -194,10 +155,10 @@ function WaitlistFormContent() {
           We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
         </p>
 
-        {/* Minimalist Waitlist Stat - PURE TYPOGRAPHY */}
+        {/* Minimalist Waitlist Stat - PURE TYPOGRAPHY WITH SCRAMBLE */}
         <div className="mt-12 lg:mt-16 pt-8 border-t border-white/10 max-w-md">
           <div className="font-syne text-white text-[50px] lg:text-[70px] font-bold leading-none tracking-tighter mb-2">
-            {animatedCount.toLocaleString()}
+            <ScrambleText targetValue={totalCount} />
           </div>
           <div className="font-syncopate text-[#063CB9] text-[11px] lg:text-[12px] uppercase tracking-[0.2em] font-bold">
             Builders on the waitlist
@@ -417,3 +378,42 @@ export default function PreRegisterPage() {
 }
 
 // Trigger deployment
+
+const ScrambleText = ({ targetValue }: { targetValue: number }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (targetValue === 0 || !ref.current) return;
+    
+    const duration = 2500; // 2.5 seconds
+    const fps = 30; // Butter smooth 30 times a second
+    const interval = 1000 / fps;
+    let startTime: number | null = null;
+    let lastUpdate = 0;
+    let frameId: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+
+      if (elapsed < duration) {
+        if (timestamp - lastUpdate > interval) {
+          const digits = targetValue.toString().length;
+          const max = Math.pow(10, digits) - 1;
+          const min = digits > 1 ? Math.pow(10, digits - 1) : 0;
+          const random = Math.floor(Math.random() * (max - min + 1)) + min;
+          if (ref.current) ref.current.innerText = random.toLocaleString();
+          lastUpdate = timestamp;
+        }
+        frameId = requestAnimationFrame(animate);
+      } else {
+        if (ref.current) ref.current.innerText = targetValue.toLocaleString();
+      }
+    };
+    
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [targetValue]);
+
+  return <div ref={ref}>{targetValue === 0 ? "0" : targetValue.toLocaleString()}</div>;
+};
