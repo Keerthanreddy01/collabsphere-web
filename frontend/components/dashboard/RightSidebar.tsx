@@ -196,28 +196,25 @@ export default function RightSidebar() {
       </section>
 
       {/* 2. Premium upgrade card (Pro Builder Workspace) */}
-      <section className={`${glassCardStyle} relative overflow-hidden shrink-0`}>
-        {/* Ambient background glow */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.15)_0,transparent_75%)] pointer-events-none group-hover:scale-125 transition-transform duration-500" />
-        
+      <section className={`${glassCardStyle} relative overflow-hidden shrink-0 group/pro`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className="p-1.5 rounded-lg bg-[#6366f1]/10 text-[#6366f1]">
+          <div className="p-1.5 rounded-lg bg-white/10 text-white">
             <Zap className="w-4 h-4 fill-current" />
           </div>
-          <span className="text-[11px] font-mono font-bold tracking-widest text-[#6366f1] uppercase">PRO WORKSPACE</span>
+          <span className="text-[11px] font-mono font-bold tracking-widest text-white/70 uppercase">PRO WORKSPACE</span>
         </div>
 
         <h2 className="text-[18px] font-extrabold text-[#e7e9ea] leading-tight mb-2">
-          Upgrade to <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">Pro Builder</span>
+          Upgrade to <span className="text-white">Pro Builder</span>
         </h2>
         <p className="text-[13px] text-white/60 leading-relaxed mb-4">
           Unlock unlimited AI co-pilots, custom domain deployment, and 24/7 worker uptime credits.
         </p>
         <button 
-          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold text-[13px] py-2.5 px-4 rounded-[12px] transition-all duration-300 shadow-[0_4px_15px_rgba(99,102,241,0.2)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1"
+          className="w-full bg-white text-black hover:bg-[#e6e6e6] font-bold text-[13px] py-2.5 px-4 rounded-[12px] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center justify-center gap-1 shadow-lg"
         >
           <span>Claim Pro Access</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/pro:translate-x-1" />
         </button>
       </section>
 

@@ -94,19 +94,30 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
       <div className={`flex items-center mt-6 mb-8 w-full ${isExpanded ? 'px-6' : 'justify-center px-0'}`}>
         <button
           onClick={() => router.push('/dashboard/home')}
-          className="flex items-center hover:opacity-80 transition-opacity cursor-pointer"
+          className="flex items-center hover:opacity-80 transition-opacity cursor-pointer bg-transparent border-none outline-none"
         >
-          <Zap className="w-[28px] h-[28px] text-white shrink-0 fill-white" />
-          <AnimatePresence>
-            {isExpanded && (
+          <AnimatePresence mode="wait">
+            {isExpanded ? (
               <motion.span
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: "auto" }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.2 }}
-                className="ml-3 text-[22px] font-extrabold text-white whitespace-nowrap overflow-hidden"
+                key="full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="text-[22px] font-extrabold text-white whitespace-nowrap overflow-hidden tracking-tight"
               >
                 CollabSphere
+              </motion.span>
+            ) : (
+              <motion.span
+                key="short"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="text-[24px] font-extrabold text-white tracking-tight"
+              >
+                C
               </motion.span>
             )}
           </AnimatePresence>
