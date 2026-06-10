@@ -525,7 +525,7 @@ export default function DashboardHomePage() {
                           <button
                             onClick={submitPost}
                             disabled={(!content.trim() && !audioBlob) || isPosting}
-                            className="bg-white text-black hover:bg-[#e6e6e6] disabled:opacity-50 disabled:pointer-events-none rounded-full px-6 py-2 text-[14px] font-bold transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] cursor-pointer"
+                            className={`rounded-full px-6 py-2 text-[14px] font-bold transition-all active:scale-95 cursor-pointer ${(!content.trim() && !audioBlob) || isPosting ? "bg-[#2f3336] text-[#71767b] pointer-events-none" : "bg-[#D4F842] text-black hover:bg-[#c5ec2d] shadow-[0_0_20px_rgba(212,248,66,0.15)] hover:shadow-[0_0_25px_rgba(212,248,66,0.3)]"}`}
                           >
                             {isPosting ? "..." : "Post"}
                           </button>
