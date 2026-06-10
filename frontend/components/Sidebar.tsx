@@ -67,14 +67,19 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
       animate={{ width: isExpanded ? 260 : (isMobile ? 70 : 80) }}
       className="sticky left-0 top-0 h-[100dvh] z-50 flex flex-col bg-[#0f0f0f] border-r border-[#1a1a1a] shrink-0"
     >
-      {/* Toggle Button (Hidden on Mobile) */}
+      {/* Unique Vertical Toggle Button (Hidden on Mobile) */}
       {!isMobile && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute -right-3.5 top-8 bg-[#1a1a1a] border border-[#2f3336] rounded-full p-1.5 text-white/70 hover:text-white hover:bg-[#2f3336] transition-colors z-50 shadow-lg cursor-pointer"
-        >
-          {isExpanded ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
-        </button>
+        <div className="absolute -right-3 top-0 bottom-0 w-6 flex items-center justify-center pointer-events-none z-50">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="pointer-events-auto h-24 w-1.5 bg-white/10 hover:w-5 hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group/toggle cursor-pointer border border-white/5 shadow-xl backdrop-blur-md"
+            title="Toggle Sidebar"
+          >
+            <div className="opacity-0 group-hover/toggle:opacity-100 transition-opacity duration-300 text-white/80 shrink-0">
+              {isExpanded ? <PanelLeftClose size={14} /> : <PanelLeftOpen size={14} />}
+            </div>
+          </button>
+        </div>
       )}
 
       {/* Top Logo */}
@@ -111,15 +116,12 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
               <button
                 onClick={() => router.push(item.route)}
                 className={`
-                  relative h-[50px] flex items-center rounded-xl transition-all duration-300 w-full overflow-hidden cursor-pointer
+                  relative h-[50px] flex items-center rounded-xl transition-all duration-300 w-full overflow-hidden cursor-pointer hover:bg-white/[0.08]
                   ${isExpanded ? 'px-4 justify-start' : 'justify-center w-[50px] px-0 mx-auto'}
-                  ${isActive 
-                    ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10" 
-                    : "hover:bg-white/[0.05]"}
                 `}
               >
                 <Icon
-                  className={`shrink-0 transition-all duration-300 ${isActive ? "text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" : "text-[#71767b] group-hover/navitem:text-white"}`}
+                  className={`shrink-0 transition-all duration-300 ${isActive ? "text-white" : "text-[#71767b] group-hover/navitem:text-white"}`}
                   size={24}
                   strokeWidth={isActive ? 2.5 : 2}
                   fill={isActive ? "currentColor" : "none"}
@@ -131,7 +133,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                       animate={{ opacity: 1, width: "auto" }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.2 }}
-                      className={`ml-4 text-[17px] whitespace-nowrap overflow-hidden ${isActive ? "font-bold text-blue-500" : "font-medium text-[#71767b] group-hover/navitem:text-white"}`}
+                      className={`ml-4 text-[17px] whitespace-nowrap overflow-hidden ${isActive ? "font-bold text-white" : "font-medium text-[#71767b] group-hover/navitem:text-white"}`}
                     >
                       {item.label}
                     </motion.span>
@@ -161,7 +163,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
             }
           }}
           className={`
-            flex items-center justify-center transition-all duration-300 mx-auto shrink-0 select-none cursor-pointer text-white shadow-[0_4px_20px_rgba(147,51,234,0.3)] hover:shadow-[0_4px_25px_rgba(147,51,234,0.5)] hover:-translate-y-0.5 active:translate-y-0 bg-gradient-to-r from-purple-600 to-blue-600
+            flex items-center justify-center transition-all duration-200 mx-auto shrink-0 select-none cursor-pointer text-black hover:bg-[#e6e6e6] hover:-translate-y-[1px] active:translate-y-0 bg-white
             ${isExpanded ? 'w-full h-[52px] rounded-xl' : 'w-[48px] h-[48px] rounded-full'}
           `}
           title="Share"
