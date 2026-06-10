@@ -11,6 +11,7 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import SideRays from "@/components/ui/SideRays";
+import Odometer from "@/components/ui/Odometer";
 import emailjs from "@emailjs/browser";
 
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
@@ -67,8 +68,6 @@ function WaitlistFormContent() {
     return () => unsub();
   }, []);
 
-  // We no longer need animatedCount state or effects. We use ScrambleText directly.
-
   // Fetch recent signups on mount
   useEffect(() => {
     getRecentSignups().then(names => {
@@ -120,10 +119,6 @@ function WaitlistFormContent() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Milestone Calculations
-  const milestone = Math.ceil((totalCount + 1) / 500) * 500 || 1500;
-  const progressPercent = Math.min(100, Math.floor((totalCount / milestone) * 100)) || 82;
-
   return (
     <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
       
@@ -155,31 +150,43 @@ function WaitlistFormContent() {
           We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
         </p>
 
-        {/* Minimalist Waitlist Stat - PURE TYPOGRAPHY WITH SCRAMBLE */}
-        <div className="mt-12 lg:mt-16 pt-8 border-t border-white/10 max-w-md">
-          <div className="font-syne text-white text-[50px] lg:text-[70px] font-bold leading-none tracking-tighter mb-2">
-            <ScrambleText targetValue={totalCount} />
+        {/* MASSIVE CENTERPIECE WAITLIST STAT */}
+        <div className="mt-12 lg:mt-16 w-full flex flex-col items-center text-center">
+          {/* Live Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] font-syncopate font-bold uppercase tracking-widest text-emerald-400">Live Waitlist</span>
           </div>
-          <div className="font-syncopate text-[#063CB9] text-[11px] lg:text-[12px] uppercase tracking-[0.2em] font-bold">
-            Builders on the waitlist
+
+          {/* Odometer Count */}
+          <div 
+            className="font-syne font-[900] tracking-tighter mb-4 leading-[0.9]"
+            style={{ fontSize: "clamp(120px, 18vw, 220px)" }}
+          >
+            <Odometer value={totalCount} />
           </div>
+
+          {/* Subtitle */}
+          <div className="font-syncopate text-[#D4F842] text-[14px] lg:text-[18px] uppercase tracking-[0.2em] font-bold mb-6">
+            Builders Joined
+          </div>
+
+          {totalCount < 50 && (
+            <p className="font-sans text-white/50 text-sm font-medium mb-6">
+              Be one of the first builders shaping CollabSphere.
+            </p>
+          )}
+
+          {/* Recent Join Card */}
+          {recentSignups.length > 0 && (
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
+              <span className="text-xl">👤</span>
+              <p className="text-white/60 text-[12px] font-medium">
+                <span className="text-white font-bold">{recentSignups[0]}</span> joined recently
+              </p>
+            </div>
+          )}
         </div>
-        
-        {/* Ticker at bottom left */}
-        {recentSignups.length > 0 && (
-          <div className="absolute bottom-10 left-8 lg:left-24 max-w-md hidden lg:block">
-          <p className="text-white/30 text-[10px] tracking-widest font-bold flex items-center gap-2 font-syncopate uppercase">
-            <span>🧑</span>
-            {recentSignups.map((name, i) => (
-              <span key={i}>
-                <span className="text-white/60 hover:text-white transition-colors">{name}</span>
-                {i < recentSignups.length - 1 ? <span className="text-white/20 mx-1">·</span> : null}
-              </span>
-            ))}
-            <span className="text-white/30 ml-1">joined</span>
-          </p>
-        </div>
-        )}
       </div>
 
       {/* RIGHT PANEL - The Arch Form */}
