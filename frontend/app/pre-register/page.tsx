@@ -12,21 +12,25 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import SideRays from "@/components/ui/SideRays";
 import emailjs from '@emailjs/browser';
+emailjs.init('j_A4UIL7bV7NmgEl5');
 
 const sendConfirmationEmail = async (
   email: string, 
   platform: string
 ) => {
   try {
+    console.log('Sending email to:', email);
+    console.log('Service:', 'service_51jaez2');
+    console.log('Template:', 'template_1c3ce7d');
     await emailjs.send(
-      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+      'service_51jaez2',
+      'template_1c3ce7d',
       {
         to_email: email,
         user_name: email.split('@')[0],
         platform: platform,
       },
-      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      'j_A4UIL7bV7NmgEl5'
     );
     console.log('Email sent successfully');
   } catch (error) {
