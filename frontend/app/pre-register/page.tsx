@@ -11,30 +11,31 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import SideRays from "@/components/ui/SideRays";
-import emailjs from '@emailjs/browser';
-emailjs.init('j_A4UIL7bV7NmgEl5');
+import emailjs from "@emailjs/browser";
+
+emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
 const sendConfirmationEmail = async (
   email: string, 
   platform: string
 ) => {
+  console.log("PUBLIC KEY:", process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
+  console.log("SERVICE:", process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID);
+  console.log("TEMPLATE:", process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID);
+
   try {
-    console.log('Sending email to:', email);
-    console.log('Service:', 'service_51jaez2');
-    console.log('Template:', 'template_1c3ce7d');
-    await emailjs.send(
-      'service_51jaez2',
-      'template_1c3ce7d',
+    const response = await emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
       {
         to_email: email,
-        user_name: email.split('@')[0],
+        user_name: email.split("@")[0],
         platform: platform,
-      },
-      'j_A4UIL7bV7NmgEl5'
+      }
     );
-    console.log('Email sent successfully');
+    console.log("EMAIL SUCCESS", response);
   } catch (error) {
-    console.error('Email error:', error);
+    console.error("EMAIL ERROR", error);
   }
 };
 
