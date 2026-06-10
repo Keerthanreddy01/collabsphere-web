@@ -83,7 +83,7 @@ Do not interrupt.
 
 ### 🚀 ACCESS PORTAL
 
-[![CollabSphere](https://img.shields.io/badge/🌐_ENTER_ORBIT-collabsphere--web.vercel.app-000000?style=for-the-badge)](https://collabsphere-web.vercel.app)
+[![CollabSphere](https://img.shields.io/badge/🌐_ENTER_ORBIT-collabsphere--web.vercel.app-000000?style=for-the-badge)](https://collabsphereweb.vercel.app/)
 
 <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=11&duration=4000&pause=1000&color=444444&center=true&vCenter=true&width=400&lines=End+of+transmission.;See+you+in+orbit.+🪐" alt="Typing SVG" />
 
