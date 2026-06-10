@@ -15,14 +15,14 @@ import {
  * Gets the current count of pre-registered builders from Firestore server
  */
 export async function getWaitlistCount(): Promise<number> {
-  if (!db) return 247; // Fallback default count
+  if (!db) return 0; // Fallback default count
   try {
     const coll = collection(db, "app_waitlist");
     const snapshot = await getCountFromServer(coll);
     return snapshot.data().count;
   } catch (error) {
     console.error("Error getting waitlist count:", error);
-    return 247;
+    return 0;
   }
 }
 
@@ -94,14 +94,14 @@ export async function joinWaitlist(
  * Gets the last 3 waitlist signups (extract name from email)
  */
 export async function getRecentSignups(): Promise<string[]> {
-  if (!db) return ["Keerthan", "Alex", "Purbledx"]; // Fallback defaults
+  if (!db) return []; // Fallback defaults
   try {
     const coll = collection(db, "app_waitlist");
     const q = query(coll, orderBy("joined_at", "desc"), limit(3));
     const snapshot = await getDocs(q);
     
     if (snapshot.empty) {
-      return ["Keerthan", "Alex", "Purbledx"];
+      return [];
     }
 
     return snapshot.docs.map(doc => {
@@ -113,6 +113,6 @@ export async function getRecentSignups(): Promise<string[]> {
     });
   } catch (error) {
     console.error("Error getting recent signups:", error);
-    return ["Keerthan", "Alex", "Purbledx"];
+    return [];
   }
 }

@@ -453,92 +453,104 @@ export default function DashboardHomePage() {
                 </div>
               </div>
 
-              {/* Composer (X style) */}
-              <div className="border-b border-[#2f3336] p-4 bg-[#000000] shrink-0">
-                <div className="flex gap-3">
-                  <img
-                    src={avatarSrc}
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full object-cover bg-neutral-800 shrink-0"
-                  />
-                  <div className="flex-1 flex flex-col">
-                    <textarea
-                      ref={textareaRef}
-                      value={content}
-                      onChange={handleInput}
-                      placeholder="What is happening?!"
-                      className="w-full bg-transparent text-white text-[18px] placeholder-[#71767b] outline-none resize-none pt-1 min-h-[50px] border-none focus:ring-0 leading-relaxed"
-                    />
-                    <input
-                      type="text"
-                      value={stackTags}
-                      onChange={(e) => setStackTags(e.target.value)}
-                      placeholder="Add tech stack tags (e.g. #react #nextjs)"
-                      className="w-full text-[14px] text-[#1d9bf0] placeholder-[#71767b]/50 bg-transparent border-none outline-none py-1 focus:ring-0"
-                    />
+              {/* Dynamic Island Morphing Composer */}
+              {(() => {
+                const hasContent = content.trim().length > 0 || stackTags.trim().length > 0 || isRecording || audioBlob !== null;
+                return (
+                  <div className="border-b border-[#2f3336]/50 p-4 bg-[#000000] flex justify-center pb-8 pt-6 relative shrink-0">
                     
-                    {/* Toolbar - photo, gif, poll, emoji, schedule, location, flag */}
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#2f3336]/50">
-                      <div className="flex items-center gap-1 text-[#1d9bf0]">
-                        {/* Photo */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Media">
-                          <Image className="w-5 h-5 text-[#1d9bf0]" />
-                        </button>
-                        {/* GIF */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer flex items-center justify-center" title="GIF">
-                          <span className="font-extrabold text-[12px] border border-[#1d9bf0] rounded px-1 py-0.5 leading-none select-none text-[#1d9bf0]">GIF</span>
-                        </button>
-                        {/* Poll */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Poll">
-                          <BarChart4 className="w-5 h-5 text-[#1d9bf0]" />
-                        </button>
-                        {/* Emoji */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Emoji">
-                          <Smile className="w-5 h-5 text-[#1d9bf0]" />
-                        </button>
-                        {/* Schedule */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Schedule">
-                          <Calendar className="w-5 h-5 text-[#1d9bf0]" />
-                        </button>
-                        {/* Location */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Location">
-                          <MapPin className="w-5 h-5 text-[#1d9bf0]" />
-                        </button>
-                        {/* Flag */}
-                        <button className="p-2 hover:bg-[#1d9bf0]/10 rounded-full transition-colors bg-transparent border-none cursor-pointer" title="Tag">
-                          <Flag className="w-5 h-5 text-[#1d9bf0]" />
-                        </button>
-                        {/* Voice (custom premium status feature) */}
-                        <button 
-                          onClick={toggleRecording}
-                          className={`p-2 rounded-full transition-colors bg-transparent border-none cursor-pointer ${isRecording ? "bg-red-500/10 text-red-500" : "hover:bg-[#1d9bf0]/10"}`} 
-                          title="Voice status"
-                        >
-                          <Mic className={`w-5 h-5 ${isRecording ? "animate-pulse" : "text-[#1d9bf0]"}`} />
-                        </button>
-                        {isRecording && (
-                          <span className="text-red-500 text-[13px] font-bold flex items-center gap-1.5 whitespace-nowrap pl-1">
-                            {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-                          </span>
-                        )}
+                    <div className={`relative w-full max-w-[620px] bg-[#050505] border border-[#2f3336] rounded-[32px] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group/composer focus-within:shadow-[0_0_40px_rgba(255,255,255,0.06)] focus-within:border-white/[0.2] ${hasContent ? 'shadow-[0_0_40px_rgba(255,255,255,0.06)] border-white/[0.2]' : 'hover:border-[#444]'}`}>
+                      
+                      {/* Top row: Avatar, Input */}
+                      <div className="flex items-start gap-3 p-2 px-3 relative z-10">
+                        <img src={avatarSrc} alt="avatar" className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/[0.05] mt-0.5 pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity" />
+                        
+                        <div className="flex-1 flex items-center relative min-h-[40px]">
+                          <textarea
+                            ref={textareaRef}
+                            value={content}
+                            onChange={handleInput}
+                            placeholder="What are you building?..."
+                            className={`w-full bg-transparent text-white text-[16px] placeholder-[#71767b] outline-none resize-none pt-[10px] pb-2 border-none focus:ring-0 leading-relaxed font-light transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] min-h-[40px] group-focus-within/composer:min-h-[80px] ${hasContent ? '!min-h-[80px]' : ''}`}
+                          />
+                          
+                          {/* Quick Actions - Visible only when collapsed */}
+                          <div className={`absolute right-0 top-0 bottom-0 flex items-center gap-1 transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-none opacity-100 group-focus-within/composer:opacity-0 group-focus-within/composer:scale-95 group-focus-within/composer:translate-x-4 ${hasContent ? '!opacity-0 !scale-95 !translate-x-4' : ''}`}>
+                            <div className="w-10 h-10 flex items-center justify-center rounded-full text-[#71767b] pointer-events-auto hover:text-white hover:bg-white/[0.1] transition-colors cursor-pointer" title="Attach Image">
+                              <Image className="w-5 h-5" />
+                            </div>
+                            <div 
+                              onClick={(e) => { e.preventDefault(); toggleRecording(); }}
+                              className={`w-10 h-10 flex items-center justify-center rounded-full pointer-events-auto transition-colors cursor-pointer ${isRecording ? "bg-red-500/20 text-red-500" : "text-[#71767b] hover:text-white hover:bg-white/[0.1]"}`}
+                            >
+                              <Mic className={`w-5 h-5 ${isRecording ? "animate-pulse" : ""}`} />
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={submitPost}
-                          disabled={(!content.trim() && !audioBlob) || isPosting}
-                          className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 disabled:pointer-events-none rounded-full px-5 py-1.5 text-[15px] font-bold transition-all border-none cursor-pointer"
-                        >
-                          {isPosting ? "Posting..." : "Post"}
-                        </button>
+                      {/* Expanded Section (Tags & Post button) */}
+                      <div 
+                        className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] border-t border-white/[0.05] bg-gradient-to-b from-white/[0.02] to-transparent group-focus-within/composer:max-h-[200px] group-focus-within/composer:opacity-100 ${hasContent ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}
+                      >
+                        <div className="p-3 flex items-center justify-between gap-3">
+                          {/* Tools inside expanded area */}
+                          <div className="flex items-center gap-1">
+                            <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/[0.1] text-[#1d9bf0] transition-colors cursor-pointer" title="Attach Image">
+                              <Image className="w-[18px] h-[18px]" />
+                            </button>
+                            <button 
+                              onClick={(e) => { e.preventDefault(); toggleRecording(); }}
+                              className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors cursor-pointer ${isRecording ? "bg-red-500/20 text-red-500" : "hover:bg-white/[0.1] text-[#1d9bf0]"}`}
+                            >
+                              <Mic className={`w-[18px] h-[18px] ${isRecording ? "animate-pulse" : ""}`} />
+                            </button>
+                            
+                            <div className="w-[1px] h-5 bg-[#2f3336] mx-2"></div>
+
+                            {/* Tag Pill */}
+                            <div className="flex items-center bg-[#000000] border border-[#2f3336] rounded-full px-3 py-1.5 focus-within:border-[#1d9bf0]/50 transition-all">
+                              <span className="text-[#1d9bf0] font-medium mr-1.5 text-[13px]">#</span>
+                              <input
+                                type="text"
+                                value={stackTags}
+                                onChange={(e) => setStackTags(e.target.value)}
+                                placeholder="tech stack"
+                                className="w-[100px] sm:w-[150px] text-[13px] text-white placeholder-[#71767b] bg-transparent border-none outline-none focus:ring-0"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Post Button */}
+                          <button
+                            onClick={submitPost}
+                            disabled={(!content.trim() && !audioBlob) || isPosting}
+                            className="bg-white text-black hover:bg-[#e6e6e6] disabled:opacity-50 disabled:pointer-events-none rounded-full px-6 py-2 text-[14px] font-bold transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] cursor-pointer"
+                          >
+                            {isPosting ? "..." : "Post"}
+                          </button>
+                        </div>
                       </div>
+
+                      {/* Animated Background Layer */}
+                      <div className={`absolute inset-0 rounded-[32px] bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 pointer-events-none transition-opacity duration-700 group-focus-within/composer:opacity-100 ${hasContent ? 'opacity-100' : 'opacity-0'}`}></div>
+                    </div>
+
+                    {/* Error / Status floating below */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+                      {micError && (
+                        <div className="text-red-400 text-[12px] bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 backdrop-blur-md">{micError}</div>
+                      )}
+                      {isRecording && (
+                        <div className="text-red-500 text-[12px] font-bold flex items-center gap-1.5 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 backdrop-blur-md">
+                          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                          {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-                {micError && (
-                  <div className="mt-2 text-red-500 text-xs">{micError}</div>
-                )}
-              </div>
+                );
+              })()}
 
               {/* Feed Posts */}
               <div className="flex flex-col bg-[#000000] pb-24">

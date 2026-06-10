@@ -11,6 +11,7 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import SideRays from "@/components/ui/SideRays";
+import emailjs from '@emailjs/browser';
 
 function WaitlistFormContent() {
   const searchParams = useSearchParams();
@@ -26,18 +27,18 @@ function WaitlistFormContent() {
   const [copied, setCopied] = useState(false);
 
   // Live total count from Firestore
-  const [totalCount, setTotalCount] = useState(247);
+  const [totalCount, setTotalCount] = useState(0);
   // Animated count up state
   const [animatedCount, setAnimatedCount] = useState(0);
   // Recent 3 signups
-  const [recentSignups, setRecentSignups] = useState<string[]>(["Keerthan", "Alex", "Purbledx"]);
+  const [recentSignups, setRecentSignups] = useState<string[]>([]);
 
   // Listen to Firestore waitlist updates for real-time counters
   useEffect(() => {
     if (!db) return;
     const unsub = onSnapshot(collection(db, "app_waitlist"), (snapshot) => {
       // Update count
-      setTotalCount(snapshot.size > 0 ? snapshot.size : 247);
+      setTotalCount(snapshot.size);
     });
     return () => unsub();
   }, []);
@@ -85,6 +86,21 @@ function WaitlistFormContent() {
     try {
       const res = await joinWaitlist(email, platform, referredBy);
       if (res.success) {
+        try {
+          await emailjs.send(
+            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+            process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+            {
+              name: email.split('@')[0],
+              email: email,
+              platform: platform,
+            },
+            process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+          );
+        } catch (emailErr) {
+          console.error('Email failed silently:', emailErr);
+        }
+
         setPosition(res.position);
         setRefCode(res.refCode);
         setSuccess(true);
@@ -162,7 +178,8 @@ function WaitlistFormContent() {
         </div>
         
         {/* Ticker at bottom left */}
-        <div className="absolute bottom-10 left-8 lg:left-24 max-w-md hidden lg:block">
+        {recentSignups.length > 0 && (
+          <div className="absolute bottom-10 left-8 lg:left-24 max-w-md hidden lg:block">
           <p className="text-white/30 text-[10px] tracking-widest font-bold flex items-center gap-2 font-syncopate uppercase">
             <span>🧑</span>
             {recentSignups.map((name, i) => (
@@ -174,6 +191,7 @@ function WaitlistFormContent() {
             <span className="text-white/30 ml-1">joined</span>
           </p>
         </div>
+        )}
       </div>
 
       {/* RIGHT PANEL - The Arch Form */}
@@ -357,12 +375,7 @@ export default function PreRegisterPage() {
         .font-syncopate { font-family: 'Syncopate', sans-serif; }
       `}} />
 
-      {/* Massive Faded Background Text */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden flex justify-start pointer-events-none opacity-[0.05] z-0">
-        <div className="font-syncopate text-[#D4F842] text-[15vw] font-bold uppercase tracking-tighter whitespace-nowrap leading-none translate-y-1/4 italic pl-10">
-          CollabSphere
-        </div>
-      </div>
+
 
       <Suspense fallback={
         <div className="h-full w-full flex flex-col items-center justify-center relative z-10">
