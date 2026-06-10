@@ -70,30 +70,42 @@ function WaitlistFormContent() {
     return () => unsub();
   }, []);
 
-  // Animate count up on count change
+  // Animate count with a scrambling effect on mount/change
   useEffect(() => {
-    let start = animatedCount;
-    const end = totalCount;
-    if (start === end) return;
-
-    const duration = 1200; // 1.2s
+    if (totalCount === 0) return;
+    
+    let isMounted = true;
+    const duration = 2500; // 2.5 seconds
+    const intervalTime = 50; // Update every 50ms
     let startTime: number | null = null;
+    let lastUpdateTime: number = 0;
+    let frameId: number;
 
     const animate = (timestamp: number) => {
+      if (!isMounted) return;
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing out quadratic
-      const easeProgress = progress * (2 - progress);
-      const current = Math.floor(easeProgress * (end - start) + start);
-      setAnimatedCount(current);
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
+      if (elapsed < duration) {
+        if (timestamp - lastUpdateTime > intervalTime) {
+          // Generate a random number with the same number of digits
+          const max = Math.pow(10, totalCount.toString().length) - 1;
+          setAnimatedCount(Math.floor(Math.random() * max));
+          lastUpdateTime = timestamp;
+        }
+        frameId = requestAnimationFrame(animate);
+      } else {
+        // Settle on real count
+        setAnimatedCount(totalCount);
       }
     };
-    requestAnimationFrame(animate);
+    
+    frameId = requestAnimationFrame(animate);
+
+    return () => {
+      isMounted = false;
+      cancelAnimationFrame(frameId);
+    };
   }, [totalCount]);
 
   // Fetch recent signups on mount
