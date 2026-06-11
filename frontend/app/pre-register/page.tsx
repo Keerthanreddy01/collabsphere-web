@@ -11,7 +11,6 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import SideRays from "@/components/ui/SideRays";
-import Odometer from "@/components/ui/Odometer";
 import emailjs from "@emailjs/browser";
 
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
@@ -125,7 +124,7 @@ function WaitlistFormContent() {
       {/* LEFT PANEL - Typography and Stats */}
       <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-8 lg:py-10">
         {/* Header inside left panel */}
-        <div className="flex items-center gap-6 mb-8 lg:mb-auto w-full z-20">
+        <div className="flex items-center gap-6 mb-12 lg:mb-16 w-full z-20 shrink-0">
           <a 
             href="/dashboard/home" 
             className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
@@ -138,7 +137,7 @@ function WaitlistFormContent() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col justify-center pb-12 lg:pb-0 z-10 w-full mt-4 lg:mt-0">
+        <div className="flex-1 flex flex-col justify-center pb-12 lg:pb-0 z-10 w-full">
           <div className="font-syncopate text-[#D4F842] text-[12px] uppercase tracking-[0.3em] font-bold mb-6">
             Official Mobile Beta
           </div>
@@ -164,7 +163,7 @@ function WaitlistFormContent() {
               className="font-syne font-[900] tracking-tighter mb-4 leading-[0.9]"
               style={{ fontSize: "clamp(120px, 18vw, 220px)" }}
             >
-              <Odometer value={totalCount} />
+              <ScrambleText targetValue={totalCount} />
             </div>
 
             {/* Subtitle */}
