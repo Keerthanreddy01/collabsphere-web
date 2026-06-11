@@ -150,83 +150,92 @@ function WaitlistFormContent() {
             We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
           </p>
 
-          {/* PREMIUM WAITLIST DASHBOARD CARD */}
+          {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD */}
           <div className="mt-8 lg:mt-10 w-full max-w-md">
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent p-6 backdrop-blur-xl">
-              {/* Subtle accent glow in top-right */}
-              <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#D4F842]/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-xl shadow-2xl">
+              {/* Top ambient glow */}
+              <div className="absolute -top-24 -left-24 w-48 h-48 bg-[#D4F842]/10 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="flex flex-col gap-4">
-                {/* Header Row */}
+              <div className="flex flex-col gap-5">
+                {/* Header: Label and Active Indicator */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    <span className="text-[10px] font-syncopate font-bold uppercase tracking-widest text-emerald-400">
-                      LIVE WAITLIST
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#D4F842]">
+                      WAITLIST ACTIVE
                     </span>
                   </div>
                   
-                  {/* Subtle index tag */}
-                  <span className="text-[9px] font-mono text-white/30 tracking-widest uppercase">
-                    BETA v1.0
+                  <span className="text-[10px] font-mono text-white/40 tracking-wider">
+                    PHASE 01 // BETA
                   </span>
                 </div>
 
-                {/* Stat Display */}
-                <div className="flex items-baseline gap-3">
-                  <div 
-                    className="font-syne font-extrabold tracking-tighter leading-none text-white"
-                    style={{ fontSize: "clamp(48px, 6vw, 72px)" }}
-                  >
-                    {totalCount.toLocaleString()}
-                  </div>
+                {/* Counter & Avatar Pile Grid */}
+                <div className="flex items-center justify-between gap-4 py-2">
                   <div className="flex flex-col">
-                    <span className="font-syncopate text-[#D4F842] text-[10px] uppercase tracking-wider font-bold">
-                      Builders
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="font-sans font-extrabold text-5xl lg:text-6xl tracking-tight text-white">
+                        {totalCount.toLocaleString()}
+                      </span>
+                      <span className="text-white/60 text-xs font-semibold font-syncopate uppercase tracking-wider">
+                        Joined
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-sans text-white/40 mt-1 font-medium">
+                      Builders secured early access
                     </span>
-                    <span className="text-white/40 text-[10px] font-medium uppercase tracking-widest font-sans">
-                      Joined
-                    </span>
+                  </div>
+
+                  {/* Overlapping Avatar Group (Avatar Pile) */}
+                  <div className="flex -space-x-3 overflow-hidden">
+                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 border-2 border-black text-[10px] font-bold text-white shadow-md">
+                      KR
+                    </div>
+                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-2 border-black text-[10px] font-bold text-white shadow-md">
+                      ST
+                    </div>
+                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 border-2 border-black text-[10px] font-bold text-white shadow-md">
+                      JD
+                    </div>
+                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-neutral-900 border-2 border-neutral-800 text-[10px] font-bold text-[#D4F842] shadow-md">
+                      +{totalCount}
+                    </div>
                   </div>
                 </div>
 
-                {/* Message / Status */}
-                {totalCount < 50 ? (
-                  <p className="font-sans text-white/50 text-xs font-medium">
-                    Be one of the first builders shaping CollabSphere.
-                  </p>
-                ) : (
-                  <p className="font-sans text-white/50 text-xs font-medium">
-                    Spaces are filling up fast. Secure your spot now.
-                  </p>
-                )}
-
-                {/* Divider */}
-                <div className="h-px bg-white/5 w-full my-1" />
-
-                {/* Recent Join Section */}
-                {recentSignups.length > 0 ? (
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D4F842]/10 border border-[#D4F842]/20 text-[#D4F842] text-[10px] font-bold">
-                      {recentSignups[0] ? recentSignups[0].slice(0, 2).toUpperCase() : "CS"}
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-white/70 text-xs font-medium leading-none">
-                        <span className="text-white font-bold">{recentSignups[0]}</span>
-                      </p>
-                      <span className="text-[10px] text-white/40 mt-1 font-sans">
-                        joined waitlist recently
-                      </span>
-                    </div>
+                {/* Progress bar representing Beta phase spots */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[10px] font-mono font-bold tracking-wide">
+                    <span className="text-white/50">PHASE 1 SPOTS SECURED</span>
+                    <span className="text-[#D4F842]">{Math.min(100, Math.max(7, Math.round((totalCount / 150) * 100)))}%</span>
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2 text-[11px] text-white/30 font-medium">
-                    <span>⚡ Ready for next registration</span>
+                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#D4F842] to-emerald-400 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min(100, Math.max(7, (totalCount / 150) * 100))}%` }}
+                    />
                   </div>
-                )}
+                </div>
+
+                {/* Terminal-like system log representing activity */}
+                <div className="rounded-lg bg-black/50 border border-white/5 p-3 font-mono text-[10px] leading-relaxed text-white/70">
+                  <div className="flex items-center gap-1.5 text-emerald-400 font-bold mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>SYS_FEED // LIVE</span>
+                  </div>
+                  {recentSignups.length > 0 ? (
+                    <div className="flex items-center justify-between text-white/50">
+                      <span>&gt; user_joined: <span className="text-white font-bold">{recentSignups[0]}</span></span>
+                      <span className="text-[9px] text-[#D4F842]">Just Now</span>
+                    </div>
+                  ) : (
+                    <span className="text-white/30">&gt; awaiting next connection...</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
