@@ -122,7 +122,7 @@ function WaitlistFormContent() {
     <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-8 lg:py-10">
+      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-8 lg:py-10 overflow-y-auto">
         {/* Header inside left panel */}
         <div className="flex items-center gap-6 mb-12 lg:mb-16 w-full z-20 shrink-0">
           <a 
@@ -160,8 +160,8 @@ function WaitlistFormContent() {
 
             {/* Odometer Count */}
             <div 
-              className="font-syne font-[900] tracking-tighter mb-4 leading-[0.9]"
-              style={{ fontSize: "clamp(120px, 18vw, 220px)" }}
+              className="font-syne font-[900] tracking-tighter mb-4 leading-[0.9] w-full break-words"
+              style={{ fontSize: "clamp(60px, 10vw, 150px)" }}
             >
               <ScrambleText targetValue={totalCount} />
             </div>
