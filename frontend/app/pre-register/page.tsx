@@ -122,9 +122,9 @@ function WaitlistFormContent() {
     <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-8 lg:py-10 overflow-y-auto">
+      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-6 lg:py-8 overflow-y-auto">
         {/* Header inside left panel */}
-        <div className="flex items-center gap-6 mb-12 lg:mb-16 w-full z-20 shrink-0">
+        <div className="flex items-center gap-6 mb-6 lg:mb-8 w-full z-20 shrink-0">
           <a 
             href="/dashboard/home" 
             className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
@@ -137,42 +137,42 @@ function WaitlistFormContent() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col justify-center pb-12 lg:pb-0 z-10 w-full">
-          <div className="font-syncopate text-[#D4F842] text-[12px] uppercase tracking-[0.3em] font-bold mb-6">
+        <div className="flex flex-col my-auto pb-8 lg:pb-0 z-10 w-full">
+          <div className="font-syncopate text-[#D4F842] text-[10px] lg:text-[12px] uppercase tracking-[0.3em] font-bold mb-4">
             Official Mobile Beta
           </div>
 
-          <h1 className="font-syne text-white text-[50px] lg:text-[80px] font-bold leading-[0.9] tracking-tighter mb-6">
+          <h1 className="font-syne text-white text-[42px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4">
             The app is <br/> coming.
           </h1>
           
-          <p className="font-sans text-white/50 text-[16px] lg:text-[18px] leading-relaxed max-w-md font-medium">
+          <p className="font-sans text-white/50 text-[14px] lg:text-[16px] leading-relaxed max-w-md font-medium">
             We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
           </p>
 
           {/* MASSIVE CENTERPIECE WAITLIST STAT */}
-          <div className="mt-12 lg:mt-16 w-full flex flex-col items-center text-center">
+          <div className="mt-8 lg:mt-10 w-full flex flex-col items-center text-center">
             {/* Live Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-4">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-[10px] font-syncopate font-bold uppercase tracking-widest text-emerald-400">Live Waitlist</span>
             </div>
 
             {/* Odometer Count */}
             <div 
-              className="font-syne font-[900] tracking-tighter mb-4 leading-[0.9] w-full break-words"
-              style={{ fontSize: "clamp(60px, 10vw, 150px)" }}
+              className="font-syne font-[900] tracking-tighter mb-2 leading-[0.9] w-full break-words"
+              style={{ fontSize: "clamp(60px, 8vw, 120px)" }}
             >
               <ScrambleText targetValue={totalCount} />
             </div>
 
             {/* Subtitle */}
-            <div className="font-syncopate text-[#D4F842] text-[14px] lg:text-[18px] uppercase tracking-[0.2em] font-bold mb-6">
+            <div className="font-syncopate text-[#D4F842] text-[12px] lg:text-[16px] uppercase tracking-[0.2em] font-bold mb-4">
               Builders Joined
             </div>
 
             {totalCount < 50 && (
-              <p className="font-sans text-white/50 text-sm font-medium mb-6">
+              <p className="font-sans text-white/50 text-xs lg:text-sm font-medium mb-4">
                 Be one of the first builders shaping CollabSphere.
               </p>
             )}
