@@ -150,42 +150,85 @@ function WaitlistFormContent() {
             We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
           </p>
 
-          {/* MASSIVE CENTERPIECE WAITLIST STAT */}
-          <div className="mt-8 lg:mt-10 w-full flex flex-col items-center text-center">
-            {/* Live Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-4">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-syncopate font-bold uppercase tracking-widest text-emerald-400">Live Waitlist</span>
-            </div>
+          {/* PREMIUM WAITLIST DASHBOARD CARD */}
+          <div className="mt-8 lg:mt-10 w-full max-w-md">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent p-6 backdrop-blur-xl">
+              {/* Subtle accent glow in top-right */}
+              <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#D4F842]/10 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="flex flex-col gap-4">
+                {/* Header Row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[10px] font-syncopate font-bold uppercase tracking-widest text-emerald-400">
+                      LIVE WAITLIST
+                    </span>
+                  </div>
+                  
+                  {/* Subtle index tag */}
+                  <span className="text-[9px] font-mono text-white/30 tracking-widest uppercase">
+                    BETA v1.0
+                  </span>
+                </div>
 
-            {/* Odometer Count */}
-            <div 
-              className="font-syne font-[900] tracking-tighter mb-2 leading-[0.9] w-full break-words"
-              style={{ fontSize: "clamp(60px, 8vw, 120px)" }}
-            >
-              {totalCount.toLocaleString()}
-            </div>
+                {/* Stat Display */}
+                <div className="flex items-baseline gap-3">
+                  <div 
+                    className="font-syne font-extrabold tracking-tighter leading-none text-white"
+                    style={{ fontSize: "clamp(48px, 6vw, 72px)" }}
+                  >
+                    {totalCount.toLocaleString()}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-syncopate text-[#D4F842] text-[10px] uppercase tracking-wider font-bold">
+                      Builders
+                    </span>
+                    <span className="text-white/40 text-[10px] font-medium uppercase tracking-widest font-sans">
+                      Joined
+                    </span>
+                  </div>
+                </div>
 
-            {/* Subtitle */}
-            <div className="font-syncopate text-[#D4F842] text-[12px] lg:text-[16px] uppercase tracking-[0.2em] font-bold mb-4">
-              Builders Joined
-            </div>
+                {/* Message / Status */}
+                {totalCount < 50 ? (
+                  <p className="font-sans text-white/50 text-xs font-medium">
+                    Be one of the first builders shaping CollabSphere.
+                  </p>
+                ) : (
+                  <p className="font-sans text-white/50 text-xs font-medium">
+                    Spaces are filling up fast. Secure your spot now.
+                  </p>
+                )}
 
-            {totalCount < 50 && (
-              <p className="font-sans text-white/50 text-xs lg:text-sm font-medium mb-4">
-                Be one of the first builders shaping CollabSphere.
-              </p>
-            )}
+                {/* Divider */}
+                <div className="h-px bg-white/5 w-full my-1" />
 
-            {/* Recent Join Card */}
-            {recentSignups.length > 0 && (
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
-                <span className="text-xl">👤</span>
-                <p className="text-white/60 text-[12px] font-medium">
-                  <span className="text-white font-bold">{recentSignups[0]}</span> joined recently
-                </p>
+                {/* Recent Join Section */}
+                {recentSignups.length > 0 ? (
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D4F842]/10 border border-[#D4F842]/20 text-[#D4F842] text-[10px] font-bold">
+                      {recentSignups[0] ? recentSignups[0].slice(0, 2).toUpperCase() : "CS"}
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-white/70 text-xs font-medium leading-none">
+                        <span className="text-white font-bold">{recentSignups[0]}</span>
+                      </p>
+                      <span className="text-[10px] text-white/40 mt-1 font-sans">
+                        joined waitlist recently
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-[11px] text-white/30 font-medium">
+                    <span>⚡ Ready for next registration</span>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
