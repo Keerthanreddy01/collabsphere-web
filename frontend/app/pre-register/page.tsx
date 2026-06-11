@@ -163,7 +163,7 @@ function WaitlistFormContent() {
               className="font-syne font-[900] tracking-tighter mb-2 leading-[0.9] w-full break-words"
               style={{ fontSize: "clamp(60px, 8vw, 120px)" }}
             >
-              <ScrambleText targetValue={totalCount} />
+              {totalCount.toLocaleString()}
             </div>
 
             {/* Subtitle */}
@@ -387,41 +387,4 @@ export default function PreRegisterPage() {
 
 // Trigger deployment
 
-const ScrambleText = ({ targetValue }: { targetValue: number }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    if (targetValue === 0 || !ref.current) return;
-    
-    const duration = 2500; // 2.5 seconds
-    const fps = 30; // Butter smooth 30 times a second
-    const interval = 1000 / fps;
-    let startTime: number | null = null;
-    let lastUpdate = 0;
-    let frameId: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-
-      if (elapsed < duration) {
-        if (timestamp - lastUpdate > interval) {
-          const digits = targetValue.toString().length;
-          const max = Math.pow(10, digits) - 1;
-          const min = digits > 1 ? Math.pow(10, digits - 1) : 0;
-          const random = Math.floor(Math.random() * (max - min + 1)) + min;
-          if (ref.current) ref.current.innerText = random.toLocaleString();
-          lastUpdate = timestamp;
-        }
-        frameId = requestAnimationFrame(animate);
-      } else {
-        if (ref.current) ref.current.innerText = targetValue.toLocaleString();
-      }
-    };
-    
-    frameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frameId);
-  }, [targetValue]);
-
-  return <div ref={ref}>{targetValue === 0 ? "0" : targetValue.toLocaleString()}</div>;
-};
