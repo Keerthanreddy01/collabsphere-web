@@ -208,19 +208,24 @@ export default function LoginPage() {
             <div className="bg-white/[0.02] border border-white/[0.06] backdrop-blur-[24px] rounded-[32px] p-8 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative overflow-hidden">
               <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />
 
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
+          {/* Logo & Welcome Header */}
+          <div className="flex flex-col items-center mb-8 text-center">
             <motion.div
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="w-14 h-14 rounded-[18px] bg-gradient-to-br from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(126,133,254,0.3)] relative"
+              whileHover={{ scale: 1.05, rotate: 10 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7e85fe] to-[#fe489e] flex items-center justify-center mb-4 shadow-[0_8px_30px_rgba(126,133,254,0.25)] relative group cursor-pointer"
             >
-              <div className="absolute inset-0 bg-black/10 rounded-[18px]" />
-              <Sparkles className="w-7 h-7 text-white relative z-10" />
+              <div className="absolute inset-0 bg-black/10 rounded-2xl group-hover:opacity-0 transition-opacity" />
+              <Sparkles className="w-6 h-6 text-white relative z-10" />
             </motion.div>
-            <h1 className="text-[26px] font-bold tracking-tight text-white mb-2">CollabSphere</h1>
-            <p className="text-[#A8A8A8] text-[14px] text-center max-w-[280px] leading-relaxed">
-              Discover and connect with developers worldwide.
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-1.5 bg-gradient-to-b from-white to-white/80 bg-clip-text">
+              Yooo, welcome back!
+            </h1>
+            <p className="text-white/40 text-[13px] font-medium">
+              First time here?{" "}
+              <Link href="/signup" className="text-white hover:text-[#7e85fe] transition-colors ml-1 font-semibold underline decoration-white/20 underline-offset-4">
+                Sign up for free
+              </Link>
             </p>
           </div>
 
