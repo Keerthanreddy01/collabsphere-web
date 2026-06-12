@@ -380,14 +380,33 @@ export default function LoginPage() {
             </motion.button>
           </form>
 
-
+          {/* Secondary Sign-In Triggers */}
+          <div className="flex flex-col gap-2.5 mt-5">
+            <button
+              type="button"
+              className="w-full bg-transparent hover:bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] text-white/50 hover:text-white transition-all font-semibold rounded-2xl py-3 text-[13px] flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Sign in using magic link
+            </button>
+            <button
+              type="button"
+              className="w-full bg-transparent hover:bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] text-white/50 hover:text-white transition-all font-semibold rounded-2xl py-3 text-[13px] flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Single sign-on (SSO)
+            </button>
+          </div>
         </div>
 
-        <p className="text-white/50 text-[13px] text-center mt-8 font-medium">
-          Don't have an account?{" "}
-          <Link href="/signup" className="text-white hover:text-[#7EE8FA] transition-colors ml-1 font-semibold">
-            Sign up
-          </Link>
+        {/* Legal Disclaimer Footer */}
+        <p className="text-white/30 text-[11px] text-center mt-8 leading-relaxed max-w-[340px] mx-auto font-medium">
+          By signing in, you agree to our{" "}
+          <Link href="/terms" className="text-white/50 hover:text-white transition-colors underline decoration-white/10 underline-offset-2">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="text-white/50 hover:text-white transition-colors underline decoration-white/10 underline-offset-2">
+            Privacy Policy
+          </Link>.
         </p>
       </motion.div>
     </div>
