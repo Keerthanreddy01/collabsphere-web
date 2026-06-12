@@ -124,12 +124,30 @@ export default function LoginPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 w-full min-h-screen relative z-10">
         {/* Left Side: Branding / Visuals Container */}
-        <div className="hidden md:flex md:col-span-5 flex-col justify-between p-12 relative overflow-hidden border-r border-white/[0.06] bg-[#070310]/50 backdrop-blur-md">
-          <div className="relative z-10">
-            <span className="text-[12px] uppercase tracking-widest text-[#7e85fe] font-bold">CollabSphere Platform</span>
+        <div className="hidden md:flex md:col-span-5 flex-col justify-between p-12 relative overflow-hidden border-r border-white/[0.06] bg-[#03000a] select-none">
+          {/* Glowing gradient aura */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle_at_center,rgba(126,133,254,0.12)_0%,rgba(13,6,33,0.95)_60%,#03000a_100%)]" />
+            <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] bg-[#7e85fe]/10 rounded-full blur-[90px]" />
+            <div className="absolute bottom-[-10%] right-[10%] w-[300px] h-[300px] bg-[#fe489e]/8 rounded-full blur-[90px]" />
+            {/* Grid overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px]" />
           </div>
+
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] flex items-center justify-center shadow-[0_0_20px_rgba(126,133,254,0.3)]">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-[18px] font-bold tracking-tight text-white">CollabSphere</span>
+          </div>
+
+          {/* Carousel / Step tracking section (Commit 3 placeholder) */}
+          <div className="relative z-10 my-auto py-12">
+            {/* Content to be placed in next commit */}
+          </div>
+
           <div className="relative z-10">
-            <p className="text-white/40 text-xs">© 2026 CollabSphere. All rights reserved.</p>
+            <p className="text-white/30 text-xs">© 2026 CollabSphere. Inc. All rights reserved.</p>
           </div>
         </div>
 
