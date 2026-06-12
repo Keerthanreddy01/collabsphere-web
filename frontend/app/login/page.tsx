@@ -112,7 +112,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#050505] text-white font-sans antialiased flex items-center justify-center p-4 selection:bg-[#7e85fe] selection:text-white relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[#050505] text-white font-sans antialiased flex selection:bg-[#7e85fe] selection:text-white relative overflow-hidden">
 
       {/* Background Gradients */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -122,14 +122,27 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDE5SDBWMGgxOXYxOXoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA0KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-40" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-[420px] relative z-10"
-      >
-        <div className="bg-white/[0.02] border border-white/[0.06] backdrop-blur-[24px] rounded-[32px] p-8 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />
+      <div className="grid grid-cols-1 md:grid-cols-12 w-full min-h-screen relative z-10">
+        {/* Left Side: Branding / Visuals Container */}
+        <div className="hidden md:flex md:col-span-5 flex-col justify-between p-12 relative overflow-hidden border-r border-white/[0.06] bg-[#070310]/50 backdrop-blur-md">
+          <div className="relative z-10">
+            <span className="text-[12px] uppercase tracking-widest text-[#7e85fe] font-bold">CollabSphere Platform</span>
+          </div>
+          <div className="relative z-10">
+            <p className="text-white/40 text-xs">© 2026 CollabSphere. All rights reserved.</p>
+          </div>
+        </div>
+
+        {/* Right Side: Form Panel */}
+        <div className="col-span-1 md:col-span-7 flex items-center justify-center p-6 md:p-12 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-[420px] relative z-10"
+          >
+            <div className="bg-white/[0.02] border border-white/[0.06] backdrop-blur-[24px] rounded-[32px] p-8 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative overflow-hidden">
+              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />
 
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
@@ -265,5 +278,7 @@ export default function LoginPage() {
         </p>
       </motion.div>
     </div>
+  </div>
+</div>
   );
 }
