@@ -119,12 +119,12 @@ function WaitlistFormContent() {
   };
 
   return (
-    <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
+    <div className="relative z-10 w-full h-full flex flex-col md:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-6 lg:py-8 overflow-y-auto no-scrollbar">
+      <div className="flex-1 flex flex-col px-8 md:px-16 lg:px-24 relative h-full py-6 md:py-8 overflow-y-auto no-scrollbar">
         {/* Header inside left panel */}
-        <div className="flex items-center gap-6 mb-6 lg:mb-8 w-full z-20 shrink-0">
+        <div className="flex items-center gap-6 mb-6 md:mb-8 w-full z-20 shrink-0">
           <a 
             href="/dashboard/home" 
             className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
@@ -137,16 +137,16 @@ function WaitlistFormContent() {
           </div>
         </div>
 
-        <div className="flex flex-col my-auto pb-8 lg:pb-0 z-10 w-full">
-          <div className="font-syncopate text-[#D4F842] text-[10px] lg:text-[12px] uppercase tracking-[0.3em] font-bold mb-4">
+        <div className="flex flex-col my-auto pb-8 md:pb-0 z-10 w-full">
+          <div className="font-syncopate text-[#D4F842] text-[10px] md:text-[12px] uppercase tracking-[0.3em] font-bold mb-4">
             Official Mobile Beta
           </div>
 
-          <h1 className="font-syne text-white text-[42px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4">
+          <h1 className="font-syne text-white text-[42px] md:text-[54px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4">
             The app is <br/> coming.
           </h1>
           
-          <p className="font-sans text-white/50 text-[14px] lg:text-[16px] leading-relaxed max-w-md font-medium">
+          <p className="font-sans text-white/50 text-[14px] md:text-[16px] leading-relaxed max-w-md font-medium">
             We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
           </p>
 
@@ -243,9 +243,9 @@ function WaitlistFormContent() {
       </div>
 
       {/* RIGHT PANEL - The Arch Form */}
-      <div className="w-full lg:w-[450px] xl:w-[600px] bg-[#D4F842] rounded-t-[60px] lg:rounded-t-none lg:rounded-l-[80px] min-h-[70vh] lg:h-full relative flex flex-col justify-center px-8 lg:px-16 xl:px-20 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 lg:py-0 lg:overflow-y-auto no-scrollbar">
+      <div className="w-full md:w-[380px] lg:w-[450px] xl:w-[600px] bg-[#D4F842] rounded-t-[60px] md:rounded-t-none md:rounded-l-[80px] min-h-[70vh] md:h-full relative flex flex-col justify-center px-8 md:px-10 lg:px-16 xl:px-20 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 md:py-0 md:overflow-y-auto no-scrollbar">
         {/* Toggle graphic */}
-        <div className="absolute top-8 right-8 lg:top-12 lg:right-12 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
+        <div className="absolute top-8 right-8 md:top-12 md:right-12 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
           <div className="bg-white w-[18px] h-[18px] rounded-full" />
         </div>
 
@@ -412,7 +412,7 @@ function WaitlistFormContent() {
 export default function PreRegisterPage() {
   return (
     <div 
-      className="min-h-screen lg:h-screen w-full bg-black text-white flex flex-col relative lg:overflow-hidden font-sans select-none"
+      className="min-h-screen md:h-screen w-full bg-black text-white flex flex-col relative md:overflow-hidden font-sans select-none"
       style={{
         backgroundImage: `repeating-radial-gradient(circle at 50% 100%, transparent 0, transparent 8px, rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 9px)`
       }}
