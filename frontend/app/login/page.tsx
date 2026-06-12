@@ -139,8 +139,9 @@ export default function LoginPage() {
         <div className="absolute top-0 inset-x-0 h-[400px] bg-[radial-gradient(circle_at_top,rgba(126,133,254,0.06)_0%,transparent_70%)]" />
         
         {/* Blurred Organic Bottom Waves (As seen in reference screenshot) */}
-        <div className="absolute bottom-[-220px] left-[10%] w-[600px] h-[450px] bg-[#fe489e]/12 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-220px] right-[10%] w-[600px] h-[450px] bg-[#7e85fe]/12 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-150px] left-[-10%] w-[65vw] h-[400px] bg-[#fe489e]/35 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-180px] left-[25%] w-[50vw] h-[400px] bg-[#9333ea]/25 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-[-150px] right-[-10%] w-[65vw] h-[400px] bg-[#7e85fe]/35 rounded-full blur-[120px] pointer-events-none" />
         
         {/* Grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:32px_32px] opacity-60" />
