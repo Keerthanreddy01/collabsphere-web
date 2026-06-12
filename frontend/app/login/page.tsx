@@ -141,9 +141,55 @@ export default function LoginPage() {
             <span className="text-[18px] font-bold tracking-tight text-white">CollabSphere</span>
           </div>
 
-          {/* Carousel / Step tracking section (Commit 3 placeholder) */}
-          <div className="relative z-10 my-auto py-12">
-            {/* Content to be placed in next commit */}
+          {/* Carousel / Step tracking section */}
+          <div className="relative z-10 my-auto py-12 flex flex-col gap-6 max-w-[340px]">
+            <div className="space-y-2">
+              <h2 className="text-[28px] font-extrabold tracking-tight leading-tight bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent">
+                Empowering developers to build together.
+              </h2>
+              <p className="text-white/40 text-sm">
+                Join the ultimate space for hackathons, team building, and open source collaboration.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 mt-4">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md shadow-lg shadow-black/20">
+                <div className="w-8 h-8 rounded-lg bg-[#7e85fe]/10 flex items-center justify-center border border-[#7e85fe]/20 text-[#7e85fe] font-bold text-xs">
+                  1
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Join Global Hackathons</h3>
+                  <p className="text-xs text-white/50">Form dream teams and build projects together.</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.01] border border-white/[0.03] opacity-60">
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 text-white/50 font-bold text-xs">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white/70">Connect with Builders</h3>
+                  <p className="text-xs text-white/40">Chat and coordinate with matching developers.</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.01] border border-white/[0.03] opacity-60">
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 text-white/50 font-bold text-xs">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white/70">Showcase Your Work</h3>
+                  <p className="text-xs text-white/40">Build your builder profile and track contributions.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Indicator dots */}
+            <div className="flex gap-1.5 mt-2 ml-2">
+              <span className="w-5 h-1.5 rounded-full bg-[#7e85fe]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+            </div>
           </div>
 
           <div className="relative z-10">
