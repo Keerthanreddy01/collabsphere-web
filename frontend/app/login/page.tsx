@@ -138,10 +138,8 @@ export default function LoginPage() {
           <div className="w-[30%] md:w-[22%] border-r border-white/10 flex items-center px-6 text-white font-bold tracking-tight">
             CollabSphere.
           </div>
-          <nav className="flex-grow hidden md:flex items-center justify-center gap-10 text-white/50">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="/pre-register" className="hover:text-white transition-colors">Waitlist</Link>
-            <Link href="/hackathons" className="hover:text-white transition-colors">Hackathons</Link>
+          <nav className="flex-grow hidden md:flex items-center justify-center text-white">
+            <span className="font-semibold tracking-wider text-white">Login</span>
           </nav>
           <div className="w-[25%] md:w-[15%] border-l border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer">
             <Menu className="w-4.5 h-4.5" />
@@ -322,18 +320,10 @@ export default function LoginPage() {
         </div>
 
         {/* Footer Bar */}
-        <footer className="flex h-14 border-t border-white/10 items-stretch select-none text-[9px] font-bold tracking-widest text-white/30 uppercase">
-          <div className="w-[30%] md:w-[22%] border-r border-white/10 flex flex-col justify-center px-6 gap-1">
-            <span className="text-[7px] text-white/20">Call Us</span>
-            <span className="text-white/50">+909-009-9009</span>
-          </div>
-          <div className="flex-grow hidden md:flex flex-col justify-center px-10 gap-1 text-center">
-            <span className="text-[7px] text-white/20">Here's Our Address, Come And We'll Give You Cookies</span>
-            <span className="text-white/50">Jameson Sparle St. 25/A, Los Angeles, US</span>
-          </div>
-          <div className="w-[35%] md:w-[25%] border-l border-white/10 flex flex-col justify-center px-6 gap-1 text-right">
+        <footer className="flex h-14 border-t border-white/10 items-center justify-center select-none text-[9px] font-bold tracking-widest text-white/30 uppercase px-6">
+          <div className="flex items-center gap-2">
             <span className="text-[7px] text-white/20">Send Us E-mail</span>
-            <span className="text-white/50 lowercase">support@collabsphere.io</span>
+            <span className="text-white/50 lowercase tracking-normal">collabsphereapp@gmail.com</span>
           </div>
         </footer>
       </div>
