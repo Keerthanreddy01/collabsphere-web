@@ -122,7 +122,7 @@ function WaitlistFormContent() {
     <div className="relative z-10 w-full h-full flex flex-col lg:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-6 lg:py-8 overflow-y-auto">
+      <div className="flex-1 flex flex-col px-8 lg:px-24 relative h-full py-6 lg:py-8 overflow-y-auto no-scrollbar">
         {/* Header inside left panel */}
         <div className="flex items-center gap-6 mb-6 lg:mb-8 w-full z-20 shrink-0">
           <a 
@@ -243,7 +243,7 @@ function WaitlistFormContent() {
       </div>
 
       {/* RIGHT PANEL - The Arch Form */}
-      <div className="w-full lg:w-[450px] xl:w-[600px] bg-[#D4F842] rounded-t-[60px] lg:rounded-t-none lg:rounded-l-[80px] min-h-[70vh] lg:h-full relative flex flex-col justify-center px-8 lg:px-16 xl:px-20 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 lg:py-0 lg:overflow-y-auto">
+      <div className="w-full lg:w-[450px] xl:w-[600px] bg-[#D4F842] rounded-t-[60px] lg:rounded-t-none lg:rounded-l-[80px] min-h-[70vh] lg:h-full relative flex flex-col justify-center px-8 lg:px-16 xl:px-20 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 lg:py-0 lg:overflow-y-auto no-scrollbar">
         {/* Toggle graphic */}
         <div className="absolute top-8 right-8 lg:top-12 lg:right-12 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
           <div className="bg-white w-[18px] h-[18px] rounded-full" />
