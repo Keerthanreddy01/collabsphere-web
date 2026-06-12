@@ -7,7 +7,7 @@ import Link from "next/link";
 import { auth } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Sparkles, AlertCircle, Clock } from "lucide-react";
+import { Sparkles, AlertCircle, Clock, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── Rate-limiting constants ──────────────────────────────────────────────────
@@ -304,21 +304,24 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleEmailSignIn} className="space-y-4">
-            <div className="space-y-1.5">
-              <label htmlFor="login-email" className="text-[13px] font-semibold text-white/70 ml-1">
-                Email
+            <div className="space-y-2">
+              <label htmlFor="login-email" className="text-[12px] font-bold text-white/60 ml-1 tracking-wide uppercase">
+                Email Address
               </label>
-              <input
-                id="login-email"
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="hello@example.com"
-                disabled={isLocked}
-                className="w-full bg-white/[0.03] border border-white/[0.08] focus:border-[#7e85fe]/50 focus:bg-white/[0.05] rounded-[16px] px-4 py-3.5 text-[14px] text-white placeholder-white/20 outline-none transition-all font-medium disabled:opacity-40"
-              />
+              <div className="relative flex items-center group">
+                <Mail className="absolute left-4 w-4.5 h-4.5 text-white/30 group-focus-within:text-[#7e85fe] transition-colors pointer-events-none" />
+                <input
+                  id="login-email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@domain.com"
+                  disabled={isLocked}
+                  className="w-full bg-white/[0.02] border border-white/[0.08] focus:border-[#7e85fe]/50 focus:bg-[#7e85fe]/[0.02] rounded-2xl pl-11 pr-4 py-3.5 text-[14px] text-white placeholder-white/25 outline-none transition-all font-medium disabled:opacity-40 shadow-inner shadow-black/10"
+                />
+              </div>
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between ml-1">
