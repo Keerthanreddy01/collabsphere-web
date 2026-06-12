@@ -361,14 +361,14 @@ export default function LoginPage() {
             </div>
 
             <motion.button
-              whileHover={{ scale: isLocked ? 1 : 1.02 }}
-              whileTap={{ scale: isLocked ? 1 : 0.98 }}
+              whileHover={{ scale: isLocked ? 1 : 1.015, boxShadow: isLocked ? "none" : "0 8px 30px rgba(255,255,255,0.12)" }}
+              whileTap={{ scale: isLocked ? 1 : 0.985 }}
               type="submit"
               disabled={loading || isLocked}
-              className="w-full bg-gradient-to-r from-[#7EE8FA] via-[#7e85fe] to-[#fe489e] text-black font-bold rounded-[16px] py-3.5 mt-2 hover:opacity-90 transition-all text-[14px] flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(126,133,254,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-white text-[#050505] font-extrabold rounded-2xl py-3.5 mt-6 hover:bg-white/95 transition-all text-[14px] flex items-center justify-center gap-2 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (
-                <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                <div className="h-4.5 w-4.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
               ) : isLocked ? (
                 <>
                   <Clock className="w-4 h-4" />
