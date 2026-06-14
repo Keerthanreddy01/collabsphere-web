@@ -114,21 +114,24 @@ export default function RightSidebar() {
   }, [user]);
 
   // Redesigned premium cards
-  const glassCardStyle = "bg-gradient-to-br from-[#121417] to-[#0a0b0d] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300 rounded-[20px] p-5 shadow-[0_4px_30px_rgba(0,0,0,0.5)]";
+  const glassCardStyle = "relative overflow-hidden bg-gradient-to-br from-[#131518] to-[#08090a] border border-white/[0.04] hover:border-white/[0.08] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-all duration-300 rounded-[24px] p-5.5 shadow-[0_8px_32px_rgba(0,0,0,0.55)]";
 
   return (
     <div className="hidden lg:flex w-[350px] min-w-[350px] flex-col h-full bg-transparent p-4 gap-5 overflow-y-auto no-scrollbar relative z-10">
       
       {/* 1. Neon Glow Search Bar */}
-      <div className="relative group w-full">
+      <div className="relative group w-full flex items-center">
         <input
           type="text"
           placeholder="Search projects, builders, agents..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full h-[46px] pl-12 pr-4 text-[14px] text-white placeholder-white/30 bg-[#15171a] rounded-[16px] outline-none border border-white/[0.04] focus:bg-[#000] focus:border-[#4f46e5] focus:shadow-[0_0_15px_rgba(99,102,241,0.25)] transition-all duration-300"
+          className="w-full h-[46px] pl-12 pr-12 text-[14px] text-white placeholder-white/30 bg-[#15171a] rounded-[16px] outline-none border border-white/[0.04] focus:bg-[#000] focus:border-[#6366f1]/50 focus:shadow-[0_0_20px_rgba(99,102,241,0.15)] transition-all duration-300"
         />
         <Search className="w-4 h-4 text-white/40 absolute left-4.5 top-3.5 group-focus-within:text-[#6366f1] transition-colors" />
+        <div className="absolute right-4 px-2 py-0.5 rounded bg-[#22242a] border border-white/5 text-[10px] font-semibold text-white/30 tracking-widest font-mono pointer-events-none group-focus-within:opacity-0 transition-opacity duration-200">
+          ⌘K
+        </div>
       </div>
 
       {/* Mobile App Pre-registration Card - Custom Graphic Design */}
