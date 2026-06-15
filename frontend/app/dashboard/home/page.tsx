@@ -573,388 +573,313 @@ export default function DashboardHomePage() {
                 </div>
               </div>
 
-              {/* Dynamic Island Morphing Composer */}
+              {/* Premium Minimal Composer */}
               {(() => {
                 const theme = selectedPostType === 'looking_for'
                   ? {
                       accent: 'text-[#00f2fe]',
-                      accentBg: 'bg-[#00f2fe]/10',
-                      border: 'border-[#00f2fe]/20 focus-within:border-[#00f2fe]/40',
-                      shadow: 'focus-within:shadow-[0_0_35px_rgba(0,242,254,0.08)]',
-                      glowGradient: 'from-cyan-500 via-blue-500 to-cyan-500',
-                      avatarBorder: 'border-[#00f2fe]/30',
-                      button: 'bg-[#00f2fe] hover:bg-[#00d8e4] text-black shadow-[0_0_15px_rgba(0,242,254,0.15)] font-bold',
+                      button: 'bg-[#00f2fe] hover:bg-[#00d8e4] text-black font-bold',
                       btnText: 'Find Teammates',
-                      hint: '🤝 Find co-builders, designers, or cofounders to join your project.'
+                      hint: 'Find co-builders, designers, or cofounders'
                     }
                   : selectedPostType === 'build_log'
                   ? {
                       accent: 'text-[#D4F842]',
-                      accentBg: 'bg-[#D4F842]/10',
-                      border: 'border-[#D4F842]/20 focus-within:border-[#D4F842]/40',
-                      shadow: 'focus-within:shadow-[0_0_35px_rgba(212,248,66,0.08)]',
-                      glowGradient: 'from-[#D4F842] via-emerald-500 to-[#D4F842]',
-                      avatarBorder: 'border-[#D4F842]/30',
-                      button: 'bg-[#D4F842] hover:bg-[#c5ec2d] text-black shadow-[0_0_15px_rgba(212,248,66,0.15)] font-bold',
+                      button: 'bg-[#D4F842] hover:bg-[#c5ec2d] text-black font-bold',
                       btnText: 'Log Milestone',
-                      hint: '🏆 Document a major project launch, beta release, or user milestone.'
+                      hint: 'Document a major project launch or milestone'
                     }
                   : {
-                      accent: 'text-purple-400',
-                      accentBg: 'bg-purple-500/10',
-                      border: 'border-purple-500/20 focus-within:border-purple-500/40',
-                      shadow: 'focus-within:shadow-[0_0_35px_rgba(168,85,247,0.08)]',
-                      glowGradient: 'from-purple-500 via-pink-500 to-purple-500',
-                      avatarBorder: 'border-purple-500/30',
-                      button: 'bg-purple-500 hover:bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.15)] font-bold',
+                      accent: 'text-white',
+                      button: 'bg-white hover:bg-neutral-200 text-black font-bold',
                       btnText: 'Ship Update',
-                      hint: '📢 Log a quick dev update about features you are currently coding.'
+                      hint: 'Log a quick dev update'
                     };
 
                 return (
-                  <div className="border-b border-white/[0.04] p-4 bg-[#000000] flex justify-center pb-8 pt-6 relative shrink-0">
+                  <div className="border-b border-white/[0.06] bg-[#000000] flex flex-col pt-4 pb-3 px-4 relative shrink-0">
                     
-                    <div className={`group relative w-full max-w-[620px] bg-neutral-950/40 backdrop-blur-xl border rounded-2xl p-5 transition-all duration-500 ${theme.border} ${theme.shadow}`}>
-                      
-                      {/* Ambient Glowing Background Halos */}
-                      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${theme.glowGradient} opacity-[0.08] blur-[2px] -z-10 transition-all duration-700 group-focus-within:opacity-25`} />
-                      <div className={`absolute -inset-[12px] rounded-2xl bg-gradient-to-r ${theme.glowGradient} opacity-[0.02] blur-[20px] -z-20 transition-all duration-700 group-focus-within:opacity-10`} />
-
-                      {/* Top Gradient Active Lightbar Line */}
-                      <div className={`absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-current to-transparent opacity-60 blur-[1px] transition-all duration-500 ${theme.accent}`} />
-
-                      {/* Controls Header: Segmented tabs & Dropdowns */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                        <div className="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-white/5 w-fit">
-                          <button
-                            onClick={() => setSelectedPostType('update')}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all duration-300 font-medium cursor-pointer bg-transparent border-none ${
-                              selectedPostType === 'update'
-                                ? 'bg-purple-500/15 text-purple-300 border border-purple-500/25 font-bold shadow-[0_0_12px_rgba(168,85,247,0.15)]'
-                                : 'text-neutral-500 hover:text-neutral-300 border border-transparent'
-                            }`}
-                          >
-                            <Megaphone className={`w-3.5 h-3.5 ${selectedPostType === 'update' ? 'text-purple-400' : ''}`} />
-                            Update
-                          </button>
-                          <button
-                            onClick={() => setSelectedPostType('looking_for')}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all duration-300 font-medium cursor-pointer bg-transparent border-none ${
-                              selectedPostType === 'looking_for'
-                                ? 'bg-[#00f2fe]/15 text-[#00f2fe] border border-[#00f2fe]/25 font-bold shadow-[0_0_12px_rgba(0,242,254,0.15)]'
-                                : 'text-neutral-500 hover:text-neutral-300 border border-transparent'
-                            }`}
-                          >
-                            <Handshake className={`w-3.5 h-3.5 ${selectedPostType === 'looking_for' ? 'text-[#00f2fe]' : ''}`} />
-                            Collab
-                          </button>
-                          <button
-                            onClick={() => setSelectedPostType('build_log')}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all duration-300 font-medium cursor-pointer bg-transparent border-none ${
-                              selectedPostType === 'build_log'
-                                ? 'bg-[#D4F842]/15 text-[#D4F842] border border-[#D4F842]/25 font-bold shadow-[0_0_12px_rgba(212,248,66,0.15)]'
-                                : 'text-neutral-500 hover:text-neutral-300 border border-transparent'
-                            }`}
-                          >
-                            <Trophy className={`w-3.5 h-3.5 ${selectedPostType === 'build_log' ? 'text-[#D4F842]' : ''}`} />
-                            Milestone
-                          </button>
-                        </div>
-
-                        {/* Metadata Dropdowns */}
-                        <div className="flex items-center gap-2">
-                          {/* Visibility Dropdown */}
-                          <div className="relative">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setShowVisibilityMenu(!showVisibilityMenu); setShowProjectMenu(false); }}
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neutral-900/60 hover:bg-neutral-800/80 border border-white/[0.04] text-[11px] text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium"
-                            >
-                              {postVisibility === 'public' ? (
-                                <Globe className="w-3 h-3 text-[#D4F842]" />
-                              ) : (
-                                <Lock className="w-3 h-3 text-amber-500" />
-                              )}
-                              <span>{postVisibility === 'public' ? 'Public' : 'Collabs Only'}</span>
-                              <ChevronDown className="w-2.5 h-2.5 opacity-60" />
-                            </button>
-                            {showVisibilityMenu && (
-                              <div className="absolute top-full right-0 mt-1 w-36 bg-neutral-950 border border-white/10 rounded-lg p-1 z-50 shadow-2xl animate-in fade-in slide-in-from-top-1 duration-150">
-                                <button
-                                  onClick={() => { setPostVisibility('public'); setShowVisibilityMenu(false); }}
-                                  className="w-full text-left px-2.5 py-2 text-[11px] rounded-md hover:bg-white/5 transition-colors flex items-center gap-2 text-neutral-300 hover:text-white bg-transparent border-none"
-                                >
-                                  <Globe className="w-3 h-3 text-[#D4F842]" />
-                                  Public Feed
-                                </button>
-                                <button
-                                  onClick={() => { setPostVisibility('collabs'); setShowVisibilityMenu(false); }}
-                                  className="w-full text-left px-2.5 py-2 text-[11px] rounded-md hover:bg-white/5 transition-colors flex items-center gap-2 text-neutral-300 hover:text-white bg-transparent border-none"
-                                >
-                                  <Lock className="w-3 h-3 text-amber-500" />
-                                  Collabs Only
-                                </button>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Project Dropdown */}
-                          <div className="relative">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setShowProjectMenu(!showProjectMenu); setShowVisibilityMenu(false); }}
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neutral-900/60 hover:bg-neutral-800/80 border border-white/[0.04] text-[11px] text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium"
-                            >
-                              <Sparkles className="w-3 h-3 text-purple-400" />
-                              <span>{selectedProject ? selectedProject : 'No Project'}</span>
-                              <ChevronDown className="w-2.5 h-2.5 opacity-60" />
-                            </button>
-                            {showProjectMenu && (
-                              <div className="absolute top-full right-0 mt-1 w-44 bg-neutral-950 border border-white/10 rounded-lg p-1 z-50 shadow-2xl animate-in fade-in slide-in-from-top-1 duration-150">
-                                <button
-                                  onClick={() => { setSelectedProject(null); setShowProjectMenu(false); }}
-                                  className="w-full text-left px-2.5 py-2 text-[11px] rounded-md hover:bg-white/5 transition-colors text-neutral-400 hover:text-white bg-transparent border-none"
-                                >
-                                  None (General Post)
-                                </button>
-                                <button
-                                  onClick={() => { setSelectedProject('CollabSphere'); setShowProjectMenu(false); }}
-                                  className="w-full text-left px-2.5 py-2 text-[11px] rounded-md hover:bg-white/5 transition-colors text-neutral-300 hover:text-white flex items-center gap-2 bg-transparent border-none"
-                                >
-                                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                  CollabSphere
-                                </button>
-                                <button
-                                  onClick={() => { setSelectedProject('SaaS Dashboard'); setShowProjectMenu(false); }}
-                                  className="w-full text-left px-2.5 py-2 text-[11px] rounded-md hover:bg-white/5 transition-colors text-neutral-300 hover:text-white flex items-center gap-2 bg-transparent border-none"
-                                >
-                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                  SaaS Dashboard
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                    {/* Top Controls: Post Type & Metadata */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center bg-neutral-900/50 p-1 rounded-lg border border-white/[0.04]">
+                        <button
+                          onClick={() => setSelectedPostType('update')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${
+                            selectedPostType === 'update'
+                              ? 'bg-neutral-700/50 text-white shadow-sm'
+                              : 'text-neutral-500 hover:text-neutral-300 bg-transparent'
+                          }`}
+                        >
+                          <Megaphone className="w-3 h-3" /> Update
+                        </button>
+                        <button
+                          onClick={() => setSelectedPostType('looking_for')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${
+                            selectedPostType === 'looking_for'
+                              ? 'bg-[#00f2fe]/10 text-[#00f2fe]'
+                              : 'text-neutral-500 hover:text-[#00f2fe]/70 bg-transparent'
+                          }`}
+                        >
+                          <Handshake className="w-3 h-3" /> Collab
+                        </button>
+                        <button
+                          onClick={() => setSelectedPostType('build_log')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${
+                            selectedPostType === 'build_log'
+                              ? 'bg-[#D4F842]/10 text-[#D4F842]'
+                              : 'text-neutral-500 hover:text-[#D4F842]/70 bg-transparent'
+                          }`}
+                        >
+                          <Trophy className="w-3 h-3" /> Milestone
+                        </button>
                       </div>
 
-                      {/* Hint text explaining post types */}
-                      <p className="text-[11px] text-neutral-500 transition-all duration-300 font-medium mb-3.5">
-                        {theme.hint}
-                      </p>
-
-                      {/* Input Area */}
-                      <div className="flex gap-3 items-start mt-2">
-                        <div className="relative shrink-0 mt-0.5">
-                          <img 
-                            src={avatarSrc} 
-                            alt="avatar" 
-                            className={`w-9 h-9 rounded-full object-cover border transition-all duration-500 ${theme.avatarBorder}`} 
-                          />
-                          <div className={`absolute inset-0 rounded-full animate-ping opacity-15 pointer-events-none transition-all duration-500 ${theme.accentBg}`} />
-                        </div>
-                        <div className="flex-1">
-                          <textarea
-                            ref={textareaRef}
-                            value={content}
-                            onChange={handleInput}
-                            placeholder={
-                              selectedPostType === 'looking_for'
-                                ? "What roles, skills, or collaborators do you need? (e.g., UI Designer for a calendar app)..."
-                                : selectedPostType === 'build_log'
-                                ? "What project milestone did you unlock? (e.g., launched v1.0, crossed 500 waitlist)..."
-                                : "What coding progress are you shipping today?..."
-                            }
-                            className="w-full bg-transparent text-white text-[15px] placeholder-neutral-600 outline-none resize-none pt-1.5 pb-1 border-none focus:ring-0 leading-relaxed font-sans"
-                            style={{ minHeight: '60px' }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Voice Recording Waveform Indicator if recording */}
-                      {isRecording && (
-                        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-xl mt-3 animate-pulse">
-                          <div className="w-2 h-2 rounded-full bg-red-500 animate-ping shrink-0" />
-                          <span className="text-[12px] font-mono text-red-400 font-bold shrink-0">RECORDING:</span>
-                          <span className="text-[12px] font-mono text-red-500 font-bold shrink-0">
-                            {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-                          </span>
-                          
-                          {/* Animated pulsing audio wave */}
-                          <div className="flex items-center gap-1.5 h-6 overflow-hidden flex-1 px-4">
-                            {[...Array(16)].map((_, i) => {
-                              const delay = `${i * 100}ms`;
-                              return (
-                                <span
-                                  key={i}
-                                  className="w-1 bg-red-500 rounded-full transition-all duration-150"
-                                  style={{
-                                    height: `${Math.floor(Math.random() * 16) + 4}px`,
-                                    animation: `bounce 0.8s ease-in-out infinite alternate`,
-                                    animationDelay: delay
-                                  }}
-                                />
-                              );
-                            })}
-                          </div>
+                      <div className="flex items-center gap-1.5">
+                        {/* Visibility Dropdown */}
+                        <div className="relative">
                           <button
-                            type="button"
-                            onClick={() => { toggleRecording(); }}
-                            className="px-2 py-0.5 rounded bg-red-500 text-black hover:bg-red-400 transition-colors cursor-pointer text-[10px] font-bold font-mono border-none"
+                            onClick={(e) => { e.stopPropagation(); setShowVisibilityMenu(!showVisibilityMenu); setShowProjectMenu(false); }}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white/5 text-[11px] text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium border-none bg-transparent"
                           >
-                            Done
+                            {postVisibility === 'public' ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                            <span>{postVisibility === 'public' ? 'Public' : 'Collabs'}</span>
+                            <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
-                        </div>
-                      )}
-
-                      {/* Voice Recording attached preview block */}
-                      {audioBlob && (
-                        <div className="flex items-center justify-between gap-3 bg-neutral-900 border border-white/10 px-4 py-2.5 rounded-xl mt-3">
-                          <div className="flex items-center gap-2.5">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (audioPreviewRef.current) {
-                                  if (isPlayingAudio) {
-                                    audioPreviewRef.current.pause();
-                                    setIsPlayingAudio(false);
-                                  } else {
-                                    audioPreviewRef.current.play();
-                                    setIsPlayingAudio(true);
-                                  }
-                                }
-                              }}
-                              className="w-8 h-8 rounded-full bg-[#D4F842] text-black flex items-center justify-center hover:bg-[#c5ec2d] transition-colors cursor-pointer border-none"
-                            >
-                              {isPlayingAudio ? <Pause className="w-4 h-4 fill-black text-black" /> : <Play className="w-4 h-4 fill-black text-black ml-0.5" />}
-                            </button>
-                            <div className="flex flex-col">
-                              <span className="text-[11px] font-bold text-neutral-300">Voice devlog attached</span>
-                              <span className="text-[9px] font-mono text-neutral-500">audio/webm</span>
+                          {showVisibilityMenu && (
+                            <div className="absolute top-full right-0 mt-1 w-36 bg-[#0a0a0a] border border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                              <button
+                                onClick={() => { setPostVisibility('public'); setShowVisibilityMenu(false); }}
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors flex items-center gap-2 text-neutral-300 hover:text-white bg-transparent border-none cursor-pointer"
+                              >
+                                <Globe className="w-3 h-3" /> Public Feed
+                              </button>
+                              <button
+                                onClick={() => { setPostVisibility('collabs'); setShowVisibilityMenu(false); }}
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors flex items-center gap-2 text-neutral-300 hover:text-white bg-transparent border-none cursor-pointer"
+                              >
+                                <Lock className="w-3 h-3 text-amber-500" /> Collabs Only
+                              </button>
                             </div>
-                          </div>
-                          
-                          <button
-                            type="button"
-                            onClick={() => { setAudioBlob(null); setIsPlayingAudio(false); }}
-                            className="w-7 h-7 rounded-lg bg-neutral-800 text-neutral-400 hover:text-red-400 hover:bg-red-500/10 flex items-center justify-center transition-all cursor-pointer border-none"
-                            title="Delete audio"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          <audio
-                            ref={audioPreviewRef}
-                            src={audioBlob ? URL.createObjectURL(audioBlob) : ""}
-                            onEnded={() => setIsPlayingAudio(false)}
-                            className="hidden"
-                          />
+                          )}
                         </div>
-                      )}
 
-                      {/* Tag Suggestion Row */}
-                      <div className="flex items-center gap-1.5 flex-wrap mt-4 mb-1 px-1">
-                        <span className="text-[10px] text-neutral-500 font-mono select-none">Quick tags:</span>
-                        {['nextjs', 'react', 'tailwind', 'typescript', 'ai', 'firebase'].map((tag) => (
+                        {/* Project Dropdown */}
+                        <div className="relative">
                           <button
-                            key={tag}
+                            onClick={(e) => { e.stopPropagation(); setShowProjectMenu(!showProjectMenu); setShowVisibilityMenu(false); }}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white/5 text-[11px] text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium border-none bg-transparent"
+                          >
+                            <Sparkles className="w-3 h-3 text-purple-400" />
+                            <span>{selectedProject ? selectedProject : 'No Project'}</span>
+                            <ChevronDown className="w-2.5 h-2.5 opacity-50" />
+                          </button>
+                          {showProjectMenu && (
+                            <div className="absolute top-full right-0 mt-1 w-44 bg-[#0a0a0a] border border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                              <button
+                                onClick={() => { setSelectedProject(null); setShowProjectMenu(false); }}
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors text-neutral-400 hover:text-white bg-transparent border-none cursor-pointer"
+                              >
+                                None (General Post)
+                              </button>
+                              <button
+                                onClick={() => { setSelectedProject('CollabSphere'); setShowProjectMenu(false); }}
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors text-neutral-300 hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                                CollabSphere
+                              </button>
+                              <button
+                                onClick={() => { setSelectedProject('SaaS Dashboard'); setShowProjectMenu(false); }}
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors text-neutral-300 hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
+                              >
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                SaaS Dashboard
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Input Area */}
+                    <div className="flex gap-3 items-start">
+                      <img 
+                        src={avatarSrc} 
+                        alt="avatar" 
+                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/10" 
+                      />
+                      <div className="flex-1 min-w-0">
+                        <textarea
+                          ref={textareaRef}
+                          value={content}
+                          onChange={handleInput}
+                          placeholder={
+                            selectedPostType === 'looking_for'
+                              ? "What roles, skills, or collaborators do you need?..."
+                              : selectedPostType === 'build_log'
+                              ? "What milestone did you unlock? (e.g. launched v1.0)..."
+                              : "What coding progress are you shipping today?..."
+                          }
+                          className="w-full bg-transparent text-white text-[15px] placeholder-neutral-600 outline-none resize-none pt-1.5 pb-1 border-none focus:ring-0 leading-relaxed font-sans"
+                          style={{ minHeight: '60px' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Voice Recording / Audio Preview Blocks */}
+                    {isRecording && (
+                      <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 px-4 py-2.5 rounded-xl mt-2 ml-13">
+                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+                        <span className="text-[12px] font-mono text-red-500 font-bold shrink-0">
+                          {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                        </span>
+                        
+                        <div className="flex items-center gap-1 h-4 overflow-hidden flex-1 px-4">
+                          {[...Array(16)].map((_, i) => (
+                            <span
+                              key={i}
+                              className="w-[2px] bg-red-500 rounded-full transition-all duration-150"
+                              style={{
+                                height: `${Math.floor(Math.random() * 10) + 4}px`,
+                                animation: `bounce 0.8s ease-in-out infinite alternate`,
+                                animationDelay: `${i * 100}ms`
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => toggleRecording()}
+                          className="px-3 py-1 rounded-lg bg-red-500 text-black hover:bg-red-400 transition-colors cursor-pointer text-[11px] font-bold border-none"
+                        >
+                          Done
+                        </button>
+                      </div>
+                    )}
+
+                    {audioBlob && (
+                      <div className="flex items-center justify-between gap-3 bg-neutral-900 border border-white/10 px-3 py-2 rounded-xl mt-2 ml-13">
+                        <div className="flex items-center gap-2">
+                          <button
                             type="button"
                             onClick={() => {
-                              const trimmedStack = stackTags.trim();
-                              const words = trimmedStack.split(/\s+/).filter(Boolean);
-                              if (!words.includes(tag)) {
-                                setStackTags(trimmedStack ? `${trimmedStack} ${tag}` : tag);
+                              if (audioPreviewRef.current) {
+                                if (isPlayingAudio) {
+                                  audioPreviewRef.current.pause();
+                                  setIsPlayingAudio(false);
+                                } else {
+                                  audioPreviewRef.current.play();
+                                  setIsPlayingAudio(true);
+                                }
                               }
                             }}
-                            className="text-[10px] font-mono bg-neutral-900 hover:bg-neutral-800 border border-white/[0.03] text-neutral-400 hover:text-white px-2 py-0.5 rounded transition-all cursor-pointer hover:border-white/10"
+                            className="w-7 h-7 rounded-full bg-white text-black flex items-center justify-center hover:bg-neutral-200 transition-colors cursor-pointer border-none"
                           >
-                            +{tag}
+                            {isPlayingAudio ? <Pause className="w-3.5 h-3.5 fill-black" /> : <Play className="w-3.5 h-3.5 fill-black ml-0.5" />}
                           </button>
-                        ))}
+                          <span className="text-[12px] font-medium text-neutral-300">Voice devlog attached</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { setAudioBlob(null); setIsPlayingAudio(false); }}
+                          className="w-7 h-7 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 flex items-center justify-center transition-all cursor-pointer border-none bg-transparent"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                        <audio ref={audioPreviewRef} src={URL.createObjectURL(audioBlob)} onEnded={() => setIsPlayingAudio(false)} className="hidden" />
                       </div>
+                    )}
 
-                      {/* Bottom row: Tech stack & Ship It */}
-                      <div className="flex items-center justify-between border-t border-white/5 pt-3.5 mt-4">
-                        {/* Tags Input */}
-                        <div className="flex items-center bg-black/40 border border-white/5 rounded-lg px-2.5 py-1.5 focus-within:border-white/20 transition-all font-mono">
-                          <span className="text-neutral-500 text-[12px] mr-1">#</span>
+                    {/* Tags Quick Suggestions */}
+                    <div className="flex items-center gap-1.5 flex-wrap mt-3 ml-13">
+                      {['nextjs', 'react', 'tailwind', 'typescript', 'ai'].map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => {
+                            const trimmedStack = stackTags.trim();
+                            const words = trimmedStack.split(/\s+/).filter(Boolean);
+                            if (!words.includes(tag)) {
+                              setStackTags(trimmedStack ? `${trimmedStack} ${tag}` : tag);
+                            }
+                          }}
+                          className="text-[11px] font-mono bg-transparent text-[#1d9bf0] hover:bg-[#1d9bf0]/10 px-2 py-0.5 rounded-full transition-all cursor-pointer border-none"
+                        >
+                          #{tag}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Bottom Actions Row */}
+                    <div className="flex items-center justify-between mt-3 ml-13">
+                      {/* Left: Stack tags input + Media Buttons */}
+                      <div className="flex items-center gap-3">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#1d9bf0]/10 text-[#1d9bf0] transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
+                          <Image className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleRecording(); }}
+                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-[#1d9bf0] hover:bg-[#1d9bf0]/10"}`}
+                          title="Record Voice"
+                        >
+                          <Mic className={`w-4 h-4 ${isRecording ? "animate-pulse" : ""}`} />
+                        </button>
+                        
+                        <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+                        
+                        <div className="flex items-center text-neutral-400 font-mono text-[13px]">
+                          <span className="mr-0.5 opacity-50">#</span>
                           <input
                             type="text"
                             value={stackTags}
                             onChange={(e) => setStackTags(e.target.value)}
-                            placeholder="tech stack (e.g. react next)"
-                            className="w-[140px] sm:w-[180px] text-[12px] text-white placeholder-neutral-700 bg-transparent border-none outline-none focus:ring-0 p-0"
+                            placeholder="stack"
+                            className="w-[120px] bg-transparent border-none outline-none focus:ring-0 p-0 placeholder-neutral-600 text-[#1d9bf0]"
                           />
-                        </div>
-
-                        {/* Actions & Submit */}
-                        <div className="flex items-center gap-2">
-                          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Image">
-                            <Image className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleRecording(); }}
-                            className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500" : "text-neutral-400 hover:text-white hover:bg-white/5 bg-transparent"}`}
-                            title="Voice devlog"
-                          >
-                            <Mic className={`w-4 h-4 ${isRecording ? "animate-pulse" : ""}`} />
-                          </button>
-                          
-                          <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
-                          
-                          {/* Character Count Progress Ring */}
-                          {content.length > 0 && (
-                            <div className="flex items-center gap-1.5 mr-1 select-none">
-                              <span className="text-[10px] text-neutral-500 font-mono">
-                                {content.length}
-                              </span>
-                              <svg className="w-3.5 h-3.5 transform -rotate-90">
-                                <circle
-                                  cx="7"
-                                  cy="7"
-                                  r="5"
-                                  className="stroke-neutral-800 fill-none"
-                                  strokeWidth="1.2"
-                                />
-                                <circle
-                                  cx="7"
-                                  cy="7"
-                                  r="5"
-                                  className={`fill-none transition-all duration-300 ${
-                                    content.length > 250
-                                      ? 'stroke-red-500'
-                                      : content.length > 200
-                                      ? 'stroke-amber-500'
-                                      : 'stroke-[#D4F842]'
-                                  }`}
-                                  strokeWidth="1.2"
-                                  strokeDasharray={`${2 * Math.PI * 5}`}
-                                  strokeDashoffset={`${2 * Math.PI * 5 * (1 - Math.min(content.length, 280) / 280)}`}
-                                />
-                              </svg>
-                            </div>
-                          )}
-
-                          <button
-                            onClick={submitPost}
-                            disabled={(!content.trim() && !audioBlob) || isPosting}
-                            className={`rounded-full px-5 py-2 text-[13px] font-bold transition-all active:scale-95 cursor-pointer border-none ${
-                              (!content.trim() && !audioBlob) || isPosting
-                                ? "bg-neutral-900 text-neutral-600 cursor-not-allowed pointer-events-none"
-                                : theme.button
-                            }`}
-                          >
-                            {isPosting ? "..." : theme.btnText}
-                          </button>
                         </div>
                       </div>
 
+                      {/* Right: Submit Button */}
+                      <div className="flex items-center gap-3">
+                        {/* Character Count Progress Ring */}
+                        {content.length > 0 && (
+                          <div className="flex items-center justify-center w-6 h-6 select-none relative">
+                            <svg className="w-5 h-5 transform -rotate-90">
+                              <circle cx="10" cy="10" r="8" className="stroke-neutral-800 fill-none" strokeWidth="2" />
+                              <circle
+                                cx="10" cy="10" r="8"
+                                className={`fill-none transition-all duration-300 ${
+                                  content.length > 250 ? 'stroke-red-500' : content.length > 200 ? 'stroke-amber-500' : 'stroke-[#1d9bf0]'
+                                }`}
+                                strokeWidth="2"
+                                strokeDasharray={`${2 * Math.PI * 8}`}
+                                strokeDashoffset={`${2 * Math.PI * 8 * (1 - Math.min(content.length, 280) / 280)}`}
+                              />
+                            </svg>
+                          </div>
+                        )}
+
+                        <button
+                          onClick={submitPost}
+                          disabled={(!content.trim() && !audioBlob) || isPosting}
+                          className={`rounded-full px-5 py-2 text-[14px] transition-all active:scale-95 cursor-pointer border-none ${
+                            (!content.trim() && !audioBlob) || isPosting
+                              ? "bg-white/20 text-white/50 cursor-not-allowed pointer-events-none"
+                              : theme.button
+                          }`}
+                        >
+                          {isPosting ? "Posting..." : theme.btnText}
+                        </button>
+                      </div>
                     </div>
 
-                    {/* Error / Status floating below */}
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-                      {micError && (
-                        <div className="text-red-400 text-[12px] bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 backdrop-blur-md">{micError}</div>
-                      )}
-                    </div>
-                  </div>             
+                    {/* Mic Error */}
+                    {micError && (
+                      <div className="absolute top-2 right-4 text-red-400 text-[12px] bg-red-500/10 px-3 py-1 rounded-md border border-red-500/20">
+                        {micError}
+                      </div>
+                    )}
+                  </div>
                 );
               })()}
 
