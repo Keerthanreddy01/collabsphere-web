@@ -118,29 +118,28 @@ function PostCard({
   const isCollab = post.post_type === 'looking_for';
   const isMilestone = post.post_type === 'build_log';
 
-  const cardAccent = isCollab
-    ? { border: 'border-[#00f2fe]/10 hover:border-[#00f2fe]/25', glow: 'hover:shadow-[0_0_30px_rgba(0,242,254,0.04)]', dot: 'bg-[#00f2fe]', badgeBg: 'bg-[#00f2fe]/10 text-[#00f2fe] border-[#00f2fe]/20', label: 'Collab' }
+  const theme = isCollab
+    ? { text: 'text-[#00f2fe]', bg: 'bg-[#00f2fe]/10', border: 'border-[#00f2fe]/20', icon: Handshake, label: 'Collab' }
     : isMilestone
-    ? { border: 'border-[#D4F842]/10 hover:border-[#D4F842]/25', glow: 'hover:shadow-[0_0_30px_rgba(212,248,66,0.04)]', dot: 'bg-[#D4F842]', badgeBg: 'bg-[#D4F842]/10 text-[#D4F842] border-[#D4F842]/20', label: 'Milestone' }
-    : { border: 'border-white/[0.06] hover:border-white/[0.10]', glow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.04)]', dot: 'bg-purple-400', badgeBg: 'bg-white/5 text-white/50 border-white/10', label: 'Update' };
+    ? { text: 'text-[#D4F842]', bg: 'bg-[#D4F842]/10', border: 'border-[#D4F842]/20', icon: Trophy, label: 'Milestone' }
+    : { text: 'text-neutral-400', bg: 'bg-white/5', border: 'border-white/10', icon: Megaphone, label: 'Update' };
 
   return (
     <article
       ref={ref}
-      className={`group relative w-full mb-3 rounded-2xl border bg-[#0a0a0a] transition-all duration-300 cursor-default ${cardAccent.border} ${cardAccent.glow}`}
-      style={{ backdropFilter: 'blur(4px)' }}
+      className="group relative w-full mb-2 bg-[#000000] border border-white/[0.08] rounded-2xl transition-all duration-300 hover:border-white/[0.12] overflow-hidden"
     >
-      {/* Subtle left accent bar */}
+      {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
-        <div className={`absolute left-0 top-4 bottom-4 w-[2px] rounded-full ${cardAccent.dot} opacity-60`} />
+        <div className={`absolute top-0 left-0 right-0 h-[1px] ${theme.bg} blur-[1px]`} />
       )}
 
-      <div className="p-5 pl-6">
+      <div className="p-4 sm:p-5">
         {/* ── Header Row ── */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3 min-w-0">
-            {/* Avatar with subtle ring */}
-            <div className={`relative shrink-0 w-9 h-9 rounded-full overflow-hidden border ${isCollab ? 'border-[#00f2fe]/20' : isMilestone ? 'border-[#D4F842]/20' : 'border-white/10'}`}>
+            {/* Avatar */}
+            <div className="relative shrink-0 w-10 h-10 rounded-full overflow-hidden border border-white/10">
               <img
                 src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
                 alt={post.author_name}
@@ -148,30 +147,34 @@ function PostCard({
               />
             </div>
 
-            {/* Author info */}
-            <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-[14px] text-white hover:text-[#D4F842] transition-colors cursor-pointer leading-none">
+            {/* Author info & Badges */}
+            <div className="flex flex-col min-w-0 justify-center">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-[14.5px] text-neutral-100 hover:text-white transition-colors cursor-pointer leading-none">
                   {post.author_name || "Builder"}
                 </span>
-                <span className="text-neutral-500 font-mono text-[11px] leading-none">
+                <span className="text-neutral-500 font-mono text-[13px] leading-none">
                   @{post.author_username || "builder"}
                 </span>
+                <span className="text-neutral-600 text-[13px] mx-1">·</span>
+                <span className="text-[12px] text-neutral-500 font-mono leading-none hover:underline cursor-pointer">{timeAgo(post.created_at)}</span>
               </div>
-              <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                {/* Post type pill */}
-                <span className={`inline-flex items-center text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full border ${cardAccent.badgeBg}`}>
-                  {cardAccent.label}
-                </span>
+              <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                {/* Clean inline post type badge */}
+                <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${theme.text} ${theme.bg}`}>
+                  <theme.icon className="w-2.5 h-2.5" />
+                  {theme.label}
+                </div>
+                
                 {post.project && (
-                  <span className="inline-flex items-center gap-1 text-[9px] bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono px-2 py-0.5 rounded-full">
-                    <Sparkles className="w-2 h-2" />
+                  <span className="flex items-center gap-1 text-[10px] font-medium text-neutral-400 bg-white/5 px-1.5 py-0.5 rounded-md">
+                    <Sparkles className="w-2.5 h-2.5" />
                     {post.project}
                   </span>
                 )}
                 {post.visibility === 'collabs' && (
-                  <span className="inline-flex items-center gap-1 text-[9px] bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono px-2 py-0.5 rounded-full">
-                    <Lock className="w-2 h-2" />
+                  <span className="flex items-center gap-1 text-[10px] font-medium text-amber-500/80 bg-amber-500/10 px-1.5 py-0.5 rounded-md">
+                    <Lock className="w-2.5 h-2.5" />
                     Collabs Only
                   </span>
                 )}
@@ -179,113 +182,105 @@ function PostCard({
             </div>
           </div>
 
-          {/* Timestamp + menu */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-[11px] text-neutral-600 font-mono">{timeAgo(post.created_at)}</span>
-            <button className="w-6 h-6 flex items-center justify-center rounded-lg text-neutral-600 hover:text-neutral-300 hover:bg-white/5 transition-all opacity-0 group-hover:opacity-100 cursor-pointer bg-transparent border-none">
-              <MoreHorizontal className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          {/* More Menu */}
+          <button className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer bg-transparent border-none">
+            <MoreHorizontal className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* ── Collab / Milestone Banner ── */}
-        {isCollab && (
-          <div className="mb-3 flex items-center gap-2.5 bg-[#00f2fe]/[0.04] border border-[#00f2fe]/10 rounded-xl px-3.5 py-2.5">
-            <Handshake className="w-3.5 h-3.5 text-[#00f2fe] shrink-0" />
-            <span className="text-[11px] font-semibold text-[#00f2fe]/80 tracking-wide">Open to collaborators · Apply below</span>
-          </div>
-        )}
-        {isMilestone && (
-          <div className="mb-3 flex items-center gap-2.5 bg-[#D4F842]/[0.04] border border-[#D4F842]/10 rounded-xl px-3.5 py-2.5">
-            <Trophy className="w-3.5 h-3.5 text-[#D4F842] shrink-0" />
-            <span className="text-[11px] font-semibold text-[#D4F842]/80 tracking-wide">Milestone shipped</span>
-          </div>
-        )}
-
         {/* ── Main Content ── */}
-        <p className="text-[14.5px] leading-[1.65] text-neutral-200 whitespace-pre-wrap break-words mb-3.5">
-          {renderContentWithHashtags(displayContent)}
-          {isTruncated && !isExpanded && (
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="text-[#D4F842] hover:text-[#c5ec2d] ml-1.5 text-[13px] font-medium bg-transparent border-none outline-none cursor-pointer"
-            >
-              Show more
-            </button>
-          )}
-        </p>
-
-        {/* ── Tech Stack Tags ── */}
-        {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {post.stack_tags.map((tag: string, idx: number) => (
-              <span
-                key={idx}
-                className="text-[10px] font-mono bg-neutral-900 border border-neutral-800 text-neutral-400 hover:border-[#D4F842]/40 hover:text-white transition-all px-2 py-0.5 rounded-md cursor-pointer"
+        <div className="ml-13 mb-3">
+          <p className="text-[15px] leading-relaxed text-neutral-200 whitespace-pre-wrap break-words">
+            {renderContentWithHashtags(displayContent)}
+            {isTruncated && !isExpanded && (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="text-[#1d9bf0] hover:underline ml-1.5 text-[14px] bg-transparent border-none outline-none cursor-pointer p-0"
               >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
+                Show more
+              </button>
+            )}
+          </p>
 
-        {/* ── Collab Apply Button ── */}
-        {isCollab && (
-          <button
-            onClick={() => handleCollabClick(post)}
-            className="w-full mb-4 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-bold tracking-wide cursor-pointer border transition-all active:scale-[0.99] bg-[#00f2fe]/8 hover:bg-[#00f2fe]/15 text-[#00f2fe] border-[#00f2fe]/15 hover:border-[#00f2fe]/35"
-          >
-            <Handshake className="w-3.5 h-3.5" />
-            Request to Collaborate
-          </button>
-        )}
+          {/* ── Tech Stack Tags ── */}
+          {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {post.stack_tags.map((tag: string, idx: number) => (
+                <span
+                  key={idx}
+                  className="text-[13px] text-[#1d9bf0] hover:underline cursor-pointer"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* ── Collab Apply Action Block ── */}
+          {isCollab && (
+            <div className="mt-4 flex items-center justify-between border border-[#00f2fe]/10 bg-[#00f2fe]/[0.02] rounded-xl p-3">
+              <div className="flex flex-col">
+                <span className="text-[13px] font-bold text-[#00f2fe]">Open to Collaborators</span>
+                <span className="text-[12px] text-neutral-400">Apply to join this project</span>
+              </div>
+              <button
+                onClick={() => handleCollabClick(post)}
+                className="px-4 py-1.5 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-[#00f2fe] text-black hover:bg-[#00d8e4] cursor-pointer border-none"
+              >
+                Apply
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* ── Actions Bar ── */}
-        <div className="flex items-center justify-between pt-3 border-t border-white/[0.04]">
-          <div className="flex items-center gap-1">
-            {/* Comment */}
+        <div className="flex items-center justify-between ml-13 mr-2 pt-1">
+          {/* Comment */}
+          <button
+            onClick={handleFetchComments}
+            className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0"
+          >
+            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
+              <MessageCircle className="w-4 h-4" />
+            </div>
+            {post.comments_count > 0 && <span className="font-mono text-[12px] text-neutral-500 group-hover:text-blue-500 transition-colors">{post.comments_count}</span>}
+          </button>
+
+          {/* Boost */}
+          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-emerald-500/10 group-hover:text-emerald-500 text-neutral-500 transition-colors">
+              <Rocket className="w-4 h-4" />
+            </div>
+          </button>
+
+          {/* Like (Zap) */}
+          <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
             <button
-              onClick={handleFetchComments}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-white/5 transition-all text-[12px] font-medium cursor-pointer bg-transparent border-none"
+              onClick={() => handleLikeClick(post.id)}
+              className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0"
             >
-              <MessageCircle className="w-3.5 h-3.5" />
-              {post.comments_count > 0 && <span className="font-mono text-[11px]">{post.comments_count}</span>}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isLiked ? 'text-[#D4F842] bg-[#D4F842]/10' : 'text-neutral-500 group-hover:bg-[#D4F842]/10 group-hover:text-[#D4F842]'}`}>
+                <Zap className="w-4 h-4" fill={isLiked ? "#D4F842" : "none"} />
+              </div>
+              {likesCount > 0 && <span className={`font-mono text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-500 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
             </button>
+          </ClickSpark>
 
-            {/* Boost */}
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-neutral-500 hover:text-purple-400 hover:bg-purple-500/10 transition-all text-[12px] font-medium cursor-pointer bg-transparent border-none">
-              <Rocket className="w-3.5 h-3.5" />
-            </button>
+          {/* Views */}
+          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
+              <Eye className="w-4 h-4" />
+            </div>
+          </button>
 
-            {/* Like (Zap) */}
-            <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
-              <button
-                onClick={() => handleLikeClick(post.id)}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all text-[12px] font-medium cursor-pointer bg-transparent border-none ${
-                  isLiked
-                    ? 'text-[#D4F842] bg-[#D4F842]/10'
-                    : 'text-neutral-500 hover:text-[#D4F842] hover:bg-[#D4F842]/10'
-                }`}
-              >
-                <Zap className="w-3.5 h-3.5" fill={isLiked ? "#D4F842" : "none"} />
-                {likesCount > 0 && <span className="font-mono text-[11px]">{likesCount}</span>}
-              </button>
-            </ClickSpark>
-
-            {/* Views */}
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-neutral-500 hover:text-blue-400 hover:bg-blue-400/10 transition-all text-[12px] font-medium cursor-pointer bg-transparent border-none">
-              <Eye className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-1">
+          <div className="flex items-center">
             {/* Bookmark */}
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-neutral-600 hover:text-amber-400 hover:bg-amber-400/10 transition-all cursor-pointer bg-transparent border-none">
-              <Bookmark className="w-3.5 h-3.5" />
+            <button className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
+              <Bookmark className="w-4 h-4" />
             </button>
             {/* Share */}
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-neutral-600 hover:text-emerald-400 hover:bg-emerald-400/10 transition-all cursor-pointer bg-transparent border-none">
-              <Share2 className="w-3.5 h-3.5" />
+            <button className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
+              <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
