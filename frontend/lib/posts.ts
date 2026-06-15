@@ -15,6 +15,8 @@ export async function createPost(post: {
   content: string
   stack_tags: string[]
   post_type: 'update' | 'looking_for' | 'build_log'
+  visibility?: 'public' | 'collabs'
+  project?: string | null
 }) {
   try {
     // Sanitize all user-provided content before storing
