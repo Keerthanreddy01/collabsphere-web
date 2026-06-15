@@ -6,12 +6,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
   MoreHorizontal,
-  Heart,
+  Zap,
   MessageCircle,
-  Repeat,
-  BarChart3,
+  Rocket,
+  Eye,
   Bookmark,
-  Upload,
   Search,
   Smile,
   Image,
@@ -21,7 +20,7 @@ import {
   Flag,
   Calendar,
   MapPin,
-  BarChart4
+  Share2
 } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -30,15 +29,16 @@ import LeftSidebar from "@/components/dashboard/LeftSidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { usePostViewTracker } from "@/hooks/usePostViewTracker";
 import ClickSpark from "@/components/ClickSpark";
+import { Toaster, toast } from "sonner";
 
-// Helper to render post content text and color hashtags Twitter blue (Change 6)
+// Helper to render post content text and color hashtags lime green
 const renderContentWithHashtags = (text: string) => {
   if (!text) return "";
   const parts = text.split(/(\s+)/);
   return parts.map((part, index) => {
     if (part.startsWith("#")) {
       return (
-        <span key={index} className="text-[#1d9bf0] hover:underline cursor-pointer">
+        <span key={index} className="text-[#D4F842] hover:underline cursor-pointer font-medium">
           {part}
         </span>
       );
@@ -47,7 +47,17 @@ const renderContentWithHashtags = (text: string) => {
   });
 };
 
-function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handleLikeClick: (id: string) => void }) {
+function PostCard({ 
+  post, 
+  user, 
+  handleLikeClick, 
+  handleCollabClick 
+}: { 
+  post: any, 
+  user: any, 
+  handleLikeClick: (id: string) => void, 
+  handleCollabClick: (post: any) => void 
+}) {
   const ref = usePostViewTracker(post.id);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
@@ -57,8 +67,8 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
 
   const likesCount = Array.isArray(post.likes) ? post.likes.length : 0;
   const isLiked = Array.isArray(post.likes) && post.likes.includes(user.uid);
-  const isTruncated = post.content?.length > 150;
-  const displayContent = isExpanded || !isTruncated ? post.content : post.content?.slice(0, 150) + "...";
+  const isTruncated = post.content?.length > 250;
+  const displayContent = isExpanded || !isTruncated ? post.content : post.content?.slice(0, 250) + "...";
 
   const timeAgo = (dateStr: string) => {
     try {
@@ -96,173 +106,190 @@ function PostCard({ post, user, handleLikeClick }: { post: any, user: any, handl
     setIsCommenting(false);
   };
 
+  const postTypeBadge = post.post_type === 'looking_for'
+    ? { badge: 'bg-[#00f2fe]/10 text-[#00f2fe] border-[#00f2fe]/20', label: 'Collab' }
+    : post.post_type === 'build_log'
+    ? { badge: 'bg-[#D4F842]/10 text-[#D4F842] border-[#D4F842]/20', label: 'Milestone' }
+    : { badge: 'bg-white/5 text-white/50 border-white/10', label: 'Update' };
+
   return (
     <article 
       ref={ref} 
-      className="w-full border-b border-[#2f3336] p-4 bg-[#000000] hover:bg-white/[0.01] transition-colors overflow-hidden"
+      className="relative pl-12 pb-12 w-full max-w-[600px] mx-auto group text-left"
     >
-      <div className="flex gap-3">
-        {/* Avatar left (40px) */}
-        <div className="flex-shrink-0">
-          <div className="w-10 h-10 rounded-full bg-neutral-800 overflow-hidden cursor-pointer hover:opacity-85 transition-opacity">
-            <img src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`} alt={post.author_name} className="w-full h-full object-cover" />
-          </div>
-        </div>
+      {/* Vertical Timeline Line */}
+      <div className="absolute left-[15px] top-9 bottom-[-48px] w-[1px] bg-white/10 group-last:hidden" />
 
-        {/* Content right */}
-        <div className="flex-1 min-w-0">
-          {/* Header - Username bold white, @handle and timestamp gray */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-[15px] flex-wrap">
-              <span className="font-bold text-white hover:underline cursor-pointer truncate">
-                {post.author_name || "Builder"}
-              </span>
-              <span className="text-[#71767b] truncate">
-                @{post.author_username || "builder"}
-              </span>
-              <span className="text-[#71767b]">·</span>
-              <span className="text-[#71767b] whitespace-nowrap hover:underline cursor-pointer">
-                {timeAgo(post.created_at)}
-              </span>
-            </div>
-            <button className="text-[#71767b] hover:text-[#1d9bf0] transition-colors">
+      {/* Timeline Node (Avatar) */}
+      <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-neutral-900 overflow-hidden border border-white/10 z-10 shadow-lg cursor-pointer hover:opacity-85 transition-opacity">
+        <img src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`} alt={post.author_name} className="w-full h-full object-cover" />
+      </div>
+
+      {/* Content Container */}
+      <div className="flex flex-col">
+        {/* Header (Author + Badge + Time) */}
+        <div className="flex items-center justify-between flex-wrap gap-y-1 mb-2">
+          <div className="flex items-center gap-2 text-[14px]">
+            <span className="font-bold text-white hover:underline cursor-pointer">
+              {post.author_name || "Builder"}
+            </span>
+            <span className="text-neutral-500 font-mono text-[12px]">
+              @{post.author_username || "builder"}
+            </span>
+            <span className={`text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border ${postTypeBadge.badge}`}>
+              {postTypeBadge.label}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-[12px] text-neutral-500">
+            <span>{timeAgo(post.created_at)}</span>
+            <button className="text-neutral-500 hover:text-white transition-colors">
               <MoreHorizontal className="w-4 h-4" />
             </button>
           </div>
+        </div>
 
-          {/* Post Text - 15px font size, hashtags in Twitter blue */}
-          <p className="text-[15px] leading-normal text-white/95 whitespace-pre-wrap break-words mt-1 mb-2">
-            {renderContentWithHashtags(displayContent)}
-            {isTruncated && !isExpanded && (
-              <button onClick={() => setIsExpanded(true)} className="text-[#1d9bf0] hover:text-[#1a8cd8] ml-1 font-medium bg-transparent border-none outline-none cursor-pointer">more</button>
-            )}
-          </p>
+        {/* Opportunity/Milestone Info Card if applicable */}
+        {post.post_type === 'looking_for' && (
+          <div className="bg-[#00f2fe]/5 border border-[#00f2fe]/10 rounded-xl p-3.5 mb-3 flex flex-col gap-1.5">
+            <span className="text-[10px] font-mono tracking-wider uppercase text-[#00f2fe] font-bold">🤝 COLLABORATION BOARD</span>
+            <p className="text-[13px] text-neutral-300 leading-relaxed">
+              Looking for team members and collaborators. Apply below to submit your interest.
+            </p>
+          </div>
+        )}
 
-          {/* Tech stack tags - blue hashtags */}
-          {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
-            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-3 text-[14px]">
-              {post.stack_tags.map((tag: string, idx: number) => (
-                <span key={idx} className="text-[#1d9bf0] hover:underline cursor-pointer">
-                  #{tag}
-                </span>
-              ))}
-            </div>
+        {post.post_type === 'build_log' && (
+          <div className="bg-[#D4F842]/5 border border-[#D4F842]/10 rounded-xl p-3.5 mb-3 flex flex-col gap-1.5">
+            <span className="text-[10px] font-mono tracking-wider uppercase text-[#D4F842] font-bold">🏆 MILESTONE ACHIEVED</span>
+            <p className="text-[13px] text-neutral-300 leading-relaxed">
+              Project update logged! A new development phase has been reached and shipped.
+            </p>
+          </div>
+        )}
+
+        {/* Main Text Content */}
+        <p className="text-[15px] leading-relaxed text-neutral-200 whitespace-pre-wrap break-words mb-3.5 px-0.5">
+          {renderContentWithHashtags(displayContent)}
+          {isTruncated && !isExpanded && (
+            <button onClick={() => setIsExpanded(true)} className="text-[#D4F842] hover:underline ml-1 font-medium bg-transparent border-none outline-none cursor-pointer">more</button>
           )}
+        </p>
 
-          {/* Actions Bar - comment, repost, like hover (X Style) */}
-          <div className="flex items-center justify-between mt-3 max-w-md text-[#71767b]">
-            {/* Comment */}
+        {/* Tech Stack tags */}
+        {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-3.5 px-0.5">
+            {post.stack_tags.map((tag: string, idx: number) => (
+              <span key={idx} className="text-[11px] font-mono bg-neutral-900 border border-neutral-800 text-neutral-300 px-2 py-0.5 rounded hover:border-[#D4F842]/40 hover:text-white transition-colors cursor-pointer">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Apply Collab CTA */}
+        {post.post_type === 'looking_for' && (
+          <div className="mb-3.5">
             <button 
-              onClick={handleFetchComments} 
-              className="flex items-center gap-1.5 action-hover-comment transition-colors group bg-transparent border-none outline-none cursor-pointer text-[#71767b]"
+              onClick={() => handleCollabClick(post)}
+              className="w-full flex items-center justify-center gap-2 text-xs bg-[#00f2fe]/10 hover:bg-[#00f2fe]/20 text-[#00f2fe] border border-[#00f2fe]/25 hover:border-[#00f2fe]/50 py-2 rounded-lg font-bold tracking-wide transition-all cursor-pointer active:scale-[0.99]"
             >
-              <div className="p-2 group-hover:bg-[#1d9bf0]/10 rounded-full transition-colors">
-                <MessageCircle className="w-[18px] h-[18px]" strokeWidth={2} />
-              </div>
-              {post.comments_count > 0 && (
-                <span className="text-[13px]">{post.comments_count}</span>
-              )}
-            </button>
-
-            {/* Repost */}
-            <button className="flex items-center gap-1.5 action-hover-repost transition-colors group bg-transparent border-none outline-none cursor-pointer text-[#71767b]">
-              <div className="p-2 group-hover:bg-emerald-500/10 rounded-full transition-colors">
-                <Repeat className="w-[18px] h-[18px]" strokeWidth={2} />
-              </div>
-            </button>
-
-            {/* Like */}
-            <ClickSpark
-              sparkColor='#f91880'
-              sparkSize={5}
-              sparkRadius={10}
-              sparkCount={5}
-              duration={400}
-            >
-              <button 
-                onClick={() => handleLikeClick(post.id)} 
-                className={`flex items-center gap-1.5 action-hover-like transition-colors group bg-transparent border-none outline-none cursor-pointer ${isLiked ? 'text-[#f91880]' : 'text-[#71767b]'}`}
-              >
-                <div className={`p-2 transition-colors rounded-full ${isLiked ? 'bg-[#f91880]/10' : 'group-hover:bg-[#f91880]/10'}`}>
-                  <Heart className={`w-[18px] h-[18px] ${isLiked ? 'scale-110' : ''} transition-transform`} fill={isLiked ? "currentColor" : "none"} strokeWidth={isLiked ? 0 : 2} />
-                </div>
-                {likesCount > 0 && (
-                  <span className="text-[13px]">{likesCount}</span>
-                )}
-              </button>
-            </ClickSpark>
-
-            {/* Views (chart icon) */}
-            <button className="flex items-center gap-1.5 hover:text-[#1d9bf0] transition-colors group bg-transparent border-none outline-none cursor-pointer text-[#71767b]">
-              <div className="p-2 group-hover:bg-[#1d9bf0]/10 rounded-full transition-colors">
-                <BarChart3 className="w-[18px] h-[18px]" strokeWidth={2} />
-              </div>
-            </button>
-
-            {/* Bookmark */}
-            <button className="flex items-center gap-1.5 hover:text-yellow-500 transition-colors group bg-transparent border-none outline-none cursor-pointer text-[#71767b]">
-              <div className="p-2 group-hover:bg-yellow-500/10 rounded-full transition-colors">
-                <Bookmark className="w-[18px] h-[18px]" strokeWidth={2} />
-              </div>
-            </button>
-
-            {/* Share */}
-            <button className="flex items-center gap-1.5 hover:text-[#1d9bf0] transition-colors group bg-transparent border-none outline-none cursor-pointer text-[#71767b]">
-              <div className="p-2 group-hover:bg-[#1d9bf0]/10 rounded-full transition-colors">
-                <Upload className="w-[18px] h-[18px]" strokeWidth={2} />
-              </div>
+              🤝 Apply to Collaborate
             </button>
           </div>
+        )}
 
-          {/* Comments Section */}
-          {showComments && (
-            <div className="mt-4 border-t border-[#2f3336]/50 pt-3 flex flex-col gap-3">
-              {/* Comment Input */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-neutral-800 overflow-hidden flex-shrink-0">
-                  <img src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} alt="" className="w-full h-full object-cover" />
-                </div>
-                <input
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && submitComment()}
-                  placeholder="Post your reply"
-                  className="flex-1 bg-transparent border-none outline-none text-[15px] text-white placeholder-[#71767b] focus:ring-0 py-1"
-                />
-                <button
-                  onClick={submitComment}
-                  disabled={!newComment.trim() || isCommenting}
-                  className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 disabled:pointer-events-none rounded-full px-4 py-1 text-[13px] font-bold transition-all border-none cursor-pointer"
-                >
-                  Reply
-                </button>
-              </div>
+        {/* Actions Bar */}
+        <div className="flex items-center gap-6 text-neutral-500 text-[13px] pt-1">
+          {/* Comment */}
+          <button 
+            onClick={handleFetchComments} 
+            className="flex items-center gap-1.5 hover:text-white transition-colors group cursor-pointer"
+          >
+            <MessageCircle className="w-4 h-4 group-hover:scale-105 transition-transform" />
+            {post.comments_count > 0 && <span className="font-mono text-[12px]">{post.comments_count}</span>}
+          </button>
 
-              {/* Render Comments */}
-              {comments.length > 0 && (
-                <div className="flex flex-col gap-3 mt-2 pl-2 border-l border-[#2f3336]">
-                  {comments.map((comment) => (
-                    <div key={comment.id} className="flex gap-2">
-                      <img src={comment.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.uid}`} alt="" className="w-7 h-7 rounded-full object-cover bg-neutral-800 flex-shrink-0" />
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 text-[13px] flex-wrap">
-                          <span className="font-bold text-white truncate">
-                            {comment.author_name || comment.author_username}
-                          </span>
-                          <span className="text-[#71767b] truncate">@{comment.author_username}</span>
-                          <span className="text-[#71767b]">·</span>
-                          <span className="text-[#71767b]">{timeAgo(comment.created_at || new Date().toISOString())}</span>
-                        </div>
-                        <p className="text-[14px] text-white/90 mt-0.5 break-words whitespace-pre-wrap leading-normal">{comment.content}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {/* Boost */}
+          <button className="flex items-center gap-1.5 hover:text-purple-400 transition-colors group cursor-pointer">
+            <Rocket className="w-4 h-4 group-hover:scale-105 transition-transform" />
+          </button>
+
+          {/* Spark (Like) */}
+          <ClickSpark
+            sparkColor='#D4F842'
+            sparkSize={4}
+            sparkRadius={8}
+            sparkCount={4}
+            duration={300}
+          >
+            <button 
+              onClick={() => handleLikeClick(post.id)} 
+              className={`flex items-center gap-1.5 hover:text-[#D4F842] transition-colors group cursor-pointer ${isLiked ? 'text-[#D4F842]' : ''}`}
+            >
+              <Zap className={`w-4 h-4 group-hover:scale-110 transition-transform ${isLiked ? 'scale-110' : ''}`} fill={isLiked ? "#D4F842" : "none"} />
+              {likesCount > 0 && <span className="font-mono text-[12px]">{likesCount}</span>}
+            </button>
+          </ClickSpark>
+
+          {/* Views */}
+          <button className="flex items-center gap-1.5 hover:text-blue-400 transition-colors group cursor-pointer">
+            <Eye className="w-4 h-4 group-hover:scale-105 transition-transform" />
+          </button>
+
+          {/* Bookmark */}
+          <button className="flex items-center gap-1.5 hover:text-amber-500 transition-colors group cursor-pointer">
+            <Bookmark className="w-4 h-4 group-hover:scale-105 transition-transform" />
+          </button>
+
+          {/* Share */}
+          <button className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors group cursor-pointer">
+            <Share2 className="w-4 h-4 group-hover:scale-105 transition-transform" />
+          </button>
         </div>
+
+        {/* Comments Section */}
+        {showComments && (
+          <div className="mt-4 border-t border-white/5 pt-3.5 flex flex-col gap-3">
+            {/* Comment Input */}
+            <div className="flex items-center gap-2 bg-neutral-950 p-2 rounded-lg border border-white/5">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && submitComment()}
+                placeholder="Add feedback..."
+                className="flex-1 bg-transparent border-none outline-none text-[13px] text-white placeholder-neutral-600 focus:ring-0 py-0.5"
+              />
+              <button
+                onClick={submitComment}
+                disabled={!newComment.trim() || isCommenting}
+                className="bg-[#D4F842] text-black hover:bg-[#c5ec2d] disabled:opacity-50 rounded px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer border-none"
+              >
+                Reply
+              </button>
+            </div>
+
+            {/* Render Comments */}
+            {comments.length > 0 && (
+              <div className="flex flex-col gap-3 mt-2 pl-3 border-l border-white/5">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="flex gap-2.5 items-start text-[13px]">
+                    <img src={comment.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.uid}`} alt="" className="w-5 h-5 rounded-full object-cover bg-neutral-800 flex-shrink-0" />
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-neutral-500 text-[11px]">
+                        <span className="font-bold text-white truncate">{comment.author_name}</span>
+                        <span>@{comment.author_username}</span>
+                        <span>·</span>
+                        <span>{timeAgo(comment.created_at || new Date().toISOString())}</span>
+                      </div>
+                      <p className="text-neutral-300 mt-0.5 break-words leading-relaxed">{comment.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );
@@ -276,6 +303,8 @@ export default function DashboardHomePage() {
   const [isPosting, setIsPosting] = useState(false);
   const [content, setContent] = useState("");
   const [stackTags, setStackTags] = useState("");
+  const [activeTab, setActiveTab] = useState<'all' | 'collabs'>('all');
+  const [selectedPostType, setSelectedPostType] = useState<'update' | 'looking_for' | 'build_log'>('update');
   
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -290,6 +319,16 @@ export default function DashboardHomePage() {
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
+
+  const handleCollabClick = (post: any) => {
+    toast.success(`Collab request sent to @${post.author_username}!`, {
+      description: `They will receive your request for "${post.content.slice(0, 30)}..."`,
+    });
+  };
+
+  const filteredPosts = activeTab === 'all'
+    ? posts
+    : posts.filter(post => post.post_type === 'looking_for');
 
   // Support opening compose modal via query parameter (?compose=true)
   useEffect(() => {
@@ -369,7 +408,7 @@ export default function DashboardHomePage() {
       author_username: user.email?.split("@")[0] || "builder",
       content: trimmed,
       stack_tags: tags,
-      post_type: "update",
+      post_type: selectedPostType,
     });
     
     setIsPosting(false);
@@ -421,7 +460,7 @@ export default function DashboardHomePage() {
         <main 
           className="flex-1 flex h-full overflow-hidden relative z-10 bg-[#000000] min-w-0"
           style={{ 
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+            fontFamily: 'var(--font-instrument), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             fontSize: "15px",
             lineHeight: "1.5"
           }}
@@ -432,7 +471,7 @@ export default function DashboardHomePage() {
             {/* COLUMN 1: FEED (max-width 600px, borders left/right) */}
             <div className="w-full md:w-[600px] md:min-w-[600px] flex-1 border-r border-[#2f3336] border-l border-[#2f3336] flex flex-col h-full overflow-y-auto no-scrollbar bg-[#000000]">
               
-              {/* Sticky Header with For You / Following Tabs */}
+              {/* Sticky Header with Custom Tabs */}
               <div 
                 className="sticky top-0 z-40 flex flex-col w-full shrink-0"
                 style={{
@@ -443,12 +482,23 @@ export default function DashboardHomePage() {
                 }}
               >
                 <div className="flex h-[53px] items-center">
-                  <button className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer">
-                    <span className="text-[15px] font-bold text-white">For you</span>
-                    <div className="absolute bottom-0 w-[56px] h-1 bg-[#1d9bf0] rounded-full" />
+                  <button 
+                    onClick={() => setActiveTab('all')}
+                    className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer"
+                  >
+                    <span className={`text-[15px] font-bold transition-colors ${activeTab === 'all' ? 'text-[#D4F842]' : 'text-[#71767b]'}`}>All Builds</span>
+                    {activeTab === 'all' && (
+                      <div className="absolute bottom-0 w-[64px] h-[3px] bg-[#D4F842] rounded-full shadow-[0_0_10px_rgba(212,248,66,0.5)]" />
+                    )}
                   </button>
-                  <button className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer">
-                    <span className="text-[15px] font-bold text-[#71767b]">Following</span>
+                  <button 
+                    onClick={() => setActiveTab('collabs')}
+                    className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer"
+                  >
+                    <span className={`text-[15px] font-bold transition-colors ${activeTab === 'collabs' ? 'text-[#D4F842]' : 'text-[#71767b]'}`}>Collab Board</span>
+                    {activeTab === 'collabs' && (
+                      <div className="absolute bottom-0 w-[72px] h-[3px] bg-[#D4F842] rounded-full shadow-[0_0_10px_rgba(212,248,66,0.5)]" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -457,84 +507,96 @@ export default function DashboardHomePage() {
               {(() => {
                 const hasContent = content.trim().length > 0 || stackTags.trim().length > 0 || isRecording || audioBlob !== null;
                 return (
-                  <div className="border-b border-[#2f3336]/50 p-4 bg-[#000000] flex justify-center pb-8 pt-6 relative shrink-0">
+                  <div className="border-b border-[#2f3336]/30 p-4 bg-[#000000] flex justify-center pb-8 pt-6 relative shrink-0">
                     
-                    <div className={`relative w-full max-w-[620px] bg-[#050505] border border-[#2f3336] rounded-[32px] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group/composer focus-within:shadow-[0_0_40px_rgba(255,255,255,0.06)] focus-within:border-white/[0.2] ${hasContent ? 'shadow-[0_0_40px_rgba(255,255,255,0.06)] border-white/[0.2]' : 'hover:border-[#444]'}`}>
-                      
-                      {/* Top row: Avatar, Input */}
-                      <div className="flex items-start gap-3 p-2 px-3 relative z-10">
-                        <img src={avatarSrc} alt="avatar" className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/[0.05] mt-0.5 pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity" />
-                        
-                        <div className="flex-1 flex items-center relative min-h-[40px]">
+                    <div className="relative w-full max-w-[620px] bg-neutral-900/40 border border-white/5 rounded-2xl p-4 transition-all duration-300 focus-within:border-white/10 focus-within:shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+                      {/* Post Type Selector - Segmented Control */}
+                      <div className="flex bg-neutral-950 p-1 rounded-xl mb-3 border border-white/5 w-fit">
+                        <button
+                          onClick={() => setSelectedPostType('update')}
+                          className={`px-3 py-1.5 text-xs rounded-lg transition-all font-medium ${
+                            selectedPostType === 'update'
+                              ? 'bg-white/10 text-white font-bold'
+                              : 'text-neutral-400 hover:text-neutral-200'
+                          }`}
+                        >
+                          📢 Update
+                        </button>
+                        <button
+                          onClick={() => setSelectedPostType('looking_for')}
+                          className={`px-3 py-1.5 text-xs rounded-lg transition-all font-medium ${
+                            selectedPostType === 'looking_for'
+                              ? 'bg-[#00f2fe]/10 text-[#00f2fe] font-bold'
+                              : 'text-neutral-400 hover:text-[#00f2fe]/80'
+                          }`}
+                        >
+                          🤝 Collab
+                        </button>
+                        <button
+                          onClick={() => setSelectedPostType('build_log')}
+                          className={`px-3 py-1.5 text-xs rounded-lg transition-all font-medium ${
+                            selectedPostType === 'build_log'
+                              ? 'bg-[#D4F842]/10 text-[#D4F842] font-bold'
+                              : 'text-neutral-400 hover:text-[#D4F842]/80'
+                          }`}
+                        >
+                          🏆 Milestone
+                        </button>
+                      </div>
+
+                      {/* Input Area */}
+                      <div className="flex gap-3">
+                        <img src={avatarSrc} alt="avatar" className="w-8 h-8 rounded-full object-cover shrink-0 border border-white/5" />
+                        <div className="flex-1">
                           <textarea
                             ref={textareaRef}
                             value={content}
                             onChange={handleInput}
-                            placeholder="What are you building?..."
-                            className={`w-full bg-transparent text-white text-[16px] placeholder-[#71767b] outline-none resize-none pt-[10px] pb-2 border-none focus:ring-0 leading-relaxed font-light transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] min-h-[40px] group-focus-within/composer:min-h-[80px] ${hasContent ? '!min-h-[80px]' : ''}`}
+                            placeholder={
+                              selectedPostType === 'looking_for'
+                                ? "What skills or teammates are you looking for? (e.g. Need a frontend dev for a Figma plugin)..."
+                                : selectedPostType === 'build_log'
+                                ? "What major milestone did you hit? (e.g. hit 1k users, shipped beta)..."
+                                : "What are you shipping today?..."
+                            }
+                            className="w-full bg-transparent text-white text-[15px] placeholder-neutral-600 outline-none resize-none pt-1 pb-1 border-none focus:ring-0 leading-relaxed font-normal min-h-[60px]"
                           />
-                          
-                          {/* Quick Actions - Visible only when collapsed */}
-                          <div className={`absolute right-0 top-0 bottom-0 flex items-center gap-1 transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-none opacity-100 group-focus-within/composer:opacity-0 group-focus-within/composer:scale-95 group-focus-within/composer:translate-x-4 ${hasContent ? '!opacity-0 !scale-95 !translate-x-4' : ''}`}>
-                            <div className="w-10 h-10 flex items-center justify-center rounded-full text-[#71767b] pointer-events-auto hover:text-white hover:bg-white/[0.1] transition-colors cursor-pointer" title="Attach Image">
-                              <Image className="w-5 h-5" />
-                            </div>
-                            <div 
-                              onClick={(e) => { e.preventDefault(); toggleRecording(); }}
-                              className={`w-10 h-10 flex items-center justify-center rounded-full pointer-events-auto transition-colors cursor-pointer ${isRecording ? "bg-red-500/20 text-red-500" : "text-[#71767b] hover:text-white hover:bg-white/[0.1]"}`}
-                            >
-                              <Mic className={`w-5 h-5 ${isRecording ? "animate-pulse" : ""}`} />
-                            </div>
-                          </div>
                         </div>
                       </div>
 
-                      {/* Expanded Section (Tags & Post button) */}
-                      <div 
-                        className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] border-t border-white/[0.05] bg-gradient-to-b from-white/[0.02] to-transparent group-focus-within/composer:max-h-[200px] group-focus-within/composer:opacity-100 ${hasContent ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}
-                      >
-                        <div className="p-3 flex items-center justify-between gap-3">
-                          {/* Tools inside expanded area */}
-                          <div className="flex items-center gap-1">
-                            <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/[0.1] text-[#1d9bf0] transition-colors cursor-pointer" title="Attach Image">
-                              <Image className="w-[18px] h-[18px]" />
-                            </button>
-                            <button 
-                              onClick={(e) => { e.preventDefault(); toggleRecording(); }}
-                              className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors cursor-pointer ${isRecording ? "bg-red-500/20 text-red-500" : "hover:bg-white/[0.1] text-[#1d9bf0]"}`}
-                            >
-                              <Mic className={`w-[18px] h-[18px] ${isRecording ? "animate-pulse" : ""}`} />
-                            </button>
-                            
-                            <div className="w-[1px] h-5 bg-[#2f3336] mx-2"></div>
+                      {/* Bottom row: Tech stack & Ship It */}
+                      <div className="flex items-center justify-between border-t border-white/5 pt-3 mt-2">
+                        {/* Tags Input */}
+                        <div className="flex items-center bg-black/40 border border-white/5 rounded-lg px-2.5 py-1 focus-within:border-white/20 transition-all">
+                          <span className="text-neutral-500 text-[12px] mr-1">#</span>
+                          <input
+                            type="text"
+                            value={stackTags}
+                            onChange={(e) => setStackTags(e.target.value)}
+                            placeholder="tech stack (e.g. react nextjs)"
+                            className="w-[150px] sm:w-[220px] text-[12px] text-white placeholder-neutral-700 bg-transparent border-none outline-none focus:ring-0 p-0"
+                          />
+                        </div>
 
-                            {/* Tag Pill */}
-                            <div className="flex items-center bg-[#000000] border border-[#2f3336] rounded-full px-3 py-1.5 focus-within:border-[#1d9bf0]/50 transition-all">
-                              <span className="text-[#1d9bf0] font-medium mr-1.5 text-[13px]">#</span>
-                              <input
-                                type="text"
-                                value={stackTags}
-                                onChange={(e) => setStackTags(e.target.value)}
-                                placeholder="tech stack"
-                                className="w-[100px] sm:w-[150px] text-[13px] text-white placeholder-[#71767b] bg-transparent border-none outline-none focus:ring-0"
-                              />
-                            </div>
-                          </div>
-
-                          {/* Post Button */}
+                        {/* Actions & Submit */}
+                        <div className="flex items-center gap-3">
+                          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-neutral-400 hover:text-white transition-colors cursor-pointer" title="Attach Image">
+                            <Image className="w-4 h-4" />
+                          </button>
                           <button
                             onClick={submitPost}
                             disabled={(!content.trim() && !audioBlob) || isPosting}
-                            className={`rounded-full px-6 py-2 text-[14px] font-bold transition-all active:scale-95 cursor-pointer ${(!content.trim() && !audioBlob) || isPosting ? "bg-[#2f3336] text-[#71767b] pointer-events-none" : "bg-[#D4F842] text-black hover:bg-[#c5ec2d] shadow-[0_0_20px_rgba(212,248,66,0.15)] hover:shadow-[0_0_25px_rgba(212,248,66,0.3)]"}`}
+                            className={`rounded-full px-5 py-2 text-[13px] font-semibold transition-all active:scale-95 cursor-pointer ${
+                              (!content.trim() && !audioBlob) || isPosting
+                                ? "bg-neutral-800 text-neutral-500 cursor-not-allowed border-none"
+                                : "bg-[#D4F842] text-black hover:bg-[#c5ec2d] shadow-[0_0_20px_rgba(212,248,66,0.1)] border-none"
+                            }`}
                           >
-                            {isPosting ? "..." : "Post"}
+                            {isPosting ? "..." : "Ship Update"}
                           </button>
                         </div>
-                      </div>
-
-                      {/* Animated Background Layer */}
-                      <div className={`absolute inset-0 rounded-[32px] bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 pointer-events-none transition-opacity duration-700 group-focus-within/composer:opacity-100 ${hasContent ? 'opacity-100' : 'opacity-0'}`}></div>
                     </div>
+                  </div>
 
                     {/* Error / Status floating below */}
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
@@ -553,16 +615,16 @@ export default function DashboardHomePage() {
               })()}
 
               {/* Feed Posts */}
-              <div className="flex flex-col bg-[#000000] pb-24">
-                {posts.length === 0 ? (
+              <div className="flex flex-col bg-[#000000] pb-24 px-6 pt-8 relative">
+                {filteredPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-20 text-center">
                     <Search className="w-12 h-12 text-[#71767b] mb-4" />
                     <h3 className="text-[16px] font-bold text-white mb-1">No posts yet</h3>
                     <p className="text-[13px] text-[#71767b]">When people post, you'll see them here.</p>
                   </div>
                 ) : (
-                  posts.map((post) => (
-                    <PostCard key={post.id} post={post} user={user} handleLikeClick={handleLikeClick} />
+                  filteredPosts.map((post) => (
+                    <PostCard key={post.id} post={post} user={user} handleLikeClick={handleLikeClick} handleCollabClick={handleCollabClick} />
                   ))
                 )}
               </div>
@@ -573,6 +635,7 @@ export default function DashboardHomePage() {
 
           </div>
         </main>
+        <Toaster theme="dark" position="bottom-right" richColors />
       </div>
     </div>
   );
