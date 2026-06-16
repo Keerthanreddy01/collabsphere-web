@@ -195,49 +195,7 @@ export default function RightSidebar() {
         </div>
       </section>
 
-      {/* 2. Premium upgrade card (Pro Builder Workspace) */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#16171b] to-[#0d0e12] border border-white/[0.06] rounded-[24px] p-6 shrink-0 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] group/card transition-all duration-300 hover:border-amber-500/20 hover:shadow-[0_8px_32px_rgba(251,191,36,0.03)]">
-        {/* Subtle ambient glow top right */}
-        <div className="absolute -top-12 -right-12 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover/card:bg-amber-500/20 transition-all duration-500 pointer-events-none" />
 
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-400 flex items-center justify-center text-black shrink-0 shadow-[0_0_15px_rgba(251,191,36,0.3)] group-hover/card:scale-105 transition-transform duration-300">
-            <Zap className="w-4 h-4 fill-current" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-amber-400 uppercase">PRO MEMBER</span>
-            <span className="text-[9px] font-semibold text-white/40 uppercase tracking-wider -mt-0.5">Exclusive Workspace</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2.5">
-          <h2 className="text-[20px] font-extrabold text-white leading-tight tracking-tight">
-            Upgrade to Pro Builder
-          </h2>
-          
-          <ul className="flex flex-col gap-2 mt-1">
-            <li className="flex items-center gap-2.5 text-[13px] text-white/70 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-              <span>Unlimited AI co-pilots</span>
-            </li>
-            <li className="flex items-center gap-2.5 text-[13px] text-white/70 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-              <span>Custom domain deployment</span>
-            </li>
-            <li className="flex items-center gap-2.5 text-[13px] text-white/70 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-              <span>24/7 worker uptime credits</span>
-            </li>
-          </ul>
-        </div>
-
-        <button 
-          className="w-full bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-black font-extrabold text-[14px] py-3.5 rounded-[14px] shadow-[0_4px_20px_rgba(251,191,36,0.15)] hover:shadow-[0_4px_25px_rgba(251,191,36,0.3)] transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 mt-2 group/btn"
-        >
-          <span>Claim Pro Access</span>
-          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-        </button>
-      </section>
 
       {/* 3. AI Co-builder Matchmaker Card - ULTRA PREMIUM DARK */}
       <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-white/[0.06] bg-[#0a0a0a] shrink-0 group hover:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
