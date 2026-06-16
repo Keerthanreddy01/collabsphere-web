@@ -113,9 +113,6 @@ export default function RightSidebar() {
     fetchProjects();
   }, [user]);
 
-  // Redesigned premium cards
-  const glassCardStyle = "relative overflow-hidden bg-gradient-to-br from-[#131518] to-[#08090a] border border-white/[0.04] hover:border-white/[0.08] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-all duration-300 rounded-[24px] p-5.5 shadow-[0_8px_32px_rgba(0,0,0,0.55)]";
-
   return (
     <div className="hidden lg:flex w-[350px] min-w-[350px] flex-col h-full bg-transparent p-4 gap-5 overflow-y-auto no-scrollbar relative z-10">
       
@@ -242,157 +239,182 @@ export default function RightSidebar() {
         </button>
       </section>
 
-      {/* 3. AI Co-builder Matchmaker Card */}
-      <section className={glassCardStyle}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-purple-400" />
-            <h2 className="text-[15px] font-bold text-white tracking-tight">AI Co-builder Matches</h2>
-          </div>
-          <span className="text-[10px] bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded-full font-mono font-bold uppercase animate-pulse">Matchmaking</span>
-        </div>
+      {/* 3. AI Co-builder Matchmaker Card - ULTRA PREMIUM DARK */}
+      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-white/[0.06] bg-[#0a0a0a] shrink-0 group hover:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
         
-        <div className="flex flex-col gap-4">
-          {loadingUsers ? (
-            <div className="text-[13px] text-white/40 font-mono py-2">Calculating matches...</div>
-          ) : suggestedUsers.length > 0 ? (
-            suggestedUsers.slice(0, 2).map((u) => (
-              <div key={u.id} className="flex flex-col gap-2 p-3 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.04] rounded-xl transition-all duration-200">
-                <div className="flex items-center gap-2.5">
-                  <img src={u.avatar} alt={u.username} className="h-9 w-9 rounded-full object-cover bg-neutral-800 flex-shrink-0" />
-                  <div className="min-w-0 flex flex-col">
-                    <span className="text-[14px] font-bold text-[#e7e9ea] truncate hover:underline leading-tight flex items-center gap-1">
-                      {u.name}
-                      <ShieldCheck className="w-3.5 h-3.5 text-blue-400 fill-blue-400/10 shrink-0" />
-                    </span>
-                    <span className="text-[12px] text-white/40 truncate">@{u.username}</span>
-                  </div>
-                </div>
-                
-                <p className="text-[12px] text-white/60 line-clamp-1 leading-normal italic pl-1">
-                  "{u.tagline}"
-                </p>
+        {/* The "Poster" Graphic Area */}
+        <div className="relative h-[160px] w-full overflow-hidden flex flex-col p-5">
+          {/* Complex Glow Backgrounds */}
+          <div className="absolute inset-0 bg-[#050505] z-0"></div>
+          <div className="absolute top-[-50%] left-[-20%] w-[140%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.22)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0 transition-transform duration-1000 group-hover:scale-110"></div>
+          <div className="absolute bottom-[-20%] right-[-20%] w-[100%] h-[100%] bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0"></div>
+          
+          {/* Dot Pattern Overlay */}
+          <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)', backgroundSize: '12px 12px' }}></div>
 
-                {/* Tech Match Stack */}
-                <div className="flex flex-wrap gap-1 mt-1 pl-1">
-                  {u.stack?.map((s) => (
-                    <span key={s} className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/[0.06] text-white/50">
-                      {s}
-                    </span>
-                  ))}
-                </div>
-
-                <button 
-                  className="mt-2 w-full bg-white text-black hover:bg-neutral-200 font-bold text-[12px] py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer"
-                >
-                  <span>Request Pairing</span>
-                  <ArrowUpRight className="w-3 h-3" />
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="text-[13px] text-white/40">Searching for new builders...</div>
-          )}
-        </div>
-      </section>
-
-      {/* 4. Live Collab Rooms (Voice Pairing Rooms) */}
-      <section className={glassCardStyle}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Volume2 className="w-4 h-4 text-emerald-400" />
-            <h2 className="text-[15px] font-bold text-white tracking-tight">Collab Live</h2>
+          <div className="relative z-10 flex justify-between items-start w-full">
+            <div className="h-9 w-9 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-indigo-300 shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-colors group-hover:text-indigo-200">
+               <Cpu className="w-4 h-4" />
+            </div>
+            <div className="px-3 py-1.5 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] text-[9px] uppercase tracking-[0.15em] text-indigo-100/70 font-semibold shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+              Matchmaking
+            </div>
           </div>
-          <div className="flex items-center">
-            <span className="relative flex h-2 w-2 mr-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-[11px] text-[#A8A8A8] font-mono font-medium">8 online</span>
+          
+          <div className="relative z-10 mt-auto">
+            <h3 className="text-[21px] font-semibold text-white tracking-tight leading-[1.15]">
+              Find your next<br/><span className="text-white/50">AI Co-builder</span>
+            </h3>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between p-3 bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.04] rounded-xl cursor-pointer transition-colors group">
-            <div className="flex flex-col gap-0.5 min-w-0">
-              <span className="text-[13px] font-bold text-[#e7e9ea] group-hover:text-[#6366f1] transition-colors truncate">Rust Agent Compiler pairing</span>
-              <span className="text-[11px] text-white/40">3 builders · Live code session</span>
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-white/30 group-hover:text-[#6366f1] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+        {/* Content Area */}
+        <div className="relative z-10 flex flex-col p-5 bg-[#0a0a0a] border-t border-white/[0.04]">
+          <div className="flex flex-col gap-0.5 mb-4">
+            <span className="text-white/95 font-medium text-[14px]">AI Co-builder Matches</span>
+            <span className="text-white/40 text-[12px]">collabsphere.app/match</span>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.04] rounded-xl cursor-pointer transition-colors group">
-            <div className="flex flex-col gap-0.5 min-w-0">
-              <span className="text-[13px] font-bold text-[#e7e9ea] group-hover:text-[#6366f1] transition-colors truncate">React 19 Server Actions Chat</span>
-              <span className="text-[11px] text-white/40">2 builders · General Q&A</span>
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-white/30 group-hover:text-[#6366f1] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          <div className="flex flex-col gap-2.5">
+            {loadingUsers ? (
+              <div className="text-[12px] text-white/30 font-mono py-1">Calculating matches...</div>
+            ) : suggestedUsers.length > 0 ? (
+              suggestedUsers.slice(0, 2).map((u) => (
+                 <div key={u.id} className="flex items-center gap-3 p-2.5 rounded-[16px] bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.03] hover:border-white/[0.08] transition-all duration-300 cursor-pointer group/item">
+                   <img src={u.avatar} alt={u.username} className="h-9 w-9 rounded-full object-cover bg-neutral-900 border border-white/5 flex-shrink-0" />
+                   <div className="min-w-0 flex flex-col">
+                     <span className="text-[13px] font-medium text-white/80 truncate leading-tight flex items-center gap-1.5 group-hover/item:text-white transition-colors">
+                       {u.name}
+                       <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                     </span>
+                     <span className="text-[11px] text-white/40 truncate mt-0.5 group-hover/item:text-white/60 transition-colors">@{u.username}</span>
+                   </div>
+                 </div>
+              ))
+            ) : (
+              <div className="text-[12px] text-white/30">Searching for builders...</div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* 5. Top Ships of the Week */}
-      <section className={glassCardStyle}>
-        <div className="flex items-center gap-2 mb-4">
-          <Flame className="w-4 h-4 text-orange-500" />
-          <h2 className="text-[15px] font-bold text-white tracking-tight">Top Ships of the Week</h2>
+      {/* 4. Live Collab Rooms - ULTRA PREMIUM DARK */}
+      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-white/[0.06] bg-[#0a0a0a] shrink-0 group hover:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+        <div className="relative h-[160px] w-full overflow-hidden flex flex-col p-5">
+          <div className="absolute inset-0 bg-[#050505] z-0"></div>
+          <div className="absolute top-[-50%] left-[-20%] w-[140%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.18)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0 transition-transform duration-1000 group-hover:scale-110"></div>
+          <div className="absolute bottom-[-20%] right-[-20%] w-[100%] h-[100%] bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.12)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0"></div>
+          <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)', backgroundSize: '12px 12px' }}></div>
+
+          <div className="relative z-10 flex justify-between items-start w-full">
+            <div className="h-9 w-9 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-emerald-400 shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-colors group-hover:text-emerald-300">
+               <Volume2 className="w-4 h-4" />
+            </div>
+            <div className="px-3 py-1.5 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] flex items-center shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+              <span className="relative flex h-1.5 w-1.5 mr-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.15em] text-emerald-100/70 font-semibold">8 online</span>
+            </div>
+          </div>
+          
+          <div className="relative z-10 mt-auto">
+            <h3 className="text-[21px] font-semibold text-white tracking-tight leading-[1.15]">
+              Join live coding<br/><span className="text-white/50">Sessions</span>
+            </h3>
+          </div>
         </div>
-        
-        <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-start cursor-pointer hover:bg-white/[0.02] -mx-3 px-3 py-2 rounded-xl transition-colors group">
-            <div className="min-w-0">
-              <span className="text-[11px] font-mono text-[#6366f1] font-bold">1 · SHIPPED</span>
-              <div className="text-[14px] font-bold text-[#e7e9ea] mt-0.5 group-hover:underline leading-snug truncate">cyber-core-dashboard</div>
-              <p className="text-[12px] text-white/50 truncate mt-0.5">Customizable dev dashboard client</p>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-white/40 border border-white/[0.05]">TypeScript</span>
-                <span className="text-[11px] text-white/40 flex items-center gap-1 font-mono">
-                  <Star className="w-3.5 h-3.5 text-yellow-500 fill-current" /> 184
-                </span>
-              </div>
-            </div>
-            <MoreHorizontal className="w-4 h-4 text-white/30 hover:text-white" />
+
+        <div className="relative z-10 flex flex-col p-5 bg-[#0a0a0a] border-t border-white/[0.04]">
+          <div className="flex flex-col gap-0.5 mb-4">
+            <span className="text-white/95 font-medium text-[14px]">Collab Live Rooms</span>
+            <span className="text-white/40 text-[12px]">collabsphere.app/live</span>
           </div>
 
-          <div className="flex justify-between items-start cursor-pointer hover:bg-white/[0.02] -mx-3 px-3 py-2 rounded-xl transition-colors group">
-            <div className="min-w-0">
-              <span className="text-[11px] font-mono text-[#10b981] font-bold">2 · LIVE</span>
-              <div className="text-[14px] font-bold text-[#e7e9ea] mt-0.5 group-hover:underline leading-snug truncate">nova-protocol-api</div>
-              <p className="text-[12px] text-white/50 truncate mt-0.5">Cross-chain network data broker</p>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-white/40 border border-white/[0.05]">Go</span>
-                <span className="text-[11px] text-white/40 flex items-center gap-1 font-mono">
-                  <Star className="w-3.5 h-3.5 text-yellow-500 fill-current" /> 122
-                </span>
+          <div className="flex flex-col gap-2.5">
+            <div className="flex items-center justify-between p-3 rounded-[16px] bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.03] hover:border-white/[0.08] transition-all duration-300 cursor-pointer group/item">
+              <div className="flex flex-col gap-1 min-w-0">
+                <span className="text-[13px] font-medium text-white/80 truncate group-hover/item:text-white transition-colors">Rust Agent Compiler</span>
+                <span className="text-[11px] text-white/40 group-hover/item:text-white/60 transition-colors">3 builders · Live session</span>
               </div>
+              <ArrowUpRight className="w-4 h-4 text-white/20 group-hover/item:text-white/80 transition-colors" />
             </div>
-            <MoreHorizontal className="w-4 h-4 text-white/30 hover:text-white" />
+            <div className="flex items-center justify-between p-3 rounded-[16px] bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.03] hover:border-white/[0.08] transition-all duration-300 cursor-pointer group/item">
+              <div className="flex flex-col gap-1 min-w-0">
+                <span className="text-[13px] font-medium text-white/80 truncate group-hover/item:text-white transition-colors">React Server Actions</span>
+                <span className="text-[11px] text-white/40 group-hover/item:text-white/60 transition-colors">2 builders · General Q&A</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-white/20 group-hover/item:text-white/80 transition-colors" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Top Ships of the Week - ULTRA PREMIUM DARK */}
+      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-white/[0.06] bg-[#0a0a0a] shrink-0 group hover:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+        <div className="relative h-[160px] w-full overflow-hidden flex flex-col p-5">
+          <div className="absolute inset-0 bg-[#050505] z-0"></div>
+          <div className="absolute top-[-50%] left-[-20%] w-[140%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.18)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0 transition-transform duration-1000 group-hover:scale-110"></div>
+          <div className="absolute bottom-[-20%] right-[-20%] w-[100%] h-[100%] bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.12)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0"></div>
+          <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)', backgroundSize: '12px 12px' }}></div>
+
+          <div className="relative z-10 flex justify-between items-start w-full">
+            <div className="h-9 w-9 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-orange-400 shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-colors group-hover:text-orange-300">
+               <Flame className="w-4 h-4" />
+            </div>
+            <div className="px-3 py-1.5 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] text-[9px] uppercase tracking-[0.15em] text-orange-100/70 font-semibold shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+              Weekly Top
+            </div>
+          </div>
+          
+          <div className="relative z-10 mt-auto">
+            <h3 className="text-[21px] font-semibold text-white tracking-tight leading-[1.15]">
+              Discover trending<br/><span className="text-white/50">Projects</span>
+            </h3>
+          </div>
+        </div>
+
+        <div className="relative z-10 flex flex-col p-5 bg-[#0a0a0a] border-t border-white/[0.04]">
+          <div className="flex flex-col gap-0.5 mb-4">
+            <span className="text-white/95 font-medium text-[14px]">Top Ships of the Week</span>
+            <span className="text-white/40 text-[12px]">collabsphere.app/ships</span>
           </div>
 
-          <div className="flex justify-between items-start cursor-pointer hover:bg-white/[0.02] -mx-3 px-3 py-2 rounded-xl transition-colors group">
-            <div className="min-w-0">
-              <span className="text-[11px] font-mono text-yellow-500 font-bold">3 · BETA</span>
-              <div className="text-[14px] font-bold text-[#e7e9ea] mt-0.5 group-hover:underline leading-snug truncate">orbital-db-tracker</div>
-              <p className="text-[12px] text-white/50 truncate mt-0.5">P2P database node sync client</p>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-white/40 border border-white/[0.05]">Rust</span>
-                <span className="text-[11px] text-white/40 flex items-center gap-1 font-mono">
-                  <Star className="w-3.5 h-3.5 text-yellow-500 fill-current" /> 98
-                </span>
+          <div className="flex flex-col gap-2.5">
+            <div className="flex justify-between items-center p-2.5 rounded-[16px] bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.03] hover:border-white/[0.08] transition-all duration-300 cursor-pointer group/item">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-orange-400 font-semibold text-[11px] shadow-[0_2px_8px_rgba(0,0,0,0.3)] group-hover/item:bg-white/[0.05] transition-colors">1</div>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <span className="text-[13px] font-medium text-white/80 truncate group-hover/item:text-white transition-colors">cyber-core-dashboard</span>
+                  <span className="text-[11px] text-white/40 flex items-center gap-1 font-mono group-hover/item:text-white/60 transition-colors">
+                    <Star className="w-3 h-3 text-amber-500 fill-amber-500/20" /> 184
+                  </span>
+                </div>
               </div>
             </div>
-            <MoreHorizontal className="w-4 h-4 text-white/30 hover:text-white" />
+            <div className="flex justify-between items-center p-2.5 rounded-[16px] bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.03] hover:border-white/[0.08] transition-all duration-300 cursor-pointer group/item">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-orange-400/80 font-semibold text-[11px] shadow-[0_2px_8px_rgba(0,0,0,0.3)] group-hover/item:bg-white/[0.05] transition-colors">2</div>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <span className="text-[13px] font-medium text-white/80 truncate group-hover/item:text-white transition-colors">nova-protocol-api</span>
+                  <span className="text-[11px] text-white/40 flex items-center gap-1 font-mono group-hover/item:text-white/60 transition-colors">
+                    <Star className="w-3 h-3 text-amber-500 fill-amber-500/20" /> 122
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer Links */}
-      <div className="px-4 text-[12px] text-[#71767b] flex flex-wrap gap-x-3 gap-y-1.5 leading-normal select-none mb-6">
-        <span className="hover:underline cursor-pointer">Terms of Service</span>
-        <span className="hover:underline cursor-pointer">Privacy Policy</span>
-        <span className="hover:underline cursor-pointer">Cookie Policy</span>
-        <span className="hover:underline cursor-pointer">Developer Rules</span>
-        <span>© 2026 CollabSphere Corp.</span>
+      <div className="px-4 text-[12px] text-[#71767b] flex flex-wrap gap-x-3 gap-y-1.5 leading-normal select-none mb-6 mt-2">
+        <span className="hover:underline cursor-pointer transition-colors">Terms of Service</span>
+        <span className="hover:underline cursor-pointer transition-colors">Privacy Policy</span>
+        <span className="hover:underline cursor-pointer transition-colors">Cookie Policy</span>
+        <span className="hover:underline cursor-pointer transition-colors">Developer Rules</span>
+        <span className="w-full mt-1">© 2026 CollabSphere Corp.</span>
       </div>
 
     </div>
