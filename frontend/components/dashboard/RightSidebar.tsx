@@ -38,7 +38,7 @@ export default function RightSidebar() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [waitlistCount, setWaitlistCount] = useState(247);
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!db) return;
@@ -46,7 +46,7 @@ export default function RightSidebar() {
     const unsubscribe = onSnapshot(
       coll,
       (snapshot) => {
-        setWaitlistCount(snapshot.size || 247);
+        setWaitlistCount(snapshot.size);
       },
       (error) => {
         console.error("Error listening to waitlist:", error);
@@ -167,7 +167,7 @@ export default function RightSidebar() {
 
           {/* Numbers */}
           <div className="font-syne text-[#063CB9] text-[56px] leading-none font-extrabold tracking-tighter mt-1">
-            {waitlistCount < 10 ? `0${waitlistCount}` : waitlistCount}
+            {waitlistCount === null ? "..." : (waitlistCount < 10 ? `0${waitlistCount}` : waitlistCount)}
           </div>
           
           {/* DAYS TO GO / BUILDERS WAITING */}
@@ -239,7 +239,7 @@ export default function RightSidebar() {
             ) : suggestedUsers.length > 0 ? (
               suggestedUsers.slice(0, 2).map((u) => (
                  <div key={u.id} className="flex items-center gap-3 p-2.5 rounded-[16px] bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.03] hover:border-white/[0.08] transition-all duration-300 cursor-pointer group/item">
-                   <img src={u.avatar} alt={u.username} className="h-9 w-9 rounded-full object-cover bg-neutral-900 border border-white/5 flex-shrink-0" />
+                   <img src={u.avatar} alt={u.username} className="h-9 w-9 rounded-full object-cover bg-neutral-900 border border-white/5 flex-shrink-0" referrerPolicy="no-referrer" />
                    <div className="min-w-0 flex flex-col">
                      <span className="text-[13px] font-medium text-white/80 truncate leading-tight flex items-center gap-1.5 group-hover/item:text-white transition-colors">
                        {u.name}

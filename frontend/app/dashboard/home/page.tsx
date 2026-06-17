@@ -149,6 +149,7 @@ function PostCard({
                 src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
                 alt={post.author_name}
                 className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
               />
             </div>
 
@@ -298,6 +299,7 @@ function PostCard({
                 src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`}
                 alt=""
                 className="w-6 h-6 rounded-full object-cover shrink-0 border border-white/10"
+                referrerPolicy="no-referrer"
               />
               <input
                 type="text"
@@ -324,6 +326,7 @@ function PostCard({
                       src={comment.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.uid}`}
                       alt=""
                       className="w-6 h-6 rounded-full object-cover bg-neutral-800 flex-shrink-0 border border-white/10"
+                      referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0 bg-neutral-900/60 rounded-xl px-3 py-2">
                       <div className="flex items-center gap-1.5 mb-0.5">
@@ -706,6 +709,7 @@ export default function DashboardHomePage() {
                         src={avatarSrc}
                         alt="avatar"
                         className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/10"
+                        referrerPolicy="no-referrer"
                       />
                       <div className="flex-1 min-w-0">
                         <textarea

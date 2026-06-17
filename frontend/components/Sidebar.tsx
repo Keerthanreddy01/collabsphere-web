@@ -218,6 +218,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                   src={currentUser.imageUrl} 
                   alt="Profile" 
                   className={`rounded-full object-cover shrink-0 relative z-10 ${isExpanded ? 'w-10 h-10' : 'w-[42px] h-[42px]'}`} 
+                  referrerPolicy="no-referrer"
                 />
               </div>
               <AnimatePresence>
