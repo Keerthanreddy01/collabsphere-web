@@ -227,14 +227,14 @@ function PostCard({
 
           {/* ── Collab Apply Action Block ── */}
           {isCollab && (
-            <div className="mt-4 flex items-center justify-between border border-[#00f2fe]/10 bg-[#00f2fe]/[0.02] rounded-xl p-3">
+            <div className="mt-4 flex items-center justify-between border border-white/[0.08] bg-white/[0.02] rounded-xl p-4 transition-all hover:bg-white/[0.04]">
               <div className="flex flex-col">
-                <span className="text-[13px] font-bold text-[#00f2fe]">Open to Collaborators</span>
-                <span className="text-[12px] text-neutral-400">Apply to join this project</span>
+                <span className="text-[14px] font-bold text-white">Open to Collaborators</span>
+                <span className="text-[13px] text-neutral-400 mt-0.5">The author is looking for team members.</span>
               </div>
               <button
                 onClick={() => handleCollabClick(post)}
-                className="px-4 py-1.5 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-[#00f2fe] text-black hover:bg-[#00d8e4] cursor-pointer border-none"
+                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-white text-black hover:bg-neutral-200 cursor-pointer border-none"
               >
                 Apply
               </button>
