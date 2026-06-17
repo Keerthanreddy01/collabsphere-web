@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import {
@@ -132,7 +133,7 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group relative w-full mb-2 bg-[#000000] border border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 hover:border-white/[0.12] overflow-hidden"
+      className="group/post relative w-full mb-4 bg-[#0A0A0A] border border-white/[0.08] rounded-2xl transition-all duration-300 ease-out hover:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
@@ -144,26 +145,28 @@ function PostCard({
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* Avatar */}
-            <div className="relative shrink-0 w-[36px] h-[36px] sm:w-10 sm:h-10 rounded-full overflow-hidden border border-white/10">
-              <img
-                src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
-                alt={post.author_name}
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
+            <div className="relative shrink-0 w-[36px] h-[36px] sm:w-10 sm:h-10 rounded-full p-[2px] bg-gradient-to-tr from-white/5 to-white/10 group-hover/post:from-[#D4F842]/40 group-hover/post:to-[#00f2fe]/40 transition-all duration-500">
+              <div className="w-full h-full rounded-full overflow-hidden bg-black">
+                <img
+                  src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
+                  alt={post.author_name}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             </div>
 
             {/* Author info & Badges */}
             <div className="flex flex-col min-w-0 justify-center flex-1">
               <div className="flex items-center gap-1.5 flex-nowrap overflow-hidden w-full">
-                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-neutral-100 hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[40%]">
+                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-white hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[40%]">
                   {post.author_name || "Builder"}
                 </span>
-                <span className="text-neutral-500 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0">
+                <span className="text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0">
                   @{post.author_username || "builder"}
                 </span>
-                <span className="text-neutral-600 text-[13px] mx-1 shrink-0">·</span>
-                <span className="text-[11px] sm:text-[12px] text-neutral-500 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap">{timeAgo(post.created_at)}</span>
+                <span className="text-neutral-500 text-[13px] mx-1 shrink-0">·</span>
+                <span className="text-[11px] sm:text-[12px] text-neutral-400 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap">{timeAgo(post.created_at)}</span>
               </div>
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                 {/* Clean inline post type badge */}
@@ -196,7 +199,7 @@ function PostCard({
 
         {/* ── Main Content ── */}
         <div className="ml-13 mb-3">
-          <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed text-neutral-200 whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
+          <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed text-white whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
             {renderContentWithHashtags(displayContent)}
           </div>
           {isTruncated && !isExpanded && (
@@ -239,54 +242,48 @@ function PostCard({
           )}
         </div>
 
-        {/* ── Actions Bar ── */}
-        <div className="flex items-center justify-around sm:justify-between ml-13 mr-2 pt-1">
-          {/* Comment */}
-          <button
-            onClick={handleFetchComments}
-            className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0"
-          >
-            <div className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
-              <MessageCircle className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
-            </div>
-            {post.comments_count > 0 && <span className="font-mono text-[12px] text-neutral-500 group-hover:text-blue-500 transition-colors -ml-1 sm:ml-0">{post.comments_count}</span>}
-          </button>
-
-          {/* Boost */}
-          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0">
-            <div className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center group-hover:bg-emerald-500/10 group-hover:text-emerald-500 text-neutral-500 transition-colors">
-              <Rocket className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
-            </div>
-          </button>
-
-          {/* Like (Zap) */}
-          <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
+        {/* ── Actions Dock ── */}
+        <div className="flex items-center justify-between ml-13 mr-2 pt-3 pb-1">
+          <div className="flex items-center gap-1">
+            {/* Comment */}
             <button
-              onClick={() => handleLikeClick(post.id)}
-              className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0"
+              onClick={handleFetchComments}
+              className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none px-3 py-1.5 rounded-full hover:bg-white/5 transition-colors"
             >
-              <div className={`w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${isLiked ? 'text-[#D4F842] bg-[#D4F842]/10' : 'text-neutral-500 group-hover:bg-[#D4F842]/10 group-hover:text-[#D4F842]'}`}>
-                <Zap className="w-[18px] h-[18px] sm:w-4 sm:h-4" fill={isLiked ? "#D4F842" : "none"} />
-              </div>
-              {likesCount > 0 && <span className={`font-mono text-[12px] transition-colors -ml-1 sm:ml-0 ${isLiked ? 'text-[#D4F842]' : 'text-neutral-500 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
+              <MessageCircle className="w-4 h-4 text-neutral-400 group-hover:text-white transition-colors" />
+              {post.comments_count > 0 && <span className="font-bold text-[12px] text-neutral-400 group-hover:text-white transition-colors">{post.comments_count}</span>}
             </button>
-          </ClickSpark>
 
-          {/* Views */}
-          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0">
-            <div className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
-              <Eye className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
-            </div>
-          </button>
+            {/* Boost */}
+            <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none px-3 py-1.5 rounded-full hover:bg-white/5 transition-colors">
+              <Rocket className="w-4 h-4 text-neutral-400 group-hover:text-emerald-400 transition-colors" />
+            </button>
 
-          <div className="flex items-center">
+            {/* Like (Zap) */}
+            <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
+              <button
+                onClick={() => handleLikeClick(post.id)}
+                className={`flex items-center gap-1.5 group cursor-pointer border-none px-3 py-1.5 rounded-full transition-colors ${isLiked ? 'bg-[#D4F842]/10' : 'bg-transparent hover:bg-white/5'}`}
+              >
+                <Zap className={`w-4 h-4 transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`} fill={isLiked ? "#D4F842" : "none"} />
+                {likesCount > 0 && <span className={`font-bold text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
+              </button>
+            </ClickSpark>
+
+            {/* Views */}
+            <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none px-3 py-1.5 rounded-full hover:bg-white/5 transition-colors hidden sm:flex">
+              <Eye className="w-4 h-4 text-neutral-400 group-hover:text-white transition-colors" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1">
             {/* Bookmark */}
-            <button className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
-              <Bookmark className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
+            <button className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-400 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer bg-transparent border-none">
+              <Bookmark className="w-4 h-4" />
             </button>
             {/* Share */}
-            <button className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
-              <Share2 className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
+            <button className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-400 hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none">
+              <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -358,6 +355,7 @@ export default function DashboardHomePage() {
   const [stackTags, setStackTags] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'collabs'>('all');
   const [selectedPostType, setSelectedPostType] = useState<'update' | 'looking_for' | 'build_log'>('update');
+  const [isFocused, setIsFocused] = useState(false);
 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -540,40 +538,30 @@ export default function DashboardHomePage() {
             lineHeight: "1.5"
           }}
         >
-          {/* Constrained layout matching X's 3-column style */}
-          <div className="flex w-full h-full bg-[#000000] relative z-10">
+          {/* Flat Dark Background */}
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#000000]"></div>
 
-            {/* COLUMN 1: FEED (max-width 600px, borders left/right) */}
-            <div className="w-full md:w-[600px] md:min-w-[600px] flex-1 md:border-r md:border-l border-[#2f3336] flex flex-col h-full overflow-y-auto no-scrollbar bg-[#000000]">
+          <div className="flex w-full h-full relative z-10 justify-center">
 
-              {/* Sticky Header with Custom Tabs */}
-              <div
-                className="sticky top-0 z-40 flex flex-col w-full shrink-0"
-                style={{
-                  background: "rgba(0, 0, 0, 0.72)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
-                  borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
-                }}
-              >
-                <div className="flex h-[53px] items-center">
+            {/* COLUMN 1: FEED */}
+            <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-32">
+
+              {/* Floating Tab Selector */}
+              <div className="sticky top-4 z-40 flex justify-center w-full px-4 mb-6 shrink-0 pointer-events-none">
+                <div className="flex items-center bg-[#0a0a0a] border border-white/[0.08] p-1.5 rounded-full pointer-events-auto">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer"
+                    className="relative px-6 py-2 rounded-full border-none bg-transparent cursor-pointer overflow-hidden"
                   >
-                    <span className={`text-[15px] font-bold transition-colors ${activeTab === 'all' ? 'text-[#D4F842]' : 'text-[#71767b]'}`}>All Builds</span>
-                    {activeTab === 'all' && (
-                      <div className="absolute bottom-0 w-[64px] h-[3px] bg-[#D4F842] rounded-full shadow-[0_0_10px_rgba(212,248,66,0.5)]" />
-                    )}
+                    {activeTab === 'all' && <motion.div layoutId="mainTabs" className="absolute inset-0 bg-white/10 rounded-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                    <span className={`relative z-10 text-[14px] font-bold transition-colors ${activeTab === 'all' ? 'text-white' : 'text-neutral-400'}`}>All Builds</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer"
+                    className="relative px-6 py-2 rounded-full border-none bg-transparent cursor-pointer overflow-hidden"
                   >
-                    <span className={`text-[15px] font-bold transition-colors ${activeTab === 'collabs' ? 'text-[#D4F842]' : 'text-[#71767b]'}`}>Collab Board</span>
-                    {activeTab === 'collabs' && (
-                      <div className="absolute bottom-0 w-[72px] h-[3px] bg-[#D4F842] rounded-full shadow-[0_0_10px_rgba(212,248,66,0.5)]" />
-                    )}
+                    {activeTab === 'collabs' && <motion.div layoutId="mainTabs" className="absolute inset-0 bg-[#00f2fe]/15 rounded-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                    <span className={`relative z-10 text-[14px] font-bold transition-colors ${activeTab === 'collabs' ? 'text-[#00f2fe]' : 'text-neutral-400'}`}>Collab Board</span>
                   </button>
                 </div>
               </div>
@@ -602,37 +590,33 @@ export default function DashboardHomePage() {
                     };
 
                 return (
-                  <div className="border-b border-white/[0.06] bg-[#000000] flex flex-col pt-3 pb-2 sm:pt-4 sm:pb-3 px-3 sm:px-4 relative shrink-0">
+                  <div className={`flex flex-col pt-3 pb-2 sm:pt-4 sm:pb-3 px-3 sm:px-4 relative shrink-0 transition-all duration-300 ease-out mx-4 mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl' : 'bg-[#0a0a0a]'}`}>
+                    {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <div className="flex items-center bg-neutral-900/50 p-1 rounded-lg border border-white/[0.04]">
+
+                      <div className="flex items-center bg-neutral-950/80 p-1 rounded-xl border border-white/[0.06] shadow-inner">
                         <button
                           onClick={() => setSelectedPostType('update')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${selectedPostType === 'update'
-                              ? 'bg-neutral-700/50 text-white shadow-sm'
-                              : 'text-neutral-500 hover:text-neutral-300 bg-transparent'
-                            }`}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'update' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
                         >
-                          <Megaphone className="w-3 h-3" /> Update
+                          {selectedPostType === 'update' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-neutral-700/60 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                          <span className="relative z-10 flex items-center gap-1.5"><Megaphone className="w-3.5 h-3.5" /> Update</span>
                         </button>
                         <button
                           onClick={() => setSelectedPostType('looking_for')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${selectedPostType === 'looking_for'
-                              ? 'bg-[#00f2fe]/10 text-[#00f2fe]'
-                              : 'text-neutral-500 hover:text-[#00f2fe]/70 bg-transparent'
-                            }`}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'looking_for' ? 'text-[#00f2fe]' : 'text-neutral-400 hover:text-[#00f2fe]/70'}`}
                         >
-                          <Handshake className="w-3 h-3" /> Collab
+                          {selectedPostType === 'looking_for' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-[#00f2fe]/15 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                          <span className="relative z-10 flex items-center gap-1.5"><Handshake className="w-3.5 h-3.5" /> Collab</span>
                         </button>
                         <button
                           onClick={() => setSelectedPostType('build_log')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${selectedPostType === 'build_log'
-                              ? 'bg-[#D4F842]/10 text-[#D4F842]'
-                              : 'text-neutral-500 hover:text-[#D4F842]/70 bg-transparent'
-                            }`}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'build_log' ? 'text-[#D4F842]' : 'text-neutral-400 hover:text-[#D4F842]/70'}`}
                         >
-                          <Trophy className="w-3 h-3" /> Milestone
+                          {selectedPostType === 'build_log' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-[#D4F842]/15 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                          <span className="relative z-10 flex items-center gap-1.5"><Trophy className="w-3.5 h-3.5" /> Milestone</span>
                         </button>
                       </div>
 
@@ -716,6 +700,8 @@ export default function DashboardHomePage() {
                           ref={textareaRef}
                           value={content}
                           onChange={handleInput}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
                           placeholder={
                             selectedPostType === 'looking_for'
                               ? "What roles, skills, or collaborators do you need?..."
@@ -723,7 +709,7 @@ export default function DashboardHomePage() {
                                 ? "What milestone did you unlock? (e.g. launched v1.0)..."
                                 : "What are you shipping?"
                           }
-                          className="w-full bg-transparent text-white text-[15px] placeholder-neutral-600 outline-none resize-none pt-1.5 pb-1 border-none focus:ring-0 leading-relaxed font-sans"
+                          className="w-full bg-transparent text-white text-[16px] sm:text-[17px] placeholder-neutral-400 outline-none resize-none pt-1 pb-1 border-none focus:ring-0 leading-relaxed font-sans transition-all"
                           style={{ minHeight: '60px' }}
                         />
                       </div>
@@ -794,7 +780,7 @@ export default function DashboardHomePage() {
                     )}
 
                     {/* Tags Quick Suggestions */}
-                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-13 pb-1">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-13 pb-1">
                       {['nextjs', 'react', 'tailwind', 'typescript', 'ai'].map((tag) => (
                         <button
                           key={tag}
@@ -806,7 +792,7 @@ export default function DashboardHomePage() {
                               setStackTags(trimmedStack ? `${trimmedStack} ${tag}` : tag);
                             }
                           }}
-                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-transparent text-[#1d9bf0] hover:bg-[#1d9bf0]/10 px-2 py-0.5 rounded-full transition-all cursor-pointer border-none"
+                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 px-2.5 py-1 rounded-full transition-all cursor-pointer"
                         >
                           #{tag}
                         </button>
@@ -817,12 +803,12 @@ export default function DashboardHomePage() {
                     <div className="flex items-center justify-between mt-3 ml-13">
                       {/* Left: Stack tags input + Media Buttons */}
                       <div className="flex items-center gap-3">
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#1d9bf0]/10 text-[#1d9bf0] transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
                           <Image className="w-4 h-4" />
                         </button>
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleRecording(); }}
-                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-[#1d9bf0] hover:bg-[#1d9bf0]/10"}`}
+                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-neutral-400 hover:text-white hover:bg-white/10"}`}
                           title="Record Voice"
                         >
                           <Mic className={`w-4 h-4 ${isRecording ? "animate-pulse" : ""}`} />
@@ -830,14 +816,14 @@ export default function DashboardHomePage() {
 
                         <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
 
-                        <div className="flex items-center text-neutral-400 font-mono text-[13px]">
-                          <span className="mr-0.5 opacity-50">#</span>
+                        <div className="flex items-center bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-neutral-300 font-mono text-[12px] focus-within:border-white/30 focus-within:bg-white/10 transition-all">
+                          <span className="mr-1 opacity-50">#</span>
                           <input
                             type="text"
                             value={stackTags}
                             onChange={(e) => setStackTags(e.target.value)}
                             placeholder="stack"
-                            className="w-[120px] bg-transparent border-none outline-none focus:ring-0 p-0 placeholder-neutral-600 text-[#1d9bf0]"
+                            className="w-[120px] bg-transparent border-none outline-none focus:ring-0 p-0 placeholder-neutral-500 text-white"
                           />
                         </div>
                       </div>
@@ -864,12 +850,16 @@ export default function DashboardHomePage() {
                         <button
                           onClick={submitPost}
                           disabled={(!content.trim() && !audioBlob) || isPosting}
-                          className={`rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[13px] sm:text-[14px] transition-all active:scale-95 cursor-pointer border-none ml-auto ${(!content.trim() && !audioBlob) || isPosting
-                              ? "bg-white/20 text-white/50 cursor-not-allowed pointer-events-none"
-                              : theme.button
+                          className={`relative group/submit rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[13px] sm:text-[14px] transition-all active:scale-95 cursor-pointer border-none ml-auto ${(!content.trim() && !audioBlob) || isPosting
+                            ? "bg-white/20 text-white/50 cursor-not-allowed pointer-events-none"
+                            : theme.button
                             }`}
                         >
                           {isPosting ? "Posting..." : theme.btnText}
+                          {/* Button Hover Glow */}
+                          {!((!content.trim() && !audioBlob) || isPosting) && (
+                            <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover/submit:opacity-20 blur-md transition-opacity duration-300 -z-10" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -895,9 +885,19 @@ export default function DashboardHomePage() {
                     <p className="text-[13px] text-neutral-600">Be the first to ship something today.</p>
                   </div>
                 ) : (
-                  filteredPosts.map((post) => (
-                    <PostCard key={post.id} post={post} user={user} handleLikeClick={handleLikeClick} handleCollabClick={handleCollabClick} />
-                  ))
+                  <AnimatePresence>
+                    {filteredPosts.map((post) => (
+                      <motion.div
+                        key={post.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.3, type: "spring", stiffness: 200, damping: 20 }}
+                      >
+                        <PostCard post={post} user={user} handleLikeClick={handleLikeClick} handleCollabClick={handleCollabClick} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 )}
               </div>
             </div>
