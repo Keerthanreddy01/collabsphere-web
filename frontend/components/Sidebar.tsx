@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { LayoutDashboard, Telescope, Rocket, MessageSquare, Bell, User, Menu, LogOut, Settings, Zap, MoreHorizontal, Pencil, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { db, auth } from "@/lib/firebase";
@@ -55,7 +56,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
     { key: "home", label: "Home", icon: LayoutDashboard, route: "/dashboard/home" },
     { key: "explore", label: "Explore", icon: Telescope, route: "/explore" },
     { key: "notifications", label: "Notifications", icon: Bell, route: "/notifications" },
-    { key: "follow", label: "Follow", icon: Rocket, route: "/showcase" },
+    { key: "connect", label: "Connect", icon: Rocket, route: "/connect" },
     { key: "messages", label: "Chat", icon: MessageSquare, route: "/messages" },
     { key: "profile", label: "Profile", icon: User, route: "/profile" },
     { key: "more", label: "More", icon: Menu, route: "/settings" }
@@ -92,8 +93,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
 
       {/* Top Logo */}
       <div className={`flex items-center mt-6 mb-8 w-full ${isExpanded ? 'px-6' : 'justify-center px-0'}`}>
-        <button
-          onClick={() => router.push('/dashboard/home')}
+        <Link
+          href="/dashboard/home"
           className="flex items-center hover:opacity-80 transition-opacity cursor-pointer bg-transparent border-none outline-none"
         >
           <AnimatePresence mode="wait">
@@ -121,7 +122,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
               </motion.span>
             )}
           </AnimatePresence>
-        </button>
+        </Link>
       </div>
 
       {/* Navigation Icons */}
@@ -132,8 +133,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
 
           return (
             <div key={item.key} className="relative group/navitem w-full flex justify-center">
-              <button
-                onClick={() => router.push(item.route)}
+              <Link
+                href={item.route}
                 className={`
                   relative h-[50px] flex items-center rounded-xl transition-all duration-300 w-full overflow-hidden cursor-pointer hover:bg-white/[0.08]
                   ${isExpanded ? 'px-4 justify-start' : 'justify-center w-[50px] px-0 mx-auto'}
@@ -158,7 +159,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                     </motion.span>
                   )}
                 </AnimatePresence>
-              </button>
+              </Link>
               
               {/* Tooltip for collapsed state */}
               {!isExpanded && !isMobile && (

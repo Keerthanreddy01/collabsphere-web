@@ -162,13 +162,13 @@ export default function ShowcasePage() {
             <p className="text-white/60 max-w-2xl leading-relaxed mb-10 text-lg">{displayProjects[0].description}</p>
             <div className="flex flex-wrap items-center gap-8">
               <div className="flex flex-wrap gap-2">
-                {displayProjects[0].stack.map((s: string) => (
+                {(displayProjects[0].stack || []).map((s: string) => (
                   <span key={s} className="text-xs font-mono px-3 py-1.5 border border-white/10 text-white/40">{s}</span>
                 ))}
               </div>
               <div className="flex items-center gap-2 text-sm text-white/40 font-mono">
                 <span>BUILT BY</span>
-                {displayProjects[0].team.map((t: string) => (
+                {(displayProjects[0].team || []).map((t: string) => (
                   <span key={t} className="text-white/70">{t}</span>
                 ))}
               </div>
@@ -201,12 +201,12 @@ export default function ShowcasePage() {
                 <p className="text-sm text-white/40 mb-4">{project.tagline}</p>
                 <p className="text-sm text-white/50 leading-relaxed mb-6">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.stack.map((s: string) => (
+                  {(project.stack || []).map((s: string) => (
                     <span key={s} className="text-[10px] font-mono px-2 py-0.5 border border-white/10 text-white/30">{s}</span>
                   ))}
                 </div>
                 <div className="text-xs text-white/30 font-mono pt-4 border-t border-white/10">
-                  {project.team.join(" × ")}
+                  {(project.team || []).join(" × ")}
                 </div>
               </div>
               <div className={`absolute bottom-0 left-0 right-0 h-px bg-white transition-transform duration-500 origin-left ${
