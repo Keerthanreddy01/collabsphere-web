@@ -29,7 +29,12 @@ import {
   Trash2,
   Play,
   Pause,
-  Sparkles
+  Sparkles,
+  LayoutDashboard,
+  Telescope,
+  MessageSquare,
+  User,
+  Pencil
 } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -56,16 +61,16 @@ const renderContentWithHashtags = (text: string) => {
   });
 };
 
-function PostCard({ 
-  post, 
-  user, 
-  handleLikeClick, 
-  handleCollabClick 
-}: { 
-  post: any, 
-  user: any, 
-  handleLikeClick: (id: string) => void, 
-  handleCollabClick: (post: any) => void 
+function PostCard({
+  post,
+  user,
+  handleLikeClick,
+  handleCollabClick
+}: {
+  post: any,
+  user: any,
+  handleLikeClick: (id: string) => void,
+  handleCollabClick: (post: any) => void
 }) {
   const ref = usePostViewTracker(post.id);
   const [showComments, setShowComments] = useState(false);
@@ -121,25 +126,25 @@ function PostCard({
   const theme = isCollab
     ? { text: 'text-[#00f2fe]', bg: 'bg-[#00f2fe]/10', border: 'border-[#00f2fe]/20', icon: Handshake, label: 'Collab' }
     : isMilestone
-    ? { text: 'text-[#D4F842]', bg: 'bg-[#D4F842]/10', border: 'border-[#D4F842]/20', icon: Trophy, label: 'Milestone' }
-    : { text: 'text-neutral-400', bg: 'bg-white/5', border: 'border-white/10', icon: Megaphone, label: 'Update' };
+      ? { text: 'text-[#D4F842]', bg: 'bg-[#D4F842]/10', border: 'border-[#D4F842]/20', icon: Trophy, label: 'Milestone' }
+      : { text: 'text-neutral-400', bg: 'bg-white/5', border: 'border-white/10', icon: Megaphone, label: 'Update' };
 
   return (
     <article
       ref={ref}
-      className="group relative w-full mb-2 bg-[#000000] border border-white/[0.08] rounded-2xl transition-all duration-300 hover:border-white/[0.12] overflow-hidden"
+      className="group relative w-full mb-2 bg-[#000000] border border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 hover:border-white/[0.12] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
         <div className={`absolute top-0 left-0 right-0 h-[1px] ${theme.bg} blur-[1px]`} />
       )}
 
-      <div className="p-4 sm:p-5">
+      <div className="p-[14px] sm:p-5">
         {/* ── Header Row ── */}
         <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* Avatar */}
-            <div className="relative shrink-0 w-10 h-10 rounded-full overflow-hidden border border-white/10">
+            <div className="relative shrink-0 w-[36px] h-[36px] sm:w-10 sm:h-10 rounded-full overflow-hidden border border-white/10">
               <img
                 src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
                 alt={post.author_name}
@@ -148,24 +153,24 @@ function PostCard({
             </div>
 
             {/* Author info & Badges */}
-            <div className="flex flex-col min-w-0 justify-center">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-bold text-[14.5px] text-neutral-100 hover:text-white transition-colors cursor-pointer leading-none">
+            <div className="flex flex-col min-w-0 justify-center flex-1">
+              <div className="flex items-center gap-1.5 flex-nowrap overflow-hidden w-full">
+                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-neutral-100 hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[40%]">
                   {post.author_name || "Builder"}
                 </span>
-                <span className="text-neutral-500 font-mono text-[13px] leading-none">
+                <span className="text-neutral-500 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0">
                   @{post.author_username || "builder"}
                 </span>
-                <span className="text-neutral-600 text-[13px] mx-1">·</span>
-                <span className="text-[12px] text-neutral-500 font-mono leading-none hover:underline cursor-pointer">{timeAgo(post.created_at)}</span>
+                <span className="text-neutral-600 text-[13px] mx-1 shrink-0">·</span>
+                <span className="text-[11px] sm:text-[12px] text-neutral-500 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap">{timeAgo(post.created_at)}</span>
               </div>
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                 {/* Clean inline post type badge */}
-                <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${theme.text} ${theme.bg}`}>
+                <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${theme.text} ${theme.bg}`}>
                   <theme.icon className="w-2.5 h-2.5" />
                   {theme.label}
                 </div>
-                
+
                 {post.project && (
                   <span className="flex items-center gap-1 text-[10px] font-medium text-neutral-400 bg-white/5 px-1.5 py-0.5 rounded-md">
                     <Sparkles className="w-2.5 h-2.5" />
@@ -190,25 +195,25 @@ function PostCard({
 
         {/* ── Main Content ── */}
         <div className="ml-13 mb-3">
-          <p className="text-[15px] leading-relaxed text-neutral-200 whitespace-pre-wrap break-words">
+          <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed text-neutral-200 whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
             {renderContentWithHashtags(displayContent)}
-            {isTruncated && !isExpanded && (
-              <button
-                onClick={() => setIsExpanded(true)}
-                className="text-[#1d9bf0] hover:underline ml-1.5 text-[14px] bg-transparent border-none outline-none cursor-pointer p-0"
-              >
-                Show more
-              </button>
-            )}
-          </p>
+          </div>
+          {isTruncated && !isExpanded && (
+            <button
+              onClick={() => setIsExpanded(true)}
+              className="text-[#1d9bf0] hover:underline mt-1 text-[14px] bg-transparent border-none outline-none cursor-pointer p-0 inline-block"
+            >
+              Show more
+            </button>
+          )}
 
           {/* ── Tech Stack Tags ── */}
           {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar sm:flex-wrap pb-1">
               {post.stack_tags.map((tag: string, idx: number) => (
                 <span
                   key={idx}
-                  className="text-[13px] text-[#1d9bf0] hover:underline cursor-pointer"
+                  className="text-[11px] sm:text-[13px] px-2 py-0.5 sm:px-0 sm:py-0 bg-blue-500/10 sm:bg-transparent rounded-full sm:rounded-none text-[#1d9bf0] hover:underline cursor-pointer shrink-0 whitespace-nowrap"
                 >
                   #{tag}
                 </span>
@@ -234,22 +239,22 @@ function PostCard({
         </div>
 
         {/* ── Actions Bar ── */}
-        <div className="flex items-center justify-between ml-13 mr-2 pt-1">
+        <div className="flex items-center justify-around sm:justify-between ml-13 mr-2 pt-1">
           {/* Comment */}
           <button
             onClick={handleFetchComments}
             className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0"
           >
-            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
-              <MessageCircle className="w-4 h-4" />
+            <div className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
+              <MessageCircle className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
             </div>
-            {post.comments_count > 0 && <span className="font-mono text-[12px] text-neutral-500 group-hover:text-blue-500 transition-colors">{post.comments_count}</span>}
+            {post.comments_count > 0 && <span className="font-mono text-[12px] text-neutral-500 group-hover:text-blue-500 transition-colors -ml-1 sm:ml-0">{post.comments_count}</span>}
           </button>
 
           {/* Boost */}
           <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-emerald-500/10 group-hover:text-emerald-500 text-neutral-500 transition-colors">
-              <Rocket className="w-4 h-4" />
+            <div className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center group-hover:bg-emerald-500/10 group-hover:text-emerald-500 text-neutral-500 transition-colors">
+              <Rocket className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
             </div>
           </button>
 
@@ -259,28 +264,28 @@ function PostCard({
               onClick={() => handleLikeClick(post.id)}
               className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0"
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isLiked ? 'text-[#D4F842] bg-[#D4F842]/10' : 'text-neutral-500 group-hover:bg-[#D4F842]/10 group-hover:text-[#D4F842]'}`}>
-                <Zap className="w-4 h-4" fill={isLiked ? "#D4F842" : "none"} />
+              <div className={`w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${isLiked ? 'text-[#D4F842] bg-[#D4F842]/10' : 'text-neutral-500 group-hover:bg-[#D4F842]/10 group-hover:text-[#D4F842]'}`}>
+                <Zap className="w-[18px] h-[18px] sm:w-4 sm:h-4" fill={isLiked ? "#D4F842" : "none"} />
               </div>
-              {likesCount > 0 && <span className={`font-mono text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-500 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
+              {likesCount > 0 && <span className={`font-mono text-[12px] transition-colors -ml-1 sm:ml-0 ${isLiked ? 'text-[#D4F842]' : 'text-neutral-500 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
             </button>
           </ClickSpark>
 
           {/* Views */}
           <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
-              <Eye className="w-4 h-4" />
+            <div className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-500 text-neutral-500 transition-colors">
+              <Eye className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
             </div>
           </button>
 
           <div className="flex items-center">
             {/* Bookmark */}
-            <button className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
-              <Bookmark className="w-4 h-4" />
+            <button className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
+              <Bookmark className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
             </button>
             {/* Share */}
-            <button className="w-8 h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
-              <Share2 className="w-4 h-4" />
+            <button className="w-[44px] h-[44px] sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-neutral-500 hover:text-blue-500 hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none p-0">
+              <Share2 className="w-[18px] h-[18px] sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>
@@ -343,14 +348,14 @@ function PostCard({
 export default function DashboardHomePage() {
   const router = useRouter();
   const { user, loading } = useAuth();
-  
+
   const [posts, setPosts] = useState<any[]>([]);
   const [isPosting, setIsPosting] = useState(false);
   const [content, setContent] = useState("");
   const [stackTags, setStackTags] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'collabs'>('all');
   const [selectedPostType, setSelectedPostType] = useState<'update' | 'looking_for' | 'build_log'>('update');
-  
+
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -461,7 +466,7 @@ export default function DashboardHomePage() {
       .split(" ")
       .map((t) => t.replace(/^#/, "").trim())
       .filter(Boolean);
-      
+
     const result = await createPost({
       uid: user.uid,
       author_name: user.displayName || "Builder",
@@ -473,7 +478,7 @@ export default function DashboardHomePage() {
       visibility: postVisibility,
       project: selectedProject,
     });
-    
+
     setIsPosting(false);
     if (!result.error) {
       setContent("");
@@ -498,13 +503,13 @@ export default function DashboardHomePage() {
 
   if (loading || !user) {
     return (
-      <div 
+      <div
         className="flex min-h-screen items-center justify-center"
         style={{
           background: "radial-gradient(ellipse at top-left, #0f0c29 0%, #17113f 40%, #08051a 100%)"
         }}
       >
-        <div 
+        <div
           className="w-8 h-8 animate-spin rounded-full border-4 border-t-transparent"
           style={{
             borderColor: "#6366f1",
@@ -520,11 +525,13 @@ export default function DashboardHomePage() {
   return (
     <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-blue-500/30 selection:text-white relative">
       <div className="flex w-full max-w-[1250px] h-screen relative">
-        <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
+        <div className="hidden md:flex shrink-0">
+          <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
+        </div>
 
-        <main 
+        <main
           className="flex-1 flex h-full overflow-hidden relative z-10 bg-[#000000] min-w-0"
-          style={{ 
+          style={{
             fontFamily: 'var(--font-instrument), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             fontSize: "15px",
             lineHeight: "1.5"
@@ -532,12 +539,12 @@ export default function DashboardHomePage() {
         >
           {/* Constrained layout matching X's 3-column style */}
           <div className="flex w-full h-full bg-[#000000] relative z-10">
-            
+
             {/* COLUMN 1: FEED (max-width 600px, borders left/right) */}
-            <div className="w-full md:w-[600px] md:min-w-[600px] flex-1 border-r border-[#2f3336] border-l border-[#2f3336] flex flex-col h-full overflow-y-auto no-scrollbar bg-[#000000]">
-              
+            <div className="w-full md:w-[600px] md:min-w-[600px] flex-1 md:border-r md:border-l border-[#2f3336] flex flex-col h-full overflow-y-auto no-scrollbar bg-[#000000]">
+
               {/* Sticky Header with Custom Tabs */}
-              <div 
+              <div
                 className="sticky top-0 z-40 flex flex-col w-full shrink-0"
                 style={{
                   background: "rgba(0, 0, 0, 0.72)",
@@ -547,7 +554,7 @@ export default function DashboardHomePage() {
                 }}
               >
                 <div className="flex h-[53px] items-center">
-                  <button 
+                  <button
                     onClick={() => setActiveTab('all')}
                     className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer"
                   >
@@ -556,7 +563,7 @@ export default function DashboardHomePage() {
                       <div className="absolute bottom-0 w-[64px] h-[3px] bg-[#D4F842] rounded-full shadow-[0_0_10px_rgba(212,248,66,0.5)]" />
                     )}
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('collabs')}
                     className="flex-1 h-full flex flex-col items-center justify-center relative hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer"
                   >
@@ -572,19 +579,19 @@ export default function DashboardHomePage() {
               {(() => {
                 const theme = selectedPostType === 'looking_for'
                   ? {
-                      accent: 'text-[#00f2fe]',
-                      button: 'bg-[#00f2fe] hover:bg-[#00d8e4] text-black font-bold',
-                      btnText: 'Find Teammates',
-                      hint: 'Find co-builders, designers, or cofounders'
-                    }
+                    accent: 'text-[#00f2fe]',
+                    button: 'bg-[#00f2fe] hover:bg-[#00d8e4] text-black font-bold',
+                    btnText: 'Find Teammates',
+                    hint: 'Find co-builders, designers, or cofounders'
+                  }
                   : selectedPostType === 'build_log'
-                  ? {
+                    ? {
                       accent: 'text-[#D4F842]',
                       button: 'bg-[#D4F842] hover:bg-[#c5ec2d] text-black font-bold',
                       btnText: 'Log Milestone',
                       hint: 'Document a major project launch or milestone'
                     }
-                  : {
+                    : {
                       accent: 'text-white',
                       button: 'bg-white hover:bg-neutral-200 text-black font-bold',
                       btnText: 'Ship Update',
@@ -592,38 +599,35 @@ export default function DashboardHomePage() {
                     };
 
                 return (
-                  <div className="border-b border-white/[0.06] bg-[#000000] flex flex-col pt-4 pb-3 px-4 relative shrink-0">
-                    
+                  <div className="border-b border-white/[0.06] bg-[#000000] flex flex-col pt-3 pb-2 sm:pt-4 sm:pb-3 px-3 sm:px-4 relative shrink-0">
+
                     {/* Top Controls: Post Type & Metadata */}
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
                       <div className="flex items-center bg-neutral-900/50 p-1 rounded-lg border border-white/[0.04]">
                         <button
                           onClick={() => setSelectedPostType('update')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${
-                            selectedPostType === 'update'
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${selectedPostType === 'update'
                               ? 'bg-neutral-700/50 text-white shadow-sm'
                               : 'text-neutral-500 hover:text-neutral-300 bg-transparent'
-                          }`}
+                            }`}
                         >
                           <Megaphone className="w-3 h-3" /> Update
                         </button>
                         <button
                           onClick={() => setSelectedPostType('looking_for')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${
-                            selectedPostType === 'looking_for'
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${selectedPostType === 'looking_for'
                               ? 'bg-[#00f2fe]/10 text-[#00f2fe]'
                               : 'text-neutral-500 hover:text-[#00f2fe]/70 bg-transparent'
-                          }`}
+                            }`}
                         >
                           <Handshake className="w-3 h-3" /> Collab
                         </button>
                         <button
                           onClick={() => setSelectedPostType('build_log')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${
-                            selectedPostType === 'build_log'
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] rounded-md transition-all duration-200 font-semibold cursor-pointer border-none ${selectedPostType === 'build_log'
                               ? 'bg-[#D4F842]/10 text-[#D4F842]'
                               : 'text-neutral-500 hover:text-[#D4F842]/70 bg-transparent'
-                          }`}
+                            }`}
                         >
                           <Trophy className="w-3 h-3" /> Milestone
                         </button>
@@ -698,10 +702,10 @@ export default function DashboardHomePage() {
 
                     {/* Input Area */}
                     <div className="flex gap-3 items-start">
-                      <img 
-                        src={avatarSrc} 
-                        alt="avatar" 
-                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/10" 
+                      <img
+                        src={avatarSrc}
+                        alt="avatar"
+                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/10"
                       />
                       <div className="flex-1 min-w-0">
                         <textarea
@@ -712,8 +716,8 @@ export default function DashboardHomePage() {
                             selectedPostType === 'looking_for'
                               ? "What roles, skills, or collaborators do you need?..."
                               : selectedPostType === 'build_log'
-                              ? "What milestone did you unlock? (e.g. launched v1.0)..."
-                              : "What coding progress are you shipping today?..."
+                                ? "What milestone did you unlock? (e.g. launched v1.0)..."
+                                : "What are you shipping?"
                           }
                           className="w-full bg-transparent text-white text-[15px] placeholder-neutral-600 outline-none resize-none pt-1.5 pb-1 border-none focus:ring-0 leading-relaxed font-sans"
                           style={{ minHeight: '60px' }}
@@ -728,7 +732,7 @@ export default function DashboardHomePage() {
                         <span className="text-[12px] font-mono text-red-500 font-bold shrink-0">
                           {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
                         </span>
-                        
+
                         <div className="flex items-center gap-1 h-4 overflow-hidden flex-1 px-4">
                           {[...Array(16)].map((_, i) => (
                             <span
@@ -786,7 +790,7 @@ export default function DashboardHomePage() {
                     )}
 
                     {/* Tags Quick Suggestions */}
-                    <div className="flex items-center gap-1.5 flex-wrap mt-3 ml-13">
+                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-13 pb-1">
                       {['nextjs', 'react', 'tailwind', 'typescript', 'ai'].map((tag) => (
                         <button
                           key={tag}
@@ -798,7 +802,7 @@ export default function DashboardHomePage() {
                               setStackTags(trimmedStack ? `${trimmedStack} ${tag}` : tag);
                             }
                           }}
-                          className="text-[11px] font-mono bg-transparent text-[#1d9bf0] hover:bg-[#1d9bf0]/10 px-2 py-0.5 rounded-full transition-all cursor-pointer border-none"
+                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-transparent text-[#1d9bf0] hover:bg-[#1d9bf0]/10 px-2 py-0.5 rounded-full transition-all cursor-pointer border-none"
                         >
                           #{tag}
                         </button>
@@ -812,16 +816,16 @@ export default function DashboardHomePage() {
                         <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#1d9bf0]/10 text-[#1d9bf0] transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
                           <Image className="w-4 h-4" />
                         </button>
-                        <button 
+                        <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleRecording(); }}
                           className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-[#1d9bf0] hover:bg-[#1d9bf0]/10"}`}
                           title="Record Voice"
                         >
                           <Mic className={`w-4 h-4 ${isRecording ? "animate-pulse" : ""}`} />
                         </button>
-                        
+
                         <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
-                        
+
                         <div className="flex items-center text-neutral-400 font-mono text-[13px]">
                           <span className="mr-0.5 opacity-50">#</span>
                           <input
@@ -843,9 +847,8 @@ export default function DashboardHomePage() {
                               <circle cx="10" cy="10" r="8" className="stroke-neutral-800 fill-none" strokeWidth="2" />
                               <circle
                                 cx="10" cy="10" r="8"
-                                className={`fill-none transition-all duration-300 ${
-                                  content.length > 250 ? 'stroke-red-500' : content.length > 200 ? 'stroke-amber-500' : 'stroke-[#1d9bf0]'
-                                }`}
+                                className={`fill-none transition-all duration-300 ${content.length > 250 ? 'stroke-red-500' : content.length > 200 ? 'stroke-amber-500' : 'stroke-[#1d9bf0]'
+                                  }`}
                                 strokeWidth="2"
                                 strokeDasharray={`${2 * Math.PI * 8}`}
                                 strokeDashoffset={`${2 * Math.PI * 8 * (1 - Math.min(content.length, 280) / 280)}`}
@@ -857,11 +860,10 @@ export default function DashboardHomePage() {
                         <button
                           onClick={submitPost}
                           disabled={(!content.trim() && !audioBlob) || isPosting}
-                          className={`rounded-full px-5 py-2 text-[14px] transition-all active:scale-95 cursor-pointer border-none ${
-                            (!content.trim() && !audioBlob) || isPosting
+                          className={`rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[13px] sm:text-[14px] transition-all active:scale-95 cursor-pointer border-none ml-auto ${(!content.trim() && !audioBlob) || isPosting
                               ? "bg-white/20 text-white/50 cursor-not-allowed pointer-events-none"
                               : theme.button
-                          }`}
+                            }`}
                         >
                           {isPosting ? "Posting..." : theme.btnText}
                         </button>
@@ -879,7 +881,7 @@ export default function DashboardHomePage() {
               })()}
 
               {/* Feed Posts */}
-              <div className="flex flex-col gap-2 bg-[#000000] pb-24 px-4 pt-4 relative">
+              <div className="flex flex-col gap-2 bg-[#000000] pb-[90px] md:pb-24 px-4 pt-4 relative">
                 {filteredPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="w-14 h-14 rounded-2xl bg-neutral-900 border border-white/5 flex items-center justify-center mb-4">
@@ -901,6 +903,26 @@ export default function DashboardHomePage() {
 
           </div>
         </main>
+
+        {/* Mobile Bottom Tab Bar */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 h-[60px] bg-[rgba(0,0,0,0.95)] backdrop-blur-[20px] border-t border-[#1a1a1a] z-50 flex justify-around items-center px-2">
+          <button onClick={() => router.push('/dashboard/home')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-white bg-transparent border-none">
+            <LayoutDashboard className="w-6 h-6" />
+          </button>
+          <button onClick={() => router.push('/explore')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none">
+            <Telescope className="w-6 h-6" />
+          </button>
+          <button onClick={() => router.push('/dashboard/home?compose=true')} className="flex items-center justify-center w-[44px] h-[44px] bg-white text-black rounded-full cursor-pointer transition-transform hover:scale-105 active:scale-95 border-none shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+            <Pencil className="w-5 h-5 fill-current" />
+          </button>
+          <button onClick={() => router.push('/messages')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none">
+            <MessageSquare className="w-6 h-6" />
+          </button>
+          <button onClick={() => router.push('/profile')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none">
+            <User className="w-6 h-6" />
+          </button>
+        </div>
+
         <Toaster theme="dark" position="bottom-right" richColors />
       </div>
     </div>
