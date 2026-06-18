@@ -158,15 +158,15 @@ function PostCard({
 
             {/* Author info & Badges */}
             <div className="flex flex-col min-w-0 justify-center flex-1">
-              <div className="flex items-center gap-1.5 flex-nowrap overflow-hidden w-full">
-                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-white hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[40%]">
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 overflow-hidden w-full">
+                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-white hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[140px] sm:max-w-none">
                   {post.author_name || "Builder"}
                 </span>
-                <span className="text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0">
+                <span className="text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0 max-w-[100px] sm:max-w-none">
                   @{post.author_username || "builder"}
                 </span>
-                <span className="text-neutral-500 text-[13px] mx-1 shrink-0">·</span>
-                <span className="text-[11px] sm:text-[12px] text-neutral-400 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap">{timeAgo(post.created_at)}</span>
+                <span className="text-neutral-500 text-[13px] mx-0.5 sm:mx-1 shrink-0 hidden sm:inline">·</span>
+                <span className="text-[11px] sm:text-[12px] text-neutral-400 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap ml-auto sm:ml-0">{timeAgo(post.created_at)}</span>
               </div>
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                 {/* Clean inline post type badge */}
