@@ -909,21 +909,28 @@ export default function DashboardHomePage() {
         </main>
 
         {/* Mobile Bottom Tab Bar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 h-[60px] bg-[rgba(0,0,0,0.95)] backdrop-blur-[20px] border-t border-[#1a1a1a] z-50 flex justify-around items-center px-2">
-          <button onClick={() => router.push('/dashboard/home')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-white bg-transparent border-none">
-            <LayoutDashboard className="w-6 h-6" />
+        <div className="md:hidden fixed bottom-0 left-0 right-0 h-[64px] bg-[rgba(0,0,0,0.95)] backdrop-blur-[20px] border-t border-[#1a1a1a] z-50 flex justify-around items-center px-2 pb-1">
+          <button onClick={() => router.push('/dashboard/home')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-white bg-transparent border-none">
+            <LayoutDashboard className="w-[22px] h-[22px] mb-1" />
+            <span className="text-[10px] text-white">Home</span>
           </button>
-          <button onClick={() => router.push('/explore')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none">
-            <Telescope className="w-6 h-6" />
+          <button onClick={() => router.push('/explore')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none group">
+            <Telescope className="w-[22px] h-[22px] mb-1 group-hover:text-white" />
+            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Explore</span>
           </button>
-          <button onClick={() => router.push('/dashboard/home?compose=true')} className="flex items-center justify-center w-[44px] h-[44px] bg-white text-black rounded-full cursor-pointer transition-transform hover:scale-105 active:scale-95 border-none shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-            <Pencil className="w-5 h-5 fill-current" />
+          <button onClick={() => router.push('/dashboard/home?compose=true')} className="flex flex-col items-center justify-center w-14 h-14 cursor-pointer transition-transform active:scale-95 border-none bg-transparent group">
+            <div className="flex items-center justify-center w-8 h-8 bg-white text-black rounded-full mb-1 shadow-[0_0_10px_rgba(255,255,255,0.2)] group-hover:scale-105 transition-transform">
+              <Pencil className="w-[18px] h-[18px] fill-current" />
+            </div>
+            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Post</span>
           </button>
-          <button onClick={() => router.push('/messages')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none">
-            <MessageSquare className="w-6 h-6" />
+          <button onClick={() => router.push('/messages')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none group">
+            <MessageSquare className="w-[22px] h-[22px] mb-1 group-hover:text-white" />
+            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Chat</span>
           </button>
-          <button onClick={() => router.push('/profile')} className="flex flex-col items-center justify-center w-12 h-12 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none">
-            <User className="w-6 h-6" />
+          <button onClick={() => router.push('/profile')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none group">
+            <User className="w-[22px] h-[22px] mb-1 group-hover:text-white" />
+            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Profile</span>
           </button>
         </div>
 
