@@ -536,7 +536,7 @@ export default function DashboardHomePage() {
           <div className="flex w-full h-full relative z-10 justify-center">
 
             {/* COLUMN 1: FEED */}
-            <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-32">
+            <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-[80px] md:pb-32">
 
               {/* Clean Underline Tab Selector */}
               <div className="sticky top-0 z-40 flex justify-center w-full mb-4 sm:mb-6 shrink-0 pt-3 pb-0 bg-[#000000]/90 backdrop-blur-md border-b border-white/[0.08]">
@@ -867,7 +867,7 @@ export default function DashboardHomePage() {
               })()}
 
               {/* Feed Posts */}
-              <div className="flex flex-col bg-[#000000] pb-[90px] md:pb-24 px-3 sm:px-4 pt-2 sm:pt-4 relative">
+              <div className="flex flex-col bg-[#000000] pb-[80px] md:pb-24 px-3 sm:px-4 pt-2 sm:pt-4 relative">
                 {filteredPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="w-14 h-14 rounded-2xl bg-neutral-900 border border-white/5 flex items-center justify-center mb-4">
