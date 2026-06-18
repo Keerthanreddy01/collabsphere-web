@@ -102,16 +102,16 @@ export default function ExplorePage() {
                 <motion.div
                   animate={{ scale: searchFocused ? 1.01 : 1 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex items-center gap-4 bg-white/[0.06] border rounded-2xl px-5 py-4 transition-all duration-200 ${searchFocused ? "border-white/20 bg-white/[0.08]" : "border-white/[0.06]"}`}
+                  className={`flex items-center gap-4 bg-[#15171a] border border-white/[0.04] rounded-[16px] px-5 h-[46px] transition-all duration-200 ${searchFocused ? "bg-black border-[#6366f1]/50 shadow-[0_0_20px_rgba(99,102,241,0.15)]" : "focus-within:bg-[#000]"}`}
                 >
-                  <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-white" : "text-white/30"}`} />
+                  <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-[#6366f1]" : "text-white/40"}`} />
                   <input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
                     placeholder="Search builders, projects, topics…"
-                    className="flex-1 bg-transparent text-[16px] text-white placeholder-white/25 outline-none"
+                    className="flex-1 bg-transparent text-[14px] text-white placeholder-white/30 outline-none h-full"
                   />
                   <AnimatePresence>
                     {searchQuery && (
@@ -128,18 +128,26 @@ export default function ExplorePage() {
               </div>
 
               {/* Category pills */}
-              <div className="flex items-center gap-2 px-6 pb-0 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center w-full overflow-x-auto scrollbar-hide border-b border-white/[0.06]">
                 {CATEGORIES.map(({ label, icon: Icon }) => (
                   <button
                     key={label}
                     onClick={() => setActiveCategory(label)}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-none text-[15px] font-medium whitespace-nowrap transition-all duration-200 border-b-[3px] ${activeCategory === label
-                        ? "text-white border-white"
-                        : "text-white/40 border-transparent hover:text-white/70"
+                    className={`relative flex-1 flex items-center justify-center h-[53px] px-4 text-[15px] font-bold whitespace-nowrap transition-colors duration-200 hover:bg-white/[0.03] outline-none border-none cursor-pointer bg-transparent ${activeCategory === label
+                        ? "text-white"
+                        : "text-[#71767b]"
                       }`}
                   >
-                    <Icon className="w-4 h-4" />
-                    {label}
+                    <div className="relative flex items-center gap-2 h-full">
+                      <Icon className="w-[18px] h-[18px]" />
+                      <span>{label}</span>
+                      {activeCategory === label && (
+                        <motion.div 
+                          layoutId="exploreTabIndicator"
+                          className="absolute bottom-0 left-0 right-0 h-[4px] bg-white rounded-t-full"
+                        />
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
