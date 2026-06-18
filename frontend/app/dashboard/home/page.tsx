@@ -133,7 +133,7 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-2 sm:mb-4 bg-[#0A0A0A] border border-white/[0.08] rounded-2xl transition-all duration-300 ease-out hover:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full mb-2 sm:mb-4 bg-[#0A0A0A] border border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
@@ -516,18 +516,16 @@ export default function DashboardHomePage() {
   const avatarSrc = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
 
   return (
-    <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-blue-500/30 selection:text-white relative">
-      <div className="flex w-full max-w-[1250px] h-screen relative">
+    <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-x-hidden overflow-y-hidden selection:bg-blue-500/30 selection:text-white relative">
+      <div className="flex w-full max-w-[1250px] h-screen relative overflow-x-hidden">
         <div className="hidden md:flex shrink-0">
           <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
         </div>
 
         <main
-          className="flex-1 flex h-full overflow-hidden relative z-10 bg-[#000000] min-w-0"
+          className="flex-1 flex h-full overflow-hidden overflow-x-hidden relative z-10 bg-[#000000] min-w-0 text-[14px] leading-[1.4] sm:text-[15px] sm:leading-[1.5]"
           style={{
             fontFamily: 'var(--font-instrument), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-            fontSize: "15px",
-            lineHeight: "1.5"
           }}
         >
           {/* Flat Dark Background */}
