@@ -125,8 +125,8 @@ export default function RightSidebar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full h-[46px] pl-12 pr-12 text-[14px] text-white placeholder-white/30 bg-[#15171a] rounded-[16px] outline-none border border-white/[0.04] focus:bg-[#000] focus:border-[#6366f1]/50 focus:shadow-[0_0_20px_rgba(99,102,241,0.15)] transition-all duration-300"
         />
-        <Search className="w-4 h-4 text-white/40 absolute left-4.5 top-3.5 group-focus-within:text-[#6366f1] transition-colors" />
-        <div className="absolute right-4 px-2 py-0.5 rounded bg-[#22242a] border border-white/5 text-[10px] font-semibold text-white/30 tracking-widest font-mono pointer-events-none group-focus-within:opacity-0 transition-opacity duration-200">
+        <Search className="w-4 h-4 text-white/40 absolute left-4.5 top-1/2 -translate-y-1/2 group-focus-within:text-[#6366f1] transition-colors" />
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-[#22242a] border border-white/5 text-[10px] font-semibold text-white/30 tracking-widest font-mono pointer-events-none group-focus-within:opacity-0 transition-opacity duration-200">
           ⌘K
         </div>
       </div>
