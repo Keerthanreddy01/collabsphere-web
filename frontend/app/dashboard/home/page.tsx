@@ -585,12 +585,12 @@ export default function DashboardHomePage() {
                     : {
                       accent: 'text-white',
                       button: 'bg-white hover:bg-neutral-200 text-black font-bold',
-                      btnText: 'Ship Update',
+                      btnText: 'Ship',
                       hint: 'Log a quick dev update'
                     };
 
                 return (
-                  <div className={`flex flex-col pt-3 pb-2 sm:pt-4 sm:pb-3 px-3 sm:px-4 relative shrink-0 transition-all duration-300 ease-out mx-4 mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl' : 'bg-[#0a0a0a]'}`}>
+                  <div className={`flex flex-col pt-3 pb-2 sm:pt-4 sm:pb-3 pl-4 pr-4 sm:px-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl' : 'bg-[#0a0a0a]'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
