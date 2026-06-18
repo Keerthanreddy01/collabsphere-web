@@ -247,36 +247,36 @@ function PostCard({
           {/* Comment */}
           <button
             onClick={handleFetchComments}
-            className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-1.5 rounded-full hover:bg-white/5 transition-colors"
+            className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.1] hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none"
           >
-            <MessageCircle className="w-4 h-4 text-neutral-400 group-hover:text-white transition-colors" />
-            {post.comments_count > 0 && <span className="font-bold text-[12px] text-neutral-400 group-hover:text-white transition-colors">{post.comments_count}</span>}
+            <MessageCircle className="w-[14px] h-[14px] text-neutral-400 group-hover:text-white transition-colors" />
+            {post.comments_count > 0 && <span className="font-semibold text-[12px] text-neutral-400 group-hover:text-white transition-colors">{post.comments_count}</span>}
           </button>
 
           {/* Boost */}
-          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-1.5 rounded-full hover:bg-emerald-500/10 transition-colors">
-            <Rocket className="w-4 h-4 text-neutral-400 group-hover:text-emerald-400 transition-colors" />
+          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none">
+            <Rocket className="w-[14px] h-[14px] text-neutral-400 group-hover:text-emerald-400 transition-colors" />
           </button>
 
           {/* Like (Zap) */}
           <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
             <button
               onClick={() => handleLikeClick(post.id)}
-              className={`flex items-center gap-1.5 group cursor-pointer border-none p-1.5 rounded-full transition-colors ${isLiked ? 'bg-[#D4F842]/10' : 'bg-transparent hover:bg-white/5'}`}
+              className={`flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none ${isLiked ? 'bg-[#D4F842]/15 border-[#D4F842]/30 shadow-[0_0_10px_rgba(212,248,66,0.1)]' : 'border-white/[0.05] bg-white/[0.02] hover:bg-[#D4F842]/10 hover:border-[#D4F842]/30'}`}
             >
-              <Zap className={`w-4 h-4 transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`} fill={isLiked ? "#D4F842" : "none"} />
-              {likesCount > 0 && <span className={`font-bold text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
+              <Zap className={`w-[14px] h-[14px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`} fill={isLiked ? "#D4F842" : "none"} />
+              {likesCount > 0 && <span className={`font-semibold text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
             </button>
           </ClickSpark>
 
           {/* Views */}
-          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-1.5 rounded-full hover:bg-white/5 transition-colors">
-            <Eye className="w-4 h-4 text-neutral-400 group-hover:text-white transition-colors" />
+          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.1] hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none">
+            <Eye className="w-[14px] h-[14px] text-neutral-400 group-hover:text-white transition-colors" />
           </button>
 
           {/* Bookmark */}
-          <button className="flex items-center gap-1.5 group cursor-pointer bg-transparent border-none p-1.5 rounded-full hover:bg-amber-500/10 transition-colors">
-            <Bookmark className="w-4 h-4 text-neutral-400 group-hover:text-amber-500 transition-colors" />
+          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-amber-500/10 hover:border-amber-500/30 hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none">
+            <Bookmark className="w-[14px] h-[14px] text-neutral-400 group-hover:text-amber-500 transition-colors" />
           </button>
         </div>
 
