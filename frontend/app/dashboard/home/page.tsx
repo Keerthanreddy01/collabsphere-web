@@ -537,8 +537,8 @@ export default function DashboardHomePage() {
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-[80px] md:pb-32">
 
               {/* Premium Sticky Tab Selector */}
-              <div className="sticky top-0 z-40 flex justify-center w-full mb-0 shrink-0 px-4 pt-3 pb-0 bg-[rgba(0,0,0,0.85)] backdrop-blur-[16px] border-b border-[#1a1a1a]">
-                <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto">
+              <div className="sticky top-[12px] z-40 flex justify-center w-full mb-0 shrink-0 px-4 pt-0 pb-0 pointer-events-none">
+                <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-lg">
                   <button
                     onClick={() => setActiveTab('all')}
                     className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-white'}`}
