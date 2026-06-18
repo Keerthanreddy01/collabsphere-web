@@ -213,7 +213,7 @@ function PostCard({
 
           {/* ── Tech Stack Tags ── */}
           {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar sm:flex-wrap pb-1">
+            <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar sm:flex-wrap pb-1 pr-4 sm:pr-0">
               {post.stack_tags.map((tag: string, idx: number) => (
                 <span
                   key={idx}
@@ -780,7 +780,7 @@ export default function DashboardHomePage() {
                     )}
 
                     {/* Tags Quick Suggestions */}
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-13 pb-1">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-0 sm:ml-13 pb-1 pr-4 sm:pr-0">
                       {['nextjs', 'react', 'tailwind', 'typescript', 'ai'].map((tag) => (
                         <button
                           key={tag}
