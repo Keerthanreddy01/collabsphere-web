@@ -546,22 +546,22 @@ export default function DashboardHomePage() {
             {/* COLUMN 1: FEED */}
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-32">
 
-              {/* Floating Tab Selector */}
-              <div className="sticky top-4 z-40 flex justify-center w-full px-4 mb-6 shrink-0 pointer-events-none">
-                <div className="flex items-center bg-[#0a0a0a] border border-white/[0.08] p-1.5 rounded-full pointer-events-auto">
+              {/* Clean Underline Tab Selector */}
+              <div className="sticky top-0 z-40 flex justify-center w-full mb-4 sm:mb-6 shrink-0 pt-3 pb-0 bg-[#000000]/90 backdrop-blur-md border-b border-white/[0.08]">
+                <div className="flex items-center gap-6">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className="relative px-6 py-2 rounded-full border-none bg-transparent cursor-pointer overflow-hidden"
+                    className="relative pb-2 border-none bg-transparent cursor-pointer"
                   >
-                    {activeTab === 'all' && <motion.div layoutId="mainTabs" className="absolute inset-0 bg-white/10 rounded-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
-                    <span className={`relative z-10 text-[14px] font-bold transition-colors ${activeTab === 'all' ? 'text-white' : 'text-neutral-400'}`}>All Builds</span>
+                    {activeTab === 'all' && <motion.div layoutId="mainTabs" className="absolute bottom-0 left-0 right-0 h-[2px] bg-white rounded-t-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                    <span className={`text-[14px] font-semibold transition-colors ${activeTab === 'all' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}>All Builds</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className="relative px-6 py-2 rounded-full border-none bg-transparent cursor-pointer overflow-hidden"
+                    className="relative pb-2 border-none bg-transparent cursor-pointer"
                   >
-                    {activeTab === 'collabs' && <motion.div layoutId="mainTabs" className="absolute inset-0 bg-[#00f2fe]/15 rounded-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
-                    <span className={`relative z-10 text-[14px] font-bold transition-colors ${activeTab === 'collabs' ? 'text-[#00f2fe]' : 'text-neutral-400'}`}>Collab Board</span>
+                    {activeTab === 'collabs' && <motion.div layoutId="mainTabs" className="absolute bottom-0 left-0 right-0 h-[2px] bg-white rounded-t-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                    <span className={`text-[14px] font-semibold transition-colors ${activeTab === 'collabs' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}>Collab Board</span>
                   </button>
                 </div>
               </div>
