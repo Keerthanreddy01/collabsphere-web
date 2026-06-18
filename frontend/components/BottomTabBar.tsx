@@ -25,7 +25,10 @@ export default function BottomTabBar() {
                     h-16 px-2
                     justify-around items-center">
       {tabs.map((tab) => {
-        const isActive = pathname === tab.href || (pathname === "/dashboard/home" && tab.href.startsWith("/dashboard/home"));
+        const isHomeTab = tab.href === "/dashboard/home";
+        const isActive = isHomeTab 
+          ? pathname === "/dashboard/home" 
+          : pathname.startsWith(tab.href.split('?')[0]);
         const Icon = tab.icon;
         
         if (tab.isCenter) return (
