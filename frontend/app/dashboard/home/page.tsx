@@ -590,11 +590,11 @@ export default function DashboardHomePage() {
                     };
 
                 return (
-                  <div className={`flex flex-col pt-3 pb-2 sm:pt-4 sm:pb-3 pl-4 pr-4 sm:px-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl' : 'bg-[#0a0a0a]'}`}>
+                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl max-h-none' : 'bg-[#0a0a0a] max-h-[140px] sm:max-h-none'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
 
                       <div className="flex items-center bg-neutral-950/80 p-1 rounded-xl border border-white/[0.06] shadow-inner">
                         <button
@@ -688,7 +688,7 @@ export default function DashboardHomePage() {
                     </div>
 
                     {/* Input Area */}
-                    <div className="flex gap-3 items-start">
+                    <div className="flex gap-2 sm:gap-3 items-start">
                       <img
                         src={avatarSrc}
                         alt="avatar"
@@ -710,7 +710,7 @@ export default function DashboardHomePage() {
                                 : "What are you shipping?"
                           }
                           className="w-full bg-transparent text-white text-[16px] sm:text-[17px] placeholder-neutral-400 outline-none resize-none pt-1 pb-1 border-none focus:ring-0 leading-relaxed font-sans transition-all"
-                          style={{ minHeight: '60px' }}
+                          style={{ minHeight: '40px' }}
                         />
                       </div>
                     </div>
@@ -800,9 +800,9 @@ export default function DashboardHomePage() {
                     </div>
 
                     {/* Bottom Actions Row */}
-                    <div className="flex items-center justify-between mt-3 ml-13">
+                    <div className="flex items-center justify-between gap-2 mt-2 sm:mt-3 ml-13">
                       {/* Left: Stack tags input + Media Buttons */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 sm:gap-3">
                         <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
                           <Image className="w-4 h-4" />
                         </button>
