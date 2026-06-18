@@ -165,8 +165,8 @@ export default function MessagesPage() {
           {/* Overall messages page wrapper - constrained max-width 1200px, centered */}
           <div className="flex w-full h-full bg-[#000000] relative z-10">
           
-          {/* COLUMN 1: CHAT THREADS LIST (350px wide fixed - always visible) */}
-          <div className="w-[350px] min-w-[350px] border-r border-[#2f3336] flex flex-col h-full shrink-0 bg-[#000000]">
+          {/* COLUMN 1: CHAT THREADS LIST (Responsive) */}
+          <div className={`w-full md:w-[350px] md:min-w-[350px] border-r border-[#2f3336] flex-col h-full shrink-0 bg-[#000000] ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
             {/* Header of left sidebar (X style) */}
             <div className="flex items-center justify-between px-4 py-3 bg-[#000000] border-b border-[#2f3336]">
               <div className="flex items-center gap-3">
@@ -205,7 +205,7 @@ export default function MessagesPage() {
             </div>
 
             {/* Conversations list (X style - 72px row height, 56px avatar) */}
-            <div className="flex-1 overflow-y-auto no-scrollbar pb-6 bg-[#000000]">
+            <div className="flex-1 overflow-y-auto no-scrollbar pb-20 md:pb-6 bg-[#000000]">
               {filteredChats.map(chat => {
                 const otherUid = chat.participants.find((p: string) => p !== currentUid);
                 const otherProfile = profiles[otherUid] || {};
@@ -263,10 +263,10 @@ export default function MessagesPage() {
             </div>
           </div>
 
-          {/* COLUMN 2: ACTIVE CONVERSATION PANE (flex-1, always visible) */}
-          <div className="flex-1 border-r border-[#2f3336] flex flex-col h-full bg-[#000000] relative">
+          {/* COLUMN 2: ACTIVE CONVERSATION PANE (Responsive) */}
+          <div className={`flex-1 border-r border-[#2f3336] flex-col h-full bg-[#000000] relative ${!activeChatId ? 'hidden md:flex' : 'flex'}`}>
             {!activeChatId ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 select-none z-10 bg-[#000000]">
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 pb-20 select-none z-10 bg-[#000000]">
                 <h2 className="text-2xl font-extrabold text-white tracking-tight mb-2">Select a message</h2>
                 <p className="text-[15px] text-[#71767b] max-w-sm leading-normal">
                   Choose from your existing conversations, start a new one, or just keep swimming.
@@ -363,7 +363,7 @@ export default function MessagesPage() {
 
                 {/* Message Composer (Glassmorphic Bottom Bar) */}
                 <div 
-                  className="p-4 shrink-0 z-10 bg-[#000000]"
+                  className="p-4 pb-20 md:pb-4 shrink-0 z-10 bg-[#000000]"
                   style={{
                     background: 'rgba(0, 0, 0, 0.72)',
                     backdropFilter: 'blur(12px)',

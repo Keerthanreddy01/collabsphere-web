@@ -65,7 +65,7 @@ export default function ProfilePage() {
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
         
         <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
-          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-32 border-r border-l border-white/[0.06] bg-[#050505] min-h-screen">
+          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-[100px] md:pb-32 border-r border-l border-white/[0.06] bg-[#050505] min-h-screen">
           
           {/* Top Actions */}
           <motion.div 
