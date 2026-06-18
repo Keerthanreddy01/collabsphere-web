@@ -133,7 +133,7 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-4 bg-[#0A0A0A] border border-white/[0.08] rounded-2xl transition-all duration-300 ease-out hover:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full mb-2 sm:mb-4 bg-[#0A0A0A] border border-white/[0.08] rounded-2xl transition-all duration-300 ease-out hover:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
@@ -590,7 +590,7 @@ export default function DashboardHomePage() {
                     };
 
                 return (
-                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl max-h-none' : 'bg-[#0a0a0a] max-h-[140px] sm:max-h-none'}`}>
+                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl max-h-none' : 'bg-[#0a0a0a] max-h-[140px] sm:max-h-none'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
@@ -875,7 +875,7 @@ export default function DashboardHomePage() {
               })()}
 
               {/* Feed Posts */}
-              <div className="flex flex-col gap-2 bg-[#000000] pb-[90px] md:pb-24 px-4 pt-4 relative">
+              <div className="flex flex-col bg-[#000000] pb-[90px] md:pb-24 px-3 sm:px-4 pt-2 sm:pt-4 relative">
                 {filteredPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="w-14 h-14 rounded-2xl bg-neutral-900 border border-white/5 flex items-center justify-center mb-4">
