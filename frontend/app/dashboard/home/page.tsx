@@ -534,13 +534,13 @@ export default function DashboardHomePage() {
           <div className="flex w-full h-full relative z-10 justify-center">
 
             {/* COLUMN 1: FEED */}
-            <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-[80px] md:pb-32">
+            <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-0 pb-[80px] md:pb-32">
 
               {/* Premium Sticky Tab Selector with Glass Fade */}
-              <div className="sticky top-0 z-40 flex justify-center w-full shrink-0 pt-[12px] pb-[8px] pointer-events-none mb-2">
+              <div className="sticky top-0 z-40 flex justify-center w-full shrink-0 pt-[28px] sm:pt-[36px] pb-[8px] pointer-events-none mb-2">
                 {/* Fade Overlay */}
                 <div 
-                  className="absolute inset-x-0 top-0 h-[120px] pointer-events-none bg-gradient-to-b from-[#000000] via-[#000000]/80 to-transparent"
+                  className="absolute inset-x-0 top-0 h-[140px] pointer-events-none bg-gradient-to-b from-[#000000] via-[#000000]/80 to-transparent"
                   style={{
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
