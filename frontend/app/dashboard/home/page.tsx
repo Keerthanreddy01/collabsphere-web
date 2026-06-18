@@ -536,8 +536,8 @@ export default function DashboardHomePage() {
             {/* COLUMN 1: FEED */}
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-[80px] md:pb-32">
 
-              {/* Clean Underline Tab Selector */}
-              <div className="sticky top-0 z-40 flex justify-center w-full mb-4 sm:mb-6 shrink-0 pt-3 pb-0 bg-[#000000]/90 backdrop-blur-md border-b border-white/[0.08]">
+              {/* Premium Sticky Tab Selector */}
+              <div className="sticky top-0 z-40 flex justify-center w-full mb-4 sm:mb-6 shrink-0 px-4 py-3 bg-[rgba(0,0,0,0.85)] backdrop-blur-[16px] border-b border-[#1a1a1a]">
                 <div className="flex items-center gap-6">
                   <button
                     onClick={() => setActiveTab('all')}
