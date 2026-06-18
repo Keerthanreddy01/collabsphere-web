@@ -536,9 +536,21 @@ export default function DashboardHomePage() {
             {/* COLUMN 1: FEED */}
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-[80px] md:pb-32">
 
-              {/* Premium Sticky Tab Selector */}
-              <div className="sticky top-[12px] z-40 flex justify-center w-full mb-0 shrink-0 px-4 pt-0 pb-0 pointer-events-none">
-                <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-lg">
+              {/* Premium Sticky Tab Selector with Glass Fade */}
+              <div className="sticky top-0 z-40 flex justify-center w-full shrink-0 pt-[12px] pb-[8px] pointer-events-none mb-2">
+                {/* Fade Overlay */}
+                <div 
+                  className="absolute inset-x-0 top-0 h-[120px] pointer-events-none bg-gradient-to-b from-[#000000] via-[#000000]/80 to-transparent"
+                  style={{
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    maskImage: 'linear-gradient(to bottom, black 30%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, black 30%, transparent 100%)',
+                  }}
+                />
+                
+                {/* Pill */}
+                <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
                     className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-white'}`}
