@@ -182,6 +182,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
               router.push("/dashboard/home?compose=true");
             }
           }}
+          className={`
             flex items-center justify-center transition-all duration-200 mx-auto shrink-0 select-none cursor-pointer text-black hover:bg-[#e6e6e6] hover:-translate-y-[1px] active:translate-y-0 bg-white
             ${isExpanded ? 'w-[90%] h-[52px] rounded-full' : 'w-[50px] h-[50px] rounded-full'}
           `}
