@@ -67,14 +67,14 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
       initial={false}
       animate={{ 
         width: isExpanded ? 260 : (isMobile ? 70 : 80),
-        height: isExpanded ? "100dvh" : "calc(100dvh - 32px)",
-        marginTop: isExpanded ? 0 : 16,
-        marginLeft: isExpanded ? 0 : 16,
-        marginRight: isExpanded ? 0 : 16,
-        borderRadius: isExpanded ? 0 : 28,
+        height: "100dvh",
+        marginTop: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        borderRadius: 0,
       }}
       transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-      className={`hidden md:flex sticky left-0 top-0 z-50 flex-col bg-[#0f0f0f] shrink-0 border-[#1a1a1a] ${isExpanded ? "border-r" : "border shadow-2xl"} overflow-visible`}
+      className={`hidden md:flex sticky left-0 top-0 z-50 flex-col bg-[#000000] shrink-0 border-[#2f3336] border-r overflow-visible`}
     >
       {/* Unique Vertical Toggle Button (Hidden on Mobile) */}
       {!isMobile && (
@@ -132,12 +132,12 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
           const isActive = item.key === "home" ? pathname === "/dashboard/home" : pathname.startsWith(item.route);
 
           return (
-            <div key={item.key} className="relative group/navitem w-full flex justify-center">
+            <div key={item.key} className={`relative group/navitem w-full flex ${isExpanded ? 'justify-start px-2' : 'justify-center'}`}>
               <Link
                 href={item.route}
                 className={`
-                  relative h-[50px] flex items-center rounded-xl transition-all duration-300 w-full overflow-hidden cursor-pointer hover:bg-white/[0.08]
-                  ${isExpanded ? 'px-4 justify-start' : 'justify-center w-[50px] px-0 mx-auto'}
+                  relative h-[50px] flex items-center rounded-full transition-all duration-300 overflow-hidden cursor-pointer hover:bg-[#181818]
+                  ${isExpanded ? 'px-4 justify-start w-fit' : 'justify-center w-[50px] px-0'}
                 `}
               >
                 <Icon
@@ -182,9 +182,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
               router.push("/dashboard/home?compose=true");
             }
           }}
-          className={`
             flex items-center justify-center transition-all duration-200 mx-auto shrink-0 select-none cursor-pointer text-black hover:bg-[#e6e6e6] hover:-translate-y-[1px] active:translate-y-0 bg-white
-            ${isExpanded ? 'w-full h-[52px] rounded-xl' : 'w-[48px] h-[48px] rounded-full'}
+            ${isExpanded ? 'w-[90%] h-[52px] rounded-full' : 'w-[50px] h-[50px] rounded-full'}
           `}
           title="Share"
         >
@@ -210,8 +209,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
           <DropdownMenuTrigger asChild>
             <button 
               className={`
-                flex items-center transition-all duration-300 bg-transparent hover:bg-white/[0.05] outline-none group/user cursor-pointer
-                ${isExpanded ? 'w-full p-2 justify-start rounded-xl' : 'w-[48px] h-[48px] justify-center mx-auto rounded-full p-0'}
+                flex items-center transition-all duration-300 bg-transparent hover:bg-[#181818] outline-none group/user cursor-pointer rounded-full
+                ${isExpanded ? 'w-[95%] mx-auto p-3 justify-start' : 'w-[50px] h-[50px] justify-center mx-auto p-0'}
               `}
             >
               <div className="relative shrink-0 flex items-center justify-center">
