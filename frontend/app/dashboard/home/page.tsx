@@ -538,20 +538,18 @@ export default function DashboardHomePage() {
 
               {/* Premium Sticky Tab Selector */}
               <div className="sticky top-0 z-40 flex justify-center w-full mb-4 sm:mb-6 shrink-0 px-4 py-3 bg-[rgba(0,0,0,0.85)] backdrop-blur-[16px] border-b border-[#1a1a1a]">
-                <div className="flex items-center gap-6">
+                <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className="relative pb-2 border-none bg-transparent cursor-pointer"
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#666666] hover:text-white'}`}
                   >
-                    {activeTab === 'all' && <motion.div layoutId="mainTabs" className="absolute bottom-0 left-0 right-0 h-[2px] bg-white rounded-t-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
-                    <span className={`text-[14px] font-semibold transition-colors ${activeTab === 'all' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}>All Builds</span>
+                    All Builds
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className="relative pb-2 border-none bg-transparent cursor-pointer"
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#666666] hover:text-white'}`}
                   >
-                    {activeTab === 'collabs' && <motion.div layoutId="mainTabs" className="absolute bottom-0 left-0 right-0 h-[2px] bg-white rounded-t-full" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
-                    <span className={`text-[14px] font-semibold transition-colors ${activeTab === 'collabs' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}>Collab Board</span>
+                    Collab Board
                   </button>
                 </div>
               </div>
