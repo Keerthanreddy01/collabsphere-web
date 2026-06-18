@@ -74,7 +74,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
         borderRadius: isExpanded ? 0 : 28,
       }}
       transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-      className={`sticky left-0 top-0 z-50 flex flex-col bg-[#0f0f0f] shrink-0 border-[#1a1a1a] ${isExpanded ? "border-r" : "border shadow-2xl"} overflow-visible`}
+      className={`hidden md:flex sticky left-0 top-0 z-50 flex-col bg-[#0f0f0f] shrink-0 border-[#1a1a1a] ${isExpanded ? "border-r" : "border shadow-2xl"} overflow-visible`}
     >
       {/* Unique Vertical Toggle Button (Hidden on Mobile) */}
       {!isMobile && (
