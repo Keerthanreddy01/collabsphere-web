@@ -537,7 +537,7 @@ export default function DashboardHomePage() {
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-4 sm:pt-6 pb-[80px] md:pb-32">
 
               {/* Premium Sticky Tab Selector */}
-              <div className="sticky top-0 z-40 flex justify-center w-full mb-4 sm:mb-6 shrink-0 px-4 py-3 bg-[rgba(0,0,0,0.85)] backdrop-blur-[16px] border-b border-[#1a1a1a]">
+              <div className="sticky top-0 z-40 flex justify-center w-full mb-0 shrink-0 px-4 pt-3 pb-0 bg-[rgba(0,0,0,0.85)] backdrop-blur-[16px] border-b border-[#1a1a1a]">
                 <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto">
                   <button
                     onClick={() => setActiveTab('all')}
@@ -863,7 +863,7 @@ export default function DashboardHomePage() {
               })()}
 
               {/* Feed Posts */}
-              <div className="flex flex-col bg-[#000000] pb-[80px] md:pb-24 px-3 sm:px-4 pt-2 sm:pt-4 relative">
+              <div className="flex flex-col pb-[80px] md:pb-24 px-3 sm:px-4 mt-0 pt-[12px] relative">
                 {filteredPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="w-14 h-14 rounded-2xl bg-neutral-900 border border-white/5 flex items-center justify-center mb-4">
