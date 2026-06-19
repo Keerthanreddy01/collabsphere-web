@@ -107,8 +107,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                 transition={{ duration: 0.15 }}
                 className="flex items-center"
               >
-                <img src="/logocs.png" alt="CollabSphere Logo" className="w-6 h-6 mr-2 rounded-full" />
-                <span className="text-[22px] font-extrabold text-white whitespace-nowrap overflow-hidden tracking-tight">
+                <img src="/logocs.png" alt="CollabSphere Logo" className="w-9 h-9 mr-3 rounded-full" />
+                <span className="text-[24px] font-extrabold text-white whitespace-nowrap overflow-hidden tracking-tight">
                   CollabSphere
                 </span>
               </motion.div>
@@ -121,7 +121,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                 transition={{ duration: 0.15 }}
                 className="flex items-center justify-center"
               >
-                <img src="/logocs.png" alt="CollabSphere Logo" className="w-7 h-7 rounded-full" />
+                <img src="/logocs.png" alt="CollabSphere Logo" className="w-10 h-10 rounded-full" />
               </motion.div>
             )}
           </AnimatePresence>
