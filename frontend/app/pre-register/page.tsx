@@ -8,7 +8,7 @@ import {
   Check, Copy, Share2, ArrowLeft, Twitter, Linkedin, Sparkles, Smartphone, Award
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, getDocs, query, where } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import SideRays from "@/components/ui/SideRays";
 import emailjs from "@emailjs/browser";
@@ -52,6 +52,7 @@ function WaitlistFormContent() {
   const [position, setPosition] = useState(0);
   const [refCode, setRefCode] = useState("");
   const [copied, setCopied] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
 
   // Live total count from Firestore
   const [totalCount, setTotalCount] = useState(0);
@@ -74,9 +75,36 @@ function WaitlistFormContent() {
     });
   }, [success]);
 
+  const checkDuplicate = async (emailToCheck: string) => {
+    if (!db) return false;
+    const q = query(
+      collection(db, 'app_waitlist'),
+      where('email', '==', emailToCheck.toLowerCase().trim())
+    );
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || loading) return;
+
+    if (honeypot) {
+      console.log('Bot detected');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMsg('Please enter a valid email address');
+      return;
+    }
+
+    const alreadyExists = await checkDuplicate(email);
+    if (alreadyExists) {
+      setErrorMsg('This email is already registered!');
+      return;
+    }
 
     setLoading(true);
     setErrorMsg("");
@@ -272,6 +300,15 @@ function WaitlistFormContent() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ENTER YOUR EMAIL"
                     className="w-full bg-white/40 border-2 border-black/10 focus:border-[#063CB9] focus:bg-white rounded-xl px-5 py-4 text-black placeholder-black/40 outline-none transition-all font-syne font-bold text-sm tracking-wide"
+                  />
+                  <input
+                    type="text"
+                    name="website"
+                    style={{ display: 'none' }}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
                   />
                 </div>
 
