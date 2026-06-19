@@ -30,16 +30,49 @@ export async function getWaitlistCount(): Promise<number> {
  * Adds a user to the waitlist if their email is not already registered.
  * Returns the position and referral code.
  */
+// ── Client-side rate limiter (backup for the server-side /api/waitlist check) ─
+let lastSubmitTime = 0;
+const MIN_SUBMIT_INTERVAL_MS = 5000; // 5 seconds between attempts
+
+/**
+ * Generate a cryptographically stronger random ref code.
+ */
+function generateRefCode(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const arr = new Uint8Array(6);
+  if (typeof crypto !== 'undefined') {
+    crypto.getRandomValues(arr);
+  } else {
+    for (let i = 0; i < 6; i++) arr[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(arr, (b) => chars[b % chars.length]).join('');
+}
+
 export async function joinWaitlist(
   email: string,
   platform: "android" | "ios" | "both",
   referredBy: string | null
 ): Promise<{ success: boolean; position: number; refCode: string; message: string }> {
   if (!db) {
-    return { success: false, position: 248, refCode: "DEV123", message: "Database not configured." };
+    return { success: false, position: 0, refCode: "", message: "Database not configured." };
   }
+
+  // Client-side rate limit
+  const now = Date.now();
+  if (now - lastSubmitTime < MIN_SUBMIT_INTERVAL_MS) {
+    return { success: false, position: 0, refCode: "", message: "Please wait a few seconds before trying again." };
+  }
+  lastSubmitTime = now;
+
   try {
     const trimmedEmail = email.trim().toLowerCase();
+
+    // Validate email format client-side
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      return { success: false, position: 0, refCode: "", message: "Invalid email address." };
+    }
+
     const coll = collection(db, "app_waitlist");
 
     // 1. Check if email already exists
@@ -49,9 +82,9 @@ export async function joinWaitlist(
     if (!querySnapshot.empty) {
       const existingDoc = querySnapshot.docs[0].data();
       return {
-        success: true, // Success is true so the client can display success state details
-        position: existingDoc.position || 248,
-        refCode: existingDoc.ref_code || "DEV123",
+        success: true,
+        position: existingDoc.position || 1,
+        refCode: existingDoc.ref_code || "COLLSB",
         message: "Already registered!"
       };
     }
@@ -60,8 +93,8 @@ export async function joinWaitlist(
     const currentCount = await getWaitlistCount();
     const position = currentCount + 1;
 
-    // 3. Generate ref_code: random 6 chars (alphanumeric uppercase)
-    const refCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    // 3. Generate cryptographically stronger ref_code
+    const refCode = generateRefCode();
 
     // 4. Add the document to Firestore
     await addDoc(coll, {
