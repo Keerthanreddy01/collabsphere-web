@@ -19,24 +19,19 @@ const sendConfirmationEmail = async (
   email: string, 
   platform: string
 ) => {
-  console.log("EMAILJS PUBLIC KEY:", process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
-  console.log("EMAILJS SERVICE:", process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID);
-  console.log("EMAILJS TEMPLATE:", process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID);
-
   try {
-    const response = await emailjs.send(
-      "service_51jaez2",
-      "template_1c3ce7d",
+    await emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
       {
         to_email: email,
         user_name: email.split("@")[0],
         platform: platform,
       },
-      "j_A4UlL7bV7NmgEl5"
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
     );
-    console.log("EMAIL SUCCESS", response);
   } catch (error) {
-    console.error("FULL EMAILJS ERROR:", error);
+    console.error("Email confirmation failed");
   }
 };
 

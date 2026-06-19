@@ -8,10 +8,12 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
 .env*.local
 *.pem
 *.key
 serviceAccountKey.json
+firebase-adminsdk*.json
 firebase-adminsdk-*.json
 
 # ── Dependencies ──────────────────────────────────────────────────────────────
