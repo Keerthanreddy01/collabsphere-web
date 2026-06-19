@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   title: 'Collabsphere',
   description: 'Deploy autonomous AI agents on distributed infrastructure. Offload complex tasks to intelligent workers that run 24/7.',
   generator: 'v0.app',
+  icons: {
+    icon: '/logocs.png',
+    apple: '/logocs.png',
+  }
 }
 
 export default function RootLayout({
