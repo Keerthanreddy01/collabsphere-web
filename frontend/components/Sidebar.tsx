@@ -99,27 +99,30 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
         >
           <AnimatePresence mode="wait">
             {isExpanded ? (
-              <motion.span
+              <motion.div
                 key="full"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="text-[22px] font-extrabold text-white whitespace-nowrap overflow-hidden tracking-tight"
+                className="flex items-center"
               >
-                CollabSphere
-              </motion.span>
+                <img src="/logocs.png" alt="CollabSphere Logo" className="w-6 h-6 mr-2 rounded-full" />
+                <span className="text-[22px] font-extrabold text-white whitespace-nowrap overflow-hidden tracking-tight">
+                  CollabSphere
+                </span>
+              </motion.div>
             ) : (
-              <motion.span
+              <motion.div
                 key="short"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="text-[24px] font-extrabold text-white tracking-tight"
+                className="flex items-center justify-center"
               >
-                C
-              </motion.span>
+                <img src="/logocs.png" alt="CollabSphere Logo" className="w-7 h-7 rounded-full" />
+              </motion.div>
             )}
           </AnimatePresence>
         </Link>
