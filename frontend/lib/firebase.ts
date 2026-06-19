@@ -2,6 +2,7 @@ import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, browserLocalPersistence, setPersistence } from 'firebase/auth'
 import { getFirestore, initializeFirestore, setLogLevel } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,6 +21,21 @@ let storage: any = null
 
 if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+
+  // App Check — blocks unauthorized access (e.g., Postman, scripts)
+  if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+    try {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+        ),
+        isTokenAutoRefreshEnabled: true,
+      })
+    } catch (e) {
+      // App Check may already be initialized on hot-reload
+    }
+  }
+
   auth = getAuth(app)
   // set persistence but guard in case auth initialization fails
   try {
@@ -40,3 +56,4 @@ if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
 
 export { auth, db, storage }
 export default app
+
