@@ -239,12 +239,12 @@ function WaitlistFormContent() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-[10px] font-mono font-bold tracking-wide">
                     <span className="text-white/50">PHASE 1 SPOTS SECURED</span>
-                    <span className="text-[#D4F842]">{Math.min(100, Math.max(7, Math.round((totalCount / 150) * 100)))}%</span>
+                    <span className="text-[#D4F842]">{Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%</span>
                   </div>
                   <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-[#D4F842] to-emerald-400 rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: `${Math.min(100, Math.max(7, (totalCount / 150) * 100))}%` }}
+                      style={{ width: `${Math.min(100, Math.max(0, (totalCount / 150) * 100))}%` }}
                     />
                   </div>
                 </div>
