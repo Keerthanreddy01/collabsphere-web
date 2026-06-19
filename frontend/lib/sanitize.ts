@@ -2,23 +2,25 @@
  * lib/sanitize.ts
  * Centralized sanitization utilities to prevent XSS, injection attacks,
  * and unauthorized field overwrites on user-generated content.
+ *
+ * Uses DOMPurify for production-grade HTML stripping instead of regex.
  */
+
+import DOMPurify from 'isomorphic-dompurify'
 
 // ─── Text Sanitization ────────────────────────────────────────────────────────
 
 /**
- * Strips HTML/script tags, trims whitespace, and enforces max length.
+ * Strips ALL HTML/script content via DOMPurify, trims whitespace, and enforces max length.
  * Use on all user-generated text before storing in Firestore.
  */
 export function sanitizeText(input: unknown, maxLength = 5000): string {
   if (typeof input !== 'string') return ''
-  return input
-    .replace(/<[^>]*>/g, '')            // strip HTML tags
-    .replace(/javascript:/gi, '')        // remove javascript: URIs
-    .replace(/on\w+\s*=/gi, '')          // strip event handlers (onclick=, etc.)
-    .replace(/data:/gi, '')              // strip data: URIs
-    .trim()
-    .slice(0, maxLength)
+  const clean = DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: [],   // strip ALL html tags
+    ALLOWED_ATTR: [],   // strip ALL attributes
+  })
+  return clean.trim().slice(0, maxLength)
 }
 
 /**
