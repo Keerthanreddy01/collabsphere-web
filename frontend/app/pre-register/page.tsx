@@ -89,6 +89,7 @@ function WaitlistFormContent() {
     e.preventDefault();
     if (!email.trim() || loading) return;
 
+    // Client-side honeypot check
     if (honeypot) {
       console.log('Bot detected');
       return;
@@ -100,6 +101,25 @@ function WaitlistFormContent() {
       return;
     }
 
+    // Server-side rate limit + validation via API route
+    try {
+      const apiRes = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, platform, honeypot }),
+      });
+
+      if (!apiRes.ok) {
+        const errData = await apiRes.json();
+        setErrorMsg(errData.error || 'Something went wrong.');
+        return;
+      }
+    } catch {
+      setErrorMsg('Network error. Please try again.');
+      return;
+    }
+
+    // Duplicate check against Firestore
     const alreadyExists = await checkDuplicate(email);
     if (alreadyExists) {
       setErrorMsg('This email is already registered!');
