@@ -90,7 +90,7 @@ export default function SignupPage() {
     <main className="flex min-h-screen w-full bg-black selection:bg-white/30 p-2 transition-all duration-500 lg:h-screen lg:overflow-hidden lg:p-4">
       
       {/* Left Column (Hero & Background Video) */}
-      <div className="relative hidden lg:flex flex-col items-center justify-end pb-32 px-12 rounded-3xl overflow-hidden shadow-2xl h-full w-[52%] shrink-0">
+      <div className="relative hidden lg:flex flex-col items-center justify-center px-12 rounded-3xl overflow-hidden shadow-2xl h-full w-[52%] shrink-0">
         
         {/* Background Video - No overlays or tint masks */}
         <video 
@@ -106,56 +106,16 @@ export default function SignupPage() {
           />
         </video>
 
-        {/* Hero Content Container */}
+        {/* Centered Brand Text */}
         <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { 
-              opacity: 1, 
-              transition: { staggerChildren: 0.15, delayChildren: 0.2 } 
-            }
-          }}
-          className="relative z-10 w-full max-w-xs space-y-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10 text-center select-none"
         >
-          {/* Brand/Logo */}
-          <motion.div 
-            variants={{ 
-              hidden: { opacity: 0, y: 10 }, 
-              visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } 
-            }} 
-            className="flex items-center gap-2"
-          >
-            <Circle className="w-5 h-5 text-white fill-white" />
-            <span className="text-xl font-semibold tracking-tight text-white">Aurora</span>
-          </motion.div>
-
-          {/* Heading Block */}
-          <motion.div 
-            variants={{ 
-              hidden: { opacity: 0, y: 10 }, 
-              visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } 
-            }}
-          >
-            <h1 className="text-4xl font-medium tracking-tight whitespace-nowrap text-white">Join Aurora</h1>
-            <p className="text-white/60 text-sm leading-relaxed mt-2 px-4">
-              Follow these 3 quick phases to activate your space.
-            </p>
-          </motion.div>
-
-          {/* Steps list */}
-          <motion.div 
-            variants={{ 
-              hidden: { opacity: 0, y: 10 }, 
-              visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } 
-            }} 
-            className="space-y-3"
-          >
-            <StepItem number={1} text="Register your identity" active={true} />
-            <StepItem number={2} text="Configure your studio" />
-            <StepItem number={3} text="Finalize your profile" />
-          </motion.div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white flex items-center justify-center font-sans">
+            CollabSphere<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
+          </h1>
         </motion.div>
       </div>
 
