@@ -1,4 +1,4 @@
-import { db } from './firebase'
+import { db, auth } from './firebase'
 import { 
   collection, addDoc, getDocs,
   query, orderBy, doc, updateDoc,
@@ -19,6 +19,17 @@ export async function createPost(post: {
   project?: string | null
 }) {
   try {
+    const user = auth.currentUser
+    if (!user) {
+      throw new Error('Must be logged in to post')
+    }
+    if (!post.content || post.content.trim().length === 0) {
+      throw new Error('Post content cannot be empty')
+    }
+    if (post.content.length > 2000) {
+      throw new Error('Post too long')
+    }
+
     // Sanitize all user-provided content before storing
     const safePost = sanitizePost(post as Record<string, unknown>)
     const docRef = await addDoc(
