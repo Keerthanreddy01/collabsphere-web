@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // POSTS - only authenticated users can post
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.uid
+        && request.resource.data.content is string
+        && request.resource.data.content.size() > 0
+        && request.resource.data.content.size() < 2000;
+      allow update: if request.auth != null
+        && request.auth.uid == resource.data.uid;
+      allow delete: if request.auth != null
+        && request.auth.uid == resource.data.uid;
+    }
+
+    // WAITLIST - anyone can join but rate limited
+    match /app_waitlist/{docId} {
+      allow read: if request.auth != null;
+      allow create: if request.resource.data.email is string
+        && request.resource.data.email.matches(
+          '^[^@]+@[^@]+\\.[^@]+$')
+        && request.resource.data.platform in 
+          ['android', 'ios', 'both']
+        && request.resource.data.keys().hasAll([
+          'email', 'platform', 'joined_at', 
+          'position', 'ref_code'
+        ]);
+      allow update, delete: if false;
+    }
+
+    // BUILDER PROFILES
+    match /builder_profiles/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null 
+        && request.auth.uid == userId;
+    }
+
+    // COMMENTS
+    match /posts/{postId}/comments/{commentId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.auth.uid == 
+          request.resource.data.author_uid;
+      allow delete: if request.auth != null
+        && request.auth.uid == resource.data.author_uid;
+    }
+
+    // MESSAGES - only between authenticated users
+    match /messages/{messageId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Block everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
