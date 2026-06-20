@@ -290,8 +290,9 @@ function WaitlistFormContent() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Side Graphic Column - Black Block with Yellow Pixel Star */}
+        {/* Right Side Graphic Column - Black Block with Yellow Pixel Star */}
           <div className="hidden md:flex flex-1 bg-black items-center justify-center p-8 relative">
             <div className="relative w-[280px] h-[280px]">
               {/* Pixel Star Graphic */}
