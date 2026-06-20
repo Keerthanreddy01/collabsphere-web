@@ -193,90 +193,91 @@ function WaitlistFormContent() {
             We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
           </p>
 
-          {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD */}
-          <div className="mt-8 lg:mt-10 w-full max-w-md">
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-xl shadow-2xl">
-              {/* Top ambient glow */}
-              <div className="absolute -top-24 -left-24 w-48 h-48 bg-[#D4F842]/10 rounded-full blur-3xl pointer-events-none" />
+          {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - REDESIGNED */}
+          <div className="mt-8 lg:mt-10 w-full max-w-md group">
+            <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.02] p-8 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] transition-all duration-500 hover:border-white/20 hover:bg-white/[0.04]">
               
-              <div className="flex flex-col gap-5">
+              {/* Animated glowing orbs in background */}
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/20 rounded-full blur-[80px] group-hover:bg-cyan-500/30 transition-all duration-700 pointer-events-none" />
+              <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px] group-hover:bg-blue-600/30 transition-all duration-700 pointer-events-none" />
+              
+              <div className="flex flex-col gap-6 relative z-10">
                 {/* Header: Label and Active Indicator */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#D4F842]">
-                      WAITLIST ACTIVE
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="relative flex h-3 w-3 items-center justify-center">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-60"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+                    </div>
+                    <span className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-cyan-100">
+                      Network Status
                     </span>
                   </div>
                   
-                  <span className="text-[10px] font-mono text-white/40 tracking-wider">
-                    PHASE 01 // BETA
+                  <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono font-bold text-white/60 tracking-wider">
+                    v1.0.0-BETA
                   </span>
                 </div>
 
                 {/* Counter & Avatar Pile Grid */}
                 <div className="flex items-center justify-between gap-4 py-2">
                   <div className="flex flex-col">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="font-sans font-extrabold text-5xl lg:text-6xl tracking-tight text-white">
+                    <span className="text-white/50 text-[10px] font-syncopate uppercase tracking-widest mb-1">
+                      Total Signups
+                    </span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-syne font-extrabold text-6xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-100 to-blue-200">
                         {totalCount.toLocaleString()}
                       </span>
-                      <span className="text-white/60 text-xs font-semibold font-syncopate uppercase tracking-wider">
-                        Joined
-                      </span>
                     </div>
-                    <span className="text-[11px] font-sans text-white/40 mt-1 font-medium">
-                      Builders secured early access
-                    </span>
                   </div>
 
                   {/* Overlapping Avatar Group (Avatar Pile) */}
-                  <div className="flex -space-x-3 overflow-hidden">
-                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 border-2 border-black text-[10px] font-bold text-white shadow-md">
+                  <div className="flex -space-x-4 overflow-hidden p-2">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 border-[3px] border-[#0a0a0a] text-xs font-bold text-white shadow-xl transform hover:-translate-y-1 transition-transform">
                       KR
                     </div>
-                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-2 border-black text-[10px] font-bold text-white shadow-md">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 border-[3px] border-[#0a0a0a] text-xs font-bold text-white shadow-xl transform hover:-translate-y-1 transition-transform">
                       ST
                     </div>
-                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 border-2 border-black text-[10px] font-bold text-white shadow-md">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 border-[3px] border-[#0a0a0a] text-xs font-bold text-white shadow-xl transform hover:-translate-y-1 transition-transform">
                       JD
                     </div>
-                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-neutral-900 border-2 border-neutral-800 text-[10px] font-bold text-[#D4F842] shadow-md">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border-[3px] border-[#0a0a0a] text-xs font-bold text-cyan-300 shadow-xl">
                       +{totalCount}
                     </div>
                   </div>
                 </div>
 
                 {/* Progress bar representing Beta phase spots */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-[10px] font-mono font-bold tracking-wide">
-                    <span className="text-white/50">PHASE 1 SPOTS SECURED</span>
-                    <span className="text-[#D4F842]">{Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%</span>
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between items-end">
+                    <span className="text-[10px] font-sans font-bold text-white/50 uppercase tracking-widest">Capacity</span>
+                    <span className="text-[14px] font-bold text-cyan-400">{Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%</span>
                   </div>
-                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-2 w-full bg-black/50 rounded-full overflow-hidden border border-white/5 p-[1px]">
                     <div 
-                      className="h-full bg-gradient-to-r from-[#D4F842] to-emerald-400 rounded-full transition-all duration-1000 ease-out"
+                      className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(34,211,238,0.5)]"
                       style={{ width: `${Math.min(100, Math.max(0, (totalCount / 150) * 100))}%` }}
                     />
                   </div>
                 </div>
 
                 {/* Terminal-like system log representing activity */}
-                <div className="rounded-lg bg-black/50 border border-white/5 p-3 font-mono text-[10px] leading-relaxed text-white/70">
-                  <div className="flex items-center gap-1.5 text-emerald-400 font-bold mb-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>SYS_FEED // LIVE</span>
+                <div className="rounded-xl bg-gradient-to-br from-black/60 to-black/40 border border-white/10 p-4 font-mono text-[11px] leading-relaxed text-white/70 shadow-inner mt-2">
+                  <div className="flex items-center gap-2 text-cyan-400 font-bold mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    <span>LIVE_FEED //</span>
                   </div>
                   {recentSignups.length > 0 ? (
-                    <div className="flex items-center justify-between text-white/50">
-                      <span>&gt; user_joined: <span className="text-white font-bold">{recentSignups[0]}</span></span>
-                      <span className="text-[9px] text-[#D4F842]">Just Now</span>
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between bg-white/5 px-2 py-1.5 rounded text-white/60">
+                        <span><span className="text-cyan-400">new_builder</span>: {recentSignups[0]}</span>
+                        <span className="text-[9px] text-white/40">just now</span>
+                      </div>
                     </div>
                   ) : (
-                    <span className="text-white/30">&gt; awaiting next connection...</span>
+                    <span className="text-white/30 px-2 py-1.5 block">_ waiting for connection...</span>
                   )}
                 </div>
               </div>
