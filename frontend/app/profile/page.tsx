@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { getUserStats } from "@/lib/profiles";
 import Sidebar from "@/components/Sidebar";
 import { Settings, MapPin, Briefcase, Rocket, Edit3, Share, Plus } from "lucide-react";
 import { motion } from "framer-motion";
@@ -17,6 +18,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Posts");
+  const [stats, setStats] = useState({ projects: 0 });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -31,6 +33,11 @@ export default function ProfilePage() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setProfile(docSnap.data());
+        }
+        
+        const { data: userStats } = await getUserStats(user.uid);
+        if (userStats) {
+          setStats({ projects: userStats.projects });
         }
       };
       fetchProfile();
@@ -159,9 +166,9 @@ export default function ProfilePage() {
                 {/* Stats */}
                 <div className="flex items-center gap-4 border-t border-white/[0.08] pt-6">
                   {[
-                    { label: "Projects", value: profile?.projects_count || 12 },
-                    { label: "Followers", value: profile?.followers_count || 234 },
-                    { label: "Following", value: profile?.following_count || 89 }
+                    { label: "Projects", value: stats.projects || profile?.projects_count || 0 },
+                    { label: "Followers", value: profile?.followers?.length || 0 },
+                    { label: "Following", value: profile?.following?.length || 0 }
                   ].map((stat, i) => (
                     <div key={i} className="flex-1 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all rounded-[16px] p-4 cursor-pointer group">
                       <div className="text-[24px] font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">{stat.value}</div>
