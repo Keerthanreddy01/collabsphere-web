@@ -104,24 +104,26 @@ export async function getUserStats(userId: string) {
   try {
     const postsQuery = query(collection(db, 'posts'), where('uid', '==', userId))
     const projectsQuery = query(collection(db, 'projects'), where('uid', '==', userId))
-    const connectionsQuery = query(collection(db, 'connections'), where('follower_id', '==', userId))
 
-    const [postsSnap, projectsSnap, connectionsSnap] = await Promise.all([
+    const [postsSnap, projectsSnap, profileSnap] = await Promise.all([
       getCountFromServer(postsQuery),
       getCountFromServer(projectsQuery),
-      getCountFromServer(connectionsQuery)
+      getDoc(doc(db, 'builder_profiles', userId))
     ])
+
+    const profileData = profileSnap.data();
 
     return {
       data: {
         posts: postsSnap.data().count,
         projects: projectsSnap.data().count,
-        builders: connectionsSnap.data().count
+        followers: profileData?.followers?.length || 0,
+        following: profileData?.following?.length || 0
       },
       error: null
     }
   } catch (error) {
-    return { data: { posts: 0, projects: 0, builders: 0 }, error }
+    return { data: { posts: 0, projects: 0, followers: 0, following: 0 }, error }
   }
 }
 
