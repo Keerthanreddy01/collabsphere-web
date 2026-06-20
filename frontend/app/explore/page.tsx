@@ -52,6 +52,7 @@ export default function ExplorePage() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestedBuilders, setSuggestedBuilders] = useState<any[]>([]);
+  const [followed, setFollowed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
