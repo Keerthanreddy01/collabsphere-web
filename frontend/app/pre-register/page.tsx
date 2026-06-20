@@ -181,9 +181,9 @@ function WaitlistFormContent() {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row flex-1 w-full">
+        <div className="flex flex-col xl:flex-row flex-1 w-full">
           {/* Text Content Column */}
-          <div className="flex-1 flex flex-col justify-center px-8 md:px-12 pb-8 md:pb-12 z-10">
+          <div className="flex-1 flex flex-col justify-center px-6 md:px-10 xl:px-16 pb-8 md:pb-12 z-10">
             
             <h1 className="font-serif italic text-black text-[42px] md:text-[56px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4" style={{ fontFamily: 'Georgia, serif' }}>
               Decode the chain.<br/>Earn the edge.
@@ -198,7 +198,7 @@ function WaitlistFormContent() {
 
             {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - BRUTALIST PIXEL STYLE */}
             <div className="w-full max-w-sm mt-auto">
-              <div className="relative overflow-hidden border-[4px] border-black bg-white p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               {/* Pixel art corner accents */}
               <div className="absolute top-0 left-0 w-4 h-4 bg-black" />
               <div className="absolute top-0 right-0 w-8 h-4 bg-black" />
@@ -273,8 +273,10 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Terminal-like system log representing activity */}
-                <div className="border-[3px] border-black bg-white p-2 lg:p-3 font-mono text-[10px] leading-relaxed text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-2">
-                  <div className="flex items-center gap-2 font-black mb-1 border-b-[2px] border-black/10 pb-1">
+                <div className="border-[3px] border-black bg-[#D4F842] p-2 lg:p-3 font-mono text-[10px] leading-relaxed text-black mt-2 relative">
+                  <div className="absolute top-0 right-0 w-2 h-2 bg-black" />
+                  <div className="absolute bottom-0 left-0 w-2 h-2 bg-black" />
+                  <div className="flex items-center gap-2 font-black mb-1 border-b-[2px] border-black/20 pb-1">
                     <span className="w-2 h-2 bg-black animate-pulse" />
                     <span>SYS_FEED // LIVE</span>
                   </div>
@@ -293,19 +295,38 @@ function WaitlistFormContent() {
         </div>
 
         {/* Right Side Graphic Column - Black Block with Yellow Pixel Star */}
-          <div className="hidden md:flex flex-1 bg-black items-center justify-center p-8 relative">
-            <div className="relative w-[280px] h-[280px]">
-              {/* Pixel Star Graphic */}
-              <svg viewBox="0 0 100 100" className="w-full h-full fill-[#D4F842]">
-                <path d="M40 0h20v10h10v10h10v10h10v20h-10v10h-10v10h-10v10H40v-10H30v-10H20v-10H10V40h10V30h10V20h10V0z M45 25h10v10h10v10v10h-10v10h-10v-10h-10v-10h10V25z" fillRule="evenodd" clipRule="evenodd"/>
-                {/* Inner black cross cuts */}
-                <path d="M45 45h10v10H45V45z M35 45h10v10H35V45z M55 45h10v10H55V45z M45 35h10v10H45V35z M45 55h10v10H45V55z" fill="black" />
-              </svg>
+          <div className="hidden xl:flex w-[350px] 2xl:w-[450px] shrink-0 bg-black items-center justify-center relative border-l-4 border-black">
+            <div className="relative w-[280px] h-[280px] flex items-center justify-center">
+              
+              {/* Brutalist Pixel Star built with Grid */}
+              <div className="grid grid-cols-11 grid-rows-11 gap-0 w-[220px] h-[220px]">
+                {Array.from({ length: 121 }).map((_, i) => {
+                  const x = i % 11;
+                  const y = Math.floor(i / 11);
+                  // Create the jagged star shape
+                  let isYellow = false;
+                  if (x >= 4 && x <= 6 && y >= 1 && y <= 9) isYellow = true; // Vertical core
+                  if (y >= 4 && y <= 6 && x >= 1 && x <= 9) isYellow = true; // Horizontal core
+                  if ((x===2||x===3||x===7||x===8) && (y===2||y===3||y===7||y===8)) isYellow = true; // Thick diagonals
+                  if ((x===1||x===9) && (y===3||y===7)) isYellow = true; // Outer jags
+                  if ((y===1||y===9) && (x===3||x===7)) isYellow = true; // Outer jags
+                  if ((x===5) && (y===0||y===10)) isYellow = true; // Tips
+                  if ((y===5) && (x===0||x===10)) isYellow = true; // Tips
+                  
+                  // Black out the center to match poster
+                  if (x >= 4 && x <= 6 && y >= 4 && y <= 6) isYellow = false;
+                  
+                  return (
+                    <div key={i} className={`w-full h-full ${isYellow ? 'bg-[#D4F842]' : 'bg-transparent'}`} />
+                  );
+                })}
+              </div>
             </div>
             
             {/* Pixel accents extending from the black background */}
-            <div className="absolute top-[20%] -left-8 w-8 h-4 bg-black" />
+            <div className="absolute top-[20%] -left-6 w-6 h-6 bg-black" />
             <div className="absolute bottom-[30%] -left-4 w-4 h-4 bg-black" />
+            <div className="absolute top-[45%] -left-8 w-8 h-4 bg-black" />
           </div>
         </div>
       </div>
