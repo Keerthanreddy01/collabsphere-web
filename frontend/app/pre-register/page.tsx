@@ -185,17 +185,17 @@ function WaitlistFormContent() {
             Official Mobile Beta
           </div>
 
-          <h1 className="font-syne text-white text-[42px] md:text-[54px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4">
+          <h1 className="font-syne text-white text-[36px] md:text-[46px] lg:text-[56px] font-bold leading-[0.9] tracking-tighter mb-3">
             The app is <br/> coming.
           </h1>
           
-          <p className="font-sans text-white/50 text-[14px] md:text-[16px] leading-relaxed max-w-md font-medium">
+          <p className="font-sans text-white/50 text-[13px] md:text-[15px] leading-relaxed max-w-md font-medium">
             We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
           </p>
 
           {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - BRUTALIST PIXEL STYLE */}
-          <div className="mt-8 lg:mt-10 w-full max-w-md">
-            <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <div className="mt-4 lg:mt-6 w-full max-w-md">
+            <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-4 lg:p-5 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               {/* Pixel art corner accents */}
               <div className="absolute top-0 left-0 w-4 h-4 bg-black" />
               <div className="absolute top-0 right-0 w-8 h-4 bg-black" />
@@ -204,9 +204,9 @@ function WaitlistFormContent() {
               <div className="absolute bottom-4 left-4 w-4 h-4 bg-black" />
               <div className="absolute bottom-0 right-0 w-4 h-4 bg-black" />
               
-              <div className="flex flex-col gap-6 relative z-10 pt-2">
+              <div className="flex flex-col gap-3 relative z-10">
                 {/* Header: Label and Active Indicator */}
-                <div className="flex items-center justify-between border-b-[3px] border-black pb-4">
+                <div className="flex items-center justify-between border-b-[3px] border-black pb-2">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-3 w-3">
                       <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-40"></span>
@@ -223,10 +223,10 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Counter & Avatar Pile Grid */}
-                <div className="flex items-center justify-between gap-4 py-2">
+                <div className="flex items-center justify-between gap-2 py-1">
                   <div className="flex flex-col">
                     <div className="flex items-baseline gap-2">
-                      <span className="font-syncopate font-black text-6xl tracking-tighter text-black">
+                      <span className="font-syncopate font-black text-4xl lg:text-5xl tracking-tighter text-black">
                         {totalCount.toLocaleString()}
                       </span>
                       <span className="text-black text-sm font-bold font-syncopate uppercase tracking-wider">
@@ -240,24 +240,24 @@ function WaitlistFormContent() {
 
                   {/* Overlapping Avatar Group - Brutalist */}
                   <div className="flex -space-x-2 overflow-hidden">
-                    <div className="inline-flex h-10 w-10 items-center justify-center bg-white border-[3px] border-black text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       KR
                     </div>
-                    <div className="inline-flex h-10 w-10 items-center justify-center bg-white border-[3px] border-black text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       ST
                     </div>
-                    <div className="inline-flex h-10 w-10 items-center justify-center bg-white border-[3px] border-black text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       JD
                     </div>
-                    <div className="inline-flex h-10 w-10 items-center justify-center bg-black border-[3px] border-black text-xs font-black text-[#D4F842] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="inline-flex h-8 w-8 items-center justify-center bg-black border-[3px] border-black text-[10px] font-black text-[#D4F842] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       +{totalCount}
                     </div>
                   </div>
                 </div>
 
                 {/* Progress bar representing Beta phase spots */}
-                <div className="space-y-2 mt-2">
-                  <div className="flex justify-between text-[11px] font-mono font-black tracking-wide text-black uppercase">
+                <div className="space-y-1 mt-1">
+                  <div className="flex justify-between text-[10px] font-mono font-black tracking-wide text-black uppercase">
                     <span>CAPACITY FILL</span>
                     <span>{Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%</span>
                   </div>
@@ -270,8 +270,8 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Terminal-like system log representing activity */}
-                <div className="border-[3px] border-black bg-white p-3 font-mono text-[11px] leading-relaxed text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-4">
-                  <div className="flex items-center gap-2 font-black mb-2 border-b-[2px] border-black/10 pb-1">
+                <div className="border-[3px] border-black bg-white p-2 lg:p-3 font-mono text-[10px] leading-relaxed text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-2">
+                  <div className="flex items-center gap-2 font-black mb-1 border-b-[2px] border-black/10 pb-1">
                     <span className="w-2 h-2 bg-black animate-pulse" />
                     <span>SYS_FEED // LIVE</span>
                   </div>
