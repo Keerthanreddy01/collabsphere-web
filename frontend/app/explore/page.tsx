@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Sidebar from "@/components/Sidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, limit, onSnapshot, doc, getDoc, updateDoc, arrayUnion, arrayRemove, getDocs } from "firebase/firestore";
 import {
   Search, TrendingUp, Users, Sparkles, Hash, Heart, MessageCircle,
   Repeat2, Share, Verified, Flame, Zap, Code2, Globe, Rocket,
@@ -26,11 +26,7 @@ const TRENDING_TOPICS = [
   { tag: "opensource", posts: "44.1K", category: "Community", hot: true },
 ];
 
-const SUGGESTED_BUILDERS = [
-  { name: "Sarah Chen", handle: "sarahbuilds", role: "ML Engineer @ Google", followers: "12.4K", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", verified: true, building: "AI content generator" },
-  { name: "Marcus Dev", handle: "marcusdev", role: "Indie Hacker", followers: "8.1K", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=marcus", verified: false, building: "SaaS boilerplate" },
-  { name: "Priya Sharma", handle: "priyacodes", role: "Full Stack Dev", followers: "5.6K", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=priya", verified: true, building: "Dev community tool" },
-];
+
 
 const CATEGORIES = [
   { label: "For You", icon: Sparkles, active: true },
@@ -55,11 +51,60 @@ export default function ExplorePage() {
   const [activeCategory, setActiveCategory] = useState("For You");
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [followed, setFollowed] = useState<Record<string, boolean>>({});
+  const [suggestedBuilders, setSuggestedBuilders] = useState<any[]>([]);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
+
+  useEffect(() => {
+    async function loadData() {
+      if (!user) return;
+      try {
+        const meRef = doc(db, "builder_profiles", user.uid);
+        const meSnap = await getDoc(meRef);
+        const meData = meSnap.data();
+        
+        const myFollowing = meData?.following || [];
+        const initialMap: Record<string, boolean> = {};
+        myFollowing.forEach((id: string) => {
+          initialMap[id] = true;
+        });
+        setFollowed(initialMap);
+
+        const q2 = query(collection(db, "builder_profiles"), limit(10));
+        const snapshot = await getDocs(q2);
+        const loadedBuilders = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(b => b.id !== user.uid)
+          .slice(0, 3);
+        
+        setSuggestedBuilders(loadedBuilders);
+      } catch (error) {
+        console.error("Error loading builders:", error);
+      }
+    }
+    loadData();
+  }, [user]);
+
+  const handleToggleFollow = async (targetUserId: string, isFollowing: boolean) => {
+    if (!user) return;
+    setFollowed(prev => ({ ...prev, [targetUserId]: !isFollowing }));
+    try {
+      const meRef = doc(db, "builder_profiles", user.uid);
+      const targetRef = doc(db, "builder_profiles", targetUserId);
+      if (isFollowing) {
+        await updateDoc(meRef, { following: arrayRemove(targetUserId) });
+        await updateDoc(targetRef, { followers: arrayRemove(user.uid) });
+      } else {
+        await updateDoc(meRef, { following: arrayUnion(targetUserId) });
+        await updateDoc(targetRef, { followers: arrayUnion(user.uid) });
+      }
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+      setFollowed(prev => ({ ...prev, [targetUserId]: isFollowing }));
+    }
+  };
 
   useEffect(() => {
     const q = query(collection(db, "posts"), orderBy("created_at", "desc"), limit(15));
@@ -207,16 +252,16 @@ export default function ExplorePage() {
                 </div>
 
                 <div className="divide-y divide-white/[0.04]">
-                  {SUGGESTED_BUILDERS.map((builder) => (
+                  {suggestedBuilders.map((builder) => (
                     <motion.div
-                      key={builder.handle}
+                      key={builder.id}
                       whileHover={{ backgroundColor: "rgba(255,255,255,0.03)" }}
                       className="px-6 py-4 flex items-center gap-4 transition-colors"
                     >
                       <div className="relative shrink-0">
                         <img
-                          src={builder.avatar}
-                          alt={builder.name}
+                          src={builder.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${builder.id}`}
+                          alt={builder.full_name || "Builder"}
                           className="w-12 h-12 rounded-full bg-white/10 object-cover"
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-[3px] border-black" />
@@ -224,25 +269,25 @@ export default function ExplorePage() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[16px] font-bold text-white truncate">{builder.name}</span>
+                          <span className="text-[16px] font-bold text-white truncate">{builder.full_name || "Builder"}</span>
                           {builder.verified && <Verified className="w-4 h-4 text-blue-400 shrink-0 fill-blue-400" />}
                         </div>
-                        <p className="text-[14px] text-white/40 truncate">@{builder.handle} · {builder.followers} followers</p>
+                        <p className="text-[14px] text-white/40 truncate">@{builder.username || builder.id.substring(0,8)} · {builder.followers?.length || 0} followers</p>
                         <p className="text-[14px] text-white/50 mt-1 flex items-center gap-1.5">
                           <Rocket className="w-3.5 h-3.5 text-purple-400" />
-                          Building: {builder.building}
+                          Building: {builder.building || "something cool"}
                         </p>
                       </div>
 
                       <motion.button
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setFollowed(prev => ({ ...prev, [builder.handle]: !prev[builder.handle] }))}
-                        className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${followed[builder.handle]
+                        onClick={() => handleToggleFollow(builder.id, !!followed[builder.id])}
+                        className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${followed[builder.id]
                             ? "bg-transparent border-white/20 text-white/60 hover:border-red-500/40 hover:text-red-400"
                             : "bg-white border-white text-black hover:bg-white/90"
                           }`}
                       >
-                        {followed[builder.handle] ? "Following" : "Follow"}
+                        {followed[builder.id] ? "Following" : "Follow"}
                       </motion.button>
                     </motion.div>
                   ))}
