@@ -37,47 +37,57 @@ const sendConfirmationEmail = async (
 };
 
 const AnimatedLines = () => {
+  // Horizontal bars matching the screenshot exactly
   const lines = [
-    { top: '15%', left: '5%', width: '120px', rotate: '-8deg', delay: 0 },
-    { top: '18%', left: '20%', width: '80px', rotate: '-8deg', delay: 0.2 },
-    { top: '12%', left: '35%', width: '160px', rotate: '-8deg', delay: 0.1 },
-    { top: '20%', left: '55%', width: '200px', rotate: '-8deg', delay: 0.3 },
-    { top: '15%', left: '72%', width: '90px', rotate: '-8deg', delay: 0.15 },
-    { top: '22%', left: '85%', width: '140px', rotate: '-8deg', delay: 0.25 },
-    { top: '25%', left: '12%', width: '100px', rotate: '-8deg', delay: 0.4 },
-    { top: '30%', left: '3%', width: '180px', rotate: '-8deg', delay: 0.1 },
-    { top: '28%', left: '88%', width: '110px', rotate: '-8deg', delay: 0.35 },
-    { top: '35%', left: '45%', width: '130px', rotate: '-8deg', delay: 0.2 },
-    { top: '65%', left: '8%', width: '90px', rotate: '-8deg', delay: 0.3 },
-    { top: '70%', left: '80%', width: '150px', rotate: '-8deg', delay: 0.1 },
-    { top: '75%', left: '30%', width: '110px', rotate: '-8deg', delay: 0.4 },
-    { top: '80%', left: '60%', width: '130px', rotate: '-8deg', delay: 0.2 },
+    // Top group
+    { top: '22%', left: '35%', width: '120px', height: '4px', delay: 0 },
+    { top: '23%', left: '39%', width: '30px', height: '8px', delay: 0.1 },
+    { top: '25%', left: '34%', width: '150px', height: '6px', delay: 0.2 },
+    { top: '28%', left: '48%', width: '60px', height: '4px', delay: 0.3 },
+    { top: '25%', left: '50%', width: '40px', height: '4px', delay: 0.4 },
+    
+    // Left group
+    { top: '27%', left: '10%', width: '80px', height: '6px', delay: 0.1 },
+    { top: '30%', left: '22%', width: '110px', height: '6px', delay: 0.5 },
+    { top: '45%', left: '9%', width: '18px', height: '8px', delay: 0.2 },
+    { top: '48%', left: '9%', width: '35px', height: '6px', delay: 0.4 },
+    { top: '48%', left: '27%', width: '70px', height: '4px', delay: 0.3 },
+    
+    // Right group
+    { top: '25%', left: '81%', width: '140px', height: '6px', delay: 0.1 },
+    { top: '28%', left: '78%', width: '160px', height: '6px', delay: 0.3 },
+    { top: '29%', left: '67%', width: '75px', height: '6px', delay: 0.2 },
+    { top: '45%', left: '63%', width: '40px', height: '6px', delay: 0.4 },
+    { top: '45%', left: '71%', width: '85px', height: '6px', delay: 0.1 },
+    { top: '48%', left: '79%', width: '8px', height: '8px', delay: 0.5 },
+    { top: '48%', left: '83%', width: '25px', height: '6px', delay: 0.2 },
   ];
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {lines.map((line, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ 
-            delay: line.delay, 
-            duration: 0.6,
-            ease: 'easeOut'
-          }}
-          style={{
-            position: 'absolute',
-            top: line.top,
-            left: line.left,
-            width: line.width,
-            height: '3px',
-            background: '#ef4444',
-            transform: `rotate(${line.rotate})`,
-            borderRadius: '2px',
-          }}
-        />
-      ))}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 flex items-center justify-center">
+      <div className="relative w-full max-w-[1400px] h-full">
+        {lines.map((line, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ 
+              delay: line.delay, 
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1] // Custom ease out
+            }}
+            style={{
+              position: 'absolute',
+              top: line.top,
+              left: line.left,
+              width: line.width,
+              height: line.height,
+              background: '#ff453a',
+              transformOrigin: 'left center',
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -253,31 +263,31 @@ function WaitlistFormContent() {
               className="w-full flex flex-col items-center"
             >
               {/* EARLY ACCESS BADGE */}
-              <div className="border border-[#ef4444] text-[#ef4444] bg-transparent px-[16px] py-[6px] rounded-[4px] text-[11px] font-bold tracking-[0.15em] uppercase mb-[32px] flex items-center justify-center gap-2">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <div className="border border-[#ff453a]/20 text-[#ff453a] bg-transparent px-[14px] py-[6px] text-[10px] font-mono tracking-[0.2em] uppercase mb-[24px] flex items-center justify-center gap-2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"></rect><polyline points="3 7 12 13 21 7"></polyline></svg>
                 EARLY ACCESS
               </div>
 
               {/* HEADING */}
-              <h1 className="font-syne text-[#ffffff] font-[800] leading-[1.1] tracking-[-0.02em] mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}>
+              <h1 className="font-sans text-white font-[700] tracking-[-0.03em] mb-4" style={{ fontSize: 'clamp(44px, 5vw, 64px)', lineHeight: '1' }}>
                 CollabSphere is almost ready.
               </h1>
               
               {/* SUBTEXT */}
-              <p className="text-[#888888] text-[16px] leading-[1.6] max-w-[480px] mx-auto mb-[40px] font-sans">
-                We're inviting developers to build, collaborate and ship together. Join the waitlist to secure your spot.
+              <p className="text-[#888888] text-[16px] leading-[1.6] max-w-[420px] mx-auto mb-[40px] font-sans">
+                We're inviting engineers to run it on<br/>real code and help shape what ships.
               </p>
 
               {/* FORM ROW */}
               <form onSubmit={handleSubmit} className="w-full flex flex-col items-center relative z-20">
-                <div className="flex flex-col sm:flex-row w-full justify-center max-w-[500px]">
+                <div className="flex flex-col sm:flex-row w-full justify-center items-center gap-4">
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="bg-[#111111] border border-[#2a2a2a] text-[#ffffff] placeholder-[#555555] px-[20px] py-[14px] text-[15px] outline-none transition-all focus:border-[#ef4444] w-full sm:w-[340px] rounded-[4px] sm:rounded-[4px_0_0_4px] sm:border-r-0 mb-3 sm:mb-0"
+                    className="bg-transparent border border-[#333333] text-white placeholder-[#555555] px-[20px] py-[14px] text-[13px] font-mono outline-none transition-all focus:border-[#ff453a] w-full sm:w-[320px] rounded-none"
                   />
                   <input
                     type="text"
@@ -291,12 +301,15 @@ function WaitlistFormContent() {
                   <button
                     type="submit"
                     disabled={loading || !turnstileToken}
-                    className={`bg-[#ef4444] text-[#ffffff] font-[700] px-[28px] py-[14px] text-[13px] tracking-[0.08em] uppercase transition-all flex items-center justify-center rounded-[4px] sm:rounded-[0_4px_4px_0] border-none w-full sm:w-auto
-                      ${!turnstileToken ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer hover:bg-[#dc2626] sm:hover:-skew-x-2'}
+                    className={`bg-[#ff453a] text-black font-mono font-[700] px-[28px] py-[15px] text-[11px] tracking-[0.1em] uppercase transition-all flex items-center justify-center w-full sm:w-auto
+                      ${!turnstileToken ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer hover:bg-[#ff5544]'}
                     `}
+                    style={{ 
+                      clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
+                    }}
                   >
                     {loading ? (
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                     ) : (
                       "JOIN WAITLIST"
                     )}
@@ -410,11 +423,36 @@ function WaitlistFormContent() {
 export default function PreRegisterPage() {
   return (
     <div 
-      className="min-h-screen w-full bg-[#0a0a0a] text-white flex flex-col relative font-sans select-none overflow-y-auto overflow-x-hidden"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
-      }}
+      className="min-h-screen w-full bg-[#0d0d0d] text-white flex flex-col relative font-sans select-none overflow-hidden"
     >
+      {/* Perspective Grid Background */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0 opacity-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: '120px 120px',
+          backgroundPosition: 'center 0',
+          transform: 'perspective(1000px) rotateX(60deg) scale(2.5) translateY(-20%)',
+          transformOrigin: 'top center',
+        }}
+      />
+      {/* Heavy Noise Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-10"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E")`,
+          mixBlendMode: 'screen'
+        }}
+      />
+      {/* Main Container lines to match screenshot vertical bounding box */}
+      <div className="absolute inset-0 pointer-events-none flex justify-center z-0">
+        <div className="w-full max-w-[1200px] border-x border-white/5 h-full relative">
+          <div className="absolute top-[15%] w-full border-b border-white/5" />
+        </div>
+      </div>
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Syncopate:wght@400;700&display=swap');
         .font-syne { font-family: 'Syne', sans-serif; }
