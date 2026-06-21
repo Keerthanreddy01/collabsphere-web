@@ -10,12 +10,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const secretKey = process.env.NODE_ENV === 'development'
-    ? '1x0000000000000000000000000000000AA' // Test secret
-    : (process.env.TURNSTILE_SECRET_KEY || '0x4AAAAAADorXDHAdoZ99IqXCSrq8zUN2Yg'); // Production secret fallback
-
   const formData = new FormData();
-  formData.append('secret', secretKey);
+  formData.append('secret', process.env.TURNSTILE_SECRET_KEY!);
   formData.append('response', token);
 
   const res = await fetch(
