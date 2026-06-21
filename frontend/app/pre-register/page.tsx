@@ -190,43 +190,53 @@ function WaitlistFormContent() {
       </div>
 
       {/* HERO SECTION */}
-      <div className="w-full min-h-screen flex flex-col items-center justify-center relative px-6 py-20 pt-32 overflow-hidden">
+      <div className="w-full flex flex-col items-center justify-center pt-32 pb-20 relative mt-16 md:mt-24">
         
-        {/* Decorative Floating Red Lines (from Screenshot 1) */}
-        <div className="absolute inset-0 pointer-events-none opacity-50 z-0">
-           <div className="absolute top-[30%] left-[10%] w-[100px] h-[4px] bg-[#ff453a]" />
-           <div className="absolute top-[40%] left-[5%] w-[60px] h-[4px] bg-[#ff453a]" />
-           <div className="absolute top-[35%] left-[20%] w-[200px] h-[4px] bg-[#ff453a]" />
-           
-           <div className="absolute top-[25%] right-[25%] w-[40px] h-[4px] bg-[#ff453a]" />
-           <div className="absolute top-[28%] right-[15%] w-[180px] h-[4px] bg-[#ff453a]" />
-           <div className="absolute top-[32%] right-[5%] w-[120px] h-[4px] bg-[#ff453a]" />
-           <div className="absolute top-[48%] right-[12%] w-[80px] h-[4px] bg-[#ff453a]" />
-        </div>
-
-        <div className="z-10 flex flex-col items-center text-center w-full max-w-3xl mx-auto">
+        {/* Constrained Grid Box matching reference */}
+        <div className="relative w-full max-w-[900px] border-x border-white/5 px-6 md:px-12 py-24 flex flex-col items-center justify-center">
           
-          <div className="border border-red-500/20 text-red-500 bg-[#ff453a]/5 px-4 py-1.5 rounded-sm text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-8 flex items-center gap-2">
-            <span className="w-2 h-2 border border-red-500 bg-red-500/20" /> EARLY ACCESS
+          {/* Faint infinite horizontal lines to complete grid illusion */}
+          <div className="absolute top-0 left-[-50vw] w-[200vw] h-px bg-white/5 pointer-events-none" />
+          <div className="absolute bottom-0 left-[-50vw] w-[200vw] h-px bg-white/5 pointer-events-none" />
+
+          {/* Decorative Floating Red Lines (Clustered tightly matching SS1) */}
+          <div className="absolute inset-0 pointer-events-none z-0">
+             {/* Left side lines */}
+             <div className="absolute top-[25%] left-[-15%] w-[50px] h-[3px] bg-[#ff453a] hidden md:block" />
+             <div className="absolute top-[28%] left-[10%] w-[180px] h-[3px] bg-[#ff453a]" />
+             <div className="absolute top-[50%] left-[-10%] w-[40px] h-[3px] bg-[#ff453a] hidden md:block" />
+             <div className="absolute top-[53%] left-[5%] w-[25px] h-[3px] bg-[#ff453a]" />
+
+             {/* Right side lines */}
+             <div className="absolute top-[20%] right-[10%] w-[80px] h-[3px] bg-[#ff453a]" />
+             <div className="absolute top-[23%] right-[-5%] w-[160px] h-[3px] bg-[#ff453a] hidden md:block" />
+             <div className="absolute top-[26%] right-[-15%] w-[30px] h-[3px] bg-[#ff453a] hidden md:block" />
+             <div className="absolute top-[48%] right-[-10%] w-[130px] h-[3px] bg-[#ff453a] hidden md:block" />
           </div>
 
-          <AnimatePresence mode="wait">
-            {!success ? (
-              <motion.div
-                key="form"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="w-full flex flex-col items-center"
-              >
-                <h1 className="font-syne text-white text-[48px] md:text-[64px] lg:text-[80px] font-bold leading-[0.9] tracking-tighter mb-6">
-                  CollabSphere is almost ready.
-                </h1>
-                
-                <p className="font-sans text-white/50 text-sm md:text-base leading-relaxed max-w-lg mx-auto mb-12 font-medium">
-                  We're inviting engineers to run it on real code and help shape what ships. Join the waitlist to secure your spot.
-                </p>
+          <div className="z-10 flex flex-col items-center text-center w-full max-w-2xl mx-auto">
+            
+            <div className="border border-red-500/30 text-red-500 bg-transparent px-3 py-1 rounded-sm text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-8 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 border border-red-500 bg-transparent" /> EARLY ACCESS
+            </div>
+
+            <AnimatePresence mode="wait">
+              {!success ? (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full flex flex-col items-center"
+                >
+                  <h1 className="font-syne text-white text-[32px] md:text-[44px] lg:text-[56px] font-bold leading-tight tracking-tight mb-6">
+                    CollabSphere is almost ready.
+                  </h1>
+                  
+                  <p className="font-sans text-white/50 text-sm md:text-base leading-relaxed max-w-sm mx-auto mb-10 font-medium">
+                    We're inviting engineers to run it on real code and help shape what ships.
+                  </p>
 
                 <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col sm:flex-row gap-3 mb-6 relative z-20">
                   <input
