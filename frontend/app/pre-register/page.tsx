@@ -319,7 +319,7 @@ function WaitlistFormContent() {
                 {/* Cloudflare Turnstile Widget */}
                 <div className="w-full flex justify-center mt-[16px] min-h-[65px]">
                   <Turnstile
-                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                     onSuccess={(token) => {
                       setTurnstileToken(token);
                       setTurnstileStatus('solved');
