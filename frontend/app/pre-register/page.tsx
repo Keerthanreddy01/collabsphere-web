@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { 
-  Check, Copy, Share2, ArrowLeft, Twitter, Linkedin, Sparkles, Smartphone, Award
+  Check, Copy, Share2, ArrowLeft, Twitter, Linkedin, Sparkles, Smartphone, Award, ChevronDown
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot, getDocs, query, where } from "firebase/firestore";
@@ -48,6 +48,15 @@ function WaitlistFormContent() {
   const [refCode, setRefCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [honeypot, setHoneypot] = useState("");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const faqs = [
+    { q: "What is CollabSphere?", a: "CollabSphere is the ultimate mobile app for builders, allowing you to track, learn, and compete in the decentralized ecosystem." },
+    { q: "When will the Beta launch?", a: "We are rolling out exclusive access to our waitlist members soon. Pre-register to secure your spot in line." },
+    { q: "What platforms are supported?", a: "We will launch natively on both iOS and Android to give you a seamless mobile experience." },
+    { q: "Is it free to join the waitlist?", a: "Yes, joining the waitlist is completely free. Early members will receive priority access and exclusive beta rewards." },
+    { q: "How do I move up the waitlist?", a: "Share your unique referral link! Every friend who signs up using your link moves you higher up the queue." }
+  ];
 
   // Live total count from Firestore
   const [totalCount, setTotalCount] = useState(0);
@@ -180,112 +189,54 @@ function WaitlistFormContent() {
           </div>
         </div>
 
-        <div className="flex flex-col my-auto pb-8 md:pb-0 z-10 w-full">
-          <div className="font-syncopate text-[#D4F842] text-[10px] md:text-[12px] uppercase tracking-[0.3em] font-bold mb-4">
-            Official Mobile Beta
+        <div className="flex flex-col my-auto pb-8 md:pb-0 z-10 w-full max-w-2xl mx-auto md:mx-0">
+          
+          <div className="border border-red-500/30 text-red-500 bg-[#ff453a]/10 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-8 flex items-center gap-2 w-fit">
+            <span className="text-red-500 font-serif italic text-xs leading-none">?</span> FAQ
           </div>
 
-          <h1 className="font-syne text-white text-[36px] md:text-[46px] lg:text-[56px] font-bold leading-[0.9] tracking-tighter mb-3">
-            The app is <br/> coming.
+          <h1 className="font-syne text-white text-[42px] md:text-[52px] lg:text-[64px] font-bold leading-[0.9] tracking-tighter mb-12">
+            Frequently asked questions.
           </h1>
-          
-          <p className="font-sans text-white/50 text-[13px] md:text-[15px] leading-relaxed max-w-md font-medium">
-            We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
-          </p>
 
-          {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - BRUTALIST PIXEL STYLE */}
-          <div className="mt-4 lg:mt-6 w-full max-w-md">
-            <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-4 lg:p-5 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              {/* Pixel art corner accents */}
-              <div className="absolute top-0 left-0 w-4 h-4 bg-black" />
-              <div className="absolute top-0 right-0 w-8 h-4 bg-black" />
-              <div className="absolute top-4 right-4 w-4 h-4 bg-black" />
-              <div className="absolute bottom-0 left-0 w-8 h-4 bg-black" />
-              <div className="absolute bottom-4 left-4 w-4 h-4 bg-black" />
-              <div className="absolute bottom-0 right-0 w-4 h-4 bg-black" />
-              
-              <div className="flex flex-col gap-3 relative z-10">
-                {/* Header: Label and Active Indicator */}
-                <div className="flex items-center justify-between border-b-[3px] border-black pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-40"></span>
-                      <span className="relative inline-flex h-3 w-3 bg-black"></span>
+          <div className="flex flex-col border-t border-white/10 w-full">
+            {faqs.map((faq, idx) => (
+              <div 
+                key={idx} 
+                className="flex flex-col border-b border-white/10 cursor-pointer group"
+                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+              >
+                <div className="flex items-center justify-between py-6 px-2 hover:bg-white/[0.02] transition-colors">
+                  <div className="flex items-center gap-6">
+                    <span className="font-mono text-[#ff453a] text-[10px] font-bold tracking-widest">
+                      {String(idx + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-[12px] font-syncopate font-bold uppercase tracking-[0.1em] text-black">
-                      NETWORK STATUS
+                    <span className="font-sans text-white text-sm md:text-base font-medium tracking-wide">
+                      {faq.q}
                     </span>
                   </div>
-                  
-                  <span className="px-2 py-1 bg-black text-[#D4F842] text-[10px] font-mono font-bold tracking-wider uppercase">
-                    v1.0-BETA
-                  </span>
+                  <ChevronDown 
+                    className={`w-4 h-4 text-white/30 group-hover:text-white/60 transition-all duration-300 ${openFaq === idx ? "rotate-180 text-white" : ""}`} 
+                  />
                 </div>
-
-                {/* Counter & Avatar Pile Grid */}
-                <div className="flex items-center justify-between gap-2 py-1">
-                  <div className="flex flex-col">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-syncopate font-black text-4xl lg:text-5xl tracking-tighter text-black">
-                        {totalCount.toLocaleString()}
-                      </span>
-                      <span className="text-black text-sm font-bold font-syncopate uppercase tracking-wider">
-                        Joined
-                      </span>
-                    </div>
-                    <span className="text-[12px] font-mono text-black font-bold mt-1 uppercase">
-                      [ SECURING EARLY ACCESS ]
-                    </span>
-                  </div>
-
-                  {/* Overlapping Avatar Group - Brutalist */}
-                  <div className="flex -space-x-2 overflow-hidden">
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      KR
-                    </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      ST
-                    </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      JD
-                    </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-black border-[3px] border-black text-[10px] font-black text-[#D4F842] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      +{totalCount}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Progress bar representing Beta phase spots */}
-                <div className="space-y-1 mt-1">
-                  <div className="flex justify-between text-[10px] font-mono font-black tracking-wide text-black uppercase">
-                    <span>CAPACITY FILL</span>
-                    <span>{Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%</span>
-                  </div>
-                  <div className="h-4 w-full bg-transparent border-[3px] border-black p-[2px]">
-                    <div 
-                      className="h-full bg-black transition-all duration-1000 ease-out"
-                      style={{ width: `${Math.min(100, Math.max(0, (totalCount / 150) * 100))}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Terminal-like system log representing activity */}
-                <div className="border-t-[3px] border-black pt-3 mt-3">
-                  <div className="flex items-center gap-2 font-black mb-2">
-                    <span className="w-2 h-2 bg-black animate-pulse" />
-                    <span className="font-mono text-[10px] tracking-widest uppercase text-black">SYS_FEED // LIVE</span>
-                  </div>
-                  {recentSignups.length > 0 ? (
-                    <div className="flex items-center justify-between text-black font-bold font-mono text-[10px]">
-                      <span>&gt; user_joined: <span className="bg-black text-[#D4F842] px-1.5 py-0.5 ml-1">{recentSignups[0]}</span></span>
-                      <span className="uppercase tracking-wider">JUST NOW</span>
-                    </div>
-                  ) : (
-                    <span className="text-black/60 font-bold uppercase font-mono text-[10px]">&gt; AWAITING NEXT CONNECTION...</span>
+                
+                <AnimatePresence>
+                  {openFaq === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pb-6 pl-[52px] pr-8 text-white/50 text-sm font-sans leading-relaxed">
+                        {faq.a}
+                      </div>
+                    </motion.div>
                   )}
-                </div>
+                </AnimatePresence>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
