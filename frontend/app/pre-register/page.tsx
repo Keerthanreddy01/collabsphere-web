@@ -233,7 +233,7 @@ function WaitlistFormContent() {
   };
 
   return (
-    <div className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center">
+    <div className="relative z-10 w-full min-h-screen flex flex-col">
       
       {/* Header Navigation */}
       <div className="absolute top-0 left-0 w-full flex items-center justify-between px-8 py-6 z-50">
@@ -251,7 +251,7 @@ function WaitlistFormContent() {
         </div>
       </div>
 
-      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center justify-center z-10">
+      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center justify-center z-10 flex-1 pt-32 pb-20">
         <AnimatePresence mode="wait">
           {!success ? (
             <motion.div
@@ -416,6 +416,46 @@ function WaitlistFormContent() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Footer */}
+      <div className="w-full mt-auto pt-20 pb-8 flex flex-col items-center z-20 relative px-6 md:px-12 bg-transparent">
+        <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-16">
+          
+          <div className="flex flex-col max-w-[300px] mb-12 md:mb-0">
+            <div className="flex items-center gap-2 mb-4">
+              <img src="/newlogo.png" alt="Logo" className="w-6 h-6 grayscale opacity-80" />
+              <span className="font-syne text-[20px] font-[800] tracking-tight text-[#ffffff] uppercase">
+                CollabSphere
+              </span>
+            </div>
+            <p className="text-[#777777] text-[13px] leading-[1.6] font-sans">
+              Local-first AI for developers who refuse to be dependent on the cloud.
+            </p>
+          </div>
+
+          <div className="flex gap-16 md:gap-32">
+            <div className="flex flex-col gap-5">
+              <span className="text-[#555555] text-[11px] font-bold tracking-[0.1em] uppercase">Connect</span>
+              <a href="#" className="text-[#999999] text-[13px] hover:text-white transition-colors">Twitter</a>
+              <a href="#" className="text-[#999999] text-[13px] hover:text-white transition-colors">LinkedIn</a>
+            </div>
+            <div className="flex flex-col gap-5">
+              <span className="text-[#555555] text-[11px] font-bold tracking-[0.1em] uppercase">Legal</span>
+              <a href="#" className="text-[#999999] text-[13px] hover:text-white transition-colors">Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-8 mt-16">
+          <span className="text-[#444444] text-[11px] font-mono uppercase tracking-widest">
+            © 2026 COLLABSPHERE INC. ALL RIGHTS RESERVED.
+          </span>
+          <span className="text-[#444444] text-[11px] font-mono uppercase tracking-widest mt-4 md:mt-0 flex items-center gap-2">
+            ALL SYSTEMS LOCAL
+          </span>
+        </div>
+      </div>
+
     </div>
   );
 }
@@ -423,7 +463,7 @@ function WaitlistFormContent() {
 export default function PreRegisterPage() {
   return (
     <div 
-      className="min-h-screen w-full bg-[#0d0d0d] text-white flex flex-col relative font-sans select-none overflow-hidden"
+      className="min-h-screen w-full bg-[#0d0d0d] text-white flex flex-col relative font-sans overflow-y-auto overflow-x-hidden"
     >
       {/* Perspective Grid Background */}
       <div 
