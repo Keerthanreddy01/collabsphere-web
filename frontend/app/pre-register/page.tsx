@@ -38,23 +38,37 @@ const sendConfirmationEmail = async (
 
 const AnimatedLines = () => {
   const lines = [
-    // Far LEFT side only — grouped like the Rig reference
-    { top: '20%', left: '2%',  width: '90px',  height: '5px', delay: 0 },
-    { top: '23%', left: '13%', width: '130px', height: '5px', delay: 0.15 },
-    { top: '27%', left: '6%',  width: '55px',  height: '8px', delay: 0.3 },
-    { top: '31%', left: '1%',  width: '75px',  height: '5px', delay: 0.1 },
-    { top: '40%', left: '8%',  width: '20px',  height: '8px', delay: 0.2 },
-    { top: '43%', left: '8%',  width: '42px',  height: '5px', delay: 0.4 },
-    { top: '43%', left: '18%', width: '65px',  height: '4px', delay: 0.25 },
-
-    // Far RIGHT side only
-    { top: '20%', left: '76%', width: '140px', height: '5px', delay: 0.1 },
-    { top: '23%', left: '83%', width: '160px', height: '5px', delay: 0.3 },
-    { top: '27%', left: '79%', width: '80px',  height: '8px', delay: 0.2 },
-    { top: '31%', left: '86%', width: '110px', height: '5px', delay: 0.35 },
-    { top: '40%', left: '73%', width: '38px',  height: '5px', delay: 0.4 },
-    { top: '43%', left: '78%', width: '10px',  height: '8px', delay: 0.5 },
-    { top: '43%', left: '82%', width: '28px',  height: '5px', delay: 0.15 },
+    { top: '15%', left: '5%',  width: '120px', height: '5px', delay: 0 },
+    { top: '18%', left: '20%', width: '80px',  height: '5px', delay: 0.2 },
+    { top: '12%', left: '35%', width: '160px', height: '5px', delay: 0.1 },
+    { top: '20%', left: '55%', width: '200px', height: '5px', delay: 0.3 },
+    { top: '15%', left: '72%', width: '90px',  height: '5px', delay: 0.15 },
+    { top: '22%', left: '85%', width: '140px', height: '5px', delay: 0.25 },
+    { top: '25%', left: '12%', width: '100px', height: '5px', delay: 0.4 },
+    { top: '30%', left: '3%',  width: '180px', height: '5px', delay: 0.1 },
+    { top: '28%', left: '45%', width: '150px', height: '5px', delay: 0.35 },
+    { top: '35%', left: '60%', width: '120px', height: '5px', delay: 0.2 },
+    { top: '32%', left: '88%', width: '90px',  height: '5px', delay: 0.45 },
+    { top: '40%', left: '25%', width: '170px', height: '5px', delay: 0.15 },
+    { top: '45%', left: '5%',  width: '110px', height: '5px', delay: 0.3 },
+    { top: '42%', left: '75%', width: '130px', height: '5px', delay: 0.25 },
+    { top: '50%', left: '40%', width: '190px', height: '5px', delay: 0.4 },
+    { top: '48%', left: '90%', width: '100px', height: '5px', delay: 0.1 },
+    { top: '55%', left: '15%', width: '140px', height: '5px', delay: 0.35 },
+    { top: '60%', left: '50%', width: '160px', height: '5px', delay: 0.2 },
+    { top: '58%', left: '80%', width: '120px', height: '5px', delay: 0.45 },
+    { top: '65%', left: '30%', width: '150px', height: '5px', delay: 0.15 },
+    { top: '70%', left: '8%',  width: '180px', height: '5px', delay: 0.3 },
+    { top: '68%', left: '65%', width: '110px', height: '5px', delay: 0.25 },
+    { top: '75%', left: '45%', width: '200px', height: '5px', delay: 0.4 },
+    { top: '72%', left: '85%', width: '130px', height: '5px', delay: 0.1 },
+    { top: '80%', left: '20%', width: '160px', height: '5px', delay: 0.35 },
+    { top: '85%', left: '55%', width: '140px', height: '5px', delay: 0.2 },
+    { top: '82%', left: '92%', width: '100px', height: '5px', delay: 0.45 },
+    { top: '90%', left: '35%', width: '170px', height: '5px', delay: 0.15 },
+    { top: '95%', left: '10%', width: '120px', height: '5px', delay: 0.3 },
+    { top: '92%', left: '75%', width: '150px', height: '5px', delay: 0.25 },
+    { top: '98%', left: '50%', width: '190px', height: '5px', delay: 0.4 },
   ];
 
   return (
@@ -238,7 +252,9 @@ function WaitlistFormContent() {
         </div>
       </div>
 
-      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center z-10 flex-1 py-32 justify-center" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="w-full max-w-[800px] mx-auto px-6 text-center flex flex-col items-center z-10 flex-1 py-32 justify-center" style={{ position: 'relative', zIndex: 10 }}>
+        {/* Subtle backdrop blur behind the main text so the background lines fade out elegantly behind the text instead of clashing */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] rounded-full filter blur-[40px] z-[-1]"></div>
         <AnimatePresence mode="wait">
           {!success ? (
             <motion.div
@@ -351,7 +367,7 @@ function WaitlistFormContent() {
               </motion.div>
 
               <h2 className="font-sans text-[#ffffff] text-[44px] md:text-[56px] font-[700] tracking-[-0.03em] leading-none mb-4">
-                You're on the list.
+                You're #{position.toLocaleString()} on the list.
               </h2>
               
               <p className="text-[#666666] text-[14px] leading-relaxed max-w-xs mx-auto mb-10 font-mono">
