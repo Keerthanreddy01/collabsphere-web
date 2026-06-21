@@ -264,75 +264,75 @@ function WaitlistFormContent() {
                     We're inviting engineers to run it on real code and help shape what ships.
                   </p>
 
-                <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col gap-3 mb-6 relative z-20">
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@company.com"
-                      className="flex-1 bg-transparent border border-white/20 focus:border-[#ff453a] rounded-sm px-4 py-3.5 text-white placeholder-white/30 outline-none transition-all font-mono text-xs"
-                    />
-                    <input
-                      type="text"
-                      name="website"
-                      style={{ display: 'none' }}
-                      tabIndex={-1}
-                      autoComplete="off"
-                      value={honeypot}
-                      onChange={(e) => setHoneypot(e.target.value)}
-                    />
-                  </div>
+                  <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col gap-3 mb-6 relative z-20">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@company.com"
+                        className="flex-1 bg-transparent border border-white/20 focus:border-[#ff453a] rounded-sm px-4 py-3.5 text-white placeholder-white/30 outline-none transition-all font-mono text-xs"
+                      />
+                      <input
+                        type="text"
+                        name="website"
+                        style={{ display: 'none' }}
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={honeypot}
+                        onChange={(e) => setHoneypot(e.target.value)}
+                      />
+                    </div>
 
-                  {/* Cloudflare Turnstile Widget */}
-                  <div className="w-full">
-                    <Turnstile
-                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                      onSuccess={(token) => {
-                        setTurnstileToken(token);
-                        setTurnstileStatus('solved');
-                      }}
-                      onError={() => {
-                        setTurnstileToken(null);
-                        setTurnstileStatus('error');
-                      }}
-                      onExpire={() => {
-                        setTurnstileToken(null);
-                        setTurnstileStatus('idle');
-                      }}
-                      options={{
-                        theme: 'dark',
-                        size: 'flexible',
-                      }}
-                    />
-                    {turnstileStatus === 'error' && (
-                      <p className="text-red-500 text-[10px] font-mono mt-1">Verification failed. Please refresh.</p>
-                    )}
-                  </div>
+                    {/* Cloudflare Turnstile Widget */}
+                    <div className="w-full">
+                      <Turnstile
+                        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                        onSuccess={(token) => {
+                          setTurnstileToken(token);
+                          setTurnstileStatus('solved');
+                        }}
+                        onError={() => {
+                          setTurnstileToken(null);
+                          setTurnstileStatus('error');
+                        }}
+                        onExpire={() => {
+                          setTurnstileToken(null);
+                          setTurnstileStatus('idle');
+                        }}
+                        options={{
+                          theme: 'dark',
+                          size: 'flexible',
+                        }}
+                      />
+                      {turnstileStatus === 'error' && (
+                        <p className="text-red-500 text-[10px] font-mono mt-1">Verification failed. Please refresh.</p>
+                      )}
+                    </div>
 
-                  <button
-                    type="submit"
-                    disabled={loading || !turnstileToken}
-                    className={`bg-[#ff453a] text-black font-mono font-bold rounded-sm px-8 py-3.5 transition-all active:scale-[0.98] flex items-center justify-center w-full text-[10px] tracking-[0.1em] uppercase shadow-[0_0_20px_rgba(255,69,58,0.3)] ${
-                      !turnstileToken
-                        ? 'opacity-50 cursor-not-allowed'
-                        : 'opacity-100 cursor-pointer hover:bg-[#ff453a]/90 hover:shadow-[0_0_30px_rgba(255,69,58,0.5)]'
-                    }`}
-                    style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
-                  >
-                    {loading ? (
-                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                    ) : (
-                      "JOIN WAITLIST"
-                    )}
-                  </button>
-                </form>
+                    <button
+                      type="submit"
+                      disabled={loading || !turnstileToken}
+                      className={`bg-[#ff453a] text-black font-mono font-bold rounded-sm px-8 py-3.5 transition-all active:scale-[0.98] flex items-center justify-center w-full text-[10px] tracking-[0.1em] uppercase shadow-[0_0_20px_rgba(255,69,58,0.3)] ${
+                        !turnstileToken
+                          ? 'opacity-50 cursor-not-allowed'
+                          : 'opacity-100 cursor-pointer hover:bg-[#ff453a]/90 hover:shadow-[0_0_30px_rgba(255,69,58,0.5)]'
+                      }`}
+                      style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
+                    >
+                      {loading ? (
+                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      ) : (
+                        "JOIN WAITLIST"
+                      )}
+                    </button>
+                  </form>
 
-                {errorMsg && (
-                  <p className="text-red-500 text-xs font-bold font-sans">{errorMsg}</p>
-                )}
-              </motion.div>
+                  {errorMsg && (
+                    <p className="text-red-500 text-xs font-bold font-sans">{errorMsg}</p>
+                  )}
+                </motion.div>
             ) : (
               <motion.div
                 key="success"
