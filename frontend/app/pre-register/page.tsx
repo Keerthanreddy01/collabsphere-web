@@ -168,7 +168,7 @@ function WaitlistFormContent() {
       <div className="flex-1 flex flex-col relative h-full overflow-y-auto no-scrollbar bg-[#D4F842]">
         
         {/* Header inside left panel */}
-        <div className="flex items-center gap-6 p-8 md:p-12 w-full z-20 shrink-0">
+        <div className="flex items-center gap-6 p-6 md:p-8 w-full z-20 shrink-0">
           <a 
             href="/dashboard/home" 
             className="flex items-center gap-2 text-black hover:text-black/70 transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
@@ -183,33 +183,33 @@ function WaitlistFormContent() {
 
         <div className="flex flex-col xl:flex-row flex-1 w-full">
           {/* Text Content Column */}
-          <div className="flex-1 flex flex-col justify-center px-6 md:px-10 xl:px-16 pb-8 md:pb-12 z-10">
+          <div className="flex-1 flex flex-col justify-center px-6 md:px-10 xl:px-12 pb-6 md:pb-8 z-10">
             
-            <h1 className="font-serif italic text-black text-[42px] md:text-[56px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+            <h1 className="font-serif italic text-black text-[36px] md:text-[48px] lg:text-[64px] font-bold leading-[0.9] tracking-tighter mb-4" style={{ fontFamily: 'Georgia, serif' }}>
               Decode the chain.<br/>Earn the edge.
             </h1>
             
             {/* Thick black horizontal bar */}
-            <div className="w-16 h-3 bg-black mb-6" />
+            <div className="w-12 h-2 bg-black mb-4" />
 
-            <p className="font-sans text-black text-[11px] md:text-[12px] leading-relaxed max-w-sm font-bold mb-8">
+            <p className="font-sans text-black text-[11px] md:text-[12px] leading-relaxed max-w-sm font-bold mb-6">
               We turn raw, complex on-chain data into clear insights, gamified missions, and real-time rewards. Whether you're a developer, analyst, or curious explorer, CollabSphere lets you track, learn, and compete — all in one seamless, interactive space. The chain is open. It's time to play.
             </p>
 
           {/* SEGMENTED PROGRESS METRIC BOARD */}
-          <div className="mt-8 lg:mt-10 w-full max-w-md">
-            <div className="border border-white/20 bg-[#0a0a0a] p-6 rounded-xl font-sans">
+          <div className="mt-4 lg:mt-auto w-full max-w-[400px]">
+            <div className="border border-white/20 bg-[#0a0a0a] p-4 md:p-5 rounded-xl font-sans relative z-20 shadow-2xl">
               
               {/* Tags & Menu */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="border border-white/20 px-3 py-1 rounded-md text-[10px] text-white/70 tracking-wide uppercase">
+                  <span className="border border-white/20 px-2 py-0.5 rounded-md text-[9px] text-white/70 tracking-wide uppercase">
                     v1.0.0-BETA
                   </span>
-                  <span className="border border-white/20 px-3 py-1 rounded-md text-[10px] text-white/70 tracking-wide uppercase">
+                  <span className="border border-white/20 px-2 py-0.5 rounded-md text-[9px] text-white/70 tracking-wide uppercase">
                     live
                   </span>
-                  <span className="border border-white/20 px-3 py-1 rounded-md text-[10px] text-white/70 tracking-wide uppercase">
+                  <span className="border border-white/20 px-2 py-0.5 rounded-md text-[9px] text-white/70 tracking-wide uppercase">
                     global
                   </span>
                 </div>
@@ -221,36 +221,36 @@ function WaitlistFormContent() {
               </div>
 
               {/* Title */}
-              <h2 className="text-[28px] font-medium text-white tracking-tight leading-none mb-4">
+              <h2 className="text-[22px] font-medium text-white tracking-tight leading-none mb-3">
                 Beta Allocation
               </h2>
 
               {/* Divider */}
-              <div className="h-px w-full bg-white/20 mb-4" />
+              <div className="h-px w-full bg-white/20 mb-3" />
 
               {/* Subtext */}
-              <p className="text-[13px] text-white/70 mb-6">
+              <p className="text-[11px] leading-relaxed text-white/70 mb-4">
                 Tracking early-access registrations across the global network. Spots are limited.
               </p>
 
               {/* Stats Row */}
-              <div className="flex items-center gap-4 mb-8">
-                <span className="text-[52px] font-medium text-white tracking-tighter leading-none">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-[40px] font-medium text-white tracking-tighter leading-none">
                   {Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%
                 </span>
-                <div className="flex items-center gap-3">
-                  <span className="border border-white/20 px-2 py-1 rounded-md text-[13px] text-white flex items-center gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="border border-white/20 px-2 py-1 rounded-md text-[11px] text-white flex items-center gap-1">
                     <ArrowUpRight className="w-3 h-3" />
                     {totalCount}
                   </span>
-                  <span className="text-[13px] text-white/50">
+                  <span className="text-[11px] text-white/50">
                     builders joined
                   </span>
                 </div>
               </div>
 
               {/* Segmented Progress Bar */}
-              <div className="flex gap-[3px] h-14 w-full mb-6">
+              <div className="flex gap-[2px] h-8 md:h-10 w-full mb-4">
                 {Array.from({ length: 32 }).map((_, i) => {
                   const capacityPercent = Math.min(100, Math.max(0, (totalCount / 150) * 100));
                   const filledBars = Math.round((capacityPercent / 100) * 32);
@@ -264,28 +264,28 @@ function WaitlistFormContent() {
               </div>
 
               {/* Unique Terminal Feed for Recent Users */}
-              <div className="w-full bg-[#111111] rounded-lg p-3 border border-white/5 relative overflow-hidden group">
+              <div className="w-full bg-[#111111] rounded-lg p-2.5 border border-white/5 relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-1 h-full bg-[#D4F842]/50 group-hover:bg-[#D4F842] transition-colors" />
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 pl-2">
+                  <div className="flex items-center gap-2 pl-2">
                     <div className="relative flex h-2 w-2 items-center justify-center">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4F842] opacity-60"></span>
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#D4F842]"></span>
                     </div>
-                    <span className="text-[10px] font-syncopate font-bold text-white/40 uppercase tracking-[0.2em]">
+                    <span className="text-[9px] font-syncopate font-bold text-white/40 uppercase tracking-[0.2em]">
                       SYS_FEED
                     </span>
                   </div>
                   
-                  <div className="font-mono text-[11px] text-white/80 flex items-center">
+                  <div className="font-mono text-[10px] text-white/80 flex items-center">
                     {recentSignups.length > 0 ? (
-                      <span className="flex items-center gap-2">
-                        <span className="text-white/40">_new_node:</span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-white/40">_new:</span>
                         <span className="text-[#D4F842] font-bold">[{recentSignups[0]}]</span>
-                        <span className="text-white/30 ml-1">connected</span>
+                        <span className="text-white/30 ml-0.5">joined</span>
                       </span>
                     ) : (
-                      <span className="text-white/30 animate-pulse">_ scanning for peers...</span>
+                      <span className="text-white/30 animate-pulse">_ scanning...</span>
                     )}
                   </div>
                 </div>
