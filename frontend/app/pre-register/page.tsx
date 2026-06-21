@@ -37,57 +37,49 @@ const sendConfirmationEmail = async (
 };
 
 const AnimatedLines = () => {
-  // Horizontal bars matching the screenshot exactly
   const lines = [
-    // Top group
-    { top: '22%', left: '35%', width: '120px', height: '4px', delay: 0 },
-    { top: '23%', left: '39%', width: '30px', height: '8px', delay: 0.1 },
-    { top: '25%', left: '34%', width: '150px', height: '6px', delay: 0.2 },
-    { top: '28%', left: '48%', width: '60px', height: '4px', delay: 0.3 },
-    { top: '25%', left: '50%', width: '40px', height: '4px', delay: 0.4 },
-    
-    // Left group
-    { top: '27%', left: '10%', width: '80px', height: '6px', delay: 0.1 },
-    { top: '30%', left: '22%', width: '110px', height: '6px', delay: 0.5 },
-    { top: '45%', left: '9%', width: '18px', height: '8px', delay: 0.2 },
-    { top: '48%', left: '9%', width: '35px', height: '6px', delay: 0.4 },
-    { top: '48%', left: '27%', width: '70px', height: '4px', delay: 0.3 },
-    
-    // Right group
-    { top: '25%', left: '81%', width: '140px', height: '6px', delay: 0.1 },
-    { top: '28%', left: '78%', width: '160px', height: '6px', delay: 0.3 },
-    { top: '29%', left: '67%', width: '75px', height: '6px', delay: 0.2 },
-    { top: '45%', left: '63%', width: '40px', height: '6px', delay: 0.4 },
-    { top: '45%', left: '71%', width: '85px', height: '6px', delay: 0.1 },
-    { top: '48%', left: '79%', width: '8px', height: '8px', delay: 0.5 },
-    { top: '48%', left: '83%', width: '25px', height: '6px', delay: 0.2 },
+    // Far LEFT side only — grouped like the Rig reference
+    { top: '20%', left: '2%',  width: '90px',  height: '5px', delay: 0 },
+    { top: '23%', left: '13%', width: '130px', height: '5px', delay: 0.15 },
+    { top: '27%', left: '6%',  width: '55px',  height: '8px', delay: 0.3 },
+    { top: '31%', left: '1%',  width: '75px',  height: '5px', delay: 0.1 },
+    { top: '40%', left: '8%',  width: '20px',  height: '8px', delay: 0.2 },
+    { top: '43%', left: '8%',  width: '42px',  height: '5px', delay: 0.4 },
+    { top: '43%', left: '18%', width: '65px',  height: '4px', delay: 0.25 },
+
+    // Far RIGHT side only
+    { top: '20%', left: '76%', width: '140px', height: '5px', delay: 0.1 },
+    { top: '23%', left: '83%', width: '160px', height: '5px', delay: 0.3 },
+    { top: '27%', left: '79%', width: '80px',  height: '8px', delay: 0.2 },
+    { top: '31%', left: '86%', width: '110px', height: '5px', delay: 0.35 },
+    { top: '40%', left: '73%', width: '38px',  height: '5px', delay: 0.4 },
+    { top: '43%', left: '78%', width: '10px',  height: '8px', delay: 0.5 },
+    { top: '43%', left: '82%', width: '28px',  height: '5px', delay: 0.15 },
   ];
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 flex items-center justify-center">
-      <div className="relative w-full max-w-[1400px] h-full">
-        {lines.map((line, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ 
-              delay: line.delay, 
-              duration: 0.8,
-              ease: [0.16, 1, 0.3, 1] // Custom ease out
-            }}
-            style={{
-              position: 'absolute',
-              top: line.top,
-              left: line.left,
-              width: line.width,
-              height: line.height,
-              background: '#ff453a',
-              transformOrigin: 'left center',
-            }}
-          />
-        ))}
-      </div>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 1 }}>
+      {lines.map((line, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ 
+            delay: line.delay, 
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1]
+          }}
+          style={{
+            position: 'absolute',
+            top: line.top,
+            left: line.left,
+            width: line.width,
+            height: line.height,
+            background: '#ff453a',
+            transformOrigin: 'left center',
+          }}
+        />
+      ))}
     </div>
   );
 };
@@ -246,7 +238,7 @@ function WaitlistFormContent() {
         </div>
       </div>
 
-      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center z-10 flex-1 py-32 justify-center">
+      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center z-10 flex-1 py-32 justify-center" style={{ position: 'relative', zIndex: 10 }}>
         <AnimatePresence mode="wait">
           {!success ? (
             <motion.div
