@@ -350,39 +350,39 @@ function WaitlistFormContent() {
               className="text-center w-full max-w-md mx-auto flex flex-col items-center"
             >
               <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-24 h-24 bg-[#10b981]/10 rounded-full flex items-center justify-center mx-auto mb-6 text-[#10b981]"
+                className="w-16 h-16 border-2 border-[#ff453a] flex items-center justify-center mx-auto mb-8"
               >
-                <Check className="w-12 h-12 stroke-[3]" />
+                <Check className="w-8 h-8 text-[#ff453a] stroke-[2.5]" />
               </motion.div>
 
-              <h2 className="font-syne text-[#ffffff] text-[40px] md:text-[48px] font-extrabold tracking-tighter leading-none mb-4">
-                You're in! 🎉
+              <h2 className="font-sans text-[#ffffff] text-[44px] md:text-[56px] font-[700] tracking-[-0.03em] leading-none mb-4">
+                You're on the list.
               </h2>
               
-              <p className="text-[#888888] text-[16px] leading-relaxed max-w-xs mx-auto mb-8 font-sans">
+              <p className="text-[#666666] text-[14px] leading-relaxed max-w-xs mx-auto mb-10 font-mono">
                 Check your email for confirmation
               </p>
 
-              <div className="bg-[#111111] border border-[#2a2a2a] rounded-lg p-6 text-left w-full">
-                <span className="text-[12px] font-bold text-[#888888] uppercase tracking-[0.1em] block mb-4 font-sans text-center">
+              <div className="border border-[#222222] p-6 text-left w-full bg-[#0f0f0f]">
+                <span className="text-[10px] font-bold text-[#555555] uppercase tracking-[0.2em] block mb-5 font-mono text-center">
                   Share to move up the waitlist
                 </span>
                 
-                <div className="flex gap-2 items-center bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 pl-4">
+                <div className="flex gap-0 items-center border border-[#2a2a2a] mb-5">
                   <input
                     type="text"
                     readOnly
                     value={referralLink}
-                    className="bg-transparent text-sm text-[#ffffff] outline-none flex-1 font-mono select-all border-none"
+                    className="bg-transparent text-[12px] text-[#888888] outline-none flex-1 font-mono px-3 py-3 border-none"
                   />
                   <button
                     onClick={copyToClipboard}
-                    className="p-2.5 bg-[#111111] hover:bg-[#222222] text-[#ffffff] rounded border border-[#2a2a2a] transition-colors cursor-pointer shrink-0"
+                    className="p-3 bg-[#1a1a1a] hover:bg-[#222222] text-[#ffffff] border-l border-[#2a2a2a] transition-colors cursor-pointer shrink-0"
                   >
-                    {copied ? <Check className="w-4 h-4 text-[#10b981]" /> : <Copy className="w-4 h-4" />}
+                    {copied ? <Check className="w-4 h-4 text-[#ff453a]" /> : <Copy className="w-4 h-4 text-[#888888]" />}
                   </button>
                 </div>
 
@@ -391,19 +391,19 @@ function WaitlistFormContent() {
                     href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border border-[#2a2a2a] hover:border-[#ffffff] hover:text-[#ffffff] bg-transparent text-[#888888] rounded py-3 text-[12px] transition-all text-decoration-none font-sans font-bold uppercase"
+                    className="flex-1 flex items-center justify-center gap-2 border border-[#2a2a2a] hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-[#666666] py-3 text-[11px] transition-all font-mono font-bold uppercase tracking-widest"
                   >
-                    <Twitter className="w-4 h-4 fill-current" />
-                    <span>X</span>
+                    <Twitter className="w-3 h-3 fill-current" />
+                    <span>X / Twitter</span>
                   </a>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border border-[#2a2a2a] hover:border-[#ffffff] hover:text-[#ffffff] bg-transparent text-[#888888] rounded py-3 text-[12px] transition-all text-decoration-none font-sans font-bold uppercase"
+                    className="flex-1 flex items-center justify-center gap-2 border border-[#2a2a2a] hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-[#666666] py-3 text-[11px] transition-all font-mono font-bold uppercase tracking-widest"
                   >
-                    <Linkedin className="w-4 h-4 fill-current" />
-                    <span>In</span>
+                    <Linkedin className="w-3 h-3 fill-current" />
+                    <span>LinkedIn</span>
                   </a>
                 </div>
               </div>
