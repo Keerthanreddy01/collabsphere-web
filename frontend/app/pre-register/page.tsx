@@ -10,6 +10,7 @@ import {
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot, getDocs, query, where } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
+import { Turnstile } from '@marsidev/react-turnstile';
 import SideRays from "@/components/ui/SideRays";
 import emailjs from "@emailjs/browser";
 
@@ -49,6 +50,8 @@ function WaitlistFormContent() {
   const [copied, setCopied] = useState(false);
   const [honeypot, setHoneypot] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileStatus, setTurnstileStatus] = useState<'idle' | 'solved' | 'error'>('idle');
 
   const faqs = [
     { q: "What is CollabSphere?", a: "CollabSphere is the ultimate mobile app for builders, allowing you to track, learn, and compete in the decentralized ecosystem." },
@@ -96,6 +99,29 @@ function WaitlistFormContent() {
     // Client-side honeypot check
     if (honeypot) {
       console.log('Bot detected');
+      return;
+    }
+
+    // Turnstile verification check
+    if (!turnstileToken) {
+      setErrorMsg('Please complete the human verification below.');
+      return;
+    }
+
+    // Server-side Turnstile token verification
+    try {
+      const verifyRes = await fetch('/api/verify-turnstile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        setErrorMsg('Verification failed. Please refresh and try again.');
+        return;
+      }
+    } catch {
+      setErrorMsg('Verification error. Please try again.');
       return;
     }
 
@@ -238,28 +264,61 @@ function WaitlistFormContent() {
                     We're inviting engineers to run it on real code and help shape what ships.
                   </p>
 
-                <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col sm:flex-row gap-3 mb-6 relative z-20">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
-                    className="flex-1 bg-transparent border border-white/20 focus:border-[#ff453a] rounded-sm px-4 py-3.5 text-white placeholder-white/30 outline-none transition-all font-mono text-xs"
-                  />
-                  <input
-                    type="text"
-                    name="website"
-                    style={{ display: 'none' }}
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                  />
+                <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col gap-3 mb-6 relative z-20">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@company.com"
+                      className="flex-1 bg-transparent border border-white/20 focus:border-[#ff453a] rounded-sm px-4 py-3.5 text-white placeholder-white/30 outline-none transition-all font-mono text-xs"
+                    />
+                    <input
+                      type="text"
+                      name="website"
+                      style={{ display: 'none' }}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Cloudflare Turnstile Widget */}
+                  <div className="w-full">
+                    <Turnstile
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                      onSuccess={(token) => {
+                        setTurnstileToken(token);
+                        setTurnstileStatus('solved');
+                      }}
+                      onError={() => {
+                        setTurnstileToken(null);
+                        setTurnstileStatus('error');
+                      }}
+                      onExpire={() => {
+                        setTurnstileToken(null);
+                        setTurnstileStatus('idle');
+                      }}
+                      options={{
+                        theme: 'dark',
+                        size: 'flexible',
+                      }}
+                    />
+                    {turnstileStatus === 'error' && (
+                      <p className="text-red-500 text-[10px] font-mono mt-1">Verification failed. Please refresh.</p>
+                    )}
+                  </div>
+
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="bg-[#ff453a] hover:bg-[#ff453a]/90 text-black font-mono font-bold rounded-sm px-8 py-3.5 transition-all active:scale-[0.98] flex items-center justify-center min-w-[160px] text-[10px] tracking-[0.1em] uppercase shadow-[0_0_20px_rgba(255,69,58,0.3)] hover:shadow-[0_0_30px_rgba(255,69,58,0.5)]"
+                    disabled={loading || !turnstileToken}
+                    className={`bg-[#ff453a] text-black font-mono font-bold rounded-sm px-8 py-3.5 transition-all active:scale-[0.98] flex items-center justify-center w-full text-[10px] tracking-[0.1em] uppercase shadow-[0_0_20px_rgba(255,69,58,0.3)] ${
+                      !turnstileToken
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'opacity-100 cursor-pointer hover:bg-[#ff453a]/90 hover:shadow-[0_0_30px_rgba(255,69,58,0.5)]'
+                    }`}
                     style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
                   >
                     {loading ? (
