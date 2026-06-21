@@ -290,12 +290,8 @@ function WaitlistFormContent() {
         </div>
       </div>
 
-      {/* RIGHT PANEL - The Arch Form */}
-      <div className="w-full md:w-[380px] lg:w-[450px] xl:w-[600px] bg-[#D4F842] rounded-t-[60px] md:rounded-t-none md:rounded-l-[80px] min-h-[70vh] md:h-full relative flex flex-col justify-center px-8 md:px-10 lg:px-16 xl:px-20 shadow-[-30px_0_80px_rgba(212,248,66,0.15)] py-12 md:py-0 md:overflow-y-auto no-scrollbar">
-        {/* Toggle graphic */}
-        <div className="absolute top-8 right-8 md:top-12 md:right-12 bg-[#063CB9] w-12 h-6 rounded-full p-[3px] flex items-center justify-end shadow-inner">
-          <div className="bg-white w-[18px] h-[18px] rounded-full" />
-        </div>
+      {/* RIGHT PANEL - Sleek Dark Waitlist */}
+      <div className="w-full md:w-[400px] lg:w-[500px] xl:w-[650px] bg-[#0a0a0a] min-h-[70vh] md:h-full relative flex flex-col justify-center px-8 md:px-12 lg:px-16 xl:px-24 border-t md:border-t-0 md:border-l border-white/5 py-12 md:py-0 md:overflow-y-auto no-scrollbar">
 
         <AnimatePresence mode="wait">
           {!success ? (
@@ -305,89 +301,79 @@ function WaitlistFormContent() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="w-full"
+              className="w-full max-w-md mx-auto flex flex-col items-center text-center"
             >
-              <h2 className="font-syncopate text-black text-[28px] font-bold tracking-tight uppercase mb-8 leading-tight">
-                Join The<br/>Waitlist
+              <div className="border border-red-500/30 text-red-500 bg-red-500/10 px-3 py-1 rounded-sm text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-6 flex items-center gap-2 mx-auto">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-sm" /> 
+                WAITLIST
+              </div>
+
+              <h2 className="font-syne text-white text-[32px] md:text-[40px] font-bold tracking-tight leading-tight mb-4">
+                Join the Waitlist
               </h2>
 
-              <form onSubmit={handleSubmit} className="space-y-6 w-full">
-                <div>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ENTER YOUR EMAIL"
-                    className="w-full bg-white/40 border-2 border-black/10 focus:border-[#063CB9] focus:bg-white rounded-xl px-5 py-4 text-black placeholder-black/40 outline-none transition-all font-syne font-bold text-sm tracking-wide"
-                  />
-                  <input
-                    type="text"
-                    name="website"
-                    style={{ display: 'none' }}
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                  />
-                </div>
+              <p className="text-white/40 text-xs md:text-sm leading-relaxed mb-10 font-sans max-w-sm mx-auto">
+                Be among the first to experience CollabSphere. Sign up now to get early access and exclusive updates as we prepare for launch.
+              </p>
 
-                <div className="space-y-3">
-                  <label className="text-[10px] font-syncopate font-bold text-black/50 uppercase tracking-widest block w-full">Select Platform</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {(["android", "ios", "both"] as const).map((p) => {
-                      const isActive = platform === p;
-                      const label = p === "android" ? "Android" : p === "ios" ? "iOS" : "Both";
-                      
-                      const AppleIcon = () => (
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-[14px] h-[14px] fill-current shrink-0"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-                      );
-                      const PlayIcon = () => (
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[14px] h-[14px] fill-current shrink-0"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
-                      );
-
-                      return (
-                        <button
-                          key={p}
-                          type="button"
-                          onClick={() => setPlatform(p)}
-                          className={`py-3.5 px-2 rounded-xl text-[11px] font-syncopate font-bold uppercase tracking-wider transition-all border-none cursor-pointer flex items-center justify-center gap-1.5 ${
-                            isActive 
-                              ? "bg-[#063CB9] text-white shadow-md shadow-[#063CB9]/30 scale-105" 
-                              : "bg-black/5 text-black/50 hover:bg-black/10"
-                          }`}
-                        >
-                          {p === "ios" && <AppleIcon />}
-                          {p === "android" && <PlayIcon />}
-                          {p === "both" && (
-                            <div className="flex items-center gap-0.5 opacity-80">
-                              <AppleIcon />
-                              <PlayIcon />
-                            </div>
-                          )}
-                          <span>{label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {errorMsg && (
-                  <p className="text-red-500 text-xs font-bold font-sans">{errorMsg}</p>
-                )}
-
+              <form onSubmit={handleSubmit} className="w-full flex flex-col sm:flex-row gap-3 mb-10">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  className="flex-1 bg-[#111] border border-white/10 focus:border-red-500 focus:bg-[#151515] rounded-lg px-4 py-3.5 text-white placeholder-white/30 outline-none transition-all font-mono text-xs"
+                />
+                <input
+                  type="text"
+                  name="website"
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#063CB9] hover:bg-[#052b82] text-white font-syncopate font-bold rounded-xl py-4 mt-4 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-[#063CB9]/20 flex items-center justify-center gap-2 cursor-pointer border-none uppercase tracking-widest text-[13px]"
+                  className="bg-[#ff453a] hover:bg-[#ff453a]/90 text-white font-mono font-bold rounded-lg px-6 py-3.5 transition-all active:scale-[0.98] flex items-center justify-center min-w-[140px] text-[10px] tracking-widest uppercase border border-red-500/50"
                 >
                   {loading ? (
-                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <span>Pre-Register Now</span>
+                    "Join Waitlist"
                   )}
                 </button>
               </form>
+
+              {errorMsg && (
+                <p className="text-red-500 text-xs font-bold font-sans mt-[-1rem] mb-6">{errorMsg}</p>
+              )}
+
+              <div className="w-full bg-[#111]/50 border border-white/5 rounded-xl p-6 text-left">
+                <h3 className="text-white/30 text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-5">
+                  What you'll get
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3 text-white/60 text-xs font-sans">
+                    <Check className="w-4 h-4 text-[#ff453a] shrink-0" />
+                    Early access before public launch
+                  </li>
+                  <li className="flex items-center gap-3 text-white/60 text-xs font-sans">
+                    <Check className="w-4 h-4 text-[#ff453a] shrink-0" />
+                    Updates and sneak peeks
+                  </li>
+                  <li className="flex items-center gap-3 text-white/60 text-xs font-sans">
+                    <Check className="w-4 h-4 text-[#ff453a] shrink-0" />
+                    Access to our exclusive builder community
+                  </li>
+                  <li className="flex items-center gap-3 text-white/60 text-xs font-sans">
+                    <Check className="w-4 h-4 text-[#ff453a] shrink-0" />
+                    Priority access to beta features
+                  </li>
+                </ul>
+              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -395,54 +381,54 @@ function WaitlistFormContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              className="text-center w-full"
+              className="text-center w-full max-w-md mx-auto"
             >
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-24 h-24 bg-[#063CB9]/10 border-[4px] border-[#063CB9] rounded-full flex items-center justify-center mx-auto mb-8 text-[#063CB9] shadow-2xl shadow-[#063CB9]/20"
+                className="w-20 h-20 bg-red-500/10 border-[2px] border-[#ff453a] rounded-full flex items-center justify-center mx-auto mb-8 text-[#ff453a] shadow-[0_0_30px_rgba(255,69,58,0.2)]"
               >
-                <Check className="w-12 h-12 stroke-[3]" />
+                <Check className="w-10 h-10 stroke-[3]" />
               </motion.div>
 
-              <h2 className="font-syne text-[#063CB9] text-[64px] font-extrabold tracking-tighter leading-none mb-4">
+              <h2 className="font-syne text-white text-[56px] font-extrabold tracking-tighter leading-none mb-4">
                 #{position.toLocaleString()}
               </h2>
-              <div className="font-syncopate text-black text-[20px] font-bold tracking-tight uppercase mb-8">
+              <div className="font-mono text-red-500 text-[14px] font-bold tracking-[0.2em] uppercase mb-8">
                 You're in line
               </div>
               
-              <p className="text-black/60 text-sm leading-relaxed max-w-xs mx-auto mb-10 font-sans font-medium">
-                We'll email you at <br/><span className="text-[#063CB9] font-bold text-base block mt-2">{email}</span><br/>when the beta launches.
+              <p className="text-white/50 text-sm leading-relaxed max-w-xs mx-auto mb-10 font-sans">
+                We'll email you at <br/><span className="text-white font-bold text-base block mt-2">{email}</span><br/>when the beta launches.
               </p>
 
-              <div className="bg-black/5 border border-black/10 rounded-2xl p-6 text-left w-full">
-                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest block mb-4 font-syncopate text-center">
+              <div className="bg-[#111]/50 border border-white/5 rounded-xl p-6 text-left w-full">
+                <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] block mb-4 font-mono text-center">
                   Move up the line — share
                 </span>
                 
-                <div className="flex gap-2 items-center bg-white/50 border border-black/10 rounded-xl p-2 pl-4">
+                <div className="flex gap-2 items-center bg-[#151515] border border-white/10 rounded-lg p-2 pl-4">
                   <input
                     type="text"
                     readOnly
                     value={referralLink}
-                    className="bg-transparent text-sm text-black outline-none flex-1 font-mono select-all border-none font-bold"
+                    className="bg-transparent text-xs text-white/70 outline-none flex-1 font-mono select-all border-none"
                   />
                   <button
                     onClick={copyToClipboard}
-                    className="p-3 bg-[#063CB9]/10 hover:bg-[#063CB9] text-[#063CB9] hover:text-white rounded-lg transition-colors border-none cursor-pointer shrink-0"
+                    className="p-2.5 bg-white/5 hover:bg-white/10 text-white rounded-md transition-colors border-none cursor-pointer shrink-0"
                   >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
 
                 <div className="flex gap-3 mt-4">
                   <a
-                    href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere%20mobile!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
+                    href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border-2 border-black/10 hover:border-[#063CB9] bg-transparent text-black rounded-xl py-3 text-xs font-bold transition-all text-decoration-none font-syncopate uppercase tracking-widest"
+                    className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-white/70 rounded-lg py-3 text-[10px] transition-all text-decoration-none font-mono uppercase tracking-widest"
                   >
                     <Twitter className="w-4 h-4 fill-current" />
                     <span>X</span>
@@ -451,7 +437,7 @@ function WaitlistFormContent() {
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border-2 border-black/10 hover:border-[#063CB9] bg-transparent text-black rounded-xl py-3 text-xs font-bold transition-all text-decoration-none font-syncopate uppercase tracking-widest"
+                    className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-white/70 rounded-lg py-3 text-[10px] transition-all text-decoration-none font-mono uppercase tracking-widest"
                   >
                     <Linkedin className="w-4 h-4 fill-current" />
                     <span>In</span>
