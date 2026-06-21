@@ -333,78 +333,79 @@ function WaitlistFormContent() {
                     <p className="text-red-500 text-xs font-bold font-sans">{errorMsg}</p>
                   )}
                 </motion.div>
-            ) : (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                className="text-center w-full max-w-md mx-auto"
-              >
-                <motion.div 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                  className="w-20 h-20 bg-[#ff453a]/10 border-[2px] border-[#ff453a] rounded-full flex items-center justify-center mx-auto mb-8 text-[#ff453a] shadow-[0_0_30px_rgba(255,69,58,0.2)]"
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                  className="text-center w-full max-w-md mx-auto"
                 >
-                  <Check className="w-10 h-10 stroke-[3]" />
-                </motion.div>
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                    className="w-20 h-20 bg-[#ff453a]/10 border-[2px] border-[#ff453a] rounded-full flex items-center justify-center mx-auto mb-8 text-[#ff453a] shadow-[0_0_30px_rgba(255,69,58,0.2)]"
+                  >
+                    <Check className="w-10 h-10 stroke-[3]" />
+                  </motion.div>
 
-                <h2 className="font-syne text-white text-[56px] font-extrabold tracking-tighter leading-none mb-4">
-                  #{position.toLocaleString()}
-                </h2>
-                <div className="font-mono text-[#ff453a] text-[14px] font-bold tracking-[0.2em] uppercase mb-8">
-                  You're in line
-                </div>
-                
-                <p className="text-white/50 text-sm leading-relaxed max-w-xs mx-auto mb-10 font-sans">
-                  We'll email you at <br/><span className="text-white font-bold text-base block mt-2">{email}</span><br/>when the beta launches.
-                </p>
-
-                <div className="bg-[#111]/50 border border-white/5 rounded-xl p-6 text-left w-full">
-                  <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] block mb-4 font-mono text-center">
-                    Move up the line — share
-                  </span>
+                  <h2 className="font-syne text-white text-[56px] font-extrabold tracking-tighter leading-none mb-4">
+                    #{position.toLocaleString()}
+                  </h2>
+                  <div className="font-mono text-[#ff453a] text-[14px] font-bold tracking-[0.2em] uppercase mb-8">
+                    You're in line
+                  </div>
                   
-                  <div className="flex gap-2 items-center bg-[#151515] border border-white/10 rounded-lg p-2 pl-4">
-                    <input
-                      type="text"
-                      readOnly
-                      value={referralLink}
-                      className="bg-transparent text-xs text-white/70 outline-none flex-1 font-mono select-all border-none"
-                    />
-                    <button
-                      onClick={copyToClipboard}
-                      className="p-2.5 bg-white/5 hover:bg-white/10 text-white rounded-md transition-colors border-none cursor-pointer shrink-0"
-                    >
-                      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                    </button>
-                  </div>
+                  <p className="text-white/50 text-sm leading-relaxed max-w-xs mx-auto mb-10 font-sans">
+                    We'll email you at <br/><span className="text-white font-bold text-base block mt-2">{email}</span><br/>when the beta launches.
+                  </p>
 
-                  <div className="flex gap-3 mt-4">
-                    <a
-                      href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-white/70 rounded-lg py-3 text-[10px] transition-all text-decoration-none font-mono uppercase tracking-widest"
-                    >
-                      <Twitter className="w-4 h-4 fill-current" />
-                      <span>X</span>
-                    </a>
-                    <a
-                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-white/70 rounded-lg py-3 text-[10px] transition-all text-decoration-none font-mono uppercase tracking-widest"
-                    >
-                      <Linkedin className="w-4 h-4 fill-current" />
-                      <span>In</span>
-                    </a>
+                  <div className="bg-[#111]/50 border border-white/5 rounded-xl p-6 text-left w-full">
+                    <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] block mb-4 font-mono text-center">
+                      Move up the line &mdash; share
+                    </span>
+                    
+                    <div className="flex gap-2 items-center bg-[#151515] border border-white/10 rounded-lg p-2 pl-4">
+                      <input
+                        type="text"
+                        readOnly
+                        value={referralLink}
+                        className="bg-transparent text-xs text-white/70 outline-none flex-1 font-mono select-all border-none"
+                      />
+                      <button
+                        onClick={copyToClipboard}
+                        className="p-2.5 bg-white/5 hover:bg-white/10 text-white rounded-md transition-colors border-none cursor-pointer shrink-0"
+                      >
+                        {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+
+                    <div className="flex gap-3 mt-4">
+                      <a
+                        href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-white/70 rounded-lg py-3 text-[10px] transition-all text-decoration-none font-mono uppercase tracking-widest"
+                      >
+                        <Twitter className="w-4 h-4 fill-current" />
+                        <span>X</span>
+                      </a>
+                      <a
+                        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 border border-white/10 hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-white/70 rounded-lg py-3 text-[10px] transition-all text-decoration-none font-mono uppercase tracking-widest"
+                      >
+                        <Linkedin className="w-4 h-4 fill-current" />
+                        <span>In</span>
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
