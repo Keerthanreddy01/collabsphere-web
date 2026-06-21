@@ -140,7 +140,7 @@ function WaitlistFormContent() {
 
     // Turnstile verification check
     if (!turnstileToken) {
-      setErrorMsg('Please complete the human verification below.');
+      setErrorMsg('Please complete the human verification. (If it is not visible, try disabling your adblocker or Brave Shields)');
       return;
     }
 
@@ -300,9 +300,9 @@ function WaitlistFormContent() {
                   />
                   <button
                     type="submit"
-                    disabled={loading || !turnstileToken}
+                    disabled={loading}
                     className={`bg-[#ff453a] text-black font-mono font-[700] px-[28px] py-[15px] text-[11px] tracking-[0.1em] uppercase transition-all flex items-center justify-center w-full sm:w-auto
-                      ${!turnstileToken ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer hover:bg-[#ff5544]'}
+                      ${loading ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer hover:bg-[#ff5544]'}
                     `}
                     style={{ 
                       clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
@@ -317,9 +317,9 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Cloudflare Turnstile Widget */}
-                <div className="w-full flex justify-center mt-[16px]">
+                <div className="w-full flex justify-center mt-[16px] min-h-[65px]">
                   <Turnstile
-                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
                     onSuccess={(token) => {
                       setTurnstileToken(token);
                       setTurnstileStatus('solved');
