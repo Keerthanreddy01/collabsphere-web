@@ -165,127 +165,83 @@ function WaitlistFormContent() {
     <div className="relative z-10 w-full h-full flex flex-col md:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col px-8 md:px-16 lg:px-24 relative h-full py-6 md:py-8 overflow-y-auto no-scrollbar">
+      <div className="flex-1 flex flex-col relative h-full overflow-y-auto no-scrollbar bg-[#D4F842]">
+        
         {/* Header inside left panel */}
-        <div className="flex items-center gap-6 mb-6 md:mb-8 w-full z-20 shrink-0">
+        <div className="flex items-center gap-6 p-8 md:p-12 w-full z-20 shrink-0">
           <a 
             href="/dashboard/home" 
-            className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
+            className="flex items-center gap-2 text-black hover:text-black/70 transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Home</span>
           </a>
-          <div className="font-syncopate text-white text-[12px] font-bold uppercase tracking-widest">
+          <div className="font-syncopate text-black text-[12px] font-bold uppercase tracking-widest">
             CollabSphere
           </div>
         </div>
 
-        <div className="flex flex-col my-auto pb-8 md:pb-0 z-10 w-full">
-          <div className="font-syncopate text-[#D4F842] text-[10px] md:text-[12px] uppercase tracking-[0.3em] font-bold mb-4">
-            Official Mobile Beta
-          </div>
-
-          <h1 className="font-syne text-white text-[36px] md:text-[46px] lg:text-[56px] font-bold leading-[0.9] tracking-tighter mb-3">
-            The app is <br/> coming.
-          </h1>
-          
-          <p className="font-sans text-white/50 text-[13px] md:text-[15px] leading-relaxed max-w-md font-medium">
-            We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
-          </p>
-
-          {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - BRUTALIST PIXEL STYLE */}
-          <div className="mt-4 lg:mt-6 w-full max-w-md">
-            <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-4 lg:p-5 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              {/* Pixel art corner accents */}
-              <div className="absolute top-0 left-0 w-4 h-4 bg-black" />
-              <div className="absolute top-0 right-0 w-8 h-4 bg-black" />
-              <div className="absolute top-4 right-4 w-4 h-4 bg-black" />
-              <div className="absolute bottom-0 left-0 w-8 h-4 bg-black" />
-              <div className="absolute bottom-4 left-4 w-4 h-4 bg-black" />
-              <div className="absolute bottom-0 right-0 w-4 h-4 bg-black" />
+        <div className="flex flex-col md:flex-row flex-1 w-full">
+          {/* Text Content Column */}
+          <div className="flex-1 flex flex-col justify-center px-8 md:px-12 pb-8 md:pb-12 z-10 h-full relative">
+            
+            <div className="mt-auto flex flex-col justify-center">
+              <h1 className="text-black text-[56px] md:text-[72px] lg:text-[84px] font-black leading-[0.85] tracking-tight mb-8" 
+                  style={{ 
+                    fontFamily: '"Times New Roman", Times, serif', 
+                    fontStyle: 'italic', 
+                    WebkitFontSmoothing: 'none',
+                    textRendering: 'pixelated'
+                  }}>
+                Decode the chain.<br/>Earn the edge.
+              </h1>
               
-              <div className="flex flex-col gap-3 relative z-10">
-                {/* Header: Label and Active Indicator */}
-                <div className="flex items-center justify-between border-b-[3px] border-black pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-40"></span>
-                      <span className="relative inline-flex h-3 w-3 bg-black"></span>
-                    </span>
-                    <span className="text-[12px] font-syncopate font-bold uppercase tracking-[0.1em] text-black">
-                      NETWORK STATUS
-                    </span>
-                  </div>
-                  
-                  <span className="px-2 py-1 bg-black text-[#D4F842] text-[10px] font-mono font-bold tracking-wider uppercase">
-                    v1.0-BETA
-                  </span>
-                </div>
+              {/* Thick black horizontal bar */}
+              <div className="w-20 h-4 bg-black mb-12" />
 
-                {/* Counter & Avatar Pile Grid */}
-                <div className="flex items-center justify-between gap-2 py-1">
-                  <div className="flex flex-col">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-syncopate font-black text-4xl lg:text-5xl tracking-tighter text-black">
-                        {totalCount.toLocaleString()}
-                      </span>
-                      <span className="text-black text-sm font-bold font-syncopate uppercase tracking-wider">
-                        Joined
-                      </span>
-                    </div>
-                    <span className="text-[12px] font-mono text-black font-bold mt-1 uppercase">
-                      [ SECURING EARLY ACCESS ]
-                    </span>
-                  </div>
+              <p className="font-sans text-black text-[11px] md:text-[12px] leading-relaxed max-w-sm font-bold mb-16">
+                We turn raw, complex on-chain data into clear insights, gamified missions, and real-time rewards. Whether you're a developer, analyst, or curious explorer, CollabSphere lets you track, learn, and compete — all in one seamless, interactive space. The chain is open. It's time to play.
+              </p>
+            </div>
 
-                  {/* Overlapping Avatar Group - Brutalist */}
-                  <div className="flex -space-x-2 overflow-hidden">
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      KR
-                    </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      ST
-                    </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      JD
-                    </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-black border-[3px] border-black text-[10px] font-black text-[#D4F842] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      +{totalCount}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Progress bar representing Beta phase spots */}
-                <div className="space-y-1 mt-1">
-                  <div className="flex justify-between text-[10px] font-mono font-black tracking-wide text-black uppercase">
-                    <span>CAPACITY FILL</span>
-                    <span>{Math.min(100, Math.max(0, Math.round((totalCount / 150) * 100)))}%</span>
-                  </div>
-                  <div className="h-4 w-full bg-transparent border-[3px] border-black p-[2px]">
-                    <div 
-                      className="h-full bg-black transition-all duration-1000 ease-out"
-                      style={{ width: `${Math.min(100, Math.max(0, (totalCount / 150) * 100))}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Terminal-like system log representing activity */}
-                <div className="border-t-[3px] border-black pt-3 mt-3">
-                  <div className="flex items-center gap-2 font-black mb-2">
-                    <span className="w-2 h-2 bg-black animate-pulse" />
-                    <span className="font-mono text-[10px] tracking-widest uppercase text-black">SYS_FEED // LIVE</span>
-                  </div>
-                  {recentSignups.length > 0 ? (
-                    <div className="flex items-center justify-between text-black font-bold font-mono text-[10px]">
-                      <span>&gt; user_joined: <span className="bg-black text-[#D4F842] px-1.5 py-0.5 ml-1">{recentSignups[0]}</span></span>
-                      <span className="uppercase tracking-wider">JUST NOW</span>
-                    </div>
-                  ) : (
-                    <span className="text-black/60 font-bold uppercase font-mono text-[10px]">&gt; AWAITING NEXT CONNECTION...</span>
-                  )}
+            {/* Cryptos logo and pixel blocks at the bottom */}
+            <div className="mt-auto flex items-end justify-between w-full pb-8">
+              <div className="flex items-center gap-6">
+                <span className="font-syncopate font-black text-black text-[32px] tracking-tighter lowercase">cryptos</span>
+                <div className="flex flex-col gap-1 pb-1">
+                   {/* Small pixel blocks like in the poster */}
+                   <div className="w-5 h-5 bg-black ml-6" />
+                   <div className="flex gap-1">
+                     <div className="w-5 h-5 bg-black" />
+                     <div className="w-5 h-5 bg-black" />
+                   </div>
                 </div>
               </div>
+              
+              {/* Bottom right pixel blocks before the black right section */}
+              <div className="flex items-end gap-1">
+                <div className="w-12 h-6 bg-black" />
+                <div className="w-12 h-12 bg-black" />
+                <div className="w-24 h-6 bg-black" />
+                <div className="w-8 h-12 bg-black" />
+              </div>
             </div>
+          </div>
+
+          {/* Right Side Graphic Column - Black Block with Yellow Pixel Star */}
+          <div className="hidden md:flex flex-1 bg-black items-center justify-center p-8 relative">
+            <div className="relative w-[280px] h-[280px]">
+              {/* Pixel Star Graphic */}
+              <svg viewBox="0 0 100 100" className="w-full h-full fill-[#D4F842]">
+                <path d="M40 0h20v10h10v10h10v10h10v20h-10v10h-10v10h-10v10H40v-10H30v-10H20v-10H10V40h10V30h10V20h10V0z M45 25h10v10h10v10v10h-10v10h-10v-10h-10v-10h10V25z" fillRule="evenodd" clipRule="evenodd"/>
+                {/* Inner black cross cuts */}
+                <path d="M45 45h10v10H45V45z M35 45h10v10H35V45z M55 45h10v10H55V45z M45 35h10v10H45V35z M45 55h10v10H45V55z" fill="black" />
+              </svg>
+            </div>
+            
+            {/* Pixel accents extending from the black background */}
+            <div className="absolute top-[20%] -left-8 w-8 h-4 bg-black" />
+            <div className="absolute bottom-[30%] -left-4 w-4 h-4 bg-black" />
           </div>
         </div>
       </div>
