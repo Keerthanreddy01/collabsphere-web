@@ -8,7 +8,7 @@ import {
   Check, Copy, Share2, ArrowLeft, Twitter, Linkedin, Sparkles, Smartphone, Award, ChevronDown
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, onSnapshot, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
 import { Turnstile } from '@marsidev/react-turnstile';
 import SideRays from "@/components/ui/SideRays";
@@ -61,26 +61,6 @@ function WaitlistFormContent() {
     { q: "How do I move up the waitlist?", a: "Share your unique referral link! Every friend who signs up using your link moves you higher up the queue." }
   ];
 
-  // Live total count from Firestore
-  const [totalCount, setTotalCount] = useState(0);
-  const [recentSignups, setRecentSignups] = useState<string[]>([]);
-
-  // Listen to Firestore waitlist updates for real-time counters
-  useEffect(() => {
-    if (!db) return;
-    const unsub = onSnapshot(collection(db, "app_waitlist"), (snapshot) => {
-      // Update count
-      setTotalCount(snapshot.size);
-    });
-    return () => unsub();
-  }, []);
-
-  // Fetch recent signups on mount
-  useEffect(() => {
-    getRecentSignups().then(names => {
-      if (names && names.length > 0) setRecentSignups(names);
-    });
-  }, [success]);
 
   const checkDuplicate = async (emailToCheck: string) => {
     if (!db) return false;
