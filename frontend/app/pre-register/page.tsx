@@ -138,27 +138,22 @@ function WaitlistFormContent() {
       return;
     }
 
-    // Turnstile verification check
-    if (!turnstileToken) {
-      setErrorMsg('Please complete the human verification. (If it is not visible, try disabling your adblocker or Brave Shields)');
-      return;
-    }
-
-    // Server-side Turnstile token verification
-    try {
-      const verifyRes = await fetch('/api/verify-turnstile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: turnstileToken }),
-      });
-      const verifyData = await verifyRes.json();
-      if (!verifyData.success) {
-        setErrorMsg('Verification failed. Please refresh and try again.');
-        return;
+    // Server-side Turnstile token verification (only if widget loaded)
+    if (turnstileToken) {
+      try {
+        const verifyRes = await fetch('/api/verify-turnstile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: turnstileToken }),
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success) {
+          setErrorMsg('Verification failed. Please refresh and try again.');
+          return;
+        }
+      } catch {
+        // Turnstile verification failed silently - fall through to rate limit protection
       }
-    } catch {
-      setErrorMsg('Verification error. Please try again.');
-      return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -251,7 +246,7 @@ function WaitlistFormContent() {
         </div>
       </div>
 
-      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center justify-center z-10 flex-1 pt-32 pb-20">
+      <div className="w-full max-w-2xl mx-auto px-6 text-center flex flex-col items-center z-10 flex-1 py-32 justify-center">
         <AnimatePresence mode="wait">
           {!success ? (
             <motion.div
@@ -316,8 +311,8 @@ function WaitlistFormContent() {
                   </button>
                 </div>
 
-                {/* Cloudflare Turnstile Widget */}
-                <div className="w-full flex justify-center mt-[16px] min-h-[65px]">
+                {/* Cloudflare Turnstile Widget - optional, gracefully hidden if blocked */}
+                <div className="w-full flex justify-center mt-[16px] min-h-[0px]">
                   <Turnstile
                     siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                     onSuccess={(token) => {
