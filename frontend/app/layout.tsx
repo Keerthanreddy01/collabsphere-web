@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   description: 'Deploy autonomous AI agents on distributed infrastructure. Offload complex tasks to intelligent workers that run 24/7.',
   generator: 'v0.app',
   icons: {
-    icon: '/logocs.png',
-    apple: '/logocs.png',
+    icon: '/newlogo.png',
+    apple: '/newlogo.png',
   }
 }
 
