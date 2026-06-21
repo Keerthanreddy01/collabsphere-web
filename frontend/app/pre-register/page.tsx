@@ -165,40 +165,37 @@ function WaitlistFormContent() {
     <div className="relative z-10 w-full h-full flex flex-col md:flex-row">
       
       {/* LEFT PANEL - Typography and Stats */}
-      <div className="flex-1 flex flex-col relative h-full overflow-y-auto no-scrollbar bg-[#D4F842]">
-        
+      <div className="flex-1 flex flex-col px-8 md:px-16 lg:px-24 relative h-full py-6 md:py-8 overflow-y-auto no-scrollbar">
         {/* Header inside left panel */}
-        <div className="flex items-center gap-6 p-8 md:p-12 w-full z-20 shrink-0">
+        <div className="flex items-center gap-6 mb-6 md:mb-8 w-full z-20 shrink-0">
           <a 
             href="/dashboard/home" 
-            className="flex items-center gap-2 text-black hover:text-black/70 transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
+            className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Home</span>
           </a>
-          <div className="font-syncopate text-black text-[12px] font-bold uppercase tracking-widest">
+          <div className="font-syncopate text-white text-[12px] font-bold uppercase tracking-widest">
             CollabSphere
           </div>
         </div>
 
-        <div className="flex flex-col xl:flex-row flex-1 w-full">
-          {/* Text Content Column */}
-          <div className="flex-1 flex flex-col justify-center px-6 md:px-10 xl:px-16 pb-8 md:pb-12 z-10">
-            
-            <h1 className="font-serif italic text-black text-[42px] md:text-[56px] lg:text-[72px] font-bold leading-[0.9] tracking-tighter mb-4" style={{ fontFamily: 'Georgia, serif' }}>
-              Decode the chain.<br/>Earn the edge.
-            </h1>
-            
-            {/* Thick black horizontal bar */}
-            <div className="w-16 h-3 bg-black mb-6" />
+        <div className="flex flex-col my-auto pb-8 md:pb-0 z-10 w-full">
+          <div className="font-syncopate text-[#D4F842] text-[10px] md:text-[12px] uppercase tracking-[0.3em] font-bold mb-4">
+            Official Mobile Beta
+          </div>
 
-            <p className="font-sans text-black text-[11px] md:text-[12px] leading-relaxed max-w-sm font-bold mb-8">
-              We turn raw, complex on-chain data into clear insights, gamified missions, and real-time rewards. Whether you're a developer, analyst, or curious explorer, CollabSphere lets you track, learn, and compete — all in one seamless, interactive space. The chain is open. It's time to play.
-            </p>
+          <h1 className="font-syne text-white text-[36px] md:text-[46px] lg:text-[56px] font-bold leading-[0.9] tracking-tighter mb-3">
+            The app is <br/> coming.
+          </h1>
+          
+          <p className="font-sans text-white/50 text-[13px] md:text-[15px] leading-relaxed max-w-md font-medium">
+            We're launching the next generation of builder collaboration tools on iOS and Android. Pre-register to secure your spot.
+          </p>
 
-            {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - BRUTALIST PIXEL STYLE */}
-            <div className="w-full max-w-sm mt-auto">
-              <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          {/* HIGH-TECH PREMIUM WAITLIST METRIC BOARD - BRUTALIST PIXEL STYLE */}
+          <div className="mt-4 lg:mt-6 w-full max-w-md">
+            <div className="relative overflow-hidden border-[4px] border-black bg-[#D4F842] p-4 lg:p-5 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               {/* Pixel art corner accents */}
               <div className="absolute top-0 left-0 w-4 h-4 bg-black" />
               <div className="absolute top-0 right-0 w-8 h-4 bg-black" />
@@ -252,7 +249,7 @@ function WaitlistFormContent() {
                     <div className="inline-flex h-8 w-8 items-center justify-center bg-white border-[3px] border-black text-[10px] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       JD
                     </div>
-                    <div className="inline-flex h-8 w-8 items-center justify-center bg-black border-[3px] border-black text-[10px] font-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="inline-flex h-8 w-8 items-center justify-center bg-black border-[3px] border-black text-[10px] font-black text-[#D4F842] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                       +{totalCount}
                     </div>
                   </div>
@@ -273,10 +270,8 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Terminal-like system log representing activity */}
-                <div className="border-[3px] border-black bg-[#D4F842] p-2 lg:p-3 font-mono text-[10px] leading-relaxed text-black mt-2 relative">
-                  <div className="absolute top-0 right-0 w-2 h-2 bg-black" />
-                  <div className="absolute bottom-0 left-0 w-2 h-2 bg-black" />
-                  <div className="flex items-center gap-2 font-black mb-1 border-b-[2px] border-black/20 pb-1">
+                <div className="border-[3px] border-black bg-white p-2 lg:p-3 font-mono text-[10px] leading-relaxed text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-2">
+                  <div className="flex items-center gap-2 font-black mb-1 border-b-[2px] border-black/10 pb-1">
                     <span className="w-2 h-2 bg-black animate-pulse" />
                     <span>SYS_FEED // LIVE</span>
                   </div>
@@ -291,42 +286,6 @@ function WaitlistFormContent() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Right Side Graphic Column - Black Block with Yellow Pixel Star */}
-          <div className="hidden xl:flex w-[350px] 2xl:w-[450px] shrink-0 bg-black items-center justify-center relative border-l-4 border-black">
-            <div className="relative w-[280px] h-[280px] flex items-center justify-center">
-              
-              {/* Brutalist Pixel Star built with Grid */}
-              <div className="grid grid-cols-11 grid-rows-11 gap-0 w-[220px] h-[220px]">
-                {Array.from({ length: 121 }).map((_, i) => {
-                  const x = i % 11;
-                  const y = Math.floor(i / 11);
-                  // Create the jagged star shape
-                  let isYellow = false;
-                  if (x >= 4 && x <= 6 && y >= 1 && y <= 9) isYellow = true; // Vertical core
-                  if (y >= 4 && y <= 6 && x >= 1 && x <= 9) isYellow = true; // Horizontal core
-                  if ((x===2||x===3||x===7||x===8) && (y===2||y===3||y===7||y===8)) isYellow = true; // Thick diagonals
-                  if ((x===1||x===9) && (y===3||y===7)) isYellow = true; // Outer jags
-                  if ((y===1||y===9) && (x===3||x===7)) isYellow = true; // Outer jags
-                  if ((x===5) && (y===0||y===10)) isYellow = true; // Tips
-                  if ((y===5) && (x===0||x===10)) isYellow = true; // Tips
-                  
-                  // Black out the center to match poster
-                  if (x >= 4 && x <= 6 && y >= 4 && y <= 6) isYellow = false;
-                  
-                  return (
-                    <div key={i} className={`w-full h-full ${isYellow ? 'bg-[#D4F842]' : 'bg-transparent'}`} />
-                  );
-                })}
-              </div>
-            </div>
-            
-            {/* Pixel accents extending from the black background */}
-            <div className="absolute top-[20%] -left-6 w-6 h-6 bg-black" />
-            <div className="absolute bottom-[30%] -left-4 w-4 h-4 bg-black" />
-            <div className="absolute top-[45%] -left-8 w-8 h-4 bg-black" />
           </div>
         </div>
       </div>
