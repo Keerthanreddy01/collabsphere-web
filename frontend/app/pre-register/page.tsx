@@ -270,19 +270,31 @@ function WaitlistFormContent() {
                 </div>
 
                 {/* Terminal-like system log representing activity */}
-                <div className="border-[3px] border-black bg-white p-2 lg:p-3 font-mono text-[10px] leading-relaxed text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-2">
-                  <div className="flex items-center gap-2 font-black mb-1 border-b-[2px] border-black/10 pb-1">
-                    <span className="w-2 h-2 bg-black animate-pulse" />
-                    <span>SYS_FEED // LIVE</span>
-                  </div>
-                  {recentSignups.length > 0 ? (
-                    <div className="flex items-center justify-between text-black font-bold">
-                      <span>&gt; user_joined: <span className="bg-black text-[#D4F842] px-1">{recentSignups[0]}</span></span>
-                      <span className="text-[10px] uppercase">JUST NOW</span>
+                <div className="w-full bg-black border-[3px] border-black p-3 relative overflow-hidden group shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-3">
+                  <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D4F842]/50 group-hover:bg-[#D4F842] transition-colors" />
+                  <div className="flex items-center justify-between pl-2">
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex h-2.5 w-2.5 items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full bg-[#D4F842] opacity-60"></span>
+                        <span className="relative inline-flex h-2.5 w-2.5 bg-[#D4F842]"></span>
+                      </div>
+                      <span className="text-[10px] font-syncopate font-bold text-white/50 uppercase tracking-[0.2em]">
+                        SYS_FEED
+                      </span>
                     </div>
-                  ) : (
-                    <span className="text-black/50 font-bold uppercase">&gt; AWAITING NEXT CONNECTION...</span>
-                  )}
+                    
+                    <div className="font-mono text-[10px] md:text-[11px] text-white flex items-center">
+                      {recentSignups.length > 0 ? (
+                        <span className="flex items-center gap-1.5">
+                          <span className="text-white/40">_new:</span>
+                          <span className="bg-[#D4F842] text-black px-1 font-bold uppercase tracking-wider">{recentSignups[0]}</span>
+                          <span className="text-white/30 ml-0.5">joined</span>
+                        </span>
+                      ) : (
+                        <span className="text-white/30 animate-pulse">_ scanning...</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
