@@ -36,6 +36,52 @@ const sendConfirmationEmail = async (
   }
 };
 
+const AnimatedLines = () => {
+  const lines = [
+    { top: '15%', left: '5%', width: '120px', rotate: '-8deg', delay: 0 },
+    { top: '18%', left: '20%', width: '80px', rotate: '-8deg', delay: 0.2 },
+    { top: '12%', left: '35%', width: '160px', rotate: '-8deg', delay: 0.1 },
+    { top: '20%', left: '55%', width: '200px', rotate: '-8deg', delay: 0.3 },
+    { top: '15%', left: '72%', width: '90px', rotate: '-8deg', delay: 0.15 },
+    { top: '22%', left: '85%', width: '140px', rotate: '-8deg', delay: 0.25 },
+    { top: '25%', left: '12%', width: '100px', rotate: '-8deg', delay: 0.4 },
+    { top: '30%', left: '3%', width: '180px', rotate: '-8deg', delay: 0.1 },
+    { top: '28%', left: '88%', width: '110px', rotate: '-8deg', delay: 0.35 },
+    { top: '35%', left: '45%', width: '130px', rotate: '-8deg', delay: 0.2 },
+    { top: '65%', left: '8%', width: '90px', rotate: '-8deg', delay: 0.3 },
+    { top: '70%', left: '80%', width: '150px', rotate: '-8deg', delay: 0.1 },
+    { top: '75%', left: '30%', width: '110px', rotate: '-8deg', delay: 0.4 },
+    { top: '80%', left: '60%', width: '130px', rotate: '-8deg', delay: 0.2 },
+  ];
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {lines.map((line, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ 
+            delay: line.delay, 
+            duration: 0.6,
+            ease: 'easeOut'
+          }}
+          style={{
+            position: 'absolute',
+            top: line.top,
+            left: line.left,
+            width: line.width,
+            height: '3px',
+            background: '#ef4444',
+            transform: `rotate(${line.rotate})`,
+            borderRadius: '2px',
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 function WaitlistFormContent() {
   const searchParams = useSearchParams();
   const referredBy = searchParams.get("ref");
@@ -374,6 +420,8 @@ export default function PreRegisterPage() {
         .font-syne { font-family: 'Syne', sans-serif; }
         .font-syncopate { font-family: 'Syncopate', sans-serif; }
       `}} />
+
+      <AnimatedLines />
 
       <Suspense fallback={
         <div className="h-full w-full flex flex-col items-center justify-center relative z-10 min-h-screen">
