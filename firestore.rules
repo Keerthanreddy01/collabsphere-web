@@ -57,7 +57,10 @@ service cloud.firestore {
 
     // APP WAITLIST
     match /app_waitlist/{docId} {
-      allow read: if isAuth();
+      // SECURITY: read is intentionally false — email addresses are PII.
+      // Reads must go through the backend using Firebase Admin SDK,
+      // which bypasses these client-side rules entirely.
+      allow read: if false;
       allow create: if 
         request.resource.data.email is string
         && validEmail(request.resource.data.email)
@@ -78,7 +81,10 @@ service cloud.firestore {
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0
         && request.resource.data.text.size() < 1000;
-      allow update: if isAuth();
+      // SECURITY: update restricted to the message sender only.
+      // Previously `if isAuth()` allowed ANY authenticated user to tamper
+      // with any message — this closes that gap.
+      allow update: if isAuth() && isOwner(resource.data.senderId);
       allow delete: if false;
     }
 
