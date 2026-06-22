@@ -64,7 +64,7 @@ __v0_jsx-dev-runtime.ts
 # ── Misc ──────────────────────────────────────────────────────────────────────
 .clerk/
 
-# ── Stray root-level Next.js files (belong inside frontend/ only) ─────────────
+# ── Stray root-level Next.js files (guard against accidental placement at root) ─
 /app/
 /components/
 /hooks/
@@ -75,8 +75,5 @@ __v0_jsx-dev-runtime.ts
 /next.config.mjs
 /postcss.config.mjs
 /components.json
-/tsconfig.json
-/pnpm-lock.yaml
-/test.js
-/update_onboarding.py
-/.env.example
+# NOTE: /.env.example is intentionally tracked at root (monorepo env template)
+# NOTE: /tsconfig.json, /pnpm-lock.yaml, /test.js, /update_onboarding.py handled separately
