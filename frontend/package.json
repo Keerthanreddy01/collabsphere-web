@@ -1,7 +1,11 @@
 {
-  "name": "my-v0-project",
+  "name": "collabsphere-frontend",
   "version": "0.1.0",
   "private": true,
+  "description": "CollabSphere — Next.js 16 frontend (App Router, TypeScript, Firebase, Tailwind CSS v4)",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
