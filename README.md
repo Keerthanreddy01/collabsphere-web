@@ -2,125 +2,267 @@
 
 # CollabSphere
 
-**A scalable ecosystem for developer networking and project collaboration.**
+**The developer network built for builders — find your team, ship your project.**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Live-success?style=flat-square)](https://collabsphereweb.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-collabsphereweb.vercel.app-success?style=flat-square&logo=vercel)](https://collabsphereweb.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-12-orange?style=flat-square&logo=firebase)](https://firebase.google.com/)
+[![Express](https://img.shields.io/badge/Express-4-grey?style=flat-square&logo=express)](https://expressjs.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Keerthanreddy01/collabsphere-web?style=flat-square)](https://github.com/Keerthanreddy01/collabsphere-web/stargazers)
-[![Issues](https://img.shields.io/github/issues/Keerthanreddy01/collabsphere-web?style=flat-square)](https://github.com/Keerthanreddy01/collabsphere-web/issues)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-
-<br />
 
 </div>
 
-## Table of Contents
-- [Overview](#overview)
-- [Core Features](#core-features)
-- [Architecture & Stack](#architecture--stack)
-- [Installation](#installation)
-- [Project Structure](#project-structure)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
+---
+
+## What is CollabSphere?
+
+CollabSphere is a platform engineered for software developers, designers, and tech professionals to connect, form teams, and build together. It combines a real-time social feed, professional portfolios, project showcases, and hackathon team-building workflows into a single hub — think LinkedIn meets GitHub meets Devpost.
+
+The project is a **monorepo** with two independently deployable services: a **Next.js 16 frontend** (deployed on Vercel) and an **Express/Node.js backend API** (Firebase-backed).
 
 ---
 
-## Overview
+## Table of Contents
 
-CollabSphere is a comprehensive platform engineered to facilitate connections among software developers, designers, and technology professionals. It provides a structured environment for forming teams, launching projects, and engaging in technical discourse. Designed with scalability and performance in mind, CollabSphere serves as a centralized hub for open-source collaboration and professional networking.
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Folder Structure](#folder-structure)
+- [Scripts Reference](#scripts-reference)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Core Features
+---
 
-- **Real-Time Feed:** A synchronized event stream for community updates, project launches, and technical discussions.
-- **Professional Profiles:** Comprehensive portfolios highlighting technical competencies, technology stacks, and integrated GitHub metrics.
-- **Interactive Networking:** A robust engagement system supporting threaded discussions, endorsements, and direct peer feedback.
-- **Project Showcases:** Dedicated environments for deploying, demonstrating, and iterating on software projects.
-- **Hackathon Teambuilding:** Specialized workflows for discovering and assembling multidisciplinary teams for global competitions.
-- **Advanced Taxonomy & Search:** High-performance filtering mechanisms to locate professionals by specific technologies, roles, and availability.
+## Features
 
-## Architecture & Stack
+- **Real-Time Feed** — Community updates, project launches, and technical discussions
+- **Developer Profiles** — Portfolios with tech stacks, GitHub metrics, and availability status
+- **Project Showcase** — Dedicated pages to demo and iterate on software projects
+- **Hackathon Teambuilding** — Discover and assemble multidisciplinary teams for competitions
+- **Direct Messaging** — Peer-to-peer conversations between builders
+- **Smart Search & Filtering** — Find developers by role, stack, and availability
+- **Security-First** — Input sanitization (DOMPurify), Firestore security rules, rate-limit-ready middleware, security event logging
 
-CollabSphere utilizes a modern, decoupled architecture to ensure high availability and rapid iteration cycles.
+---
 
-**Client Application:**
-- Framework: Next.js 16 (App Router)
-- UI Library: React 19
-- Styling: Tailwind CSS v4, shadcn/ui
-- Motion: Framer Motion
+## Tech Stack
 
-**Server Infrastructure:**
-- Environment: Node.js with Express.js 4
-- Database & Authentication: Firebase v12 (Firestore, Admin SDK)
-- Data Validation: Zod
+| Layer | Technology |
+|---|---|
+| **Frontend Framework** | Next.js 16 (App Router) |
+| **UI Library** | React 19 |
+| **Language** | TypeScript 5 |
+| **Styling** | Tailwind CSS v4 + shadcn/ui (Radix primitives) |
+| **Animations** | Framer Motion |
+| **Backend Framework** | Express 4 (Node.js ≥ 18) |
+| **Database & Auth** | Firebase v12 (Firestore + Authentication) |
+| **Server SDK** | Firebase Admin SDK (service account) |
+| **Validation** | Zod |
+| **Security** | Helmet, DOMPurify, custom Firestore rules |
 
-## Installation
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Browser / Client                                           │
+│  Next.js 16 App Router (Vercel)                             │
+│  ┌─────────────────┐  ┌──────────────────────────────────┐  │
+│  │  React Pages    │  │  Next.js API Routes              │  │
+│  │  (frontend/app) │  │  (frontend/app/api/*)            │  │
+│  └────────┬────────┘  └───────────────┬──────────────────┘  │
+│           │ Firebase Client SDK        │ Firebase Admin SDK   │
+└───────────┼───────────────────────────┼─────────────────────┘
+            │                           │
+            ▼                           ▼
+┌───────────────────────┐   ┌───────────────────────────────┐
+│  Firebase (Google)    │   │  Express API (backend/)       │
+│  ├── Firestore DB     │◄──│  ├── Helmet + CORS            │
+│  ├── Authentication   │   │  ├── Auth middleware (JWT)    │
+│  └── (Storage, FCM)   │   │  ├── Route controllers        │
+└───────────────────────┘   │  └── Zod validation           │
+                            └───────────────────────────────┘
+```
+
+**How they talk:**
+- The **Next.js frontend** communicates with Firebase directly via the Firebase Web SDK (client-side Firestore queries, Firebase Auth).
+- The **Express backend** communicates with Firebase via the Firebase Admin SDK (bypasses security rules — used for privileged operations like admin reads, waitlist management).
+- The frontend calls the backend at `NEXT_PUBLIC_API_URL` for operations that require server-side authority or cannot be done safely client-side.
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm, yarn, or pnpm
-- Firebase Project configured for Authentication and Firestore
+- **Node.js** ≥ 18 ([download](https://nodejs.org/))
+- **npm**, **yarn**, or **pnpm**
+- A **Firebase project** with Authentication and Firestore enabled ([console](https://console.firebase.google.com/))
 
-### Local Development Setup
+### 1. Clone the Repository
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Keerthanreddy01/collabsphere-web.git
-   cd collabsphere-web
-   ```
+```bash
+git clone https://github.com/Keerthanreddy01/collabsphere-web.git
+cd collabsphere-web
+```
 
-2. **Client Configuration**
-   ```bash
-   cd frontend
-   npm install
-   cp .env.example .env.local
-   ```
-   *Note: Populate `.env.local` with the appropriate Firebase Web SDK credentials.*
+### 2. Set Up the Frontend
 
-   Initialize the development server:
-   ```bash
-   npm run dev
-   ```
+```bash
+cd frontend
+npm install           # or pnpm install
+cp .env.example .env.local
+```
 
-3. **Server Configuration**
-   ```bash
-   cd ../backend
-   npm install
-   cp .env.example .env
-   ```
-   *Note: Populate `.env` with the appropriate Firebase Service Account credentials.*
+Open `frontend/.env.local` and fill in your **Firebase Web SDK** credentials (found in Firebase Console → Project Settings → Your Apps → Web App).
 
-   Initialize the backend service:
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run dev           # starts Next.js at http://localhost:3000
+```
 
-## Project Structure
+### 3. Set Up the Backend
 
-CollabSphere is maintained as a monorepo, segregating the Next.js client and the Express service. For comprehensive architectural documentation, please refer to the [Project Structure Guide](PROJECT_STRUCTURE.md).
+```bash
+cd backend
+npm install
+cp .env.example .env
+```
 
-## Roadmap
+Open `backend/.env` and fill in:
+- Your **Firebase Admin SDK** credentials (Firebase Console → Project Settings → Service Accounts → Generate new private key)
+- `PORT`, `NODE_ENV`, and `FRONTEND_URL`
 
-- [x] Core platform initialization
-- [x] Identity and access management
-- [x] Professional profiles and portfolios
-- [x] Project deployment showcase
-- [ ] Real-time messaging infrastructure
-- [ ] System-wide notification service
-- [ ] Automated GitHub repository synchronization
-- [ ] Cross-platform mobile application deployment
+```bash
+npm run dev           # starts Express at http://localhost:5000
+```
+
+> **Health check:** `GET http://localhost:5000/health` → `{ "status": "ok" }`
+
+### 4. Deploy Firestore Rules
+
+If you have the Firebase CLI installed:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+---
+
+## Folder Structure
+
+```
+collabsphere/                   ← Monorepo root
+├── frontend/                   ← Next.js 16 client (deployed to Vercel)
+│   ├── app/                    ← App Router pages (23 routes)
+│   ├── components/             ← Reusable UI components + shadcn/ui
+│   ├── hooks/                  ← Custom React hooks
+│   ├── lib/                    ← Firebase SDK helpers, sanitization, auth utils
+│   ├── public/                 ← Static assets (images, icons, demo screenshots)
+│   └── styles/                 ← Additional global CSS layers
+│
+├── backend/                    ← Express REST API (Node.js)
+│   └── src/
+│       ├── config/             ← Environment variable loading
+│       ├── controllers/        ← HTTP request handlers
+│       ├── middleware/         ← Auth, error handling, rate limiting
+│       ├── models/             ← TypeScript interfaces + Zod schemas
+│       ├── repositories/       ← Firestore data access layer
+│       ├── routes/             ← Express routers per feature
+│       ├── services/           ← Business logic layer
+│       └── utils/              ← Shared utilities (response wrapper, pagination)
+│
+├── scripts/                    ← One-off utility and migration scripts
+├── firestore.rules             ← Firestore security rules (deploy via Firebase CLI)
+├── .env.example                ← Full env template for both frontend + backend
+└── README.md
+```
+
+For a detailed description of every file, see [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md).
+
+---
+
+## Scripts Reference
+
+Run these from the **monorepo root** (requires `npm install` at root first):
+
+| Command | Description |
+|---|---|
+| `npm run dev:frontend` | Start Next.js dev server (port 3000) |
+| `npm run dev:backend` | Start Express dev server (port 5000) |
+| `npm run build:frontend` | Production build for Next.js |
+| `npm run build:backend` | Compile TypeScript → `backend/dist/` |
+| `npm run lint` | Lint both frontend and backend |
+| `npm run install:all` | Install deps for root + both sub-packages |
+
+Or run directly from each subfolder (`cd frontend && npm run dev`, etc.).
+
+| Subfolder | Extra Scripts |
+|---|---|
+| `frontend/` | `dev`, `build`, `start`, `lint` |
+| `backend/` | `dev`, `build`, `start`, `lint`, `test` |
+
+---
 
 ## Contributing
 
-We maintain strict standards for code quality and architectural integrity. Contributions are reviewed based on their adherence to our established design patterns and coding conventions. 
+We follow **Conventional Commits** for all commit messages.
 
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/issue-reference`).
-3. Commit your changes logically (`git commit -m 'feat: implement specific functionality'`).
-4. Push to the branch (`git push origin feature/issue-reference`).
-5. Open a Pull Request for review.
+### Commit Format
 
-For initial contributions, please consult the issues labeled `good first issue`.
+```
+<type>(<scope>): <short description>
+
+Types: feat | fix | docs | chore | refactor | style | test | perf
+Scope: frontend | backend | rules | deps | ci  (optional but encouraged)
+
+Examples:
+  feat(frontend): add GitHub OAuth sign-in flow
+  fix(rules): restrict message updates to sender only
+  docs: update README setup instructions
+  chore(deps): upgrade firebase-admin to v14
+```
+
+### Branch Naming
+
+```
+feature/<short-description>          # new features
+fix/<issue-or-description>           # bug fixes
+chore/<task>                         # maintenance
+docs/<what-you-updated>              # documentation only
+```
+
+### PR Process
+
+1. Fork the repository
+2. Create a branch from `main`: `git checkout -b feature/your-feature`
+3. Make changes — **one logical concern per commit**
+4. Push and open a Pull Request targeting `main`
+5. Fill in the PR template; link the relevant issue if applicable
+6. Request a review — PRs require at least one approval before merging
+
+For first contributions, look for issues labeled `good first issue`.
+
+---
+
+## Screenshots
+
+> 📸 Add screenshots or a GIF demo here. Place images in `frontend/public/assets/demo/` and embed them below.
+
+| Feature | Preview |
+|---|---|
+| Dashboard | *(add screenshot)* |
+| Profile Page | *(add screenshot)* |
+| Hackathon Teambuilding | *(add screenshot)* |
+
+Live demo: **[collabsphereweb.vercel.app](https://collabsphereweb.vercel.app)**
+
+---
 
 ## License
 
-This software is distributed under the MIT License. See `LICENSE` for further details.
+Distributed under the [MIT License](LICENSE).

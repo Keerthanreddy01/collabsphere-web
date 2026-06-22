@@ -14,8 +14,6 @@ collabsphere/
 └── README.md          ← Monorepo overview
 ```
 
-> ⚠️ **One-time rename needed**: `collabsphere-web/` → `frontend/`
-> Close VS Code, run: `Rename-Item collabsphere-web frontend` in PowerShell, then reopen.
 
 ---
 
@@ -101,7 +99,10 @@ frontend/
 │   └── placeholder-*.png/svg     ← Generic placeholders
 │
 ├── styles/
-│   └── globals.css               ← Extra global CSS (Tailwind @layer base etc.)
+│   └── globals.css               ← Additional global CSS (Tailwind @layer base extensions)
+│                                   NOTE: `app/globals.css` is imported by the root layout.
+│                                   `styles/globals.css` holds supplementary base-layer rules.
+│                                   Both are intentional; do not consolidate without testing.
 │
 ├── .env.local                    ← Local secrets (never commit)
 ├── .env.example                  ← Template for required env vars
@@ -122,54 +123,44 @@ frontend/
 backend/
 ├── src/
 │   ├── config/
-│   │   ├── index.ts              ← Port, NODE_ENV, secrets from process.env
-│   │   └── firebase.ts           ← Firebase Admin SDK initializeApp() (add this)
+│   │   └── index.ts              ← Port, NODE_ENV, CORS origin, Firebase credentials from process.env
 │   │
-│   ├── controllers/
-│   │   └── *.controller.ts       ← One file per feature (auth, users, projects…)
-│   │                               Reads req → calls service → sends res
+│   ├── controllers/              ← [SCAFFOLDED] One file per feature — reads req, calls service, sends res
+│   │   └── README.md
 │   │
-│   ├── middleware/
-│   │   ├── auth.middleware.ts    ← Verify Firebase ID token, attach req.user
-│   │   ├── error.middleware.ts   ← Global error handler (must be last)
-│   │   ├── rateLimit.middleware.ts
-│   │   └── logger.middleware.ts
+│   ├── middleware/               ← [SCAFFOLDED] Auth token verification, error handler, rate limiting
+│   │   └── README.md
 │   │
-│   ├── models/
-│   │   └── *.model.ts            ← TypeScript interfaces + Zod schemas
-│   │                               e.g. user.model.ts, project.model.ts
+│   ├── models/                   ← [SCAFFOLDED] TypeScript interfaces + Zod schemas per feature
+│   │   └── README.md
 │   │
-│   ├── repositories/
-│   │   └── *.repository.ts       ← Raw Firestore queries. No business logic.
-│   │                               e.g. user.repository.ts
+│   ├── repositories/             ← [SCAFFOLDED] Raw Firestore queries, no business logic
+│   │   └── README.md
 │   │
-│   ├── routes/
-│   │   └── *.routes.ts           ← Express.Router() per feature area
-│   │                               e.g. auth.routes.ts, projects.routes.ts
+│   ├── routes/                   ← [SCAFFOLDED] Express.Router() per feature area
+│   │   └── README.md
 │   │
-│   ├── services/
-│   │   └── *.service.ts          ← Business logic. Calls repositories.
-│   │                               e.g. user.service.ts, project.service.ts
+│   ├── services/                 ← [SCAFFOLDED] Business logic layer, calls repositories
+│   │   └── README.md
 │   │
 │   ├── types/
 │   │   └── index.ts              ← Shared types, enums, augmented Express types
 │   │
-│   ├── utils/
-│   │   ├── response.ts           ← Standard API response wrapper {data, error}
-│   │   ├── pagination.ts         ← Cursor/offset pagination helpers
-│   │   └── sanitize.ts           ← Input sanitization (mirrors frontend)
+│   ├── utils/                    ← [SCAFFOLDED] Response wrapper, pagination, sanitize helpers
+│   │   └── README.md
 │   │
-│   ├── app.ts                    ← Express app: middleware stack + route mounts
+│   ├── app.ts                    ← Express app: middleware stack, health check, route mounts
 │   └── server.ts                 ← app.listen() entry point
 │
-├── tests/
-│   └── *.test.ts                 ← Jest + Supertest integration tests
+├── tests/                        ← Jest + Supertest integration tests
 │
-├── .env.example                  ← Required env vars template
+├── .env.example                  ← Required env vars template (copy to .env)
 ├── .gitignore
 ├── package.json
 └── tsconfig.json
 ```
+
+> ℹ️ **Backend status:** The layered architecture is scaffolded and ready. Each folder (controllers, services, repositories, etc.) contains a `README.md` placeholder describing its purpose. The Express server runs and exposes a `/health` endpoint. Feature-specific routes are commented out in `app.ts` — add them as you build each feature following the checklist below.
 
 ---
 
@@ -258,4 +249,4 @@ Use this every time. Example: adding a **"Teams"** feature.
 
 ---
 
-*Last updated: June 2026 — update this document whenever the folder structure changes.*
+*Last updated: June 2026 — update this document whenever the folder structure changes significantly.*
