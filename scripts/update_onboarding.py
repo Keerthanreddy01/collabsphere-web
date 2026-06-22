@@ -1,3 +1,26 @@
+"""
+update_onboarding.py
+────────────────────────────────────────────────────────────────────────────────
+ONE-TIME UTILITY — DO NOT RE-RUN IN PRODUCTION
+
+Purpose:
+    Patches the onboarding page UI by replacing the `return (` block in
+    frontend/app/onboarding/page.tsx with a redesigned 3-step onboarding flow.
+
+Status:
+    ✅ ALREADY RUN — the changes are committed in frontend/app/onboarding/page.tsx.
+    Re-running will overwrite any subsequent edits made to that file.
+
+Original location:
+    Was placed at frontend/update_onboarding.py (now moved to scripts/).
+
+Prerequisites (if you ever need to re-run):
+    - Python 3.x
+    - Must be run from the frontend/ directory:
+        cd frontend && python ../scripts/update_onboarding.py
+────────────────────────────────────────────────────────────────────────────────
+"""
+
 import re
 
 with open("app/onboarding/page.tsx", "r") as f:
