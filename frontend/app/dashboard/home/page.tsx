@@ -40,8 +40,6 @@ import {
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { createPost, likePost, addComment, getComments } from "@/lib/posts";
-import TopNav from '@/components/dashboard/TopNav';
-import MobileTabBar from '@/components/dashboard/MobileTabBar';
 import PreRegisterMobilePromo from "@/components/PreRegisterMobilePromo";
 import LeftSidebar from "@/components/dashboard/LeftSidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
