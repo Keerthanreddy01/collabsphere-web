@@ -2,60 +2,81 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { LayoutDashboard, Telescope, Pencil, MessageSquare, User } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function BottomTabBar() {
   const pathname = usePathname();
   
-  const isAuthPage = pathname === "/" || pathname === "/login" || pathname === "/signup";
+  // Hide the tab bar on auth pages and the pre-register landing page
+  const isAuthPage = pathname === "/" || pathname === "/login" || pathname === "/signup" || pathname === "/pre-register";
   if (isAuthPage) return null;
 
   const tabs = [
     { href: "/dashboard/home", icon: LayoutDashboard, label: "Home" },
     { href: "/explore", icon: Telescope, label: "Explore" },
-    { href: "/dashboard/home?compose=true", icon: Pencil, label: "Post", isCenter: true },
+    { href: "/dashboard/home?compose=true", icon: Pencil, label: "Post" },
     { href: "/messages", icon: MessageSquare, label: "Chat" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] 
-                    flex md:hidden 
-                    bg-black/90 backdrop-blur-xl
-                    border-t border-white/10
-                    h-16 px-2
-                    justify-around items-center">
-      {tabs.map((tab) => {
-        const isHomeTab = tab.href === "/dashboard/home";
-        const isActive = isHomeTab 
-          ? pathname === "/dashboard/home" 
-          : pathname.startsWith(tab.href.split('?')[0]);
-        const Icon = tab.icon;
-        
-        if (tab.isCenter) return (
-          <Link key={tab.href} href={tab.href}
-            className="flex items-center justify-center
-                       w-12 h-12 rounded-full
-                       bg-white text-black
-                       -mt-4 shadow-lg">
-            <Icon size={20} />
-          </Link>
-        );
-        
-        return (
-          <Link key={tab.href} href={tab.href}
-            className="flex flex-col items-center 
-                       gap-0.5 px-3 py-1">
-            <Icon size={20} 
-              className={isActive ? 
-                "text-white" : "text-gray-600"} />
-            <span className={`text-[10px] 
-              ${isActive ? 
-                "text-white" : "text-gray-600"}`}>
-              {tab.label}
-            </span>
-          </Link>
-        );
-      })}
+    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex md:hidden w-[92vw] max-w-[380px] justify-center pointer-events-none">
+      <div className="flex items-center justify-between w-full bg-[#1c1c1e]/60 backdrop-blur-3xl border border-white/10 p-1.5 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.6)] pointer-events-auto">
+        {tabs.map((tab) => {
+          const isHomeTab = tab.href === "/dashboard/home";
+          // We need a slightly smarter check for the "Post" tab which has query params
+          const isPostTab = tab.href.includes("?compose=true");
+          // But since Next.js router doesn't always expose query params in pathname directly, 
+          // we simplify: if we're active, we're active. Note: for real query matching, we'd use useSearchParams.
+          // For now, let's keep the standard matching, but note that Post tab might not stay "active" 
+          // because it usually opens a modal and keeps you on the home page.
+          
+          let isActive = false;
+          if (isHomeTab) {
+            isActive = pathname === "/dashboard/home";
+          } else if (isPostTab) {
+            isActive = false; // Post is usually an action, not a dedicated page view
+          } else {
+            isActive = pathname.startsWith(tab.href);
+          }
+
+          const Icon = tab.icon;
+          
+          return (
+            <Link 
+              key={tab.href} 
+              href={tab.href}
+              className="relative flex flex-col items-center justify-center flex-1 h-[54px] rounded-full z-10 group touch-manipulation"
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="active-tab-indicator"
+                  className="absolute inset-0 bg-white/15 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 30 
+                  }}
+                />
+              )}
+              <Icon 
+                size={22} 
+                className={`relative z-10 transition-colors duration-300 ${
+                  isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
+                }`} 
+                strokeWidth={isActive ? 2.5 : 2}
+              />
+              <span 
+                className={`relative z-10 text-[10px] mt-1 font-medium tracking-tight transition-colors duration-300 ${
+                  isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
+                }`}
+              >
+                {tab.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }
