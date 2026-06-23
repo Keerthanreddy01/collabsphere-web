@@ -5,14 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { 
-  Check, Copy, Share2, ArrowLeft, Twitter, Linkedin, Sparkles, Smartphone, Award, ChevronDown
+  Check, Copy, Share2, ArrowLeft, Twitter, Linkedin, Sparkles, User, Ticket
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist";
+import { joinWaitlist } from "@/lib/waitlist";
 import { Turnstile } from '@marsidev/react-turnstile';
-import SideRays from "@/components/ui/SideRays";
 import emailjs from "@emailjs/browser";
+import Link from "next/link";
 
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
@@ -36,66 +36,57 @@ const sendConfirmationEmail = async (
   }
 };
 
-const AnimatedLines = () => {
-  const lines = [
-    { top: '15%', left: '5%',  width: '120px', height: '5px', delay: 0 },
-    { top: '18%', left: '20%', width: '80px',  height: '5px', delay: 0.2 },
-    { top: '12%', left: '35%', width: '160px', height: '5px', delay: 0.1 },
-    { top: '20%', left: '55%', width: '200px', height: '5px', delay: 0.3 },
-    { top: '15%', left: '72%', width: '90px',  height: '5px', delay: 0.15 },
-    { top: '22%', left: '85%', width: '140px', height: '5px', delay: 0.25 },
-    { top: '25%', left: '12%', width: '100px', height: '5px', delay: 0.4 },
-    { top: '30%', left: '3%',  width: '180px', height: '5px', delay: 0.1 },
-    { top: '28%', left: '45%', width: '150px', height: '5px', delay: 0.35 },
-    { top: '35%', left: '60%', width: '120px', height: '5px', delay: 0.2 },
-    { top: '32%', left: '88%', width: '90px',  height: '5px', delay: 0.45 },
-    { top: '40%', left: '25%', width: '170px', height: '5px', delay: 0.15 },
-    { top: '45%', left: '5%',  width: '110px', height: '5px', delay: 0.3 },
-    { top: '42%', left: '75%', width: '130px', height: '5px', delay: 0.25 },
-    { top: '50%', left: '40%', width: '190px', height: '5px', delay: 0.4 },
-    { top: '48%', left: '90%', width: '100px', height: '5px', delay: 0.1 },
-    { top: '55%', left: '15%', width: '140px', height: '5px', delay: 0.35 },
-    { top: '60%', left: '50%', width: '160px', height: '5px', delay: 0.2 },
-    { top: '58%', left: '80%', width: '120px', height: '5px', delay: 0.45 },
-    { top: '65%', left: '30%', width: '150px', height: '5px', delay: 0.15 },
-    { top: '70%', left: '8%',  width: '180px', height: '5px', delay: 0.3 },
-    { top: '68%', left: '65%', width: '110px', height: '5px', delay: 0.25 },
-    { top: '75%', left: '45%', width: '200px', height: '5px', delay: 0.4 },
-    { top: '72%', left: '85%', width: '130px', height: '5px', delay: 0.1 },
-    { top: '80%', left: '20%', width: '160px', height: '5px', delay: 0.35 },
-    { top: '85%', left: '55%', width: '140px', height: '5px', delay: 0.2 },
-    { top: '82%', left: '92%', width: '100px', height: '5px', delay: 0.45 },
-    { top: '90%', left: '35%', width: '170px', height: '5px', delay: 0.15 },
-    { top: '95%', left: '10%', width: '120px', height: '5px', delay: 0.3 },
-    { top: '92%', left: '75%', width: '150px', height: '5px', delay: 0.25 },
-    { top: '98%', left: '50%', width: '190px', height: '5px', delay: 0.4 },
-  ];
-
+// Animated Glowing Orb Background
+const AmbientBackground = () => {
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 1 }}>
-      {lines.map((line, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ 
-            delay: line.delay, 
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1]
-          }}
-          style={{
-            position: 'absolute',
-            top: line.top,
-            left: line.left,
-            width: line.width,
-            height: line.height,
-            background: '#ff453a',
-            transformOrigin: 'left center',
-          }}
-        />
-      ))}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+          x: [0, 50, 0],
+          y: [0, -50, 0],
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-[#ff453a]/20 rounded-full blur-[120px] mix-blend-screen"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.5, 1],
+          opacity: [0.2, 0.4, 0.2],
+          x: [0, -70, 0],
+          y: [0, 70, 0],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-[#ff2a1f]/20 rounded-full blur-[100px] mix-blend-screen"
+      />
     </div>
   );
+};
+
+// Animated Number Counter for Success State
+const AnimatedCounter = ({ value }: { value: number }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = value;
+    if (start === end) return;
+
+    let totalDuration = 2000;
+    let incrementTime = (totalDuration / end) * 3;
+
+    const timer = setInterval(() => {
+      start += Math.ceil(end / 50);
+      if (start > end) start = end;
+      setDisplayValue(start);
+      if (start === end) clearInterval(timer);
+    }, incrementTime);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return <span>{displayValue.toLocaleString()}</span>;
 };
 
 function WaitlistFormContent() {
@@ -111,18 +102,8 @@ function WaitlistFormContent() {
   const [refCode, setRefCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [honeypot, setHoneypot] = useState("");
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileStatus, setTurnstileStatus] = useState<'idle' | 'solved' | 'error'>('idle');
-
-  const faqs = [
-    { q: "What is CollabSphere?", a: "CollabSphere is the ultimate mobile app for builders, allowing you to track, learn, and compete in the decentralized ecosystem." },
-    { q: "When will the Beta launch?", a: "We are rolling out exclusive access to our waitlist members soon. Pre-register to secure your spot in line." },
-    { q: "What platforms are supported?", a: "We will launch natively on both iOS and Android to give you a seamless mobile experience." },
-    { q: "Is it free to join the waitlist?", a: "Yes, joining the waitlist is completely free. Early members will receive priority access and exclusive beta rewards." },
-    { q: "How do I move up the waitlist?", a: "Share your unique referral link! Every friend who signs up using your link moves you higher up the queue." }
-  ];
-
 
   const checkDuplicate = async (emailToCheck: string) => {
     if (!db) return false;
@@ -138,13 +119,8 @@ function WaitlistFormContent() {
     e.preventDefault();
     if (!email.trim() || loading) return;
 
-    // Client-side honeypot check
-    if (honeypot) {
-      console.log('Bot detected');
-      return;
-    }
+    if (honeypot) return;
 
-    // Server-side Turnstile token verification (only if widget loaded)
     if (turnstileToken) {
       try {
         const verifyRes = await fetch('/api/verify-turnstile', {
@@ -157,9 +133,7 @@ function WaitlistFormContent() {
           setErrorMsg('Verification failed. Please refresh and try again.');
           return;
         }
-      } catch {
-        // Turnstile verification failed silently - fall through to rate limit protection
-      }
+      } catch {}
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -168,7 +142,6 @@ function WaitlistFormContent() {
       return;
     }
 
-    // Server-side rate limit + validation via API route
     try {
       const apiRes = await fetch('/api/waitlist', {
         method: 'POST',
@@ -186,7 +159,6 @@ function WaitlistFormContent() {
       return;
     }
 
-    // Duplicate check against Firestore
     const alreadyExists = await checkDuplicate(email);
     if (alreadyExists) {
       setErrorMsg('This email is already registered!');
@@ -199,20 +171,37 @@ function WaitlistFormContent() {
     try {
       const res = await joinWaitlist(email, platform, referredBy);
       if (res.success) {
-        // 2. Send confirmation email
         await sendConfirmationEmail(email, platform);
 
         setPosition(res.position);
         setRefCode(res.refCode);
         setSuccess(true);
         
-        // Trigger confetti celebration
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ["#10b981", "#3b82f6", "#06b6d4"]
-        });
+        // Premium Confetti
+        const end = Date.now() + 3 * 1000;
+        const colors = ['#ff453a', '#ffffff', '#ff2a1f'];
+        
+        (function frame() {
+          confetti({
+            particleCount: 4,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: colors
+          });
+          confetti({
+            particleCount: 4,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: colors
+          });
+        
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+
       } else {
         setErrorMsg(res.message);
       }
@@ -225,7 +214,7 @@ function WaitlistFormContent() {
 
   const referralLink = typeof window !== "undefined"
     ? `${window.location.origin}/pre-register?ref=${refCode}`
-    : `collabsphereweb.vercel.app/pre-register?ref=${refCode}`;
+    : `collabsphere.com/pre-register?ref=${refCode}`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -234,64 +223,82 @@ function WaitlistFormContent() {
   };
 
   return (
-    <div className="relative z-10 w-full min-h-screen flex flex-col">
+    <div className="relative z-10 w-full min-h-screen flex flex-col pt-24 pb-12 px-4 sm:px-6">
       
       {/* Header Navigation */}
-      <div className="absolute top-0 left-0 w-full flex items-center justify-between px-8 py-6 z-50">
-        <div className="flex items-center gap-6">
-          <a 
-            href="/dashboard/home" 
-            className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-[10px] uppercase font-syncopate tracking-widest font-bold"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Home</span>
-          </a>
-          <div className="font-syncopate text-white text-[12px] font-bold uppercase tracking-widest hidden md:block">
-            CollabSphere
-          </div>
+      <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-6 z-50">
+        <Link 
+          href="/dashboard/home" 
+          className="flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 text-xs font-syncopate tracking-widest font-bold group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span>Back to App</span>
+        </Link>
+        <div className="font-syncopate text-white text-xs font-bold uppercase tracking-[0.3em] flex items-center gap-3">
+          <img src="/newlogo.png" alt="Logo" className="w-5 h-5 opacity-80" />
+          <span className="hidden sm:inline">CollabSphere</span>
         </div>
       </div>
 
-      <div className="w-full max-w-[800px] mx-auto px-6 text-center flex flex-col items-center z-10 flex-1 py-32 justify-center" style={{ position: 'relative', zIndex: 10 }}>
-        {/* Subtle backdrop blur behind the main text so the background lines fade out elegantly behind the text instead of clashing */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] rounded-full filter blur-[40px] z-[-1]"></div>
+      <div className="w-full max-w-[800px] mx-auto text-center flex flex-col items-center z-10 flex-1 justify-center relative">
+        
         <AnimatePresence mode="wait">
           {!success ? (
             <motion.div
               key="form"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+              transition={{ duration: 0.6, type: "spring", bounce: 0.2 }}
               className="w-full flex flex-col items-center"
             >
-              {/* EARLY ACCESS BADGE */}
-              <div className="border border-[#ff453a]/20 text-[#ff453a] bg-transparent px-[14px] py-[6px] text-[10px] font-mono tracking-[0.2em] uppercase mb-[24px] flex items-center justify-center gap-2">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"></rect><polyline points="3 7 12 13 21 7"></polyline></svg>
-                EARLY ACCESS
-              </div>
+              {/* Premium Pill Badge */}
+              <motion.div 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-8 relative group cursor-default"
+              >
+                <div className="absolute inset-0 bg-[#ff453a]/20 rounded-full blur-md group-hover:bg-[#ff453a]/30 transition-all duration-500"></div>
+                <div className="relative border border-[#ff453a]/30 bg-black/40 backdrop-blur-xl px-4 py-1.5 rounded-full text-[#ff453a] text-[11px] font-mono tracking-widest uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(255,69,58,0.15)]">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Early Access</span>
+                </div>
+              </motion.div>
 
-              {/* HEADING */}
-              <h1 className="font-sans text-white font-[700] tracking-[-0.03em] mb-4" style={{ fontSize: 'clamp(44px, 5vw, 64px)', lineHeight: '1' }}>
+              {/* HEADING with Gradient Mask */}
+              <h1 className="font-syne font-[800] tracking-tight mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 drop-shadow-sm" style={{ fontSize: 'clamp(48px, 6vw, 76px)', lineHeight: '1.05' }}>
                 CollabSphere is almost ready.
               </h1>
               
               {/* SUBTEXT */}
-              <p className="text-[#888888] text-[16px] leading-[1.6] max-w-[420px] mx-auto mb-[40px] font-sans">
-                We're inviting engineers to run it on<br/>real code and help shape what ships.
+              <p className="text-white/50 text-[16px] sm:text-[18px] leading-[1.6] max-w-[500px] mx-auto mb-12 font-sans font-medium">
+                We're inviting elite engineers to run it on real code and help shape what ships.
               </p>
 
-              {/* FORM ROW */}
-              <form onSubmit={handleSubmit} className="w-full flex flex-col items-center relative z-20">
-                <div className="flex flex-col sm:flex-row w-full justify-center items-center gap-4">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
-                    className="bg-transparent border border-[#333333] text-white placeholder-[#555555] px-[20px] py-[14px] text-[13px] font-mono outline-none transition-all focus:border-[#ff453a] w-full sm:w-[320px] rounded-none"
-                  />
+              {/* PREMIUM GLASSMORPHISM FORM CARD */}
+              <div className="w-full max-w-[480px] relative">
+                {/* Glow behind card */}
+                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-[32px] blur-xl opacity-50"></div>
+                
+                <form 
+                  onSubmit={handleSubmit} 
+                  className="relative w-full bg-white/[0.02] border border-white/10 rounded-[32px] p-2 sm:p-3 backdrop-blur-2xl shadow-2xl flex flex-col sm:flex-row items-center gap-3 overflow-hidden transition-all duration-300 hover:bg-white/[0.03] hover:border-white/20"
+                >
+                  <div className="relative flex-1 w-full">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                      <User className="w-4 h-4 text-white/30" />
+                    </div>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@company.com"
+                      className="w-full bg-transparent border-none text-white placeholder-white/30 pl-11 pr-4 py-4 sm:py-3 text-[14px] font-sans outline-none focus:ring-0"
+                    />
+                  </div>
+                  
                   <input
                     type="text"
                     name="website"
@@ -301,26 +308,29 @@ function WaitlistFormContent() {
                     value={honeypot}
                     onChange={(e) => setHoneypot(e.target.value)}
                   />
+
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`bg-[#ff453a] text-black font-mono font-[700] px-[28px] py-[15px] text-[11px] tracking-[0.1em] uppercase transition-all flex items-center justify-center w-full sm:w-auto
-                      ${loading ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer hover:bg-[#ff5544]'}
+                    className={`relative overflow-hidden w-full sm:w-auto bg-white text-black font-sans font-bold px-8 py-4 sm:py-3 text-[13px] tracking-wide rounded-[24px] transition-all duration-300 flex items-center justify-center group shadow-[0_0_20px_rgba(255,255,255,0.2)]
+                      ${loading ? 'opacity-70 cursor-wait' : 'hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] cursor-pointer'}
                     `}
-                    style={{ 
-                      clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
-                    }}
                   >
-                    {loading ? (
-                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                    ) : (
-                      "JOIN WAITLIST"
-                    )}
+                    {/* Hover Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_infinite] pointer-events-none"></div>
+                    
+                    <span className="relative z-10 flex items-center gap-2">
+                      {loading ? (
+                        <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                      ) : (
+                        "Join Waitlist"
+                      )}
+                    </span>
                   </button>
-                </div>
+                </form>
 
-                {/* Cloudflare Turnstile Widget - optional, gracefully hidden if blocked */}
-                <div className="w-full flex justify-center mt-[16px] min-h-[0px]">
+                {/* Turnstile & Errors */}
+                <div className="w-full flex justify-center mt-6 min-h-[0px]">
                   <Turnstile
                     siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                     onSuccess={(token) => {
@@ -335,83 +345,97 @@ function WaitlistFormContent() {
                       setTurnstileToken(null);
                       setTurnstileStatus('idle');
                     }}
-                    options={{
-                      theme: 'dark',
-                      size: 'flexible',
-                    }}
+                    options={{ theme: 'dark', size: 'flexible' }}
                   />
                 </div>
                 {turnstileStatus === 'error' && (
-                  <p className="text-red-500 text-[10px] font-mono mt-1 text-center">Verification failed. Please refresh.</p>
+                  <p className="text-[#ff453a] text-xs font-medium mt-2 text-center animate-pulse">Verification failed. Please refresh.</p>
                 )}
                 {errorMsg && (
-                  <p className="text-red-500 text-xs font-bold font-sans mt-3 text-center">{errorMsg}</p>
+                  <motion.p 
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="text-[#ff453a] text-sm font-medium mt-4 text-center bg-[#ff453a]/10 py-2 px-4 rounded-full border border-[#ff453a]/20 inline-block mx-auto"
+                  >
+                    {errorMsg}
+                  </motion.p>
                 )}
-              </form>
+              </div>
             </motion.div>
           ) : (
             <motion.div
               key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              className="text-center w-full max-w-md mx-auto flex flex-col items-center"
+              initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              className="text-center w-full max-w-lg mx-auto flex flex-col items-center"
             >
-              <motion.div 
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-16 h-16 border-2 border-[#ff453a] flex items-center justify-center mx-auto mb-8"
-              >
-                <Check className="w-8 h-8 text-[#ff453a] stroke-[2.5]" />
-              </motion.div>
-
-              <h2 className="font-sans text-[#ffffff] text-[44px] md:text-[56px] font-[700] tracking-[-0.03em] leading-none mb-4">
-                You're #{position.toLocaleString()} on the list.
-              </h2>
+              {/* VIP Ticket Graphic */}
+              <div className="relative w-full mb-10 group perspective-1000">
+                <motion.div 
+                  initial={{ rotateX: 20, y: 50, opacity: 0 }}
+                  animate={{ rotateX: 0, y: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, type: "spring" }}
+                  className="w-full bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border border-white/10 rounded-[32px] p-10 relative overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] transform-style-3d group-hover:rotate-x-2 group-hover:rotate-y-2 transition-transform duration-500"
+                >
+                  {/* Holographic overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                  
+                  {/* Ticket Notches */}
+                  <div className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0d0d0d] rounded-full border border-white/10 border-l-0"></div>
+                  <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0d0d0d] rounded-full border border-white/10 border-r-0"></div>
+                  
+                  <Ticket className="w-12 h-12 text-[#ff453a] mx-auto mb-6 opacity-80" />
+                  
+                  <p className="text-white/50 text-sm font-syncopate uppercase tracking-[0.2em] mb-2">You are number</p>
+                  <h2 className="font-syne text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 text-[64px] leading-none font-bold tracking-tight mb-2">
+                    #<AnimatedCounter value={position} />
+                  </h2>
+                  <p className="text-[#10b981] text-xs font-mono font-medium tracking-widest uppercase bg-[#10b981]/10 py-1.5 px-3 rounded-full inline-block border border-[#10b981]/20 mt-4">
+                    Spot Secured
+                  </p>
+                </motion.div>
+              </div>
               
-              <p className="text-[#666666] text-[14px] leading-relaxed max-w-xs mx-auto mb-10 font-mono">
-                Check your email for confirmation
+              <p className="text-white/60 text-[15px] leading-relaxed max-w-sm mx-auto mb-10 font-sans">
+                A confirmation email has been dispatched. 
+                <br/>Want priority access? Share your link below.
               </p>
 
-              <div className="border border-[#222222] p-6 text-left w-full bg-[#0f0f0f]">
-                <span className="text-[10px] font-bold text-[#555555] uppercase tracking-[0.2em] block mb-5 font-mono text-center">
-                  Share to move up the waitlist
-                </span>
-                
-                <div className="flex gap-0 items-center border border-[#2a2a2a] mb-5">
+              <div className="w-full max-w-md bg-white/[0.02] border border-white/10 p-6 rounded-[24px] backdrop-blur-xl">
+                <div className="flex items-center bg-black/40 border border-white/10 rounded-2xl p-1 mb-4 overflow-hidden">
                   <input
                     type="text"
                     readOnly
                     value={referralLink}
-                    className="bg-transparent text-[12px] text-[#888888] outline-none flex-1 font-mono px-3 py-3 border-none"
+                    className="bg-transparent text-[13px] text-white/70 outline-none flex-1 font-mono px-4 py-3 border-none w-full truncate"
                   />
                   <button
                     onClick={copyToClipboard}
-                    className="p-3 bg-[#1a1a1a] hover:bg-[#222222] text-[#ffffff] border-l border-[#2a2a2a] transition-colors cursor-pointer shrink-0"
+                    className="bg-white hover:bg-gray-200 text-black px-6 py-3 rounded-xl transition-colors cursor-pointer font-bold font-sans text-sm flex items-center gap-2"
                   >
-                    {copied ? <Check className="w-4 h-4 text-[#ff453a]" /> : <Copy className="w-4 h-4 text-[#888888]" />}
+                    {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                    {copied ? "Copied" : "Copy"}
                   </button>
                 </div>
 
-                <div className="flex gap-3 mt-4">
+                <div className="flex gap-3">
                   <a
-                    href={`https://twitter.com/intent/tweet?text=I%20just%20pre-registered%20for%20CollabSphere!%20Join%20the%20waitlist%20to%20get%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
+                    href={`https://twitter.com/intent/tweet?text=I%20just%20secured%20my%20spot%20for%20CollabSphere!%20Join%20the%20waitlist%20for%20early%20access%3A%20${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border border-[#2a2a2a] hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-[#666666] py-3 text-[11px] transition-all font-mono font-bold uppercase tracking-widest"
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 border border-[#1DA1F2]/20 text-[#1DA1F2] rounded-xl py-3 text-sm transition-all font-sans font-bold"
                   >
-                    <Twitter className="w-3 h-3 fill-current" />
-                    <span>X / Twitter</span>
+                    <Twitter className="w-4 h-4" />
+                    Share
                   </a>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 border border-[#2a2a2a] hover:border-[#ff453a] hover:text-[#ff453a] bg-transparent text-[#666666] py-3 text-[11px] transition-all font-mono font-bold uppercase tracking-widest"
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 border border-[#0A66C2]/20 text-[#0A66C2] rounded-xl py-3 text-sm transition-all font-sans font-bold"
                   >
-                    <Linkedin className="w-3 h-3 fill-current" />
-                    <span>LinkedIn</span>
+                    <Linkedin className="w-4 h-4" />
+                    Share
                   </a>
                 </div>
               </div>
@@ -421,44 +445,35 @@ function WaitlistFormContent() {
       </div>
 
       {/* Footer */}
-      <div className="w-full mt-auto pt-20 pb-8 flex flex-col items-center z-20 relative px-6 md:px-12 bg-transparent">
-        <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-16">
+      <div className="w-full mt-auto pt-24 pb-8 flex flex-col items-center z-20 relative bg-transparent">
+        <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-start border-t border-white/10 pt-10">
           
-          <div className="flex flex-col max-w-[300px] mb-12 md:mb-0">
+          <div className="flex flex-col max-w-[300px] mb-10 md:mb-0">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/newlogo.png" alt="Logo" className="w-6 h-6 grayscale opacity-80" />
-              <span className="font-syne text-[20px] font-[800] tracking-tight text-[#ffffff] uppercase">
+              <img src="/newlogo.png" alt="Logo" className="w-5 h-5 opacity-70" />
+              <span className="font-syne text-[18px] font-bold tracking-tight text-white/80 uppercase">
                 CollabSphere
               </span>
             </div>
-            <p className="text-[#777777] text-[13px] leading-[1.6] font-sans">
+            <p className="text-white/40 text-[13px] leading-relaxed font-sans">
               Local-first AI for developers who refuse to be dependent on the cloud.
             </p>
           </div>
 
-          <div className="flex gap-16 md:gap-32">
-            <div className="flex flex-col gap-5">
-              <span className="text-[#555555] text-[11px] font-bold tracking-[0.1em] uppercase">Connect</span>
-              <a href="#" className="text-[#999999] text-[13px] hover:text-white transition-colors">Twitter</a>
-              <a href="#" className="text-[#999999] text-[13px] hover:text-white transition-colors">LinkedIn</a>
+          <div className="flex gap-16 md:gap-24">
+            <div className="flex flex-col gap-4">
+              <span className="text-white/30 text-[10px] font-syncopate font-bold tracking-widest uppercase">Connect</span>
+              <a href="#" className="text-white/50 text-[13px] hover:text-white transition-colors">Twitter</a>
+              <a href="#" className="text-white/50 text-[13px] hover:text-white transition-colors">LinkedIn</a>
             </div>
-            <div className="flex flex-col gap-5">
-              <span className="text-[#555555] text-[11px] font-bold tracking-[0.1em] uppercase">Legal</span>
-              <a href="#" className="text-[#999999] text-[13px] hover:text-white transition-colors">Privacy Policy</a>
+            <div className="flex flex-col gap-4">
+              <span className="text-white/30 text-[10px] font-syncopate font-bold tracking-widest uppercase">Legal</span>
+              <a href="#" className="text-white/50 text-[13px] hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="text-white/50 text-[13px] hover:text-white transition-colors">Terms</a>
             </div>
           </div>
         </div>
-
-        <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-8 mt-16">
-          <span className="text-[#444444] text-[11px] font-mono uppercase tracking-widest">
-            © 2026 COLLABSPHERE INC. ALL RIGHTS RESERVED.
-          </span>
-          <span className="text-[#444444] text-[11px] font-mono uppercase tracking-widest mt-4 md:mt-0 flex items-center gap-2">
-            ALL SYSTEMS LOCAL
-          </span>
-        </div>
       </div>
-
     </div>
   );
 }
@@ -466,48 +481,32 @@ function WaitlistFormContent() {
 export default function PreRegisterPage() {
   return (
     <div 
-      className="min-h-screen w-full bg-[#0d0d0d] text-white flex flex-col relative font-sans overflow-y-auto overflow-x-hidden"
+      className="min-h-screen w-full bg-[#050505] text-white flex flex-col relative font-sans overflow-x-hidden selection:bg-[#ff453a]/30 selection:text-white"
     >
-      {/* Perspective Grid Background */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 opacity-20"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
-          `,
-          backgroundSize: '120px 120px',
-          backgroundPosition: 'center 0',
-          transform: 'perspective(1000px) rotateX(60deg) scale(2.5) translateY(-20%)',
-          transformOrigin: 'top center',
-        }}
-      />
+      <AmbientBackground />
+      
       {/* Heavy Noise Overlay */}
       <div 
         className="absolute inset-0 pointer-events-none z-10"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`,
           mixBlendMode: 'screen'
         }}
       />
-      {/* Main Container lines to match screenshot vertical bounding box */}
-      <div className="absolute inset-0 pointer-events-none flex justify-center z-0">
-        <div className="w-full max-w-[1200px] border-x border-white/5 h-full relative">
-          <div className="absolute top-[15%] w-full border-b border-white/5" />
-        </div>
-      </div>
+      
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Syncopate:wght@400;700&display=swap');
         .font-syne { font-family: 'Syne', sans-serif; }
         .font-syncopate { font-family: 'Syncopate', sans-serif; }
+        
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
       `}} />
 
-      <AnimatedLines />
-
       <Suspense fallback={
-        <div className="h-full w-full flex flex-col items-center justify-center relative z-10 min-h-screen">
-          <div className="w-10 h-10 border-4 border-[#ef4444]/20 border-t-[#ef4444] rounded-full animate-spin mb-4" />
-          <span className="text-sm font-mono text-[#ef4444]/70">Loading Waitlist...</span>
+        <div className="h-full w-full flex flex-col items-center justify-center relative z-20 min-h-screen">
+          <div className="w-10 h-10 border-4 border-white/10 border-t-white rounded-full animate-spin mb-4" />
         </div>
       }>
         <WaitlistFormContent />
@@ -515,7 +514,3 @@ export default function PreRegisterPage() {
     </div>
   );
 }
-
-// Trigger deployment
-
-
