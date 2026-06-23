@@ -61,31 +61,31 @@ export default function PreRegisterMobilePromo() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/80 backdrop-blur-sm px-4 pb-0 pt-20"
           onClick={() => setShowPromo(false)} // Dismiss on backdrop tap
           role="dialog"
           aria-modal="true"
           aria-label="Promotional Offer"
         >
           <motion.div
-            initial={{ scale: 0.95, y: 20 }}
+            initial={{ scale: 0.95, y: 100 }}
             animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.95, y: 20 }}
+            exit={{ scale: 0.95, y: 100 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="relative w-full max-w-sm flex flex-col items-center"
             onClick={(e) => e.stopPropagation()} // Prevent backdrop tap from firing when tapping the card
           >
-            {/* Close Button */}
+            {/* Centered Close Button */}
             <button
               onClick={() => setShowPromo(false)}
-              className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#ff453a] z-10"
+              className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-black transition-transform active:scale-95 cursor-pointer outline-none z-20"
               aria-label="Close promotional popup"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6 stroke-[2.5]" />
             </button>
 
             {/* Promotional Image Container */}
-            <div className="w-full bg-[#0a0a0a] border border-white/10 rounded-[24px] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
+            <div className="w-full bg-[#0a0a0a] border border-white/10 border-b-0 rounded-t-[32px] rounded-b-none overflow-hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
               <Link href="/pre-register" onClick={() => setShowPromo(false)} className="block w-full h-full">
                 <img
                   src="/poster.jpeg"
