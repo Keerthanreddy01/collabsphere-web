@@ -54,14 +54,21 @@ export default function PreRegisterMobilePromo() {
   if (!isMobile) return null;
 
   return (
-    <AnimatePresence>
+    <>
       {showPromo && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          /* Hide the mobile tab bar when promo is open to prevent it from showing through */
+          div.md\\:hidden.fixed.bottom-0 { display: none !important; }
+        `}} />
+      )}
+      <AnimatePresence>
+        {showPromo && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/80 backdrop-blur-sm px-4 pb-0 pt-20"
+          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-[2px] pb-0 pt-20"
           onClick={() => setShowPromo(false)} // Dismiss on backdrop tap
           role="dialog"
           aria-modal="true"
@@ -84,8 +91,8 @@ export default function PreRegisterMobilePromo() {
               <X className="w-6 h-6 stroke-[2.5]" />
             </button>
 
-            {/* Promotional Image Container */}
-            <div className="w-full bg-[#0a0a0a] border border-white/10 border-b-0 rounded-t-[32px] rounded-b-none overflow-hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
+            {/* Promotional Image Container - Full width at bottom */}
+            <div className="w-full bg-[#0a0a0a] border-t border-white/10 rounded-t-[32px] overflow-hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
               <Link href="/pre-register" onClick={() => setShowPromo(false)} className="block w-full h-full">
                 <img
                   src="/poster.jpeg"
@@ -96,7 +103,7 @@ export default function PreRegisterMobilePromo() {
             </div>
           </motion.div>
         </motion.div>
-      )}
-    </AnimatePresence>
+      </AnimatePresence>
+    </>
   );
 }
