@@ -116,7 +116,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply font-sans bg-black text-white antialiased;
+    @apply font-sans bg-white text-black dark:bg-[#000000] dark:text-white antialiased;
   }
   html {
     scroll-behavior: smooth;

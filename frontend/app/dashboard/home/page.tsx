@@ -128,12 +128,12 @@ function PostCard({
     ? { text: 'text-[#00f2fe]', bg: 'bg-[#00f2fe]/10', border: 'border-[#00f2fe]/20', icon: Handshake, label: 'Collab' }
     : isMilestone
       ? { text: 'text-[#D4F842]', bg: 'bg-[#D4F842]/10', border: 'border-[#D4F842]/20', icon: Trophy, label: 'Milestone' }
-      : { text: 'text-neutral-400', bg: 'bg-white/5', border: 'border-white/10', icon: Megaphone, label: 'Update' };
+      : { text: 'text-gray-500 dark:text-neutral-400', bg: 'bg-white dark:bg-white/5', border: 'border-gray-200 dark:border-white/10', icon: Megaphone, label: 'Update' };
 
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-2 sm:mb-4 bg-[#0A0A0A] border border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full mb-2 sm:mb-4 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
@@ -146,7 +146,7 @@ function PostCard({
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* Avatar */}
             <div className="relative shrink-0 w-[36px] h-[36px] sm:w-10 sm:h-10 rounded-full p-[2px] bg-gradient-to-tr from-white/5 to-white/10 group-hover/post:from-[#D4F842]/40 group-hover/post:to-[#00f2fe]/40 transition-all duration-500">
-              <div className="w-full h-full rounded-full overflow-hidden bg-black">
+              <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-black">
                 <img
                   src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
                   alt={post.author_name}
@@ -159,14 +159,14 @@ function PostCard({
             {/* Author info & Badges */}
             <div className="flex flex-col min-w-0 justify-center flex-1">
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 overflow-hidden w-full">
-                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-white hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[140px] sm:max-w-none">
+                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-black dark:text-white hover:text-black dark:hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[140px] sm:max-w-none">
                   {post.author_name || "Builder"}
                 </span>
-                <span className="text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0 max-w-[100px] sm:max-w-none">
+                <span className="text-gray-500 dark:text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0 max-w-[100px] sm:max-w-none">
                   @{post.author_username || "builder"}
                 </span>
-                <span className="text-neutral-500 text-[13px] mx-0.5 sm:mx-1 shrink-0 hidden sm:inline">·</span>
-                <span className="text-[11px] sm:text-[12px] text-neutral-400 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap ml-auto sm:ml-0">{timeAgo(post.created_at)}</span>
+                <span className="text-gray-400 dark:text-neutral-500 text-[13px] mx-0.5 sm:mx-1 shrink-0 hidden sm:inline">·</span>
+                <span className="text-[11px] sm:text-[12px] text-gray-500 dark:text-neutral-400 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap ml-auto sm:ml-0">{timeAgo(post.created_at)}</span>
               </div>
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                 {/* Clean inline post type badge */}
@@ -176,7 +176,7 @@ function PostCard({
                 </div>
 
                 {post.project && (
-                  <span className="flex items-center gap-1 text-[10px] font-medium text-neutral-400 bg-white/5 px-1.5 py-0.5 rounded-md">
+                  <span className="flex items-center gap-1 text-[10px] font-medium text-gray-500 dark:text-neutral-400 bg-white dark:bg-white/5 px-1.5 py-0.5 rounded-md">
                     <Sparkles className="w-2.5 h-2.5" />
                     {post.project}
                   </span>
@@ -192,14 +192,14 @@ function PostCard({
           </div>
 
           {/* More Menu */}
-          <button className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer bg-transparent border-none">
+          <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer bg-transparent border-none">
             <MoreHorizontal className="w-4 h-4" />
           </button>
         </div>
 
         {/* ── Main Content ── */}
         <div className="ml-13 mb-3">
-          <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed text-white whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
+          <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed font-medium text-black dark:text-white/95 whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
             {renderContentWithHashtags(displayContent)}
           </div>
           {isTruncated && !isExpanded && (
@@ -227,14 +227,14 @@ function PostCard({
 
           {/* ── Collab Apply Action Block ── */}
           {isCollab && (
-            <div className="mt-4 flex items-center justify-between border border-white/[0.08] bg-white/[0.02] rounded-xl p-4 transition-all hover:bg-white/[0.04]">
+            <div className="mt-4 flex items-center justify-between border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] rounded-xl p-4 transition-all hover:bg-gray-100 dark:hover:bg-white/[0.04]">
               <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-white">Open to Collaborators</span>
-                <span className="text-[13px] text-neutral-400 mt-0.5">The author is looking for team members.</span>
+                <span className="text-[14px] font-bold text-black dark:text-white">Open to Collaborators</span>
+                <span className="text-[13px] text-gray-500 dark:text-neutral-400 mt-0.5">The author is looking for team members.</span>
               </div>
               <button
                 onClick={() => handleCollabClick(post)}
-                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-white text-black hover:bg-neutral-200 cursor-pointer border-none"
+                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none"
               >
                 Apply
               </button>
@@ -247,47 +247,47 @@ function PostCard({
           {/* Comment */}
           <button
             onClick={handleFetchComments}
-            className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.1] hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none"
+            className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/[0.08]  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none"
           >
-            <MessageCircle className="w-[14px] h-[14px] text-neutral-400 group-hover:text-white transition-colors" />
-            {post.comments_count > 0 && <span className="font-semibold text-[12px] text-neutral-400 group-hover:text-white transition-colors">{post.comments_count}</span>}
+            <MessageCircle className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-black dark:hover:text-white transition-colors" />
+            {post.comments_count > 0 && <span className="font-semibold text-[12px] text-gray-500 dark:text-neutral-400 group-hover:text-black dark:hover:text-white transition-colors">{post.comments_count}</span>}
           </button>
 
           {/* Boost */}
-          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none">
-            <Rocket className="w-[14px] h-[14px] text-neutral-400 group-hover:text-emerald-400 transition-colors" />
+          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-emerald-500/10  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
+            <Rocket className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-emerald-400 transition-colors" />
           </button>
 
           {/* Like (Zap) */}
           <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
             <button
               onClick={() => handleLikeClick(post.id)}
-              className={`flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none ${isLiked ? 'bg-[#D4F842]/15 border-[#D4F842]/30 shadow-[0_0_10px_rgba(212,248,66,0.1)]' : 'border-white/[0.05] bg-white/[0.02] hover:bg-[#D4F842]/10 hover:border-[#D4F842]/30'}`}
+              className={`flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none ${isLiked ? 'bg-[#D4F842]/15 border-none shadow-[0_0_10px_rgba(212,248,66,0.1)]' : 'border-gray-200 dark:border-white/[0.05] bg-white/[0.02] hover:bg-[#D4F842]/10 hover:border-none'}`}
             >
-              <Zap className={`w-[14px] h-[14px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`} fill={isLiked ? "#D4F842" : "none"} />
-              {likesCount > 0 && <span className={`font-semibold text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-neutral-400 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
+              <Zap className={`w-[14px] h-[14px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-gray-500 dark:text-neutral-400 group-hover:text-[#D4F842]'}`} fill={isLiked ? "#D4F842" : "none"} />
+              {likesCount > 0 && <span className={`font-semibold text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-gray-500 dark:text-neutral-400 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
             </button>
           </ClickSpark>
 
           {/* Views */}
-          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.1] hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none">
-            <Eye className="w-[14px] h-[14px] text-neutral-400 group-hover:text-white transition-colors" />
+          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/[0.08]  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
+            <Eye className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-black dark:hover:text-white transition-colors" />
           </button>
 
           {/* Bookmark */}
-          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border border-white/[0.05] bg-white/[0.02] hover:bg-amber-500/10 hover:border-amber-500/30 hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-sm outline-none">
-            <Bookmark className="w-[14px] h-[14px] text-neutral-400 group-hover:text-amber-500 transition-colors" />
+          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-amber-500/10  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
+            <Bookmark className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-amber-500 transition-colors" />
           </button>
         </div>
 
         {/* ── Comments Section ── */}
         {showComments && (
-          <div className="mt-4 pt-4 border-t border-white/[0.04] flex flex-col gap-3">
-            <div className="flex items-center gap-2.5 bg-neutral-950/60 p-2.5 rounded-xl border border-white/5">
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.04] flex flex-col gap-3">
+            <div className="flex items-center gap-2.5 bg-neutral-950/60 p-2.5 rounded-xl border border-gray-200 dark:border-white/5">
               <img
                 src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`}
                 alt=""
-                className="w-6 h-6 rounded-full object-cover shrink-0 border border-white/10"
+                className="w-6 h-6 rounded-full object-cover shrink-0 border border-gray-200 dark:border-white/10"
                 referrerPolicy="no-referrer"
               />
               <input
@@ -296,7 +296,7 @@ function PostCard({
                 onChange={(e) => setNewComment(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && submitComment()}
                 placeholder="Share your thoughts..."
-                className="flex-1 bg-transparent border-none outline-none text-[13px] text-white placeholder-neutral-600 focus:ring-0"
+                className="flex-1 bg-transparent border-none outline-none text-[13px] text-black dark:text-white placeholder-neutral-600 focus:ring-0"
               />
               <button
                 onClick={submitComment}
@@ -314,17 +314,17 @@ function PostCard({
                     <img
                       src={comment.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.uid}`}
                       alt=""
-                      className="w-6 h-6 rounded-full object-cover bg-neutral-800 flex-shrink-0 border border-white/10"
+                      className="w-6 h-6 rounded-full object-cover bg-neutral-800 flex-shrink-0 border border-gray-200 dark:border-white/10"
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0 bg-neutral-900/60 rounded-xl px-3 py-2">
                       <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="font-semibold text-[12px] text-white">{comment.author_name}</span>
-                        <span className="text-[10px] text-neutral-500 font-mono">@{comment.author_username}</span>
+                        <span className="font-semibold text-[12px] text-black dark:text-white">{comment.author_name}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-mono">@{comment.author_username}</span>
                         <span className="text-[10px] text-neutral-600">·</span>
                         <span className="text-[10px] text-neutral-600">{timeAgo(comment.created_at || new Date().toISOString())}</span>
                       </div>
-                      <p className="text-[13px] text-neutral-300 break-words leading-relaxed">{comment.content}</p>
+                      <p className="text-[13px] text-gray-600 dark:text-neutral-300 break-words leading-relaxed">{comment.content}</p>
                     </div>
                   </div>
                 ))}
@@ -516,22 +516,22 @@ export default function DashboardHomePage() {
   const avatarSrc = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
 
   return (
-    <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-x-hidden overflow-y-hidden selection:bg-blue-500/30 selection:text-white relative">
+    <div className="flex justify-center min-h-screen bg-[#F8F9FA] dark:bg-[#000000] text-black dark:text-white font-sans overflow-x-hidden overflow-y-hidden selection:bg-blue-500/30 selection:text-black dark:text-white relative">
       <div className="flex w-full max-w-[1250px] h-screen relative overflow-x-hidden">
         <div className="hidden md:flex shrink-0">
           <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
         </div>
 
         <main
-          className="flex-1 flex h-full overflow-hidden overflow-x-hidden relative z-10 bg-[#000000] min-w-0 text-[14px] leading-[1.4] sm:text-[15px] sm:leading-[1.5]"
+          className="flex-1 flex h-full overflow-hidden overflow-x-hidden relative z-10 bg-[#F8F9FA] dark:bg-[#000000] min-w-0 text-[14px] leading-[1.4] sm:text-[15px] sm:leading-[1.5]"
           style={{
             fontFamily: 'var(--font-instrument), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           }}
         >
           {/* Flat Dark Background */}
-          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#000000]"></div>
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#F8F9FA] dark:bg-[#000000]"></div>
 
-          <div className="flex w-full h-full relative z-10 justify-center">
+          <div className="flex w-full h-full relative z-10 justify-start gap-4 lg:gap-8 xl:gap-12 pl-0 md:pl-[180px] lg:pl-[190px] xl:pl-[200px] pr-4">
 
             {/* COLUMN 1: FEED */}
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-0 pb-[80px] md:pb-32">
@@ -540,7 +540,7 @@ export default function DashboardHomePage() {
               <div className="sticky top-0 z-40 flex justify-center w-full shrink-0 pt-[28px] sm:pt-[36px] pb-[8px] pointer-events-none mb-2">
                 {/* Fade Overlay */}
                 <div 
-                  className="absolute inset-x-0 top-0 h-[140px] pointer-events-none bg-gradient-to-b from-[#000000] via-[#000000]/80 to-transparent"
+                  className="absolute inset-x-0 top-0 h-[140px] pointer-events-none bg-gradient-to-b from-gray-50 dark:from-[#000000] via-gray-50/80 dark:via-[#000000]/80 to-transparent"
                   style={{
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
@@ -550,16 +550,16 @@ export default function DashboardHomePage() {
                 />
                 
                 {/* Pill */}
-                <div className="inline-flex items-center bg-[#111111] border border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-lg relative z-10">
+                <div className="inline-flex items-center bg-gray-200 dark:bg-gray-50 dark:bg-gray-50 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-white'}`}
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 dark:text-[#999999] hover:text-black dark:hover:text-white'}`}
                   >
                     All Builds
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-white'}`}
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-black dark:hover:text-white'}`}
                   >
                     Collab Board
                   </button>
@@ -583,39 +583,39 @@ export default function DashboardHomePage() {
                       hint: 'Document a major project launch or milestone'
                     }
                     : {
-                      accent: 'text-white',
-                      button: 'bg-white hover:bg-neutral-200 text-black font-bold',
+                      accent: 'text-black dark:text-white',
+                      button: 'bg-black text-white dark:bg-white hover:bg-gray-800 dark:hover:bg-neutral-200 dark:text-black font-bold',
                       btnText: 'Ship',
                       hint: 'Log a quick dev update'
                     };
 
                 return (
-                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-white/[0.08] ${isFocused ? 'bg-[#121212] border-white/[0.15] shadow-xl max-h-none' : 'bg-[#0a0a0a] max-h-[140px] sm:max-h-none'}`}>
+                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
                     <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
 
-                      <div className="flex items-center bg-neutral-950/80 p-1 rounded-xl border border-white/[0.06] shadow-inner">
+                      <div className="flex items-center bg-gray-100 dark:bg-neutral-950/80 p-1 rounded-xl border border-gray-200 dark:border-white/[0.06] shadow-inner">
                         <button
                           onClick={() => setSelectedPostType('update')}
-                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'update' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'update' ? 'text-black dark:text-white' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:text-neutral-300'}`}
                         >
-                          {selectedPostType === 'update' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-neutral-700/60 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                          {selectedPostType === 'update' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-white shadow-none dark:shadow-none dark:bg-neutral-700/60 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
                           <span className="relative z-10 flex items-center gap-1.5"><Megaphone className="w-3.5 h-3.5" /> Update</span>
                         </button>
                         <button
                           onClick={() => setSelectedPostType('looking_for')}
-                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'looking_for' ? 'text-[#00f2fe]' : 'text-neutral-400 hover:text-[#00f2fe]/70'}`}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'looking_for' ? 'text-[#00f2fe]' : 'text-gray-500 dark:text-neutral-400 hover:text-[#00f2fe]/70'}`}
                         >
-                          {selectedPostType === 'looking_for' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-[#00f2fe]/15 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                          {selectedPostType === 'looking_for' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-white shadow-none dark:shadow-none dark:bg-[#00f2fe]/15 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
                           <span className="relative z-10 flex items-center gap-1.5"><Handshake className="w-3.5 h-3.5" /> Collab</span>
                         </button>
                         <button
                           onClick={() => setSelectedPostType('build_log')}
-                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'build_log' ? 'text-[#D4F842]' : 'text-neutral-400 hover:text-[#D4F842]/70'}`}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'build_log' ? 'text-[#D4F842]' : 'text-gray-500 dark:text-neutral-400 hover:text-[#D4F842]/70'}`}
                         >
-                          {selectedPostType === 'build_log' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-[#D4F842]/15 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
+                          {selectedPostType === 'build_log' && <motion.div layoutId="composerPostType" className="absolute inset-0 bg-white shadow-none dark:shadow-none dark:bg-[#D4F842]/15 rounded-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
                           <span className="relative z-10 flex items-center gap-1.5"><Trophy className="w-3.5 h-3.5" /> Milestone</span>
                         </button>
                       </div>
@@ -625,23 +625,23 @@ export default function DashboardHomePage() {
                         <div className="relative">
                           <button
                             onClick={(e) => { e.stopPropagation(); setShowVisibilityMenu(!showVisibilityMenu); setShowProjectMenu(false); }}
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white/5 text-[11px] text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium border-none bg-transparent"
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white dark:bg-white/5 text-[11px] text-gray-500 dark:text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium border-none bg-transparent"
                           >
                             {postVisibility === 'public' ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                             <span>{postVisibility === 'public' ? 'Public' : 'Collabs'}</span>
                             <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
                           {showVisibilityMenu && (
-                            <div className="absolute top-full right-0 mt-1 w-36 bg-[#0a0a0a] border border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                            <div className="absolute top-full right-0 mt-1 w-36 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
                               <button
                                 onClick={() => { setPostVisibility('public'); setShowVisibilityMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors flex items-center gap-2 text-neutral-300 hover:text-white bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white bg-transparent border-none cursor-pointer"
                               >
                                 <Globe className="w-3 h-3" /> Public Feed
                               </button>
                               <button
                                 onClick={() => { setPostVisibility('collabs'); setShowVisibilityMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors flex items-center gap-2 text-neutral-300 hover:text-white bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white bg-transparent border-none cursor-pointer"
                               >
                                 <Lock className="w-3 h-3 text-amber-500" /> Collabs Only
                               </button>
@@ -653,30 +653,30 @@ export default function DashboardHomePage() {
                         <div className="relative">
                           <button
                             onClick={(e) => { e.stopPropagation(); setShowProjectMenu(!showProjectMenu); setShowVisibilityMenu(false); }}
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white/5 text-[11px] text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium border-none bg-transparent"
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white dark:bg-white/5 text-[11px] text-gray-500 dark:text-neutral-400 hover:text-neutral-200 transition-all cursor-pointer font-medium border-none bg-transparent"
                           >
                             <Sparkles className="w-3 h-3 text-purple-400" />
                             <span>{selectedProject ? selectedProject : 'No Project'}</span>
                             <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
                           {showProjectMenu && (
-                            <div className="absolute top-full right-0 mt-1 w-44 bg-[#0a0a0a] border border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                            <div className="absolute top-full right-0 mt-1 w-44 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
                               <button
                                 onClick={() => { setSelectedProject(null); setShowProjectMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors text-neutral-400 hover:text-white bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white bg-transparent border-none cursor-pointer"
                               >
                                 None (General Post)
                               </button>
                               <button
                                 onClick={() => { setSelectedProject('CollabSphere'); setShowProjectMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors text-neutral-300 hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
                               >
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                                 CollabSphere
                               </button>
                               <button
                                 onClick={() => { setSelectedProject('SaaS Dashboard'); setShowProjectMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white/5 transition-colors text-neutral-300 hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
                               >
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 SaaS Dashboard
@@ -692,7 +692,7 @@ export default function DashboardHomePage() {
                       <img
                         src={avatarSrc}
                         alt="avatar"
-                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/10"
+                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-gray-200 dark:border-white/10"
                         referrerPolicy="no-referrer"
                       />
                       <div className="flex-1 min-w-0">
@@ -709,7 +709,7 @@ export default function DashboardHomePage() {
                                 ? "What milestone did you unlock? (e.g. launched v1.0)..."
                                 : "What are you shipping?"
                           }
-                          className="w-full bg-transparent text-white text-[16px] sm:text-[17px] placeholder-neutral-400 outline-none resize-none pt-1 pb-1 border-none focus:ring-0 leading-relaxed font-sans transition-all"
+                          className="w-full bg-transparent text-black dark:text-white text-[16px] sm:text-[17px] placeholder-neutral-400 outline-none resize-none pt-1 pb-1 border-none focus:ring-0 leading-relaxed font-sans transition-all"
                           style={{ minHeight: '40px' }}
                         />
                       </div>
@@ -747,7 +747,7 @@ export default function DashboardHomePage() {
                     )}
 
                     {audioBlob && (
-                      <div className="flex items-center justify-between gap-3 bg-neutral-900 border border-white/10 px-3 py-2 rounded-xl mt-2 ml-13">
+                      <div className="flex items-center justify-between gap-3 bg-neutral-900 border border-gray-200 dark:border-white/10 px-3 py-2 rounded-xl mt-2 ml-13">
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
@@ -766,12 +766,12 @@ export default function DashboardHomePage() {
                           >
                             {isPlayingAudio ? <Pause className="w-3.5 h-3.5 fill-black" /> : <Play className="w-3.5 h-3.5 fill-black ml-0.5" />}
                           </button>
-                          <span className="text-[12px] font-medium text-neutral-300">Voice devlog attached</span>
+                          <span className="text-[12px] font-medium text-gray-600 dark:text-neutral-300">Voice devlog attached</span>
                         </div>
                         <button
                           type="button"
                           onClick={() => { setAudioBlob(null); setIsPlayingAudio(false); }}
-                          className="w-7 h-7 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 flex items-center justify-center transition-all cursor-pointer border-none bg-transparent"
+                          className="w-7 h-7 rounded-lg text-gray-400 dark:text-neutral-500 hover:text-red-400 hover:bg-red-500/10 flex items-center justify-center transition-all cursor-pointer border-none bg-transparent"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -792,7 +792,7 @@ export default function DashboardHomePage() {
                               setStackTags(trimmedStack ? `${trimmedStack} ${tag}` : tag);
                             }
                           }}
-                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 px-2.5 py-1 rounded-full transition-all cursor-pointer"
+                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 hover:border-gray-200 dark:border-white/20 px-2.5 py-1 rounded-full transition-all cursor-pointer"
                         >
                           #{tag}
                         </button>
@@ -803,27 +803,27 @@ export default function DashboardHomePage() {
                     <div className="flex items-center justify-between gap-2 mt-2 sm:mt-3 ml-13">
                       {/* Left: Stack tags input + Media Buttons */}
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
                           <Image className="w-4 h-4" />
                         </button>
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleRecording(); }}
-                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-neutral-400 hover:text-white hover:bg-white/10"}`}
+                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10"}`}
                           title="Record Voice"
                         >
                           <Mic className={`w-4 h-4 ${isRecording ? "animate-pulse" : ""}`} />
                         </button>
 
-                        <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+                        <div className="w-[1px] h-4 bg-black/10 dark:bg-white/10 mx-1"></div>
 
-                        <div className="flex items-center bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-neutral-300 font-mono text-[12px] focus-within:border-white/30 focus-within:bg-white/10 transition-all">
+                        <div className="flex items-center bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-2 py-1 text-gray-600 dark:text-neutral-300 font-mono text-[12px] focus-within:border-gray-200 dark:border-white/30 focus-within:bg-black/10 dark:bg-white/10 transition-all">
                           <span className="mr-1 opacity-50">#</span>
                           <input
                             type="text"
                             value={stackTags}
                             onChange={(e) => setStackTags(e.target.value)}
                             placeholder="stack"
-                            className="w-[120px] bg-transparent border-none outline-none focus:ring-0 p-0 placeholder-neutral-500 text-white"
+                            className="w-[120px] bg-transparent border-none outline-none focus:ring-0 p-0 placeholder-neutral-500 text-black dark:text-white"
                           />
                         </div>
                       </div>
@@ -851,7 +851,7 @@ export default function DashboardHomePage() {
                           onClick={submitPost}
                           disabled={(!content.trim() && !audioBlob) || isPosting}
                           className={`relative group/submit rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[13px] sm:text-[14px] transition-all active:scale-95 cursor-pointer border-none ml-auto ${(!content.trim() && !audioBlob) || isPosting
-                            ? "bg-white/20 text-white/50 cursor-not-allowed pointer-events-none"
+                            ? "bg-white/20 text-black dark:text-white/50 cursor-not-allowed pointer-events-none"
                             : theme.button
                             }`}
                         >
@@ -878,10 +878,10 @@ export default function DashboardHomePage() {
               <div className="flex flex-col pb-[80px] md:pb-24 px-3 sm:px-4 mt-0 pt-[12px] relative">
                 {filteredPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
-                    <div className="w-14 h-14 rounded-2xl bg-neutral-900 border border-white/5 flex items-center justify-center mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-neutral-900 border border-gray-200 dark:border-white/5 flex items-center justify-center mb-4">
                       <Search className="w-6 h-6 text-neutral-600" />
                     </div>
-                    <h3 className="text-[15px] font-semibold text-white mb-1">No posts yet</h3>
+                    <h3 className="text-[15px] font-semibold text-black dark:text-white mb-1">No posts yet</h3>
                     <p className="text-[13px] text-neutral-600">Be the first to ship something today.</p>
                   </div>
                 ) : (
@@ -910,27 +910,27 @@ export default function DashboardHomePage() {
 
         {/* Mobile Bottom Tab Bar */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 h-[64px] bg-[rgba(0,0,0,0.95)] backdrop-blur-[20px] border-t border-[#1a1a1a] z-50 flex justify-around items-center px-2 pb-1">
-          <button onClick={() => router.push('/dashboard/home')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-white bg-transparent border-none">
+          <button onClick={() => router.push('/dashboard/home')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-black dark:text-white bg-transparent border-none">
             <LayoutDashboard className="w-[22px] h-[22px] mb-1" />
-            <span className="text-[10px] text-white">Home</span>
+            <span className="text-[10px] text-black dark:text-white">Home</span>
           </button>
-          <button onClick={() => router.push('/explore')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none group">
-            <Telescope className="w-[22px] h-[22px] mb-1 group-hover:text-white" />
-            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Explore</span>
+          <button onClick={() => router.push('/explore')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-black dark:hover:text-white bg-transparent border-none group">
+            <Telescope className="w-[22px] h-[22px] mb-1 group-hover:text-black dark:hover:text-white" />
+            <span className="text-[10px] text-gray-500 group-hover:text-black dark:hover:text-white transition-colors">Explore</span>
           </button>
           <button onClick={() => router.push('/dashboard/home?compose=true')} className="flex flex-col items-center justify-center w-14 h-14 cursor-pointer transition-transform active:scale-95 border-none bg-transparent group">
             <div className="flex items-center justify-center w-8 h-8 bg-white text-black rounded-full mb-1 shadow-[0_0_10px_rgba(255,255,255,0.2)] group-hover:scale-105 transition-transform">
               <Pencil className="w-[18px] h-[18px] fill-current" />
             </div>
-            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Post</span>
+            <span className="text-[10px] text-gray-500 group-hover:text-black dark:hover:text-white transition-colors">Post</span>
           </button>
-          <button onClick={() => router.push('/messages')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none group">
-            <MessageSquare className="w-[22px] h-[22px] mb-1 group-hover:text-white" />
-            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Chat</span>
+          <button onClick={() => router.push('/messages')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-black dark:hover:text-white bg-transparent border-none group">
+            <MessageSquare className="w-[22px] h-[22px] mb-1 group-hover:text-black dark:hover:text-white" />
+            <span className="text-[10px] text-gray-500 group-hover:text-black dark:hover:text-white transition-colors">Chat</span>
           </button>
-          <button onClick={() => router.push('/profile')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-white bg-transparent border-none group">
-            <User className="w-[22px] h-[22px] mb-1 group-hover:text-white" />
-            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors">Profile</span>
+          <button onClick={() => router.push('/profile')} className="flex flex-col items-center justify-center w-14 h-14 transition-colors cursor-pointer text-neutral-600 hover:text-black dark:hover:text-white bg-transparent border-none group">
+            <User className="w-[22px] h-[22px] mb-1 group-hover:text-black dark:hover:text-white" />
+            <span className="text-[10px] text-gray-500 group-hover:text-black dark:hover:text-white transition-colors">Profile</span>
           </button>
         </div>
 

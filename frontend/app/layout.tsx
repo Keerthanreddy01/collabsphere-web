@@ -4,6 +4,8 @@ import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/goo
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import BottomTabBar from '@/components/BottomTabBar'
+import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const instrumentSans = Instrument_Sans({ 
   subsets: ["latin"],
@@ -37,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{__html: `
           .no-scrollbar::-webkit-scrollbar,
@@ -52,9 +54,12 @@ export default function RootLayout({
         `}} />
       </head>
       <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        {children}
-        <BottomTabBar />
-        <Analytics />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeToggle />
+          {children}
+          <BottomTabBar />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   )
