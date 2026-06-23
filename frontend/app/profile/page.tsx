@@ -45,7 +45,7 @@ export default function ProfilePage() {
   }, [user]);
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">Loading...</div>;
+    return <div className="min-h-screen bg-white dark:bg-[#050505] flex items-center justify-center text-black dark:text-white">Loading...</div>;
   }
 
   const containerVariants: any = {
@@ -67,12 +67,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex justify-center min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden relative">
+    <div className="flex justify-center min-h-screen bg-white dark:bg-[#050505] text-black dark:text-white selection:bg-blue-500/30 selection:text-black dark:text-white font-inter overflow-x-hidden relative">
       <div className="flex w-full max-w-[1250px] min-h-screen relative">
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
         
         <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
-          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-[100px] md:pb-32 border-r border-l border-white/[0.06] bg-[#050505] min-h-screen">
+          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-[100px] md:pb-32 border-r border-l border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#050505] min-h-screen">
           
           {/* Top Actions */}
           <motion.div 
@@ -82,7 +82,7 @@ export default function ProfilePage() {
           >
             <button 
               onClick={() => router.push("/settings")}
-              className="p-2.5 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.06] rounded-full transition-colors text-white/70 hover:text-white"
+              className="p-2.5 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] hover:bg-white/[0.06] rounded-full transition-colors text-black dark:text-white/70 hover:text-black dark:text-white"
             >
               <Settings className="w-5 h-5" />
             </button>
@@ -95,7 +95,7 @@ export default function ProfilePage() {
             className="w-full"
           >
             {/* Profile Cover & Header */}
-            <motion.div variants={itemVariants} className="relative rounded-[24px] bg-white/[0.02] border border-white/[0.06] backdrop-blur-[20px] overflow-hidden">
+            <motion.div variants={itemVariants} className="relative rounded-[24px] bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] backdrop-blur-[20px] overflow-hidden">
               
               {/* Premium Banner */}
               <div className="absolute top-0 left-0 right-0 h-[160px] overflow-hidden">
@@ -112,7 +112,7 @@ export default function ProfilePage() {
               <div className="relative pt-[100px] px-6 pb-6 md:px-10 md:pb-8 flex flex-col">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
                   {/* Avatar */}
-                  <div className="w-[120px] h-[120px] rounded-full border-4 border-[#0a0a0a] overflow-hidden bg-[#111] shadow-xl shrink-0 relative z-10">
+                  <div className="w-[120px] h-[120px] rounded-full border-4 border-[#0a0a0a] overflow-hidden bg-gray-100 dark:bg-[#111] shadow-xl shrink-0 relative z-10">
                     <img 
                       src={profile?.avatar_url || user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
                       alt="Avatar" 
@@ -122,10 +122,10 @@ export default function ProfilePage() {
                   
                   {/* Action Buttons */}
                   <div className="flex items-center gap-3 self-start md:self-end">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.1] rounded-[12px] text-[13px] font-semibold transition-all">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] border border-gray-200 dark:border-white/[0.1] hover:bg-white/[0.1] rounded-[12px] text-[13px] font-semibold transition-all">
                       <Edit3 className="w-4 h-4" /> Edit Profile
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-[12px] text-[13px] font-bold transition-all">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-white text-white dark:text-black hover:bg-gray-200 rounded-[12px] text-[13px] font-bold transition-all">
                       <Share className="w-4 h-4" /> Share Profile
                     </button>
                   </div>
@@ -133,7 +133,7 @@ export default function ProfilePage() {
 
                 {/* Info */}
                 <div className="mb-8">
-                  <h1 className="text-[28px] font-bold tracking-tight text-white flex items-center gap-2 mb-1">
+                  <h1 className="text-[28px] font-bold tracking-tight text-black dark:text-white flex items-center gap-2 mb-1">
                     {profile?.display_name || user.displayName || "Builder"}
                     <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
                       <svg className="w-3 h-3 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -144,34 +144,34 @@ export default function ProfilePage() {
                   </p>
 
                   <div className="space-y-2 mb-6">
-                    <div className="flex items-center gap-2 text-[14px] text-white/90">
+                    <div className="flex items-center gap-2 text-[14px] text-black dark:text-white/90">
                       <span className="w-5 text-center">🚀</span>
-                      <span>Building <span className="font-semibold text-white">CollabSphere</span></span>
+                      <span>Building <span className="font-semibold text-black dark:text-white">CollabSphere</span></span>
                     </div>
-                    <div className="flex items-center gap-2 text-[14px] text-white/90">
+                    <div className="flex items-center gap-2 text-[14px] text-black dark:text-white/90">
                       <span className="w-5 text-center text-[#777]"><Briefcase className="w-4 h-4 inline-block" /></span>
                       <span>{profile?.role || "Full Stack Developer"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[14px] text-white/90">
+                    <div className="flex items-center gap-2 text-[14px] text-black dark:text-white/90">
                       <span className="w-5 text-center text-[#777]"><MapPin className="w-4 h-4 inline-block" /></span>
                       <span>{profile?.location || "Hyderabad, India"}</span>
                     </div>
                   </div>
 
-                  <p className="text-[15px] leading-relaxed text-white/80 max-w-2xl">
+                  <p className="text-[15px] leading-relaxed text-black dark:text-white/80 max-w-2xl">
                     {profile?.bio || "No bio yet — tell builders what you're working on."}
                   </p>
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center gap-4 border-t border-white/[0.08] pt-6">
+                <div className="flex items-center gap-4 border-t border-gray-200 dark:border-white/[0.08] pt-6">
                   {[
                     { label: "Projects", value: stats.projects || profile?.projects_count || 0 },
                     { label: "Followers", value: profile?.followers?.length || 0 },
                     { label: "Following", value: profile?.following?.length || 0 }
                   ].map((stat, i) => (
-                    <div key={i} className="flex-1 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all rounded-[16px] p-4 cursor-pointer group">
-                      <div className="text-[24px] font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">{stat.value}</div>
+                    <div key={i} className="flex-1 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] hover:bg-white/[0.04] hover:border-gray-200 dark:border-white/[0.1] transition-all rounded-[16px] p-4 cursor-pointer group">
+                      <div className="text-[24px] font-bold text-black dark:text-white mb-1 group-hover:text-blue-400 transition-colors">{stat.value}</div>
                       <div className="text-[13px] font-medium text-[#A8A8A8]">{stat.label}</div>
                     </div>
                   ))}
@@ -180,13 +180,13 @@ export default function ProfilePage() {
             </motion.div>
 
             {/* Tabs */}
-            <motion.div variants={itemVariants} className="mt-8 mb-6 border-b border-white/[0.08] flex items-center gap-6">
+            <motion.div variants={itemVariants} className="mt-8 mb-6 border-b border-gray-200 dark:border-white/[0.08] flex items-center gap-6">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`relative pb-4 text-[14px] font-semibold transition-colors ${
-                    activeTab === tab ? "text-white" : "text-[#777] hover:text-[#A8A8A8]"
+                    activeTab === tab ? "text-black dark:text-white" : "text-[#777] hover:text-[#A8A8A8]"
                   }`}
                 >
                   {tab}
@@ -202,15 +202,15 @@ export default function ProfilePage() {
             </motion.div>
 
             {/* Content Area */}
-            <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/[0.06] rounded-[24px] p-12 backdrop-blur-[20px] flex flex-col items-center justify-center text-center">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-                <Rocket className="w-8 h-8 text-white/40" />
+            <motion.div variants={itemVariants} className="bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-[24px] p-12 backdrop-blur-[20px] flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center mb-6">
+                <Rocket className="w-8 h-8 text-black dark:text-white/40" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">🚀 Start building</h3>
+              <h3 className="text-xl font-bold text-black dark:text-white mb-2">🚀 Start building</h3>
               <p className="text-[#A8A8A8] text-[14px] leading-relaxed max-w-sm mb-6">
                 Share your first project, post an update, or showcase your work to the community.
               </p>
-              <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-[14px] font-bold transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+              <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-black dark:text-white rounded-full text-[14px] font-bold transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                 <Plus className="w-4 h-4" /> Create New
               </button>
             </motion.div>

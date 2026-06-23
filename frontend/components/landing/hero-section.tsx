@@ -124,7 +124,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-black">
+    <section className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-white dark:bg-black">
       {/* Background video */}
       <div className="absolute inset-0 z-0">
         <video
@@ -147,7 +147,7 @@ export function HeroSection() {
         {[...Array(8)].map((_, i) => (
           <div
             key={`h-${i}`}
-            className="absolute h-px bg-white/10"
+            className="absolute h-px bg-black/10 dark:bg-white/10"
             style={{
               top: `${12.5 * (i + 1)}%`,
               left: 0,
@@ -158,7 +158,7 @@ export function HeroSection() {
         {[...Array(12)].map((_, i) => (
           <div
             key={`v-${i}`}
-            className="absolute w-px bg-white/10"
+            className="absolute w-px bg-black/10 dark:bg-white/10"
             style={{
               left: `${8.33 * (i + 1)}%`,
               top: 0,
@@ -176,7 +176,7 @@ export function HeroSection() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <span className="inline-flex items-center gap-3 text-sm font-mono text-white/60">
+          <span className="inline-flex items-center gap-3 text-sm font-mono text-black dark:text-white/60">
             <span className="w-8 h-px bg-white/30" />
             BUILD IN PUBLIC
           </span>
@@ -185,7 +185,7 @@ export function HeroSection() {
         {/* Main headline */}
         <div className="mb-12">
           <h1 
-            className={`text-left text-[clamp(2rem,6vw,7rem)] font-display leading-[0.92] tracking-tight text-white transition-all duration-1000 ${
+            className={`text-left text-[clamp(2rem,6vw,7rem)] font-display leading-[0.92] tracking-tight text-black dark:text-white transition-all duration-1000 ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
@@ -225,13 +225,13 @@ export function HeroSection() {
           ].map((stat) => (
             <div key={stat.label} className="flex flex-col gap-2">
               <span
-                className={`text-3xl lg:text-4xl font-display text-white tabular-nums transition-all duration-500 ${
+                className={`text-3xl lg:text-4xl font-display text-black dark:text-white tabular-nums transition-all duration-500 ${
                   isLoading ? "opacity-40" : "opacity-100"
                 }`}
               >
                 {stat.value}
               </span>
-              <span className="text-xs text-white/50 leading-tight">
+              <span className="text-xs text-black dark:text-white/50 leading-tight">
                 {stat.label}
               </span>
             </div>

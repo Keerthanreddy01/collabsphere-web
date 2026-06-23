@@ -38,7 +38,7 @@ const FOLDER_THEMES = [
     svgColor: 'text-[#FFAE42] dark:text-[#D97706]',
     shadowColor: 'drop-shadow-[0_-8px_20px_rgba(251,191,36,0.2)]',
     subtitle: 'You\'re Doing Great!',
-    textColor: 'text-white',
+    textColor: 'text-black dark:text-white',
     avatarRing: 'ring-amber-200',
   },
   {
@@ -46,7 +46,7 @@ const FOLDER_THEMES = [
     svgColor: 'text-[#2563EB] dark:text-[#1D4ED8]',
     shadowColor: 'drop-shadow-[0_-8px_20px_rgba(37,99,235,0.2)]',
     subtitle: 'Everything is Here',
-    textColor: 'text-white',
+    textColor: 'text-black dark:text-white',
     avatarRing: 'ring-blue-200',
   },
   {
@@ -54,7 +54,7 @@ const FOLDER_THEMES = [
     svgColor: 'text-[#A855F7] dark:text-[#7E22CE]',
     shadowColor: 'drop-shadow-[0_-8px_20px_rgba(168,85,247,0.2)]',
     subtitle: 'Work in Progress',
-    textColor: 'text-white',
+    textColor: 'text-black dark:text-white',
     avatarRing: 'ring-purple-200',
   },
   {
@@ -62,7 +62,7 @@ const FOLDER_THEMES = [
     svgColor: 'text-[#10B981] dark:text-[#047857]',
     shadowColor: 'drop-shadow-[0_-8px_20px_rgba(16,185,129,0.2)]',
     subtitle: 'Documentation & Code',
-    textColor: 'text-white',
+    textColor: 'text-black dark:text-white',
     avatarRing: 'ring-emerald-200',
   },
 ]
@@ -189,7 +189,7 @@ export function ProjectCard({
 
           {/* Folder Divider & Footer */}
           <div className="mt-4">
-            <div className="border-t border-white/20 dark:border-slate-950/20 pb-3" />
+            <div className="border-t border-gray-200 dark:border-white/20 dark:border-slate-950/20 pb-3" />
             
             <div className="flex items-center justify-between gap-3">
               {/* Creator details inside folder pocket */}
@@ -214,7 +214,7 @@ export function ProjectCard({
                     href={liveUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex size-7 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-md transition-all active:scale-90"
+                    className="inline-flex size-7 items-center justify-center rounded-full bg-black/20 dark:bg-white/20 hover:bg-white/30 text-black dark:text-white backdrop-blur-md transition-all active:scale-90"
                     title="Live Demo"
                   >
                     <ExternalLink className="size-3.5 stroke-[2.5px]" />
@@ -225,7 +225,7 @@ export function ProjectCard({
                     href={githubUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex size-7 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-md transition-all active:scale-90"
+                    className="inline-flex size-7 items-center justify-center rounded-full bg-black/20 dark:bg-white/20 hover:bg-white/30 text-black dark:text-white backdrop-blur-md transition-all active:scale-90"
                     title="GitHub Code"
                   >
                     <Github className="size-3.5" />

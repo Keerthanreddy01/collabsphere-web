@@ -103,8 +103,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                   className={`
                     relative flex items-center h-[52px] w-full px-4 rounded-[16px] transition-colors duration-200 cursor-pointer overflow-hidden
                     ${isActive 
-                      ? 'bg-black text-white dark:bg-gradient-to-b dark:from-white/[0.12] dark:to-transparent border border-transparent dark:border-white/[0.08] dark:border-t-white/[0.25] shadow-[0_4px_14px_rgba(0,0,0,0.2)] dark:shadow-inner' 
-                      : 'bg-transparent border border-transparent hover:bg-gray-100 hover:border-transparent dark:hover:bg-white/[0.03] dark:hover:border-white/[0.05]'
+                      ? 'bg-white dark:bg-black text-black dark:text-white dark:bg-gradient-to-b dark:from-white/[0.12] dark:to-transparent border border-transparent dark:border-white/[0.08] dark:border-t-white/[0.25] shadow-[0_4px_14px_rgba(0,0,0,0.2)] dark:shadow-inner' 
+                      : 'bg-transparent border border-transparent hover:bg-gray-100 hover:border-transparent dark:hover:bg-white/[0.03] dark:hover:border-gray-200 dark:border-white/[0.05]'
                     }
                   `}
                 >
@@ -117,7 +117,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                     <Icon
                       className={`
                         shrink-0 transition-colors duration-200
-                        ${isActive ? 'text-white drop-shadow-md dark:text-white' : 'text-gray-700 dark:text-neutral-400 group-hover/nav:text-black dark:group-hover/nav:text-neutral-200'}
+                        ${isActive ? 'text-black dark:text-white drop-shadow-md dark:text-white' : 'text-gray-700 dark:text-neutral-400 group-hover/nav:text-white dark:text-black dark:group-hover/nav:text-neutral-200'}
                       `}
                       size={22}
                       strokeWidth={isActive ? 2.5 : 2.2}
@@ -131,7 +131,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                           exit={{ opacity: 0, x: -10 }}
                           className={`
                             ml-3 text-[15px] whitespace-nowrap
-                            ${isActive ? "font-bold text-white" : "font-semibold text-gray-700 dark:text-neutral-300"}
+                            ${isActive ? "font-bold text-black dark:text-white" : "font-semibold text-gray-700 dark:text-neutral-300"}
                           `}
                         >
                           {item.label}
@@ -143,7 +143,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
 
                 {/* Tooltip for collapsed state */}
                 {!isExpanded && !isMobile && (
-                  <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-black text-sm font-bold rounded-lg opacity-0 pointer-events-none group-hover/nav:opacity-100 whitespace-nowrap transition-all duration-200 shadow-xl z-50">
+                  <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 dark:bg-white text-black dark:text-white dark:text-black text-sm font-bold rounded-lg opacity-0 pointer-events-none group-hover/nav:opacity-100 whitespace-nowrap transition-all duration-200 shadow-xl z-50">
                     {item.label}
                   </div>
                 )}

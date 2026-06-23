@@ -68,7 +68,7 @@ export default function PreRegisterMobilePromo() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-[2px] pb-0 pt-20"
+          className="fixed inset-0 z-[100] flex items-end justify-center bg-white dark:bg-black/60 backdrop-blur-[2px] pb-0 pt-20"
           onClick={() => setShowPromo(false)} // Dismiss on backdrop tap
           role="dialog"
           aria-modal="true"
@@ -85,14 +85,14 @@ export default function PreRegisterMobilePromo() {
             {/* Centered Close Button */}
             <button
               onClick={() => setShowPromo(false)}
-              className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-black transition-transform active:scale-95 cursor-pointer outline-none z-20"
+              className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-white dark:text-black transition-transform active:scale-95 cursor-pointer outline-none z-20"
               aria-label="Close promotional popup"
             >
               <X className="w-6 h-6 stroke-[2.5]" />
             </button>
 
             {/* Promotional Image Container - Full width at bottom */}
-            <div className="w-full bg-[#0a0a0a] border-t border-white/10 rounded-t-[32px] overflow-hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
+            <div className="w-full bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/10 rounded-t-[32px] overflow-hidden shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
               <Link href="/pre-register" onClick={() => setShowPromo(false)} className="block w-full h-full">
                 <img
                   src="/poster.jpeg"

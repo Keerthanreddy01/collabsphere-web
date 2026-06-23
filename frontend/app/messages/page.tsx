@@ -140,17 +140,17 @@ export default function MessagesPage() {
   }
 
   const BlueBadge = () => (
-    <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[#1d9bf0] text-white shrink-0 ml-1">
+    <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[#1d9bf0] text-black dark:text-white shrink-0 ml-1">
       <Check className="w-2.5 h-2.5 stroke-[4]" />
     </span>
   );
 
   if (loading || !user) {
-    return <div className="flex h-screen bg-black" />;
+    return <div className="flex h-screen bg-white dark:bg-black" />;
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-[#1d9bf0]/25 selection:text-white relative">
+    <div className="flex justify-center min-h-screen bg-[#000000] text-black dark:text-white font-sans overflow-hidden selection:bg-[#1d9bf0]/25 selection:text-black dark:text-white relative">
       <div className="flex w-full max-w-[1250px] h-screen relative">
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
         
@@ -170,21 +170,21 @@ export default function MessagesPage() {
             {/* Header of left sidebar (X style) */}
             <div className="flex items-center justify-between px-4 py-3 bg-[#000000] border-b border-[#2f3336]">
               <div className="flex items-center gap-3">
-                <h1 className="text-[20px] font-extrabold text-white tracking-tight">Chat</h1>
+                <h1 className="text-[20px] font-extrabold text-black dark:text-white tracking-tight">Chat</h1>
                 {/* All Filter Pill (X style) */}
-                <div className="flex items-center gap-1.5 px-4 py-1 border border-[#536471] rounded-full text-[14px] font-bold text-white hover:bg-white/10 cursor-pointer transition-colors bg-transparent">
+                <div className="flex items-center gap-1.5 px-4 py-1 border border-[#536471] rounded-full text-[14px] font-bold text-black dark:text-white hover:bg-black/10 dark:bg-white/10 cursor-pointer transition-colors bg-transparent">
                   <span>All</span>
                   <ChevronDown className="w-4 h-4 text-[#71767b]" />
                 </div>
               </div>
               
               <div className="flex items-center gap-1">
-                <button className="p-2 hover:bg-[#16181c] rounded-full transition-colors text-white" title="Filters">
+                <button className="p-2 hover:bg-[#16181c] rounded-full transition-colors text-black dark:text-white" title="Filters">
                   <SlidersHorizontal className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={() => setIsComposeOpen(true)}
-                  className="p-2 hover:bg-[#16181c] rounded-full transition-colors text-white" 
+                  className="p-2 hover:bg-[#16181c] rounded-full transition-colors text-black dark:text-white" 
                   title="New message"
                 >
                   <Plus className="w-5 h-5" />
@@ -199,7 +199,7 @@ export default function MessagesPage() {
                 placeholder="Search Direct Messages"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#202327] rounded-full h-11 pl-11 pr-4 text-[15px] text-white placeholder-[#71767b] outline-none border-none focus:ring-1 focus:ring-[#1d9bf0]/50"
+                className="w-full bg-[#202327] rounded-full h-11 pl-11 pr-4 text-[15px] text-black dark:text-white placeholder-[#71767b] outline-none border-none focus:ring-1 focus:ring-[#1d9bf0]/50"
               />
               <Search className="w-5 h-5 text-[#71767b] absolute left-8 top-5" />
             </div>
@@ -234,7 +234,7 @@ export default function MessagesPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center min-w-0">
-                          <span className="text-[15px] font-bold text-white truncate hover:underline tracking-tight">
+                          <span className="text-[15px] font-bold text-black dark:text-white truncate hover:underline tracking-tight">
                             {otherProfile.full_name || otherProfile.username}
                           </span>
                           <BlueBadge />
@@ -246,12 +246,12 @@ export default function MessagesPage() {
                       
                       <div className="flex items-center justify-between gap-2 mt-0.5">
                         <span className={`text-[15px] truncate leading-normal ${
-                          unreadCount > 0 ? 'text-white font-bold' : 'text-[#71767b]'
+                          unreadCount > 0 ? 'text-black dark:text-white font-bold' : 'text-[#71767b]'
                         }`}>
                           {chat.lastMessage || "Started a new conversation..."}
                         </span>
                         {unreadCount > 0 && (
-                          <span className="h-4 min-w-4 px-1 rounded-full bg-[#1d9bf0] text-white flex items-center justify-center text-[9px] font-black shrink-0">
+                          <span className="h-4 min-w-4 px-1 rounded-full bg-[#1d9bf0] text-black dark:text-white flex items-center justify-center text-[9px] font-black shrink-0">
                             {unreadCount}
                           </span>
                         )}
@@ -267,7 +267,7 @@ export default function MessagesPage() {
           <div className={`flex-1 border-r border-[#2f3336] flex-col h-full bg-[#000000] relative ${!activeChatId ? 'hidden md:flex' : 'flex'}`}>
             {!activeChatId ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 pb-20 select-none z-10 bg-[#000000]">
-                <h2 className="text-2xl font-extrabold text-white tracking-tight mb-2">Select a message</h2>
+                <h2 className="text-2xl font-extrabold text-black dark:text-white tracking-tight mb-2">Select a message</h2>
                 <p className="text-[15px] text-[#71767b] max-w-sm leading-normal">
                   Choose from your existing conversations, start a new one, or just keep swimming.
                 </p>
@@ -290,7 +290,7 @@ export default function MessagesPage() {
                   <div className="flex items-center gap-3 min-w-0">
                     <button 
                       onClick={() => setActiveChatId(null)} 
-                      className="md:hidden p-2 hover:bg-[#16181c] rounded-full transition-colors text-white mr-1"
+                      className="md:hidden p-2 hover:bg-[#16181c] rounded-full transition-colors text-black dark:text-white mr-1"
                     >
                       <ArrowLeft className="w-5 h-5" />
                     </button>
@@ -300,7 +300,7 @@ export default function MessagesPage() {
                       alt=""
                     />
                     <div className="flex items-center min-w-0">
-                      <span className="text-[15px] font-bold text-white truncate hover:underline tracking-tight">
+                      <span className="text-[15px] font-bold text-black dark:text-white truncate hover:underline tracking-tight">
                         {activeRecipientProfile?.full_name || activeRecipientProfile?.username}
                       </span>
                       <BlueBadge />
@@ -340,8 +340,8 @@ export default function MessagesPage() {
                         {/* Message Bubble (X style flat bubbles) */}
                         <div className={`px-4 py-2.5 text-[15px] leading-normal break-words transition-all ${
                           isSentByMe 
-                            ? 'bg-[#1d9bf0] text-white rounded-[18px]' 
-                            : 'bg-[#1e2328] text-white rounded-[18px]'
+                            ? 'bg-[#1d9bf0] text-black dark:text-white rounded-[18px]' 
+                            : 'bg-[#1e2328] text-black dark:text-white rounded-[18px]'
                         }`}>
                           {msg.content}
                         </div>
@@ -394,7 +394,7 @@ export default function MessagesPage() {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Start a new message"
-                        className="bg-transparent text-[15px] text-white placeholder-[#71767b] outline-none w-full border-none focus:ring-0"
+                        className="bg-transparent text-[15px] text-black dark:text-white placeholder-[#71767b] outline-none w-full border-none focus:ring-0"
                       />
                       <button type="button" className="text-[#1d9bf0] hover:text-[#1a8cd8] p-1 rounded-full transition-colors shrink-0">
                         <Mic className="w-5 h-5" />
@@ -418,14 +418,14 @@ export default function MessagesPage() {
 
       {/* Compose Message Modal */}
       {isComposeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-black/60 backdrop-blur-xs p-4">
           <div className="bg-[#000000] border border-[#2f3336] w-full max-w-md rounded-2xl flex flex-col max-h-[80vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-[#2f3336]">
-              <h2 className="text-xl font-bold text-white">New Message</h2>
+              <h2 className="text-xl font-bold text-black dark:text-white">New Message</h2>
               <button 
                 onClick={() => setIsComposeOpen(false)}
-                className="text-white hover:bg-[#16181c] p-2 rounded-full transition-colors"
+                className="text-black dark:text-white hover:bg-[#16181c] p-2 rounded-full transition-colors"
               >
                 <XCircle className="w-6 h-6" />
               </button>
@@ -439,7 +439,7 @@ export default function MessagesPage() {
                   placeholder="Search people"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#202327] rounded-full py-2 pl-11 pr-4 text-[15px] text-white placeholder-[#71767b] outline-none border-none focus:ring-1 focus:ring-[#1d9bf0]/50"
+                  className="w-full bg-[#202327] rounded-full py-2 pl-11 pr-4 text-[15px] text-black dark:text-white placeholder-[#71767b] outline-none border-none focus:ring-1 focus:ring-[#1d9bf0]/50"
                 />
                 <Search className="w-4 h-4 text-[#71767b] absolute left-4 top-3.5" />
               </div>
@@ -479,7 +479,7 @@ export default function MessagesPage() {
                       alt=""
                     />
                     <div>
-                      <div className="font-bold text-white text-[15px]">{profile.full_name || profile.username}</div>
+                      <div className="font-bold text-black dark:text-white text-[15px]">{profile.full_name || profile.username}</div>
                       <div className="text-[13px] text-[#71767b]">@{profile.username || "builder"}</div>
                     </div>
                   </div>

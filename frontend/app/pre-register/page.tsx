@@ -118,11 +118,11 @@ function WaitlistContent() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="relative flex flex-col items-center"
           >
-            <div className="relative flex items-center bg-[#0d0d0d] rounded-full p-1 sm:p-2 pr-4 sm:pr-6 border border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)] transition-colors duration-500 hover:bg-[#111111] w-full max-w-[95vw] sm:max-w-none">
+            <div className="relative flex items-center bg-[#0d0d0d] rounded-full p-1 sm:p-2 pr-4 sm:pr-6 border border-gray-200 dark:border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)] transition-colors duration-500 hover:bg-gray-50 dark:bg-[#111111] w-full max-w-[95vw] sm:max-w-none">
               <button 
                 type="submit" 
                 disabled={loading}
-                className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 text-white text-[16px] sm:text-[19px] tracking-tight font-sans font-medium transition-opacity hover:opacity-70 disabled:opacity-50 flex-shrink-0 z-10"
+                className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 text-black dark:text-white text-[16px] sm:text-[19px] tracking-tight font-sans font-medium transition-opacity hover:opacity-70 disabled:opacity-50 flex-shrink-0 z-10"
               >
                 {loading ? <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" /> : <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.5]" />}
                 Join
@@ -130,7 +130,7 @@ function WaitlistContent() {
               
               <div className="relative flex items-center h-full group flex-1 min-w-0">
                 {/* The Glowing Divider */}
-                <div className={`w-[2px] h-8 transition-all duration-700 z-20 ${focused || email.length > 0 ? 'bg-white shadow-[0_0_15px_3px_rgba(255,255,255,0.6)]' : 'bg-white/20'}`} />
+                <div className={`w-[2px] h-8 transition-all duration-700 z-20 ${focused || email.length > 0 ? 'bg-white shadow-[0_0_15px_3px_rgba(255,255,255,0.6)]' : 'bg-black/20 dark:bg-white/20'}`} />
                 
                 {/* The Beam Effect - Dual Layer Soft Glow */}
                 <AnimatePresence>
@@ -190,7 +190,7 @@ function WaitlistContent() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
-                  className="bg-transparent border-none outline-none text-white text-[16px] sm:text-[19px] tracking-tight pl-4 sm:pl-6 w-full sm:w-[320px] placeholder-white/30 z-10 relative font-sans text-ellipsis overflow-hidden whitespace-nowrap" 
+                  className="bg-transparent border-none outline-none text-black dark:text-white text-[16px] sm:text-[19px] tracking-tight pl-4 sm:pl-6 w-full sm:w-[320px] placeholder-white/30 z-10 relative font-sans text-ellipsis overflow-hidden whitespace-nowrap" 
                   placeholder="Enter email address" 
                   required
                 />
@@ -239,9 +239,9 @@ function WaitlistContent() {
             initial={{ opacity: 0, filter: 'blur(10px)', scale: 0.95 }}
             animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center bg-[#0d0d0d] rounded-full p-2 pr-8 border border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)]"
+            className="flex items-center bg-[#0d0d0d] rounded-full p-2 pr-8 border border-gray-200 dark:border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)]"
           >
-            <div className="flex items-center gap-3 px-6 py-3 text-white text-[19px] tracking-tight font-sans font-medium">
+            <div className="flex items-center gap-3 px-6 py-3 text-black dark:text-white text-[19px] tracking-tight font-sans font-medium">
               <Check className="w-6 h-6 stroke-[1.5] text-[#10b981]" />
               Spot Secured
             </div>
@@ -274,7 +274,7 @@ function WaitlistContent() {
                 }}
               />
 
-              <div className="text-white/60 text-[19px] tracking-tight pl-6 z-10 relative font-sans">
+              <div className="text-black dark:text-white/60 text-[19px] tracking-tight pl-6 z-10 relative font-sans">
                 #{position.toLocaleString()}
               </div>
             </div>
@@ -287,7 +287,7 @@ function WaitlistContent() {
 
 export default function PreRegisterPage() {
   return (
-    <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden selection:bg-white/20 selection:text-white">
+    <div className="fixed inset-0 w-full h-full bg-white dark:bg-black text-black dark:text-white flex flex-col font-sans overflow-hidden selection:bg-black/20 dark:bg-white/20 selection:text-black dark:text-white">
       
       {/* Base Noise Layer */}
       <div 
@@ -318,8 +318,8 @@ export default function PreRegisterPage() {
         </Link>
         
         <div className="flex flex-col items-end text-right">
-          <span className="text-white/40 text-[11px] font-sans">Project</span>
-          <span className="text-white text-[13px] font-medium font-sans tracking-tight">CollabSphere</span>
+          <span className="text-black dark:text-white/40 text-[11px] font-sans">Project</span>
+          <span className="text-black dark:text-white text-[13px] font-medium font-sans tracking-tight">CollabSphere</span>
         </div>
       </header>
 
@@ -331,13 +331,13 @@ export default function PreRegisterPage() {
       {/* Footer */}
       <footer className="absolute bottom-0 w-full flex justify-between items-end px-8 py-8 z-30 pointer-events-auto">
         <div className="flex flex-col text-left">
-          <span className="text-white/40 text-[11px] font-sans">© CollabSphere,</span>
-          <span className="text-white/40 text-[11px] font-sans">All Rights Reserved</span>
+          <span className="text-black dark:text-white/40 text-[11px] font-sans">© CollabSphere,</span>
+          <span className="text-black dark:text-white/40 text-[11px] font-sans">All Rights Reserved</span>
         </div>
         
         <div className="flex flex-col items-end text-right">
-          <a href="#" className="text-white/40 text-[11px] font-sans hover:text-white transition-colors">Twitter</a>
-          <a href="#" className="text-white text-[11px] font-bold font-sans hover:opacity-80 transition-opacity">@collabsphere</a>
+          <a href="#" className="text-black dark:text-white/40 text-[11px] font-sans hover:text-black dark:text-white transition-colors">Twitter</a>
+          <a href="#" className="text-black dark:text-white text-[11px] font-bold font-sans hover:opacity-80 transition-opacity">@collabsphere</a>
         </div>
       </footer>
 

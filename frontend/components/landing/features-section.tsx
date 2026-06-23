@@ -203,13 +203,13 @@ export function FeaturesSection() {
         <div className="grid lg:grid-cols-12 gap-4 lg:gap-6">
           {/* Large feature card */}
           <div 
-            className={`lg:col-span-12 relative bg-black border border-foreground/10 min-h-[500px] overflow-hidden group transition-all duration-700 flex ${
+            className={`lg:col-span-12 relative bg-white dark:bg-black border border-foreground/10 min-h-[500px] overflow-hidden group transition-all duration-700 flex ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
             }`}
             onMouseEnter={() => setActiveFeature(0)}
           >
             {/* Left: text content */}
-            <div className="relative flex-1 p-8 lg:p-12 bg-black">
+            <div className="relative flex-1 p-8 lg:p-12 bg-white dark:bg-black">
               <ParticleVisualization />
               <div className="relative z-10">
                 <span className="font-mono text-sm text-muted-foreground">{features[0].number} / NEURAL_LINK — TEAM MATCHING v4</span>

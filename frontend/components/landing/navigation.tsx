@@ -75,7 +75,7 @@ export function Navigation() {
           {/* Logo */}
           <a href="#" className="flex items-center gap-2.5 group">
             <img src="/newlogo.png" alt="CollabSphere Logo" className="w-8 h-8 rounded-full object-cover" />
-            <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>COLLABSPHERE™</span>
+            <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-black dark:text-white"}`}>COLLABSPHERE™</span>
           </a>
 
           {/* Desktop Navigation */}
@@ -84,7 +84,7 @@ export function Navigation() {
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-sm transition-colors duration-300 relative group ${isScrolled ? "text-foreground/70 hover:text-foreground" : "text-white/70 hover:text-white"}`}
+                className={`text-sm transition-colors duration-300 relative group ${isScrolled ? "text-foreground/70 hover:text-foreground" : "text-black dark:text-white/70 hover:text-black dark:text-white"}`}
               >
                 {link.name}
                 <span className={`absolute -bottom-1 left-0 w-0 h-px transition-all duration-300 group-hover:w-full ${isScrolled ? "bg-foreground" : "bg-white"}`} />
@@ -97,7 +97,7 @@ export function Navigation() {
             {!user ? (
               <button
                 onClick={() => router.push('/login')}
-                className={`rounded-full transition-all duration-500 ${isScrolled ? "bg-foreground hover:bg-foreground/90 text-background px-4 h-8 text-xs" : "bg-white hover:bg-white/90 text-black px-6"}`}
+                className={`rounded-full transition-all duration-500 ${isScrolled ? "bg-foreground hover:bg-foreground/90 text-background px-4 h-8 text-xs" : "bg-white hover:bg-white/90 text-white dark:text-black px-6"}`}
               >
                 LOGIN
               </button>
@@ -109,7 +109,7 @@ export function Navigation() {
                   className={`text-sm transition-colors duration-300 cursor-pointer ${
                     isScrolled
                       ? "text-foreground/70 hover:text-foreground"
-                      : "text-white/70 hover:text-white"
+                      : "text-black dark:text-white/70 hover:text-black dark:text-white"
                   }`}
                 >
                   DASHBOARD
@@ -122,7 +122,7 @@ export function Navigation() {
                   }}
                   className="w-8 h-8 rounded-full 
                   bg-pink-500 flex items-center 
-                  justify-center text-white text-sm
+                  justify-center text-black dark:text-white text-sm
                   font-bold"
                 >
                   {user.email?.[0].toUpperCase()}
@@ -134,7 +134,7 @@ export function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? "text-foreground" : "text-white"}`}
+            className={`md:hidden p-2 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? "text-foreground" : "text-black dark:text-white"}`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (

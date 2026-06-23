@@ -134,7 +134,7 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-2 sm:mb-4 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full mb-2 sm:mb-4 bg-white dark:bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-gray-50 dark:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
@@ -160,7 +160,7 @@ function PostCard({
             {/* Author info & Badges */}
             <div className="flex flex-col min-w-0 justify-center flex-1">
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 overflow-hidden w-full">
-                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-black dark:text-white hover:text-black dark:hover:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[140px] sm:max-w-none">
+                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-black dark:text-white hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[140px] sm:max-w-none">
                   {post.author_name || "Builder"}
                 </span>
                 <span className="text-gray-500 dark:text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0 max-w-[100px] sm:max-w-none">
@@ -193,7 +193,7 @@ function PostCard({
           </div>
 
           {/* More Menu */}
-          <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer bg-transparent border-none">
+          <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-white dark:text-black dark:hover:text-black dark:text-white hover:bg-gray-100 dark:hover:bg-black/10 dark:bg-white/10 transition-colors cursor-pointer bg-transparent border-none">
             <MoreHorizontal className="w-4 h-4" />
           </button>
         </div>
@@ -235,7 +235,7 @@ function PostCard({
               </div>
               <button
                 onClick={() => handleCollabClick(post)}
-                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none"
+                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-white dark:bg-black text-black dark:text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none"
               >
                 Apply
               </button>
@@ -250,8 +250,8 @@ function PostCard({
             onClick={handleFetchComments}
             className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/[0.08]  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none"
           >
-            <MessageCircle className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-black dark:hover:text-white transition-colors" />
-            {post.comments_count > 0 && <span className="font-semibold text-[12px] text-gray-500 dark:text-neutral-400 group-hover:text-black dark:hover:text-white transition-colors">{post.comments_count}</span>}
+            <MessageCircle className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors" />
+            {post.comments_count > 0 && <span className="font-semibold text-[12px] text-gray-500 dark:text-neutral-400 group-hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors">{post.comments_count}</span>}
           </button>
 
           {/* Boost */}
@@ -272,7 +272,7 @@ function PostCard({
 
           {/* Views */}
           <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/[0.08]  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
-            <Eye className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-black dark:hover:text-white transition-colors" />
+            <Eye className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors" />
           </button>
 
           {/* Bookmark */}
@@ -302,7 +302,7 @@ function PostCard({
               <button
                 onClick={submitComment}
                 disabled={!newComment.trim() || isCommenting}
-                className="bg-[#D4F842] text-black hover:bg-[#c5ec2d] disabled:opacity-40 rounded-lg px-3 py-1 text-[11px] font-bold transition-all cursor-pointer border-none shrink-0"
+                className="bg-[#D4F842] text-white dark:text-black hover:bg-[#c5ec2d] disabled:opacity-40 rounded-lg px-3 py-1 text-[11px] font-bold transition-all cursor-pointer border-none shrink-0"
               >
                 Reply
               </button>
@@ -552,16 +552,16 @@ export default function DashboardHomePage() {
                 />
                 
                 {/* Pill */}
-                <div className="inline-flex items-center bg-gray-200 dark:bg-gray-50 dark:bg-gray-50 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
+                <div className="inline-flex items-center bg-gray-200 dark:bg-gray-50 dark:bg-gray-50 dark:bg-gray-50 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 dark:text-[#999999] hover:text-black dark:hover:text-white'}`}
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-white dark:text-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 dark:text-[#999999] hover:text-white dark:text-black dark:hover:text-black dark:text-white'}`}
                   >
                     All Builds
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-black dark:hover:text-white'}`}
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-white dark:text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-white dark:text-black dark:hover:text-black dark:text-white'}`}
                   >
                     Collab Board
                   </button>
@@ -573,32 +573,32 @@ export default function DashboardHomePage() {
                 const theme = selectedPostType === 'looking_for'
                   ? {
                     accent: 'text-[#00f2fe]',
-                    button: 'bg-[#00f2fe] hover:bg-[#00d8e4] text-black font-bold',
+                    button: 'bg-[#00f2fe] hover:bg-[#00d8e4] text-white dark:text-black font-bold',
                     btnText: 'Find Teammates',
                     hint: 'Find co-builders, designers, or cofounders'
                   }
                   : selectedPostType === 'build_log'
                     ? {
                       accent: 'text-[#D4F842]',
-                      button: 'bg-[#D4F842] hover:bg-[#c5ec2d] text-black font-bold',
+                      button: 'bg-[#D4F842] hover:bg-[#c5ec2d] text-white dark:text-black font-bold',
                       btnText: 'Log Milestone',
                       hint: 'Document a major project launch or milestone'
                     }
                     : {
                       accent: 'text-black dark:text-white',
-                      button: 'bg-black text-white dark:bg-white hover:bg-gray-800 dark:hover:bg-neutral-200 dark:text-black font-bold',
+                      button: 'bg-white dark:bg-black text-black dark:text-white dark:bg-white hover:bg-gray-800 dark:hover:bg-neutral-200 dark:text-black font-bold',
                       btnText: 'Ship',
                       hint: 'Log a quick dev update'
                     };
 
                 return (
-                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
+                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
                     <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
 
-                      <div className="flex items-center bg-gray-100 dark:bg-neutral-950/80 p-1 rounded-xl border border-gray-200 dark:border-white/[0.06] shadow-inner">
+                      <div className="flex items-center bg-gray-100 dark:bg-gray-100/80 dark:bg-neutral-950/80 p-1 rounded-xl border border-gray-200 dark:border-white/[0.06] shadow-inner">
                         <button
                           onClick={() => setSelectedPostType('update')}
                           className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'update' ? 'text-black dark:text-white' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:text-neutral-300'}`}
@@ -634,16 +634,16 @@ export default function DashboardHomePage() {
                             <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
                           {showVisibilityMenu && (
-                            <div className="absolute top-full right-0 mt-1 w-36 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                            <div className="absolute top-full right-0 mt-1 w-36 bg-white dark:bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
                               <button
                                 onClick={() => { setPostVisibility('public'); setShowVisibilityMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white bg-transparent border-none cursor-pointer"
                               >
                                 <Globe className="w-3 h-3" /> Public Feed
                               </button>
                               <button
                                 onClick={() => { setPostVisibility('collabs'); setShowVisibilityMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white bg-transparent border-none cursor-pointer"
                               >
                                 <Lock className="w-3 h-3 text-amber-500" /> Collabs Only
                               </button>
@@ -662,23 +662,23 @@ export default function DashboardHomePage() {
                             <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
                           {showProjectMenu && (
-                            <div className="absolute top-full right-0 mt-1 w-44 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                            <div className="absolute top-full right-0 mt-1 w-44 bg-white dark:bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
                               <button
                                 onClick={() => { setSelectedProject(null); setShowProjectMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-500 dark:text-neutral-400 hover:text-white dark:text-black dark:hover:text-black dark:text-white bg-transparent border-none cursor-pointer"
                               >
                                 None (General Post)
                               </button>
                               <button
                                 onClick={() => { setSelectedProject('CollabSphere'); setShowProjectMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
                               >
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                                 CollabSphere
                               </button>
                               <button
                                 onClick={() => { setSelectedProject('SaaS Dashboard'); setShowProjectMenu(false); }}
-                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
+                                className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
                               >
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 SaaS Dashboard
@@ -741,7 +741,7 @@ export default function DashboardHomePage() {
                         <button
                           type="button"
                           onClick={() => toggleRecording()}
-                          className="px-3 py-1 rounded-lg bg-red-500 text-black hover:bg-red-400 transition-colors cursor-pointer text-[11px] font-bold border-none"
+                          className="px-3 py-1 rounded-lg bg-red-500 text-white dark:text-black hover:bg-red-400 transition-colors cursor-pointer text-[11px] font-bold border-none"
                         >
                           Done
                         </button>
@@ -764,7 +764,7 @@ export default function DashboardHomePage() {
                                 }
                               }
                             }}
-                            className="w-7 h-7 rounded-full bg-white text-black flex items-center justify-center hover:bg-neutral-200 transition-colors cursor-pointer border-none"
+                            className="w-7 h-7 rounded-full bg-white text-white dark:text-black flex items-center justify-center hover:bg-neutral-200 transition-colors cursor-pointer border-none"
                           >
                             {isPlayingAudio ? <Pause className="w-3.5 h-3.5 fill-black" /> : <Play className="w-3.5 h-3.5 fill-black ml-0.5" />}
                           </button>
@@ -794,7 +794,7 @@ export default function DashboardHomePage() {
                               setStackTags(trimmedStack ? `${trimmedStack} ${tag}` : tag);
                             }
                           }}
-                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-neutral-300 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 hover:border-gray-200 dark:border-white/20 px-2.5 py-1 rounded-full transition-all cursor-pointer"
+                          className="text-[11px] shrink-0 whitespace-nowrap font-mono bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white hover:bg-gray-100 dark:hover:bg-black/10 dark:bg-white/10 hover:border-gray-200 dark:border-white/20 px-2.5 py-1 rounded-full transition-all cursor-pointer"
                         >
                           #{tag}
                         </button>
@@ -805,20 +805,20 @@ export default function DashboardHomePage() {
                     <div className="flex items-center justify-between gap-2 mt-2 sm:mt-3 ml-13">
                       {/* Left: Stack tags input + Media Buttons */}
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-black/10 dark:bg-white/10 text-gray-500 dark:text-neutral-400 hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
                           <Image className="w-4 h-4" />
                         </button>
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleRecording(); }}
-                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10"}`}
+                          className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer border-none bg-transparent ${isRecording ? "text-red-500 bg-red-500/10" : "text-gray-500 dark:text-neutral-400 hover:text-white dark:text-black dark:hover:text-black dark:text-white hover:bg-gray-100 dark:hover:bg-black/10 dark:bg-white/10"}`}
                           title="Record Voice"
                         >
                           <Mic className={`w-4 h-4 ${isRecording ? "animate-pulse" : ""}`} />
                         </button>
 
-                        <div className="w-[1px] h-4 bg-black/10 dark:bg-white/10 mx-1"></div>
+                        <div className="w-[1px] h-4 bg-white dark:bg-black/10 dark:bg-white/10 mx-1"></div>
 
-                        <div className="flex items-center bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-2 py-1 text-gray-600 dark:text-neutral-300 font-mono text-[12px] focus-within:border-gray-200 dark:border-white/30 focus-within:bg-black/10 dark:bg-white/10 transition-all">
+                        <div className="flex items-center bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-2 py-1 text-gray-600 dark:text-neutral-300 font-mono text-[12px] focus-within:border-gray-200 dark:border-white/30 focus-within:bg-white dark:bg-black/10 dark:bg-white/10 transition-all">
                           <span className="mr-1 opacity-50">#</span>
                           <input
                             type="text"
@@ -853,7 +853,7 @@ export default function DashboardHomePage() {
                           onClick={submitPost}
                           disabled={(!content.trim() && !audioBlob) || isPosting}
                           className={`relative group/submit rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[13px] sm:text-[14px] transition-all active:scale-95 cursor-pointer border-none ml-auto ${(!content.trim() && !audioBlob) || isPosting
-                            ? "bg-white/20 text-black dark:text-white/50 cursor-not-allowed pointer-events-none"
+                            ? "bg-black/20 dark:bg-white/20 text-black dark:text-white/50 cursor-not-allowed pointer-events-none"
                             : theme.button
                             }`}
                         >

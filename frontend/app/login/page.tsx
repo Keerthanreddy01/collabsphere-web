@@ -122,7 +122,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen w-full bg-black selection:bg-white/30 p-2 transition-all duration-500 lg:h-screen lg:overflow-hidden lg:p-4">
+    <main className="flex min-h-screen w-full bg-white dark:bg-black selection:bg-white/30 p-2 transition-all duration-500 lg:h-screen lg:overflow-hidden lg:p-4">
       
       {/* Left Column (Hero & Background Video) */}
       <div className="relative hidden lg:flex flex-col items-center justify-center px-12 rounded-3xl overflow-hidden shadow-2xl h-full w-[52%] shrink-0">
@@ -148,7 +148,7 @@ export default function LoginPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative z-10 text-center select-none"
         >
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white flex items-center justify-center font-sans">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-black dark:text-white flex items-center justify-center font-sans">
             CollabSphere<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
           </h1>
         </motion.div>
@@ -164,8 +164,8 @@ export default function LoginPage() {
         >
           {/* Header */}
           <div>
-            <h2 className="text-3xl font-medium tracking-tight text-white">Welcome Back</h2>
-            <p className="text-white/40 text-sm mt-1.5">Input your credentials to begin the journey.</p>
+            <h2 className="text-3xl font-medium tracking-tight text-black dark:text-white">Welcome Back</h2>
+            <p className="text-black dark:text-white/40 text-sm mt-1.5">Input your credentials to begin the journey.</p>
           </div>
 
           {/* Social Buttons */}
@@ -176,9 +176,9 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="relative flex items-center py-2">
-            <div className="flex-grow border-t border-white/10"></div>
-            <span className="flex-shrink mx-4 bg-black px-4 text-xs font-medium text-white/40 uppercase tracking-widest">Or</span>
-            <div className="flex-grow border-t border-white/10"></div>
+            <div className="flex-grow border-t border-gray-200 dark:border-white/10"></div>
+            <span className="flex-shrink mx-4 bg-white dark:bg-black px-4 text-xs font-medium text-black dark:text-white/40 uppercase tracking-widest">Or</span>
+            <div className="flex-grow border-t border-gray-200 dark:border-white/10"></div>
           </div>
 
           {/* Error / Lockout Banner */}
@@ -221,10 +221,10 @@ export default function LoginPage() {
             {/* Password input group with Lucide Eye toggle icon inside and Forgot Link */}
             <div className="flex flex-col gap-1.5 w-full">
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-sm font-medium text-white">
+                <label htmlFor="password" className="text-sm font-medium text-black dark:text-white">
                   Password
                 </label>
-                <Link href="/forgot-password" className="text-xs text-white/40 hover:text-white transition-colors">
+                <Link href="/forgot-password" className="text-xs text-black dark:text-white/40 hover:text-black dark:text-white transition-colors">
                   Forgot?
                 </Link>
               </div>
@@ -237,12 +237,12 @@ export default function LoginPage() {
                   onChange={(e: any) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="w-full bg-brand-gray border-none rounded-xl h-11 px-4 text-white placeholder:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
+                  className="w-full bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black dark:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-black dark:text-white/40 hover:text-black dark:text-white transition-colors cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -254,7 +254,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || isLocked}
-              className="w-full h-14 bg-white text-black font-semibold rounded-xl hover:bg-white/90 active:scale-[0.98] mt-4 transition-all flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-14 bg-white text-white dark:text-black font-semibold rounded-xl hover:bg-white/90 active:scale-[0.98] mt-4 transition-all flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
@@ -266,14 +266,14 @@ export default function LoginPage() {
 
           {/* Footer Links & Contact */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
-            <p className="text-sm text-white/40">
+            <p className="text-sm text-black dark:text-white/40">
               First time here?{" "}
-              <Link href="/signup" className="text-white hover:underline transition-colors ml-1">
+              <Link href="/signup" className="text-black dark:text-white hover:underline transition-colors ml-1">
                 Sign up for free
               </Link>
             </p>
-            <p className="text-[11px] text-white/20">
-              Contact: <span className="text-white/40 lowercase tracking-normal">collabsphereapp@gmail.com</span>
+            <p className="text-[11px] text-black dark:text-white/20">
+              Contact: <span className="text-black dark:text-white/40 lowercase tracking-normal">collabsphereapp@gmail.com</span>
             </p>
           </div>
         </motion.div>
@@ -286,8 +286,8 @@ export default function LoginPage() {
 
 function StepItem({ number, text, active }: { number: number; text: string; active?: boolean }) {
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${active ? 'bg-white text-black border border-white' : 'bg-brand-gray text-white border-none'}`}>
-      <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold shrink-0 ${active ? 'bg-black text-white' : 'bg-white/10 text-white/40'}`}>
+    <div className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${active ? 'bg-white text-white dark:text-black border border-black/20 dark:border-white' : 'bg-brand-gray text-black dark:text-white border-none'}`}>
+      <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold shrink-0 ${active ? 'bg-white dark:bg-black text-black dark:text-white' : 'bg-black/10 dark:bg-white/10 text-black dark:text-white/40'}`}>
         {number}
       </div>
       <span className="font-medium text-sm">{text}</span>
@@ -300,7 +300,7 @@ function SocialButton({ icon: Icon, label, onClick }: { icon: any; label: string
     <button 
       type="button" 
       onClick={onClick} 
-      className="flex items-center justify-center gap-2 bg-black border border-white/10 rounded-xl h-12 hover:bg-white/5 transition-colors cursor-pointer text-sm font-semibold text-white w-full"
+      className="flex items-center justify-center gap-2 bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl h-12 hover:bg-black/5 dark:bg-white/5 transition-colors cursor-pointer text-sm font-semibold text-black dark:text-white w-full"
     >
       <Icon className="w-4 h-4 shrink-0" />
       <span>{label}</span>
@@ -311,7 +311,7 @@ function SocialButton({ icon: Icon, label, onClick }: { icon: any; label: string
 function InputGroup({ label, placeholder, type, value, onChange, id, required }: any) {
   return (
     <div className="flex flex-col gap-1.5 w-full">
-      <label htmlFor={id} className="text-sm font-medium text-white">
+      <label htmlFor={id} className="text-sm font-medium text-black dark:text-white">
         {label}
       </label>
       <input
@@ -322,7 +322,7 @@ function InputGroup({ label, placeholder, type, value, onChange, id, required }:
         onChange={onChange}
         required={required}
         autoComplete={id === "email" ? "email" : "off"}
-        className="w-full bg-brand-gray border-none rounded-xl h-11 px-4 text-white placeholder:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
+        className="w-full bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black dark:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
       />
     </div>
   );

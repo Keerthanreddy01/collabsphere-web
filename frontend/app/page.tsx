@@ -44,8 +44,8 @@ export default function Home() {
   // While checking auth, show a minimal dark loader so there's no flash
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="w-8 h-8 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <div className="w-8 h-8 animate-spin rounded-full border-4 border-gray-200 dark:border-white/20 border-t-white" />
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function Home() {
 
   // Not logged in → show the landing page
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-black">
+    <main className="relative min-h-screen overflow-x-hidden bg-white dark:bg-black">
       <Navigation />
       <HeroSection />
       <FeaturesSection />

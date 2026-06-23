@@ -102,36 +102,36 @@ export default function ShowcasePage() {
   const displayProjects = fetchedProjects.length > 0 ? fetchedProjects : projects;
 
   return (
-    <div className="flex justify-center min-h-screen bg-black text-white overflow-x-hidden selection:bg-white/30 relative">
+    <div className="flex justify-center min-h-screen bg-white dark:bg-black text-black dark:text-white overflow-x-hidden selection:bg-white/30 relative">
       <div className="flex w-full max-w-[1250px] min-h-screen relative">
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
         
         <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
-          <div className="w-full max-w-[900px] mx-auto border-r border-l border-white/[0.06] bg-black min-h-screen">
+          <div className="w-full max-w-[900px] mx-auto border-r border-l border-gray-200 dark:border-white/[0.06] bg-white dark:bg-black min-h-screen">
         {/* Nav */}
-        <nav className="sticky top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md">
+        <nav className="sticky top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-gray-200 dark:border-white/5 bg-white dark:bg-black/80 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <button className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
-              <Rocket className="w-5 h-5 text-white" />
+              <Rocket className="w-5 h-5 text-black dark:text-white" />
             </button>
             <span className="text-sm font-mono">COLLABSPHERE™</span>
           </div>
-          <span className="text-xs font-mono text-white/30 tracking-widest">PROJECT SHOWCASE</span>
+          <span className="text-xs font-mono text-black dark:text-white/30 tracking-widest">PROJECT SHOWCASE</span>
         </nav>
 
       {/* Hero */}
       <section className="relative pt-40 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
         <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <span className="inline-flex items-center gap-3 text-sm font-mono text-white/40 mb-8">
-            <span className="w-12 h-px bg-white/20" />
+          <span className="inline-flex items-center gap-3 text-sm font-mono text-black dark:text-white/40 mb-8">
+            <span className="w-12 h-px bg-black/20 dark:bg-white/20" />
             PRODUCING IMPACT.
           </span>
           <h1 className="text-7xl md:text-[10rem] lg:text-[160px] font-display tracking-tight leading-[0.85] mb-8">
             BUILT
             <br />
-            <span className="text-white/20">HERE.</span>
+            <span className="text-black dark:text-white/20">HERE.</span>
           </h1>
-          <p className="text-xl text-white/50 max-w-lg leading-relaxed">
+          <p className="text-xl text-black dark:text-white/50 max-w-lg leading-relaxed">
             Real projects. Real teams. Real impact. Every project here was built by a team that found each other on Collabsphere.
           </p>
         </div>
@@ -140,10 +140,10 @@ export default function ShowcasePage() {
       {/* Featured project */}
       <section className="px-6 lg:px-12 pb-12 max-w-[1400px] mx-auto">
         <div
-          className={`relative p-12 lg:p-16 border border-white/20 bg-white/[0.03] overflow-hidden transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+          className={`relative p-12 lg:p-16 border border-gray-200 dark:border-white/20 bg-white/[0.03] overflow-hidden transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
         >
           {/* Background number */}
-          <span className="absolute right-8 top-8 text-[200px] font-display text-white/[0.03] leading-none select-none pointer-events-none">
+          <span className="absolute right-8 top-8 text-[200px] font-display text-black dark:text-white/[0.03] leading-none select-none pointer-events-none">
             01
           </span>
           <div className="relative z-10">
@@ -153,23 +153,23 @@ export default function ShowcasePage() {
                   {projects[0].status}
                 </span>
                 <h2 className="text-5xl lg:text-7xl font-display mt-4">{projects[0].name}</h2>
-                <p className="text-xl text-white/50 mt-2">{projects[0].tagline}</p>
+                <p className="text-xl text-black dark:text-white/50 mt-2">{projects[0].tagline}</p>
               </div>
-              <div className="w-12 h-12 border border-white/20 flex items-center justify-center hover:border-white hover:bg-white hover:text-black transition-all duration-300 cursor-pointer">
+              <div className="w-12 h-12 border border-gray-200 dark:border-white/20 flex items-center justify-center hover:border-black/20 dark:border-white hover:bg-white hover:text-white dark:text-black transition-all duration-300 cursor-pointer">
                 <ArrowUpRight className="w-5 h-5" />
               </div>
             </div>
-            <p className="text-white/60 max-w-2xl leading-relaxed mb-10 text-lg">{displayProjects[0].description}</p>
+            <p className="text-black dark:text-white/60 max-w-2xl leading-relaxed mb-10 text-lg">{displayProjects[0].description}</p>
             <div className="flex flex-wrap items-center gap-8">
               <div className="flex flex-wrap gap-2">
                 {(displayProjects[0].stack || []).map((s: string) => (
-                  <span key={s} className="text-xs font-mono px-3 py-1.5 border border-white/10 text-white/40">{s}</span>
+                  <span key={s} className="text-xs font-mono px-3 py-1.5 border border-gray-200 dark:border-white/10 text-black dark:text-white/40">{s}</span>
                 ))}
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/40 font-mono">
+              <div className="flex items-center gap-2 text-sm text-black dark:text-white/40 font-mono">
                 <span>BUILT BY</span>
                 {(displayProjects[0].team || []).map((t: string) => (
-                  <span key={t} className="text-white/70">{t}</span>
+                  <span key={t} className="text-black dark:text-white/70">{t}</span>
                 ))}
               </div>
             </div>
@@ -186,11 +186,11 @@ export default function ShowcasePage() {
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
               className={`relative p-8 border overflow-hidden transition-all duration-500 cursor-default ${
-                hovered === i ? "border-white/30 bg-white/[0.04]" : "border-white/10"
+                hovered === i ? "border-gray-200 dark:border-white/30 bg-white/[0.04]" : "border-gray-200 dark:border-white/10"
               } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${i * 80 + 300}ms` }}
             >
-              <span className="absolute right-4 top-4 text-[80px] font-display text-white/[0.04] leading-none select-none">
+              <span className="absolute right-4 top-4 text-[80px] font-display text-black dark:text-white/[0.04] leading-none select-none">
                 {project.id}
               </span>
               <div className="relative z-10">
@@ -198,14 +198,14 @@ export default function ShowcasePage() {
                   {project.status}
                 </span>
                 <h3 className="text-3xl font-display mt-2 mb-1">{project.name}</h3>
-                <p className="text-sm text-white/40 mb-4">{project.tagline}</p>
-                <p className="text-sm text-white/50 leading-relaxed mb-6">{project.description}</p>
+                <p className="text-sm text-black dark:text-white/40 mb-4">{project.tagline}</p>
+                <p className="text-sm text-black dark:text-white/50 leading-relaxed mb-6">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {(project.stack || []).map((s: string) => (
-                    <span key={s} className="text-[10px] font-mono px-2 py-0.5 border border-white/10 text-white/30">{s}</span>
+                    <span key={s} className="text-[10px] font-mono px-2 py-0.5 border border-gray-200 dark:border-white/10 text-black dark:text-white/30">{s}</span>
                   ))}
                 </div>
-                <div className="text-xs text-white/30 font-mono pt-4 border-t border-white/10">
+                <div className="text-xs text-black dark:text-white/30 font-mono pt-4 border-t border-gray-200 dark:border-white/10">
                   {(project.team || []).join(" × ")}
                 </div>
               </div>
@@ -217,10 +217,10 @@ export default function ShowcasePage() {
         </div>
 
         <div className={`mt-20 text-center transition-all duration-1000 delay-700 ${isVisible ? "opacity-100" : "opacity-0"}`}>
-          <p className="text-white/30 text-sm font-mono mb-6">180+ projects shipped and counting</p>
+          <p className="text-black dark:text-white/30 text-sm font-mono mb-6">180+ projects shipped and counting</p>
           <Link
             href="/create"
-            className="inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-sm font-mono hover:border-white hover:bg-white hover:text-black transition-all duration-300 group"
+            className="inline-flex items-center gap-3 px-8 py-4 border border-gray-200 dark:border-white/20 text-sm font-mono hover:border-black/20 dark:border-white hover:bg-white hover:text-white dark:text-black transition-all duration-300 group"
           >
             START YOUR PROJECT
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

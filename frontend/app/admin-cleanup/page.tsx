@@ -24,11 +24,11 @@ export default function AdminCleanupPage() {
   };
 
   return (
-    <div className="p-10 text-white bg-black min-h-screen">
+    <div className="p-10 text-black dark:text-white bg-white dark:bg-black min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Admin Cleanup</h1>
       <button 
         onClick={cleanupFakeEntries}
-        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+        className="bg-red-600 hover:bg-red-700 text-black dark:text-white px-4 py-2 rounded"
       >
         Run Cleanup Script
       </button>

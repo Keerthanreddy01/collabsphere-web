@@ -286,7 +286,7 @@ export function ShipProjectDialog({ trigger }: ShipProjectDialogProps) {
               </Button>
               <Button
                 type="submit"
-                className="h-11 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-6 text-sm font-semibold text-white shadow-[0_18px_30px_rgba(168,85,247,0.28)] transition hover:shadow-[0_22px_40px_rgba(236,72,153,0.32)]"
+                className="h-11 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-6 text-sm font-semibold text-black dark:text-white shadow-[0_18px_30px_rgba(168,85,247,0.28)] transition hover:shadow-[0_22px_40px_rgba(236,72,153,0.32)]"
               >
                 Ship Project
                 <ArrowUpRight className="size-4" />

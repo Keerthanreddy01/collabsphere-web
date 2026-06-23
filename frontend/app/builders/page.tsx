@@ -157,7 +157,7 @@ export default function BuildersPage() {
                     onClick={() => setActiveFilter(filter)}
                     className={`rounded-full px-4 py-2 text-xs font-semibold shadow-sm transition-all border ${
                       isActive
-                        ? "bg-gray-900 text-white border-gray-900"
+                        ? "bg-gray-900 text-black dark:text-white border-gray-900"
                         : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
                     }`}
                   >
@@ -209,7 +209,7 @@ export default function BuildersPage() {
               <button
                 type="button"
                 onClick={() => router.push("/dashboard/home")}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold px-6 py-2.5 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-1 text-xs"
+                className="bg-gradient-to-r from-pink-500 to-purple-600 text-black dark:text-white font-semibold px-6 py-2.5 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-1 text-xs"
               >
                 <span>Complete Profile</span>
                 <span>→</span>
@@ -240,7 +240,7 @@ export default function BuildersPage() {
                     <div>
                       {/* Top profile card header */}
                       <div className="flex items-center gap-4">
-                        <div className="h-14 w-14 overflow-hidden rounded-full border border-white shadow-sm ring-2 ring-offset-2 ring-pink-500/30 shrink-0">
+                        <div className="h-14 w-14 overflow-hidden rounded-full border border-black/20 dark:border-white shadow-sm ring-2 ring-offset-2 ring-pink-500/30 shrink-0">
                           {builder.avatar_url ? (
                             <img
                               src={builder.avatar_url}
@@ -340,7 +340,7 @@ export default function BuildersPage() {
                     <button
                       type="button"
                       onClick={() => router.push(`/builders`)}
-                      className="mt-6 w-full border-[1.5px] border-[#e5e7eb] text-gray-700 font-semibold rounded-xl py-2.5 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-200 text-sm text-center active:scale-95"
+                      className="mt-6 w-full border-[1.5px] border-[#e5e7eb] text-gray-700 font-semibold rounded-xl py-2.5 hover:bg-gray-900 hover:text-black dark:text-white hover:border-gray-900 transition-all duration-200 text-sm text-center active:scale-95"
                     >
                       View Profile
                     </button>

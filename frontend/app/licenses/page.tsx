@@ -66,29 +66,29 @@ export default function LicensesPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md">
-        <Link href="/" className="inline-flex items-center gap-3 text-white/60 hover:text-white transition-colors group">
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-gray-200 dark:border-white/5 bg-white dark:bg-black/80 backdrop-blur-md">
+        <Link href="/" className="inline-flex items-center gap-3 text-black dark:text-white/60 hover:text-black dark:text-white transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-mono">COLLABSPHERE™</span>
         </Link>
-        <span className="text-xs font-mono text-white/30 tracking-widest">LICENSES</span>
+        <span className="text-xs font-mono text-black dark:text-white/30 tracking-widest">LICENSES</span>
       </nav>
 
       {/* Hero */}
       <section className="relative pt-40 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
         <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <span className="inline-flex items-center gap-3 text-sm font-mono text-white/40 mb-8">
-            <span className="w-12 h-px bg-white/20" />
+          <span className="inline-flex items-center gap-3 text-sm font-mono text-black dark:text-white/40 mb-8">
+            <span className="w-12 h-px bg-black/20 dark:bg-white/20" />
             LEGAL · OPEN SOURCE
           </span>
           <h1 className="text-7xl md:text-[10rem] lg:text-[160px] font-display tracking-tight leading-[0.85] mb-8">
             OPEN
             <br />
-            <span className="text-white/20">BY DEFAULT.</span>
+            <span className="text-black dark:text-white/20">BY DEFAULT.</span>
           </h1>
-          <p className="text-xl text-white/50 max-w-lg leading-relaxed">
+          <p className="text-xl text-black dark:text-white/50 max-w-lg leading-relaxed">
             We believe in transparent, builder-first licensing. No lock-in. No surprises. Just clear terms.
           </p>
         </div>
@@ -100,7 +100,7 @@ export default function LicensesPage() {
           {licenses.map((license, i) => (
             <div
               key={license.name}
-              className={`p-10 border border-white/10 bg-white/[0.02] transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`p-10 border border-gray-200 dark:border-white/10 bg-white/[0.02] transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${i * 120 + 200}ms` }}
             >
               <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
@@ -111,13 +111,13 @@ export default function LicensesPage() {
                   <h2 className="text-3xl font-display">{license.name}</h2>
                 </div>
               </div>
-              <p className="text-white/50 leading-relaxed mb-8 max-w-2xl">{license.description}</p>
+              <p className="text-black dark:text-white/50 leading-relaxed mb-8 max-w-2xl">{license.description}</p>
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
                   <span className="text-xs font-mono text-green-400 mb-3 block">PERMISSIONS</span>
                   <ul className="space-y-2">
                     {license.permissions.map((p) => (
-                      <li key={p} className="text-sm text-white/50 flex items-center gap-2">
+                      <li key={p} className="text-sm text-black dark:text-white/50 flex items-center gap-2">
                         <span className="w-1 h-1 rounded-full bg-green-400" />
                         {p}
                       </li>
@@ -128,7 +128,7 @@ export default function LicensesPage() {
                   <span className="text-xs font-mono text-yellow-400 mb-3 block">CONDITIONS</span>
                   <ul className="space-y-2">
                     {license.conditions.map((c) => (
-                      <li key={c} className="text-sm text-white/50 flex items-center gap-2">
+                      <li key={c} className="text-sm text-black dark:text-white/50 flex items-center gap-2">
                         <span className="w-1 h-1 rounded-full bg-yellow-400" />
                         {c}
                       </li>
@@ -139,7 +139,7 @@ export default function LicensesPage() {
                   <span className="text-xs font-mono text-red-400 mb-3 block">LIMITATIONS</span>
                   <ul className="space-y-2">
                     {license.limitations.map((l) => (
-                      <li key={l} className="text-sm text-white/50 flex items-center gap-2">
+                      <li key={l} className="text-sm text-black dark:text-white/50 flex items-center gap-2">
                         <span className="w-1 h-1 rounded-full bg-red-400" />
                         {l}
                       </li>
@@ -154,20 +154,20 @@ export default function LicensesPage() {
 
       {/* FAQ */}
       <section className="px-6 lg:px-12 pb-40 max-w-[1400px] mx-auto">
-        <span className="text-xs font-mono text-white/30 tracking-widest mb-10 block">FREQUENTLY ASKED</span>
+        <span className="text-xs font-mono text-black dark:text-white/30 tracking-widest mb-10 block">FREQUENTLY ASKED</span>
         <div className="space-y-2">
           {faq.map((item, i) => (
-            <div key={i} className={`border border-white/10 transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"}`}
+            <div key={i} className={`border border-gray-200 dark:border-white/10 transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"}`}
               style={{ transitionDelay: `${i * 80 + 600}ms` }}>
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.02] transition-colors"
               >
                 <span className="font-medium pr-8">{item.q}</span>
-                <span className={`text-xl text-white/40 transition-transform duration-300 ${openFaq === i ? "rotate-45" : ""}`}>+</span>
+                <span className={`text-xl text-black dark:text-white/40 transition-transform duration-300 ${openFaq === i ? "rotate-45" : ""}`}>+</span>
               </button>
               <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? "max-h-40" : "max-h-0"}`}>
-                <p className="px-6 pb-6 text-white/50 leading-relaxed">{item.a}</p>
+                <p className="px-6 pb-6 text-black dark:text-white/50 leading-relaxed">{item.a}</p>
               </div>
             </div>
           ))}
@@ -176,14 +176,14 @@ export default function LicensesPage() {
         <div className={`mt-20 flex flex-col sm:flex-row gap-4 transition-all duration-1000 delay-700 ${isVisible ? "opacity-100" : "opacity-0"}`}>
           <a
             href="mailto:hi@collab.tech"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black text-sm font-mono hover:bg-white/90 transition-all duration-300 group"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-white dark:text-black text-sm font-mono hover:bg-white/90 transition-all duration-300 group"
           >
             ASK A LEGAL QUESTION
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </a>
           <Link
             href="/"
-            className="inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-sm font-mono hover:border-white transition-all duration-300"
+            className="inline-flex items-center gap-3 px-8 py-4 border border-gray-200 dark:border-white/20 text-sm font-mono hover:border-black/20 dark:border-white transition-all duration-300"
           >
             BACK TO HOME
           </Link>

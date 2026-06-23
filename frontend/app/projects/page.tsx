@@ -149,7 +149,7 @@ export default function ProjectsPage() {
 
             <ShipProjectDialog
               trigger={
-                <button type="button" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_35px_rgba(168,85,247,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_45px_rgba(236,72,153,0.38)]">
+                <button type="button" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-5 py-3 text-sm font-semibold text-black dark:text-white shadow-[0_18px_35px_rgba(168,85,247,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_45px_rgba(236,72,153,0.38)]">
                   <ArrowUpRight className="size-4" />
                   + Ship Yours
                 </button>
@@ -157,14 +157,14 @@ export default function ProjectsPage() {
             />
           </div>
 
-          <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-black/20 dark:shadow-inner dark:shadow-black/10">
+          <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-white dark:bg-black/20 dark:shadow-inner dark:shadow-black/10">
             <Search className="size-4 text-slate-400 dark:text-white/45" />
             <input
               type="text"
               placeholder="Search by name, stack, or builder..."
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-white/35"
+              className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-black dark:text-white/35"
             />
           </div>
 
@@ -180,8 +180,8 @@ export default function ProjectsPage() {
                     className={cn(
                       'rounded-full border px-4 py-2 text-sm font-semibold transition',
                       active
-                        ? 'border-transparent bg-slate-950 text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] dark:bg-white dark:text-slate-950'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white/75 dark:hover:bg-white/10 dark:hover:text-white',
+                        ? 'border-transparent bg-slate-950 text-black dark:text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] dark:bg-white dark:text-slate-950'
+                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white/75 dark:hover:bg-black/10 dark:bg-white/10 dark:hover:text-black dark:text-white',
                     )}
                   >
                     {option}
@@ -228,7 +228,7 @@ export default function ProjectsPage() {
               <div className="mt-8 flex justify-center">
                 <ShipProjectDialog
                   trigger={
-                    <button type="button" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_35px_rgba(168,85,247,0.34)] transition hover:-translate-y-0.5">
+                    <button type="button" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-5 py-3 text-sm font-semibold text-black dark:text-white shadow-[0_18px_35px_rgba(168,85,247,0.34)] transition hover:-translate-y-0.5">
                       <ArrowUpRight className="size-4" />
                       + Ship Yours
                     </button>

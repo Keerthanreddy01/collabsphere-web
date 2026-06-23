@@ -107,7 +107,7 @@ export default function SettingsPage() {
   };
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">Loading...</div>;
+    return <div className="min-h-screen bg-white dark:bg-[#050505] flex items-center justify-center text-black dark:text-white">Loading...</div>;
   }
 
   const tabs = [
@@ -118,15 +118,15 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex justify-center min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 selection:text-white font-inter overflow-x-hidden relative">
+    <div className="flex justify-center min-h-screen bg-white dark:bg-[#050505] text-black dark:text-white selection:bg-blue-500/30 selection:text-black dark:text-white font-inter overflow-x-hidden relative">
       <div className="flex w-full max-w-[1250px] min-h-screen relative">
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
         <main className="flex-1 min-h-screen overflow-y-visible relative min-w-0">
-          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-32 border-r border-l border-white/[0.06] bg-[#050505] min-h-screen">
+          <div className="max-w-[800px] mx-auto px-4 py-8 md:px-8 pb-32 border-r border-l border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#050505] min-h-screen">
 
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Settings</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white mb-2">Settings</h1>
             <p className="text-[#A8A8A8] text-[15px]">Manage your account settings and preferences.</p>
           </motion.div>
 
@@ -141,7 +141,7 @@ export default function SettingsPage() {
                     onClick={() => { setActiveTab(tab.name); setMessage(null); }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-[12px] text-[14px] font-medium transition-all ${
                       activeTab === tab.name
-                        ? "bg-white/[0.08] text-white"
+                        ? "bg-white/[0.08] text-black dark:text-white"
                         : "text-[#888] hover:bg-white/[0.04] hover:text-[#ddd]"
                     }`}
                   >
@@ -150,7 +150,7 @@ export default function SettingsPage() {
                   </button>
                 );
               })}
-              <div className="pt-4 mt-4 border-t border-white/[0.06]">
+              <div className="pt-4 mt-4 border-t border-gray-200 dark:border-white/[0.06]">
                 <button
                   onClick={handleSignOut}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-[12px] text-[14px] font-medium text-red-400 hover:bg-red-500/10 transition-all"
@@ -166,9 +166,9 @@ export default function SettingsPage() {
               key={activeTab}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex-1 bg-white/[0.02] border border-white/[0.06] rounded-[24px] p-6 md:p-8 backdrop-blur-[20px]"
+              className="flex-1 bg-white/[0.02] border border-gray-200 dark:border-white/[0.06] rounded-[24px] p-6 md:p-8 backdrop-blur-[20px]"
             >
-              <h2 className="text-xl font-bold text-white mb-6">{activeTab} Settings</h2>
+              <h2 className="text-xl font-bold text-black dark:text-white mb-6">{activeTab} Settings</h2>
 
               {message && (
                 <div className={`mb-6 p-4 rounded-xl text-sm font-medium border ${
@@ -190,35 +190,35 @@ export default function SettingsPage() {
                       { label: "Location",  key: "location", placeholder: "e.g. San Francisco, CA", max: 100 },
                     ].map(({ label, key, placeholder, max }) => (
                       <div key={key} className="flex flex-col gap-1.5">
-                        <label className="text-sm font-medium text-white/80">{label}</label>
+                        <label className="text-sm font-medium text-black dark:text-white/80">{label}</label>
                         <input
                           type="text"
                           value={(formData as any)[key]}
                           onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
                           maxLength={max}
-                          className="w-full bg-[#111] border border-white/5 focus:border-[#7e85fe] rounded-xl h-11 px-4 text-white placeholder:text-white/20 outline-none transition-all text-sm font-medium"
+                          className="w-full bg-gray-100 dark:bg-[#111] border border-gray-200 dark:border-white/5 focus:border-[#7e85fe] rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black dark:text-white/20 outline-none transition-all text-sm font-medium"
                           placeholder={placeholder}
                         />
                       </div>
                     ))}
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-sm font-medium text-white/80">Bio</label>
+                      <label className="text-sm font-medium text-black dark:text-white/80">Bio</label>
                       <textarea
                         value={formData.bio}
                         onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                         maxLength={500}
-                        className="w-full bg-[#111] border border-white/5 focus:border-[#7e85fe] rounded-xl p-4 text-white placeholder:text-white/20 outline-none transition-all text-sm font-medium resize-none min-h-[100px]"
+                        className="w-full bg-gray-100 dark:bg-[#111] border border-gray-200 dark:border-white/5 focus:border-[#7e85fe] rounded-xl p-4 text-black dark:text-white placeholder:text-black dark:text-white/20 outline-none transition-all text-sm font-medium resize-none min-h-[100px]"
                         placeholder="Tell us about yourself..."
                       />
-                      <p className="text-xs text-white/30 text-right">{formData.bio.length}/500</p>
+                      <p className="text-xs text-black dark:text-white/30 text-right">{formData.bio.length}/500</p>
                     </div>
                   </div>
-                  <div className="pt-4 border-t border-white/[0.06] flex justify-end">
+                  <div className="pt-4 border-t border-gray-200 dark:border-white/[0.06] flex justify-end">
                     <button
                       type="submit"
                       disabled={isSaving}
-                      className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all text-sm flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
+                      className="px-6 py-2.5 bg-white text-white dark:text-black font-semibold rounded-full hover:bg-gray-200 transition-all text-sm flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
                     >
                       {isSaving ? <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" /> : "Save Changes"}
                     </button>
@@ -230,33 +230,33 @@ export default function SettingsPage() {
               {activeTab === "Account" && (
                 <div className="space-y-8">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                      <Mail className="w-5 h-5 text-white/50" /> Email Address
+                    <h3 className="text-lg font-medium text-black dark:text-white flex items-center gap-2">
+                      <Mail className="w-5 h-5 text-black dark:text-white/50" /> Email Address
                     </h3>
-                    <p className="text-sm text-white/50">Your email address is used to sign in to CollabSphere.</p>
+                    <p className="text-sm text-black dark:text-white/50">Your email address is used to sign in to CollabSphere.</p>
                     <input
                       type="email"
                       value={user?.email || ""}
                       disabled
-                      className="w-full bg-[#111] border border-white/5 rounded-xl h-11 px-4 text-white/50 outline-none cursor-not-allowed text-sm font-medium"
+                      className="w-full bg-gray-100 dark:bg-[#111] border border-gray-200 dark:border-white/5 rounded-xl h-11 px-4 text-black dark:text-white/50 outline-none cursor-not-allowed text-sm font-medium"
                     />
                   </div>
 
-                  <div className="space-y-4 pt-6 border-t border-white/[0.06]">
-                    <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                      <Key className="w-5 h-5 text-white/50" /> Password
+                  <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-white/[0.06]">
+                    <h3 className="text-lg font-medium text-black dark:text-white flex items-center gap-2">
+                      <Key className="w-5 h-5 text-black dark:text-white/50" /> Password
                     </h3>
-                    <p className="text-sm text-white/50">
-                      We'll send a password reset link to <span className="text-white">{user?.email}</span>.
+                    <p className="text-sm text-black dark:text-white/50">
+                      We'll send a password reset link to <span className="text-black dark:text-white">{user?.email}</span>.
                     </p>
                     <button
                       type="button"
                       disabled={passwordResetSent || passwordResetLoading}
                       onClick={handlePasswordReset}
-                      className="px-6 py-2.5 bg-white/5 text-white font-semibold rounded-full border border-white/10 hover:bg-white/10 transition-all text-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-6 py-2.5 bg-black/5 dark:bg-white/5 text-black dark:text-white font-semibold rounded-full border border-gray-200 dark:border-white/10 hover:bg-black/10 dark:bg-white/10 transition-all text-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       {passwordResetLoading ? (
-                        <div className="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />
+                        <div className="h-4 w-4 border-2 border-gray-200 dark:border-white/50 border-t-transparent rounded-full animate-spin" />
                       ) : passwordResetSent ? (
                         "Reset Email Sent ✓"
                       ) : (
@@ -267,7 +267,7 @@ export default function SettingsPage() {
 
                   <div className="space-y-4 pt-6 border-t border-red-500/10">
                     <h3 className="text-lg font-medium text-red-400">Danger Zone</h3>
-                    <p className="text-sm text-white/50">Permanently delete your account and all associated data. This cannot be undone.</p>
+                    <p className="text-sm text-black dark:text-white/50">Permanently delete your account and all associated data. This cannot be undone.</p>
                     <button
                       type="button"
                       onClick={() => setMessage({ type: 'error', text: 'To delete your account, please contact support@collabsphere.dev. We require identity verification before deletion.' })}
@@ -282,19 +282,19 @@ export default function SettingsPage() {
               {/* ── Notifications Tab ── */}
               {activeTab === "Notifications" && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-medium text-white mb-2">Notification Preferences</h3>
+                  <h3 className="text-lg font-medium text-black dark:text-white mb-2">Notification Preferences</h3>
                   {[
                     { title: "Email Notifications", desc: "Receive weekly digests and updates via email." },
                     { title: "In-App Notifications", desc: "Receive notifications inside CollabSphere." },
                   ].map(({ title, desc }) => (
-                    <div key={title} className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.05] rounded-[16px]">
+                    <div key={title} className="flex items-center justify-between p-4 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] rounded-[16px]">
                       <div>
-                        <h4 className="text-sm font-medium text-white">{title}</h4>
-                        <p className="text-xs text-white/50 mt-1">{desc}</p>
+                        <h4 className="text-sm font-medium text-black dark:text-white">{title}</h4>
+                        <p className="text-xs text-black dark:text-white/50 mt-1">{desc}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" className="sr-only peer" defaultChecked />
-                        <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                        <div className="w-11 h-6 bg-black/10 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-black/20 dark:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
                       </label>
                     </div>
                   ))}
@@ -304,23 +304,23 @@ export default function SettingsPage() {
               {/* ── Security Tab ── */}
               {activeTab === "Security" && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-medium text-white mb-2">Security Settings</h3>
+                  <h3 className="text-lg font-medium text-black dark:text-white mb-2">Security Settings</h3>
 
-                  <div className="p-4 bg-white/[0.02] border border-white/[0.05] rounded-[16px] space-y-3">
-                    <h4 className="text-sm font-medium text-white">Two-Factor Authentication (2FA)</h4>
-                    <p className="text-xs text-white/50">Add an extra layer of security. When enabled, you'll need both your password and a verification code to sign in.</p>
+                  <div className="p-4 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] rounded-[16px] space-y-3">
+                    <h4 className="text-sm font-medium text-black dark:text-white">Two-Factor Authentication (2FA)</h4>
+                    <p className="text-xs text-black dark:text-white/50">Add an extra layer of security. When enabled, you'll need both your password and a verification code to sign in.</p>
                     <button
                       onClick={() => setMessage({ type: 'success', text: '2FA setup coming soon! Firebase multi-factor authentication will be available in the next update.' })}
-                      className="px-4 py-2 bg-white/10 text-white text-xs font-semibold rounded-lg hover:bg-white/20 transition-all"
+                      className="px-4 py-2 bg-black/10 dark:bg-white/10 text-black dark:text-white text-xs font-semibold rounded-lg hover:bg-black/20 dark:bg-white/20 transition-all"
                     >
                       Enable 2FA
                     </button>
                   </div>
 
-                  <div className="p-4 bg-white/[0.02] border border-white/[0.05] rounded-[16px] space-y-3">
-                    <h4 className="text-sm font-medium text-white">Active Sessions</h4>
-                    <p className="text-xs text-white/50">
-                      Signed in as <span className="text-white font-medium">{user.email}</span>.
+                  <div className="p-4 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] rounded-[16px] space-y-3">
+                    <h4 className="text-sm font-medium text-black dark:text-white">Active Sessions</h4>
+                    <p className="text-xs text-black dark:text-white/50">
+                      Signed in as <span className="text-black dark:text-white font-medium">{user.email}</span>.
                       Firebase manages your session securely with JWT tokens.
                     </p>
                     <button

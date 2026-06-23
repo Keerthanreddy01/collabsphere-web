@@ -81,7 +81,7 @@ export function HowItWorksSection() {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 bg-[oklch(0.09_0.01_260)] text-white overflow-hidden"
+      className="relative py-24 lg:py-32 bg-[oklch(0.09_0.01_260)] text-black dark:text-white overflow-hidden"
     >
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-white/[0.02] blur-[100px] pointer-events-none" />
 
@@ -91,8 +91,8 @@ export function HowItWorksSection() {
           {/* Titre colonne gauche */}
           <div className="overflow-hidden pb-0 lg:pb-32">
             <div className={`transition-all duration-1000 ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-12 opacity-0"}`}>
-              <span className="inline-flex items-center gap-3 text-sm font-mono text-white/40 mb-8">
-                <span className="w-12 h-px bg-white/20" />
+              <span className="inline-flex items-center gap-3 text-sm font-mono text-black dark:text-white/40 mb-8">
+                <span className="w-12 h-px bg-black/20 dark:bg-white/20" />
                 THE PROCESS
               </span>
             </div>
@@ -101,7 +101,7 @@ export function HowItWorksSection() {
               isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
             }`}>
               <span className="block">THE PROCESS</span>
-              <span className="block text-white/30">ENGINE SYSTEM</span>
+              <span className="block text-black dark:text-white/30">ENGINE SYSTEM</span>
             </h2>
           </div>
 
@@ -129,18 +129,18 @@ export function HowItWorksSection() {
               onClick={() => setActiveStep(index)}
               className={`relative text-left p-8 lg:p-12 border transition-all duration-500 ${
                 activeStep === index 
-                  ? "bg-[#000000] border-white/60" 
-                  : "bg-[#000000] border-white/25 hover:border-white/50"
+                  ? "bg-[#000000] border-gray-200 dark:border-white/60" 
+                  : "bg-[#000000] border-gray-200 dark:border-white/25 hover:border-gray-200 dark:border-white/50"
               }`}
             >
               {/* Step number with animated line */}
               <div className="flex items-center gap-4 mb-8">
                 <span className={`text-4xl font-display transition-colors duration-300 ${
-                  activeStep === index ? "text-[#eca8d6]" : "text-white/20"
+                  activeStep === index ? "text-[#eca8d6]" : "text-black dark:text-white/20"
                 }`}>
                   {step.number}
                 </span>
-                <div className="flex-1 h-px bg-white/10 overflow-hidden">
+                <div className="flex-1 h-px bg-black/10 dark:bg-white/10 overflow-hidden">
                   {activeStep === index && (
                     <div className="h-full bg-[#eca8d6]/50 animate-progress" />
                   )}
@@ -151,12 +151,12 @@ export function HowItWorksSection() {
               <h3 className="text-3xl lg:text-4xl font-display mb-2">
                 {step.title}
               </h3>
-              <span className="text-xl text-white/40 font-display block mb-6">
+              <span className="text-xl text-black dark:text-white/40 font-display block mb-6">
                 {step.subtitle}
               </span>
 
               {/* Description */}
-              <p className={`text-white/60 leading-relaxed transition-opacity duration-300 ${
+              <p className={`text-black dark:text-white/60 leading-relaxed transition-opacity duration-300 ${
                 activeStep === index ? "opacity-100" : "opacity-60"
               }`}>
                 {step.description}

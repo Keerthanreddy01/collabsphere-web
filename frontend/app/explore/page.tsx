@@ -117,17 +117,17 @@ export default function ExplorePage() {
 
   if (loading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-white animate-spin" />
-          <span className="text-white/30 text-base">Loading explore…</span>
+          <div className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-white/10 border-t-white animate-spin" />
+          <span className="text-black dark:text-white/30 text-base">Loading explore…</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-black text-white font-sans overflow-x-hidden relative selection:bg-white/20 selection:text-white">
+    <div className="flex justify-center min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans overflow-x-hidden relative selection:bg-black/20 dark:bg-white/20 selection:text-black dark:text-white">
       <div className="flex w-full max-w-[1250px] min-h-screen relative">
         {/* Ambient background (Removed blobs to fix mobile overlap) */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden hidden md:block">
@@ -138,26 +138,26 @@ export default function ExplorePage() {
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
         <main className="flex-1 flex justify-center min-h-screen overflow-y-visible relative z-10 min-w-0">
-          <div className="w-full max-w-[600px] flex flex-col pb-[80px] md:pb-0 overflow-x-hidden border-r border-l border-white/[0.06]">
+          <div className="w-full max-w-[600px] flex flex-col pb-[80px] md:pb-0 overflow-x-hidden border-r border-l border-gray-200 dark:border-white/[0.06]">
 
             {/* ── Sticky Search + Category Header ─────────────────────────────── */}
-            <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
+            <div className="sticky top-0 z-30 bg-white dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/[0.06]">
 
               {/* Search bar */}
               <div className="px-6 pt-5 pb-4">
                 <motion.div
                   animate={{ scale: searchFocused ? 1.01 : 1 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex items-center gap-4 bg-[#15171a] border border-white/[0.04] rounded-[16px] px-5 h-[46px] transition-all duration-200 ${searchFocused ? "bg-black border-[#6366f1]/50 shadow-[0_0_20px_rgba(99,102,241,0.15)]" : "focus-within:bg-[#000]"}`}
+                  className={`flex items-center gap-4 bg-[#15171a] border border-gray-200 dark:border-white/[0.04] rounded-[16px] px-5 h-[46px] transition-all duration-200 ${searchFocused ? "bg-white dark:bg-black border-[#6366f1]/50 shadow-[0_0_20px_rgba(99,102,241,0.15)]" : "focus-within:bg-[#000]"}`}
                 >
-                  <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-[#6366f1]" : "text-white/40"}`} />
+                  <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-[#6366f1]" : "text-black dark:text-white/40"}`} />
                   <input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
                     placeholder="Search builders, projects, topics…"
-                    className="flex-1 bg-transparent text-[14px] text-white placeholder-white/30 outline-none h-full"
+                    className="flex-1 bg-transparent text-[14px] text-black dark:text-white placeholder-white/30 outline-none h-full"
                   />
                   <AnimatePresence>
                     {searchQuery && (
@@ -166,7 +166,7 @@ export default function ExplorePage() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                         onClick={() => setSearchQuery("")}
-                        className="text-white/30 hover:text-white text-sm transition-colors"
+                        className="text-black dark:text-white/30 hover:text-black dark:text-white text-sm transition-colors"
                       >✕</motion.button>
                     )}
                   </AnimatePresence>
@@ -174,13 +174,13 @@ export default function ExplorePage() {
               </div>
 
               {/* Category pills */}
-              <div className="flex items-center w-full overflow-x-auto scrollbar-hide border-b border-white/[0.06]">
+              <div className="flex items-center w-full overflow-x-auto scrollbar-hide border-b border-gray-200 dark:border-white/[0.06]">
                 {CATEGORIES.map(({ label, icon: Icon }) => (
                   <button
                     key={label}
                     onClick={() => setActiveCategory(label)}
                     className={`relative flex-1 flex items-center justify-center h-[53px] px-4 text-[15px] font-bold whitespace-nowrap transition-colors duration-200 hover:bg-white/[0.03] outline-none border-none cursor-pointer bg-transparent ${activeCategory === label
-                        ? "text-white"
+                        ? "text-black dark:text-white"
                         : "text-[#71767b]"
                       }`}
                   >
@@ -208,11 +208,11 @@ export default function ExplorePage() {
             >
 
               {/* ── Trending Topics ── */}
-              <motion.section variants={stagger.item} className="border-b border-white/[0.06]">
+              <motion.section variants={stagger.item} className="border-b border-gray-200 dark:border-white/[0.06]">
                 <div className="flex items-center justify-between px-6 pt-6 pb-4">
                   <div className="flex items-center gap-2.5">
                     <Flame className="w-5 h-5 text-orange-400" />
-                    <span className="text-[18px] font-bold text-white">Trending in Dev</span>
+                    <span className="text-[18px] font-bold text-black dark:text-white">Trending in Dev</span>
                   </div>
                   <button className="text-[15px] text-blue-400 hover:text-blue-300 transition-colors">See all</button>
                 </div>
@@ -226,28 +226,28 @@ export default function ExplorePage() {
                     >
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[13px] text-white/30">{i + 1} · {topic.category}</span>
+                          <span className="text-[13px] text-black dark:text-white/30">{i + 1} · {topic.category}</span>
                           {topic.hot && (
                             <span className="text-[11px] font-bold text-orange-400/80 bg-orange-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                               <Zap className="w-3 h-3" /> HOT
                             </span>
                           )}
                         </div>
-                        <span className="text-[16px] font-bold text-white group-hover:text-white/90">#{topic.tag}</span>
-                        <span className="text-[14px] text-white/30">{topic.posts} posts</span>
+                        <span className="text-[16px] font-bold text-black dark:text-white group-hover:text-black dark:text-white/90">#{topic.tag}</span>
+                        <span className="text-[14px] text-black dark:text-white/30">{topic.posts} posts</span>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-white/40 transition-colors" />
+                      <ChevronRight className="w-5 h-5 text-black dark:text-white/20 group-hover:text-black dark:text-white/40 transition-colors" />
                     </motion.button>
                   ))}
                 </div>
               </motion.section>
 
               {/* ── Suggested Builders (Instagram-style cards) ── */}
-              <motion.section variants={stagger.item} className="border-b border-white/[0.06]">
+              <motion.section variants={stagger.item} className="border-b border-gray-200 dark:border-white/[0.06]">
                 <div className="flex items-center justify-between px-6 pt-6 pb-4">
                   <div className="flex items-center gap-2.5">
                     <Users className="w-5 h-5 text-blue-400" />
-                    <span className="text-[18px] font-bold text-white">Who to Follow</span>
+                    <span className="text-[18px] font-bold text-black dark:text-white">Who to Follow</span>
                   </div>
                   <button className="text-[15px] text-blue-400 hover:text-blue-300 transition-colors">See all</button>
                 </div>
@@ -263,18 +263,18 @@ export default function ExplorePage() {
                         <img
                           src={builder.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${builder.id}`}
                           alt={builder.full_name || "Builder"}
-                          className="w-12 h-12 rounded-full bg-white/10 object-cover"
+                          className="w-12 h-12 rounded-full bg-black/10 dark:bg-white/10 object-cover"
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-[3px] border-black" />
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[16px] font-bold text-white truncate">{builder.full_name || "Builder"}</span>
+                          <span className="text-[16px] font-bold text-black dark:text-white truncate">{builder.full_name || "Builder"}</span>
                           {builder.verified && <Verified className="w-4 h-4 text-blue-400 shrink-0 fill-blue-400" />}
                         </div>
-                        <p className="text-[14px] text-white/40 truncate">@{builder.username || builder.id.substring(0,8)} · {builder.followers?.length || 0} followers</p>
-                        <p className="text-[14px] text-white/50 mt-1 flex items-center gap-1.5">
+                        <p className="text-[14px] text-black dark:text-white/40 truncate">@{builder.username || builder.id.substring(0,8)} · {builder.followers?.length || 0} followers</p>
+                        <p className="text-[14px] text-black dark:text-white/50 mt-1 flex items-center gap-1.5">
                           <Rocket className="w-3.5 h-3.5 text-purple-400" />
                           Building: {builder.building || "something cool"}
                         </p>
@@ -284,8 +284,8 @@ export default function ExplorePage() {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleToggleFollow(builder.id, !!followed[builder.id])}
                         className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${followed[builder.id]
-                            ? "bg-transparent border-white/20 text-white/60 hover:border-red-500/40 hover:text-red-400"
-                            : "bg-white border-white text-black hover:bg-white/90"
+                            ? "bg-transparent border-gray-200 dark:border-white/20 text-black dark:text-white/60 hover:border-red-500/40 hover:text-red-400"
+                            : "bg-white border-black/20 dark:border-white text-white dark:text-black hover:bg-white/90"
                           }`}
                       >
                         {followed[builder.id] ? "Following" : "Follow"}
@@ -297,9 +297,9 @@ export default function ExplorePage() {
 
               {/* ── Popular Discussions (Twitter/X-style feed) ── */}
               <motion.section variants={stagger.item}>
-                <div className="flex items-center gap-2.5 px-6 pt-6 pb-4 border-b border-white/[0.06]">
+                <div className="flex items-center gap-2.5 px-6 pt-6 pb-4 border-b border-gray-200 dark:border-white/[0.06]">
                   <Sparkles className="w-5 h-5 text-purple-400" />
-                  <span className="text-[18px] font-bold text-white">Popular Discussions</span>
+                  <span className="text-[18px] font-bold text-black dark:text-white">Popular Discussions</span>
                 </div>
 
                 <div className="divide-y divide-white/[0.06]">
@@ -307,17 +307,17 @@ export default function ExplorePage() {
                     /* Empty state */
                     <div className="flex flex-col items-center justify-center py-24 gap-5">
                       <div className="w-20 h-20 rounded-full bg-white/[0.04] flex items-center justify-center">
-                        <Sparkles className="w-8 h-8 text-white/20" />
+                        <Sparkles className="w-8 h-8 text-black dark:text-white/20" />
                       </div>
                       <div className="text-center">
-                        <p className="text-white font-bold text-[18px]">Nothing here yet</p>
-                        <p className="text-white/30 text-[15px] mt-1.5">Be the first to start a discussion.</p>
+                        <p className="text-black dark:text-white font-bold text-[18px]">Nothing here yet</p>
+                        <p className="text-black dark:text-white/30 text-[15px] mt-1.5">Be the first to start a discussion.</p>
                       </div>
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => router.push("/create")}
-                        className="px-8 py-3 bg-white text-black text-[15px] font-bold rounded-full hover:bg-white/90 transition-colors"
+                        className="px-8 py-3 bg-white text-white dark:text-black text-[15px] font-bold rounded-full hover:bg-white/90 transition-colors"
                       >
                         Post something
                       </motion.button>
@@ -380,30 +380,30 @@ function PostCard({ post, index }: { post: any; index: number }) {
     >
       {/* Avatar column */}
       <div className="shrink-0">
-        <img src={avatar} alt={post.author_username} className="w-12 h-12 rounded-full bg-white/10" />
+        <img src={avatar} alt={post.author_username} className="w-12 h-12 rounded-full bg-black/10 dark:bg-white/10" />
       </div>
 
       {/* Content column */}
       <div className="flex-1 min-w-0">
         {/* Header row */}
         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-          <span className="text-[16px] font-bold text-white hover:underline cursor-pointer">
+          <span className="text-[16px] font-bold text-black dark:text-white hover:underline cursor-pointer">
             {post.author_username || "builder"}
           </span>
-          <span className="text-[15px] text-white/30">·</span>
-          <span className="text-[15px] text-white/30">{timeAgo(post.created_at)}</span>
+          <span className="text-[15px] text-black dark:text-white/30">·</span>
+          <span className="text-[15px] text-black dark:text-white/30">{timeAgo(post.created_at)}</span>
           {post.post_type && (
-            <span className={`text-[13px] font-semibold px-2.5 py-0.5 rounded-full bg-white/[0.05] ${TYPE_COLORS[post.post_type] || "text-white/50"}`}>
+            <span className={`text-[13px] font-semibold px-2.5 py-0.5 rounded-full bg-white/[0.05] ${TYPE_COLORS[post.post_type] || "text-black dark:text-white/50"}`}>
               {post.post_type.replace(/_/g, " ")}
             </span>
           )}
-          <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-white/30 hover:text-white hover:bg-white/10 rounded-full p-1.5">
+          <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-black dark:text-white/30 hover:text-black dark:text-white hover:bg-black/10 dark:bg-white/10 rounded-full p-1.5">
             <MoreHorizontal className="w-5 h-5" />
           </button>
         </div>
 
         {/* Post content */}
-        <p className="text-[17px] leading-[1.6] text-white/90 mb-4 break-words">
+        <p className="text-[17px] leading-[1.6] text-black dark:text-white/90 mb-4 break-words">
           {post.content}
         </p>
 
@@ -437,9 +437,9 @@ function PostCard({ post, index }: { post: any; index: number }) {
             className="flex items-center gap-1.5 group/btn"
           >
             <span className={`p-2 rounded-full transition-colors ${liked ? "bg-red-500/10" : "group-hover/btn:bg-red-500/10"}`}>
-              <Heart className={`w-[20px] h-[20px] transition-all ${liked ? "text-red-500 fill-red-500 scale-110" : "text-white/40 group-hover/btn:text-red-400"}`} />
+              <Heart className={`w-[20px] h-[20px] transition-all ${liked ? "text-red-500 fill-red-500 scale-110" : "text-black dark:text-white/40 group-hover/btn:text-red-400"}`} />
             </span>
-            <span className={`text-[14px] transition-colors ${liked ? "text-red-500" : "text-white/40 group-hover/btn:text-red-400"}`}>
+            <span className={`text-[14px] transition-colors ${liked ? "text-red-500" : "text-black dark:text-white/40 group-hover/btn:text-red-400"}`}>
               {likeCount}
             </span>
           </motion.button>
@@ -454,12 +454,12 @@ function PostCard({ post, index }: { post: any; index: number }) {
             className="group/btn"
           >
             <span className={`p-2 rounded-full block transition-colors ${bookmarked ? "bg-blue-400/10" : "group-hover/btn:bg-blue-400/10"}`}>
-              <BookmarkPlus className={`w-[20px] h-[20px] transition-all ${bookmarked ? "text-blue-400 fill-blue-400" : "text-white/40 group-hover/btn:text-blue-400"}`} />
+              <BookmarkPlus className={`w-[20px] h-[20px] transition-all ${bookmarked ? "text-blue-400 fill-blue-400" : "text-black dark:text-white/40 group-hover/btn:text-blue-400"}`} />
             </span>
           </motion.button>
 
           {/* Views */}
-          <div className="flex items-center gap-1.5 text-white/25">
+          <div className="flex items-center gap-1.5 text-black dark:text-white/25">
             <Share className="w-[18px] h-[18px]" />
             <span className="text-[13px]">{views > 999 ? `${(views / 1000).toFixed(1)}K` : views}</span>
           </div>
@@ -475,9 +475,9 @@ function ActionButton({ icon, count, color, hoverBg }: {
   return (
     <motion.button whileTap={{ scale: 0.85 }} className={`flex items-center gap-1.5 group/btn`}>
       <span className={`p-2 rounded-full block transition-colors ${hoverBg}`}>
-        <span className={`block text-white/40 transition-colors ${color}`}>{icon}</span>
+        <span className={`block text-black dark:text-white/40 transition-colors ${color}`}>{icon}</span>
       </span>
-      <span className={`text-[14px] text-white/40 transition-colors ${color}`}>{count}</span>
+      <span className={`text-[14px] text-black dark:text-white/40 transition-colors ${color}`}>{count}</span>
     </motion.button>
   );
 }
