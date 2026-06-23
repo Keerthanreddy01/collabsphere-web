@@ -103,6 +103,7 @@ export default function PreRegisterMobilePromo() {
             </div>
           </motion.div>
         </motion.div>
+        )}
       </AnimatePresence>
     </>
   );
