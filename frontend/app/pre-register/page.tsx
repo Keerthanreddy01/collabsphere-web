@@ -118,17 +118,17 @@ function WaitlistContent() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="relative flex flex-col items-center"
           >
-            <div className="relative flex items-center bg-[#0d0d0d] rounded-full p-2 pr-6 border border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)] transition-colors duration-500 hover:bg-[#111111]">
+            <div className="relative flex items-center bg-[#0d0d0d] rounded-full p-1 sm:p-2 pr-4 sm:pr-6 border border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)] transition-colors duration-500 hover:bg-[#111111] w-full max-w-[95vw] sm:max-w-none">
               <button 
                 type="submit" 
                 disabled={loading}
-                className="flex items-center gap-3 px-6 py-3 text-white text-[19px] tracking-tight font-sans font-medium transition-opacity hover:opacity-70 disabled:opacity-50"
+                className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 text-white text-[16px] sm:text-[19px] tracking-tight font-sans font-medium transition-opacity hover:opacity-70 disabled:opacity-50 flex-shrink-0 z-10"
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Plus className="w-6 h-6 stroke-[1.5]" />}
+                {loading ? <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" /> : <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.5]" />}
                 Join
               </button>
               
-              <div className="relative flex items-center h-full group">
+              <div className="relative flex items-center h-full group flex-1 min-w-0">
                 {/* The Glowing Divider */}
                 <div className={`w-[2px] h-8 transition-all duration-700 z-20 ${focused || email.length > 0 ? 'bg-white shadow-[0_0_15px_3px_rgba(255,255,255,0.6)]' : 'bg-white/20'}`} />
                 
@@ -136,16 +136,17 @@ function WaitlistContent() {
                 <AnimatePresence>
                   {(focused || email.length > 0) && (
                     <>
-                      {/* Wide soft outer glow */}
+                      {/* Conic Light Beam */}
                       <motion.div 
                         initial={{ opacity: 0, scaleX: 0 }}
                         animate={{ opacity: 1, scaleX: 1 }}
                         exit={{ opacity: 0, scaleX: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[250px] origin-left pointer-events-none z-0 mix-blend-screen"
+                        className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[150vw] sm:w-[800px] h-[400px] origin-left pointer-events-none z-0 mix-blend-screen"
                         style={{
-                          background: 'radial-gradient(ellipse 100% 50% at 0% 50%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
-                          filter: 'blur(20px)'
+                          background: 'conic-gradient(from 90deg at 0% 50%, rgba(255,255,255,0.4) 0deg, transparent 20deg, transparent 340deg, rgba(255,255,255,0.4) 360deg)',
+                          maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
+                          WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
                         }}
                       />
                       {/* Bright inner core */}
@@ -154,10 +155,11 @@ function WaitlistContent() {
                         animate={{ opacity: 1, scaleX: 1 }}
                         exit={{ opacity: 0, scaleX: 0 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[100px] origin-left pointer-events-none z-0 mix-blend-screen"
+                        className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[80vw] sm:w-[500px] h-[150px] origin-left pointer-events-none z-0 mix-blend-screen"
                         style={{
-                          background: 'radial-gradient(ellipse 100% 50% at 0% 50%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 60%, transparent 100%)',
-                          filter: 'blur(10px)'
+                          background: 'conic-gradient(from 90deg at 0% 50%, rgba(255,255,255,0.9) 0deg, transparent 10deg, transparent 350deg, rgba(255,255,255,0.9) 360deg)',
+                          maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
+                          WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
                         }}
                       />
                     </>
@@ -172,11 +174,11 @@ function WaitlistContent() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 1 }}
-                      className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[400px] h-[150px] pointer-events-none z-0 mix-blend-screen opacity-40"
+                      className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[100vw] sm:w-[600px] h-[200px] pointer-events-none z-0 mix-blend-screen opacity-50"
                       style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-                        maskImage: 'radial-gradient(ellipse 100% 50% at 0% 50%, black 0%, transparent 100%)',
-                        WebkitMaskImage: 'radial-gradient(ellipse 100% 50% at 0% 50%, black 0%, transparent 100%)'
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+                        maskImage: 'conic-gradient(from 90deg at 0% 50%, black 0deg, transparent 20deg, transparent 340deg, black 360deg)',
+                        WebkitMaskImage: 'conic-gradient(from 90deg at 0% 50%, black 0deg, transparent 20deg, transparent 340deg, black 360deg)'
                       }}
                     />
                   )}
@@ -188,7 +190,7 @@ function WaitlistContent() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
-                  className="bg-transparent border-none outline-none text-white text-[19px] tracking-tight pl-6 w-[200px] sm:w-[320px] placeholder-white/30 z-10 relative font-sans" 
+                  className="bg-transparent border-none outline-none text-white text-[16px] sm:text-[19px] tracking-tight pl-4 sm:pl-6 w-full sm:w-[320px] placeholder-white/30 z-10 relative font-sans text-ellipsis overflow-hidden whitespace-nowrap" 
                   placeholder="Enter email address" 
                   required
                 />
@@ -207,14 +209,14 @@ function WaitlistContent() {
             </div>
 
             {/* Error Message */}
-            <div className="absolute top-full mt-6 h-6">
+            <div className="absolute top-full mt-6 w-[100vw] text-center">
               <AnimatePresence>
                 {errorMsg && (
                   <motion.p 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="text-[#ff453a] text-[13px] font-mono tracking-widest uppercase"
+                    className="text-[#ff453a] text-[12px] sm:text-[13px] font-mono tracking-widest uppercase inline-block mx-auto"
                   >
                     {errorMsg}
                   </motion.p>
@@ -252,10 +254,11 @@ function WaitlistContent() {
                 initial={{ opacity: 0, scaleX: 0 }}
                 animate={{ opacity: 1, scaleX: 1 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[400px] h-[200px] origin-left pointer-events-none z-0 mix-blend-screen"
+                className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[150vw] sm:w-[500px] h-[400px] origin-left pointer-events-none z-0 mix-blend-screen"
                 style={{
-                  background: 'radial-gradient(ellipse 100% 50% at 0% 50%, rgba(16,185,129,0.5) 0%, rgba(16,185,129,0.1) 50%, transparent 100%)',
-                  filter: 'blur(20px)'
+                  background: 'conic-gradient(from 90deg at 0% 50%, rgba(16,185,129,0.5) 0deg, transparent 25deg, transparent 335deg, rgba(16,185,129,0.5) 360deg)',
+                  maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
                 }}
               />
               {/* Bright inner core */}
@@ -263,10 +266,11 @@ function WaitlistContent() {
                 initial={{ opacity: 0, scaleX: 0 }}
                 animate={{ opacity: 1, scaleX: 1 }}
                 transition={{ duration: 1.0, ease: "easeOut" }}
-                className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[250px] h-[80px] origin-left pointer-events-none z-0 mix-blend-screen"
+                className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[80vw] sm:w-[350px] h-[150px] origin-left pointer-events-none z-0 mix-blend-screen"
                 style={{
-                  background: 'radial-gradient(ellipse 100% 50% at 0% 50%, rgba(16,185,129,0.9) 0%, rgba(16,185,129,0.2) 60%, transparent 100%)',
-                  filter: 'blur(10px)'
+                  background: 'conic-gradient(from 90deg at 0% 50%, rgba(16,185,129,0.9) 0deg, transparent 10deg, transparent 350deg, rgba(16,185,129,0.9) 360deg)',
+                  maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
                 }}
               />
 
