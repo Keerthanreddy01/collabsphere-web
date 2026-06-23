@@ -14,13 +14,13 @@ export default function PreRegisterMobilePromo() {
     if (!isMobile) return;
 
     // Check if the promo has already been seen in this session
-    const promoSeen = sessionStorage.getItem("preRegisterPromoSeen");
+    const promoSeen = sessionStorage.getItem("preRegisterPromoSeen_v2");
     if (promoSeen === "true") return;
 
     // Show popup after a 3-second delay
     const timer = setTimeout(() => {
       setShowPromo(true);
-      sessionStorage.setItem("preRegisterPromoSeen", "true");
+      sessionStorage.setItem("preRegisterPromoSeen_v2", "true");
     }, 3000);
 
     return () => clearTimeout(timer);
