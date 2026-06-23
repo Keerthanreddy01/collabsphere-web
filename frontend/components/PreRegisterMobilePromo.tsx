@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Link from "next/link";
 
 export default function PreRegisterMobilePromo() {
   const isMobile = useIsMobile();
@@ -84,12 +85,14 @@ export default function PreRegisterMobilePromo() {
             </button>
 
             {/* Promotional Image Container */}
-            <div className="w-full bg-[#0a0a0a] border border-white/10 rounded-[24px] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]">
-              <img
-                src="/poster.jpeg"
-                alt="CollabSphere Promotional Poster"
-                className="w-full h-auto object-cover block"
-              />
+            <div className="w-full bg-[#0a0a0a] border border-white/10 rounded-[24px] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] transition-transform active:scale-95">
+              <Link href="/pre-register" onClick={() => setShowPromo(false)} className="block w-full h-full">
+                <img
+                  src="/poster.jpeg"
+                  alt="CollabSphere Promotional Poster"
+                  className="w-full h-auto object-cover block"
+                />
+              </Link>
             </div>
           </motion.div>
         </motion.div>

@@ -40,6 +40,9 @@ import {
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { createPost, likePost, addComment, getComments } from "@/lib/posts";
+import TopNav from '@/components/dashboard/TopNav';
+import MobileTabBar from '@/components/dashboard/MobileTabBar';
+import PreRegisterMobilePromo from "@/components/PreRegisterMobilePromo";
 import LeftSidebar from "@/components/dashboard/LeftSidebar";
 import RightSidebar from "@/components/dashboard/RightSidebar";
 import { usePostViewTracker } from "@/hooks/usePostViewTracker";
@@ -517,7 +520,8 @@ export default function DashboardHomePage() {
 
   return (
     <div className="flex justify-center min-h-screen bg-[#F8F9FA] dark:bg-[#000000] text-black dark:text-white font-sans overflow-x-hidden overflow-y-hidden selection:bg-blue-500/30 selection:text-black dark:text-white relative">
-      <div className="flex w-full max-w-[1250px] h-screen relative overflow-x-hidden">
+      <div className="flex w-full max-w-[1440px] mx-auto h-screen relative overflow-x-hidden">
+        <PreRegisterMobilePromo />
         <div className="hidden md:flex shrink-0">
           <LeftSidebar isSidebarOpen={false} setIsSidebarOpen={() => { }} />
         </div>

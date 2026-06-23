@@ -13,7 +13,6 @@ import { joinWaitlist, getRecentSignups, getWaitlistCount } from "@/lib/waitlist
 import { Turnstile } from '@marsidev/react-turnstile';
 import SideRays from "@/components/ui/SideRays";
 import emailjs from "@emailjs/browser";
-import PreRegisterMobilePromo from "@/components/PreRegisterMobilePromo";
 
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
@@ -469,8 +468,6 @@ export default function PreRegisterPage() {
     <div 
       className="min-h-screen w-full bg-[#0d0d0d] text-white flex flex-col relative font-sans overflow-y-auto overflow-x-hidden"
     >
-      <PreRegisterMobilePromo />
-      
       {/* Perspective Grid Background */}
       <div 
         className="absolute inset-0 pointer-events-none z-0 opacity-20"
