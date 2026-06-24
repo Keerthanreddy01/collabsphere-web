@@ -124,14 +124,6 @@
   }
 }
 
-/* Smooth theme transition — applied transiently via JS */
-.theme-transitioning,
-.theme-transitioning *,
-.theme-transitioning *::before,
-.theme-transitioning *::after {
-  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease !important;
-}
-
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
