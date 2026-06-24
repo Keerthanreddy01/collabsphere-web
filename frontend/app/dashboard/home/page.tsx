@@ -134,91 +134,93 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-0 sm:mb-4 bg-white dark:bg-[#0a0a0a] border-b sm:border border-gray-200 dark:border-white/[0.08] rounded-none sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full bg-white dark:bg-[#0a0a0a] border-b border-gray-200 dark:border-white/[0.08] transition-colors duration-200 hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden sm:rounded-2xl sm:border sm:mb-4 sm:hover:shadow-sm"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
-        <div className={`absolute top-0 left-0 right-0 h-[1px] ${theme.bg} blur-[1px]`} />
+        <div className={`absolute top-0 left-0 right-0 h-[2px] ${theme.bg}`} />
       )}
 
-      <div className="p-4 sm:p-5">
-        {/* ── Header Row ── */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            {/* Avatar */}
-            <div className="relative shrink-0 w-[36px] h-[36px] sm:w-10 sm:h-10 rounded-full p-[2px] bg-gradient-to-tr from-white/5 to-white/10 group-hover/post:from-[#D4F842]/40 group-hover/post:to-[#00f2fe]/40 transition-all duration-500">
-              <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-black">
-                <img
-                  src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
-                  alt={post.author_name}
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </div>
+      <div className="p-4 sm:p-5 flex gap-3 sm:gap-4">
+        {/* ── Left Column: Avatar ── */}
+        <div className="shrink-0 pt-1">
+          <div className="w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full overflow-hidden bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700/50 cursor-pointer hover:opacity-80 transition-opacity">
+            <img
+              src={post.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.uid}`}
+              alt={post.author_name}
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        </div>
 
-            {/* Author info & Badges */}
-            <div className="flex flex-col min-w-0 justify-center flex-1">
-              <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 overflow-hidden w-full">
-                <span className="font-semibold text-[14px] sm:font-bold sm:text-[14.5px] text-black dark:text-white hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors cursor-pointer leading-none truncate shrink-0 max-w-[140px] sm:max-w-none">
+        {/* ── Right Column: Content ── */}
+        <div className="flex flex-col min-w-0 flex-1">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-[15px] sm:text-[16px] text-black dark:text-white hover:underline cursor-pointer truncate max-w-[200px] sm:max-w-none leading-none">
                   {post.author_name || "Builder"}
                 </span>
-                <span className="text-gray-500 dark:text-neutral-400 font-mono text-[12px] sm:text-[13px] leading-none truncate shrink min-w-0 max-w-[100px] sm:max-w-none">
+                <span className="text-gray-500 dark:text-neutral-500 font-medium text-[14px] sm:text-[15px] truncate max-w-[120px] sm:max-w-none leading-none">
                   @{post.author_username || "builder"}
                 </span>
-                <span className="text-gray-400 dark:text-neutral-500 text-[13px] mx-0.5 sm:mx-1 shrink-0 hidden sm:inline">·</span>
-                <span className="text-[11px] sm:text-[12px] text-gray-500 dark:text-neutral-400 font-mono leading-none hover:underline cursor-pointer shrink-0 whitespace-nowrap ml-auto sm:ml-0">{timeAgo(post.created_at)}</span>
+                <span className="text-gray-400 dark:text-neutral-600 text-[13px] leading-none">·</span>
+                <span className="text-[13px] sm:text-[14px] text-gray-500 dark:text-neutral-500 leading-none hover:underline cursor-pointer whitespace-nowrap">
+                  {timeAgo(post.created_at)}
+                </span>
               </div>
+              
+              {/* Badges Row */}
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                {/* Clean inline post type badge */}
-                <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${theme.text} ${theme.bg}`}>
-                  <theme.icon className="w-2.5 h-2.5" />
+                <div className={`flex items-center gap-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${theme.text} ${theme.bg}`}>
+                  <theme.icon className="w-3 h-3" />
                   {theme.label}
                 </div>
-
                 {post.project && (
-                  <span className="flex items-center gap-1 text-[10px] font-medium text-gray-500 dark:text-neutral-400 bg-white dark:bg-white/5 px-1.5 py-0.5 rounded-md">
-                    <Sparkles className="w-2.5 h-2.5" />
+                  <span className="flex items-center gap-1 text-[11px] font-medium text-gray-600 dark:text-neutral-300 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/5">
+                    <Sparkles className="w-3 h-3" />
                     {post.project}
                   </span>
                 )}
                 {post.visibility === 'collabs' && (
-                  <span className="flex items-center gap-1 text-[10px] font-medium text-amber-500/80 bg-amber-500/10 px-1.5 py-0.5 rounded-md">
-                    <Lock className="w-2.5 h-2.5" />
+                  <span className="flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-200 dark:border-amber-500/20">
+                    <Lock className="w-3 h-3" />
                     Collabs Only
                   </span>
                 )}
               </div>
             </div>
-          </div>
 
-          {/* More Menu */}
-          <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-white dark:text-black dark:hover:text-black dark:text-white hover:bg-gray-100 dark:hover:bg-black/10 dark:bg-white/10 transition-colors cursor-pointer bg-transparent border-none">
-            <MoreHorizontal className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* ── Main Content ── */}
-        <div className="ml-0 sm:ml-[52px] mb-3">
-          <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed font-medium text-black dark:text-white/95 whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
-            {renderContentWithHashtags(displayContent)}
-          </div>
-          {isTruncated && !isExpanded && (
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="text-[#1d9bf0] hover:underline mt-1 text-[14px] bg-transparent border-none outline-none cursor-pointer p-0 inline-block"
-            >
-              Show more
+            {/* More Menu */}
+            <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-[#1d9bf0] hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none shrink-0 -mt-1 -mr-2">
+              <MoreHorizontal className="w-4.5 h-4.5" />
             </button>
-          )}
+          </div>
 
-          {/* ── Tech Stack Tags ── */}
+          {/* Main Text Content */}
+          <div className="mt-2 text-[15px] sm:text-[16px] leading-snug sm:leading-normal font-normal text-[#0f1419] dark:text-[#e7e9ea] whitespace-pre-wrap break-words">
+            <div className={!isExpanded ? 'line-clamp-4 sm:line-clamp-none' : ''}>
+              {renderContentWithHashtags(displayContent)}
+            </div>
+            {isTruncated && !isExpanded && (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="text-[#1d9bf0] hover:underline mt-1 text-[15px] font-medium bg-transparent border-none outline-none cursor-pointer p-0 inline-block"
+              >
+                Show more
+              </button>
+            )}
+          </div>
+
+          {/* Tech Stack Tags */}
           {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar sm:flex-wrap pb-1 pr-4 sm:pr-0">
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {post.stack_tags.map((tag: string, idx: number) => (
                 <span
                   key={idx}
-                  className="text-[11px] sm:text-[13px] px-2 py-0.5 sm:px-0 sm:py-0 bg-blue-500/10 sm:bg-transparent rounded-full sm:rounded-none text-[#1d9bf0] hover:underline cursor-pointer shrink-0 whitespace-nowrap"
+                  className="text-[13px] sm:text-[14px] text-[#1d9bf0] hover:underline cursor-pointer"
                 >
                   #{tag}
                 </span>
@@ -226,113 +228,132 @@ function PostCard({
             </div>
           )}
 
-          {/* ── Collab Apply Action Block ── */}
+          {/* Collab Apply Action Block */}
           {isCollab && (
-            <div className="mt-4 flex items-center justify-between border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] rounded-2xl p-4 sm:p-5 transition-all hover:bg-gray-100 dark:hover:bg-white/[0.04]">
-              <div className="flex flex-col mr-4">
-                <span className="text-[14px] sm:text-[15px] font-bold text-black dark:text-white leading-tight">Open to Collaborators</span>
-                <span className="text-[13px] text-gray-500 dark:text-neutral-400 mt-1">The author is looking for team members.</span>
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900/50 rounded-xl p-4 transition-all hover:bg-gray-100 dark:hover:bg-neutral-900 cursor-pointer group/apply">
+              <div className="flex flex-col">
+                <span className="text-[15px] font-bold text-black dark:text-white leading-tight group-hover/apply:text-[#1d9bf0] transition-colors">Open to Collaborators</span>
+                <span className="text-[14px] text-gray-500 dark:text-neutral-400 mt-0.5">The author is looking for team members.</span>
               </div>
               <button
-                onClick={() => handleCollabClick(post)}
-                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none shrink-0"
+                onClick={(e) => { e.stopPropagation(); handleCollabClick(post); }}
+                className="w-full sm:w-auto px-5 py-2 rounded-full text-[14px] font-bold transition-all active:scale-95 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none shrink-0"
               >
-                Apply
+                Apply Now
               </button>
             </div>
           )}
-        </div>
 
-        {/* ── Actions Dock ── */}
-        <div className="flex items-center justify-between w-full sm:w-auto ml-0 sm:ml-[52px] mt-2 pt-2 pb-1 pr-2 sm:pr-0">
-          {/* Comment */}
-          <button
-            onClick={handleFetchComments}
-            className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/[0.08]  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none"
-          >
-            <MessageCircle className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors" />
-            {post.comments_count > 0 && <span className="font-semibold text-[12px] text-gray-500 dark:text-neutral-400 group-hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors">{post.comments_count}</span>}
-          </button>
-
-          {/* Boost */}
-          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-emerald-500/10  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
-            <Rocket className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-emerald-400 transition-colors" />
-          </button>
-
-          {/* Like (Zap) */}
-          <ClickSpark sparkColor="#D4F842" sparkSize={4} sparkRadius={8} sparkCount={4} duration={300}>
+          {/* Actions Dock */}
+          <div className="flex items-center justify-between w-full max-w-[425px] mt-3">
+            {/* Comment */}
             <button
-              onClick={() => handleLikeClick(post.id)}
-              className={`flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none ${isLiked ? 'bg-[#D4F842]/15 border-none shadow-[0_0_10px_rgba(212,248,66,0.1)]' : 'border-gray-200 dark:border-white/[0.05] bg-white/[0.02] hover:bg-[#D4F842]/10 hover:border-none'}`}
+              onClick={handleFetchComments}
+              className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none"
             >
-              <Zap className={`w-[14px] h-[14px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-gray-500 dark:text-neutral-400 group-hover:text-[#D4F842]'}`} fill={isLiked ? "#D4F842" : "none"} />
-              {likesCount > 0 && <span className={`font-semibold text-[12px] transition-colors ${isLiked ? 'text-[#D4F842]' : 'text-gray-500 dark:text-neutral-400 group-hover:text-[#D4F842]'}`}>{likesCount}</span>}
+              <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center group-hover:bg-[#1d9bf0]/10 transition-colors">
+                <MessageCircle className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#1d9bf0] transition-colors" strokeWidth={1.75} />
+              </div>
+              <span className={`text-[13px] transition-colors ${post.comments_count > 0 ? 'text-gray-500 dark:text-neutral-500 group-hover:text-[#1d9bf0]' : 'text-transparent'}`}>
+                {post.comments_count || 0}
+              </span>
             </button>
-          </ClickSpark>
 
-          {/* Views */}
-          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/[0.08]  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
-            <Eye className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors" />
-          </button>
+            {/* Boost (Retweet equivalent) */}
+            <button className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
+              <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center group-hover:bg-[#00ba7c]/10 transition-colors">
+                <Rocket className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#00ba7c] transition-colors" strokeWidth={1.75} />
+              </div>
+              <span className="text-[13px] text-transparent transition-colors group-hover:text-[#00ba7c]">0</span>
+            </button>
 
-          {/* Bookmark */}
-          <button className="flex items-center justify-center gap-1.5 h-[32px] min-w-[32px] px-2.5 group cursor-pointer border-none bg-transparent hover:bg-amber-500/10  hover:-translate-y-0.5 rounded-full transition-all duration-300 shadow-none outline-none">
-            <Bookmark className="w-[14px] h-[14px] text-gray-500 dark:text-neutral-400 group-hover:text-amber-500 transition-colors" />
-          </button>
-        </div>
-
-        {/* ── Comments Section ── */}
-        {showComments && (
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.04] flex flex-col gap-3">
-            <div className="flex items-center gap-2.5 bg-neutral-950/60 p-2.5 rounded-xl border border-gray-200 dark:border-white/5">
-              <img
-                src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`}
-                alt=""
-                className="w-6 h-6 rounded-full object-cover shrink-0 border border-gray-200 dark:border-white/10"
-                referrerPolicy="no-referrer"
-              />
-              <input
-                type="text"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && submitComment()}
-                placeholder="Share your thoughts..."
-                className="flex-1 bg-transparent border-none outline-none text-[13px] text-black dark:text-white placeholder-neutral-600 focus:ring-0"
-              />
+            {/* Like */}
+            <ClickSpark sparkColor="#f91880" sparkSize={4} sparkRadius={12} sparkCount={6} duration={300}>
               <button
-                onClick={submitComment}
-                disabled={!newComment.trim() || isCommenting}
-                className="bg-[#D4F842] text-white dark:text-black hover:bg-[#c5ec2d] disabled:opacity-40 rounded-lg px-3 py-1 text-[11px] font-bold transition-all cursor-pointer border-none shrink-0"
+                onClick={() => handleLikeClick(post.id)}
+                className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none"
               >
-                Reply
+                <div className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition-colors ${isLiked ? '' : 'group-hover:bg-[#f91880]/10'}`}>
+                  <Zap className={`w-[18px] h-[18px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`} fill={isLiked ? "#f91880" : "none"} strokeWidth={1.75} />
+                </div>
+                <span className={`text-[13px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`}>
+                  {likesCount > 0 ? likesCount : ''}
+                </span>
+              </button>
+            </ClickSpark>
+
+            {/* Views */}
+            <button className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
+              <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center group-hover:bg-[#1d9bf0]/10 transition-colors">
+                <Eye className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#1d9bf0] transition-colors" strokeWidth={1.75} />
+              </div>
+              <span className="text-[13px] text-transparent transition-colors group-hover:text-[#1d9bf0]">0</span>
+            </button>
+
+            {/* Bookmark & Share */}
+            <div className="flex items-center">
+              <button className="w-[34px] h-[34px] rounded-full flex items-center justify-center group cursor-pointer border-none bg-transparent hover:bg-[#1d9bf0]/10 transition-colors outline-none">
+                <Bookmark className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#1d9bf0] transition-colors" strokeWidth={1.75} />
               </button>
             </div>
-
-            {comments.length > 0 && (
-              <div className="flex flex-col gap-3 pl-2">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="flex gap-2.5 items-start">
-                    <img
-                      src={comment.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.uid}`}
-                      alt=""
-                      className="w-6 h-6 rounded-full object-cover bg-neutral-800 flex-shrink-0 border border-gray-200 dark:border-white/10"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="flex-1 min-w-0 bg-neutral-900/60 rounded-xl px-3 py-2">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="font-semibold text-[12px] text-black dark:text-white">{comment.author_name}</span>
-                        <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-mono">@{comment.author_username}</span>
-                        <span className="text-[10px] text-neutral-600">·</span>
-                        <span className="text-[10px] text-neutral-600">{timeAgo(comment.created_at || new Date().toISOString())}</span>
-                      </div>
-                      <p className="text-[13px] text-gray-600 dark:text-neutral-300 break-words leading-relaxed">{comment.content}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
-        )}
+
+          {/* Comments Section */}
+          {showComments && (
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-neutral-800 flex flex-col gap-3">
+              <div className="flex items-start gap-3">
+                <img
+                  src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`}
+                  alt=""
+                  className="w-8 h-8 rounded-full object-cover shrink-0 bg-gray-100 dark:bg-neutral-800"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="flex-1 flex flex-col gap-2">
+                  <input
+                    type="text"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && submitComment()}
+                    placeholder="Post your reply"
+                    className="w-full bg-transparent border-none outline-none text-[15px] text-black dark:text-white placeholder-gray-500 dark:placeholder-neutral-500 focus:ring-0 pt-1"
+                  />
+                  <div className="flex justify-end border-t border-gray-100 dark:border-neutral-800 pt-2">
+                    <button
+                      onClick={submitComment}
+                      disabled={!newComment.trim() || isCommenting}
+                      className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 rounded-full px-4 py-1.5 text-[14px] font-bold transition-all cursor-pointer border-none shrink-0"
+                    >
+                      Reply
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {comments.length > 0 && (
+                <div className="flex flex-col gap-0 mt-2">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className="flex gap-3 items-start py-3 border-t border-gray-100 dark:border-neutral-800">
+                      <img
+                        src={comment.author_avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.uid}`}
+                        alt=""
+                        className="w-8 h-8 rounded-full object-cover shrink-0 bg-gray-100 dark:bg-neutral-800"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-[14px] text-black dark:text-white hover:underline cursor-pointer">{comment.author_name}</span>
+                          <span className="text-[14px] text-gray-500 dark:text-neutral-500">@{comment.author_username}</span>
+                          <span className="text-[14px] text-gray-500 dark:text-neutral-500">· {timeAgo(comment.created_at || new Date().toISOString())}</span>
+                        </div>
+                        <p className="text-[15px] text-[#0f1419] dark:text-[#e7e9ea] break-words mt-0.5">{comment.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </article>
   );

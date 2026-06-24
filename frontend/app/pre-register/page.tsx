@@ -132,58 +132,6 @@ function WaitlistContent() {
                 {/* The Glowing Divider */}
                 <div className={`w-[2px] h-8 transition-all duration-700 z-20 ${focused || email.length > 0 ? 'bg-white shadow-[0_0_15px_3px_rgba(255,255,255,0.6)]' : 'bg-black/20 dark:bg-white/20'}`} />
                 
-                {/* The Beam Effect - Dual Layer Soft Glow */}
-                <AnimatePresence>
-                  {(focused || email.length > 0) && (
-                    <>
-                      {/* Conic Light Beam */}
-                      <motion.div 
-                        initial={{ opacity: 0, scaleX: 0 }}
-                        animate={{ opacity: 1, scaleX: 1 }}
-                        exit={{ opacity: 0, scaleX: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[150vw] sm:w-[800px] h-[400px] origin-left pointer-events-none z-0 mix-blend-screen"
-                        style={{
-                          background: 'conic-gradient(from 90deg at 0% 50%, rgba(255,255,255,0.4) 0deg, transparent 20deg, transparent 340deg, rgba(255,255,255,0.4) 360deg)',
-                          maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
-                          WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
-                        }}
-                      />
-                      {/* Bright inner core */}
-                      <motion.div 
-                        initial={{ opacity: 0, scaleX: 0 }}
-                        animate={{ opacity: 1, scaleX: 1 }}
-                        exit={{ opacity: 0, scaleX: 0 }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[80vw] sm:w-[500px] h-[150px] origin-left pointer-events-none z-0 mix-blend-screen"
-                        style={{
-                          background: 'conic-gradient(from 90deg at 0% 50%, rgba(255,255,255,0.9) 0deg, transparent 10deg, transparent 350deg, rgba(255,255,255,0.9) 360deg)',
-                          maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
-                          WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
-                        }}
-                      />
-                    </>
-                  )}
-                </AnimatePresence>
-                
-                {/* Dust Particles inside Beam */}
-                <AnimatePresence>
-                  {(focused || email.length > 0) && (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 1 }}
-                      className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[100vw] sm:w-[600px] h-[200px] pointer-events-none z-0 mix-blend-screen opacity-50"
-                      style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-                        maskImage: 'conic-gradient(from 90deg at 0% 50%, black 0deg, transparent 20deg, transparent 340deg, black 360deg)',
-                        WebkitMaskImage: 'conic-gradient(from 90deg at 0% 50%, black 0deg, transparent 20deg, transparent 340deg, black 360deg)'
-                      }}
-                    />
-                  )}
-                </AnimatePresence>
-
                 <input 
                   type="email"
                   value={email}
@@ -249,31 +197,6 @@ function WaitlistContent() {
             <div className="relative flex items-center h-full">
               <div className="w-[2px] h-8 bg-[#10b981] shadow-[0_0_15px_3px_rgba(16,185,129,0.6)] z-20" />
               
-              {/* Wide soft outer glow */}
-              <motion.div 
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[150vw] sm:w-[500px] h-[400px] origin-left pointer-events-none z-0 mix-blend-screen"
-                style={{
-                  background: 'conic-gradient(from 90deg at 0% 50%, rgba(16,185,129,0.5) 0deg, transparent 25deg, transparent 335deg, rgba(16,185,129,0.5) 360deg)',
-                  maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
-                  WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
-                }}
-              />
-              {/* Bright inner core */}
-              <motion.div 
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 1.0, ease: "easeOut" }}
-                className="absolute left-[2px] top-1/2 -translate-y-1/2 w-[80vw] sm:w-[350px] h-[150px] origin-left pointer-events-none z-0 mix-blend-screen"
-                style={{
-                  background: 'conic-gradient(from 90deg at 0% 50%, rgba(16,185,129,0.9) 0deg, transparent 10deg, transparent 350deg, rgba(16,185,129,0.9) 360deg)',
-                  maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
-                  WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)'
-                }}
-              />
-
               <div className="text-black dark:text-white/60 text-[19px] tracking-tight pl-6 z-10 relative font-sans">
                 #{position.toLocaleString()}
               </div>
