@@ -25,9 +25,19 @@ export function ThemeToggle({ inline = false }: { inline?: boolean }) {
 
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
+  const handleToggle = () => {
+    // Add transitioning class to coordinate all color changes in one pass
+    document.documentElement.classList.add("theme-transitioning");
+    setTheme(isDark ? "light" : "dark");
+    // Remove after transition completes to avoid interfering with hover/focus transitions
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 350);
+  };
+
   const buttonContent = (
     <motion.button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={handleToggle}
       className={`
         relative w-12 h-12 md:w-16 md:h-8 rounded-full flex items-center justify-center md:justify-start md:p-1 cursor-pointer overflow-hidden
         transition-colors duration-500 ease-in-out border md:border-none

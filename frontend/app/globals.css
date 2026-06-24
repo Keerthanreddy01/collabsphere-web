@@ -112,16 +112,24 @@
 }
 
 @layer base {
-  *, ::before, ::after {
-    @apply border-border outline-ring/50 transition-colors duration-300 ease-in-out;
+  * {
+    @apply border-border outline-ring/50;
   }
   body {
-    @apply font-sans bg-white text-black dark:bg-[#000000] dark:text-white antialiased transition-colors duration-300 ease-in-out;
+    @apply font-sans bg-white text-black dark:bg-[#000000] dark:text-white antialiased;
   }
   html {
     scroll-behavior: smooth;
     color-scheme: dark;
   }
+}
+
+/* Smooth theme transition — applied transiently via JS */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease !important;
 }
 
 @layer utilities {
