@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useTheme } from "next-themes";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturesSection } from "@/components/landing/features-section";
@@ -20,6 +21,11 @@ import { FooterSection } from "@/components/landing/footer-section";
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { setTheme } = useTheme();
+
+  useEffect(() => {
+    setTheme('dark');
+  }, [setTheme]);
 
   useEffect(() => {
     if (loading) return; // wait for auth to resolve

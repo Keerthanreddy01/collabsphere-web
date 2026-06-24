@@ -2,18 +2,24 @@
 
 import * as React from "react";
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
 
 export function ThemeToggle({ inline = false }: { inline?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const pathname = usePathname();
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
+    return null;
+  }
+
+  if (pathname === "/") {
     return null;
   }
 
@@ -42,10 +48,10 @@ export function ThemeToggle({ inline = false }: { inline?: boolean }) {
 
       {/* Desktop Sliding Pill Icons */}
       <div className="hidden md:block">
-        <div className={`absolute left-2 transition-opacity duration-500 ${isDark ? 'opacity-30' : 'opacity-100 text-yellow-500'}`}>
+        <div className={`absolute left-2 transition-opacity duration-500 ${isDark ? 'opacity-30' : 'opacity-0'}`}>
           <Sun size={14} strokeWidth={2.5} />
         </div>
-        <div className={`absolute right-2 transition-opacity duration-500 ${isDark ? 'opacity-100 text-blue-400' : 'opacity-30 text-gray-400'}`}>
+        <div className={`absolute right-2 transition-opacity duration-500 ${isDark ? 'opacity-0' : 'opacity-30 text-gray-400'}`}>
           <Moon size={14} strokeWidth={2.5} />
         </div>
         <motion.div

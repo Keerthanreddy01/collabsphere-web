@@ -148,7 +148,7 @@ export default function LoginPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative z-10 text-center select-none"
         >
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-black dark:text-white flex items-center justify-center font-sans">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white flex items-center justify-center font-sans">
             CollabSphere<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
           </h1>
         </motion.div>
@@ -237,7 +237,7 @@ export default function LoginPage() {
                   onChange={(e: any) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="w-full bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black dark:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
+                  className="w-full bg-gray-100 dark:bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black/40 dark:text-white/40 focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 outline-none transition-all text-sm"
                 />
                 <button
                   type="button"
@@ -322,7 +322,7 @@ function InputGroup({ label, placeholder, type, value, onChange, id, required }:
         onChange={onChange}
         required={required}
         autoComplete={id === "email" ? "email" : "off"}
-        className="w-full bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black dark:text-white/20 focus:ring-2 focus:ring-white/20 outline-none transition-all text-sm"
+        className="w-full bg-gray-100 dark:bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black/40 dark:text-white/40 focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 outline-none transition-all text-sm"
       />
     </div>
   );
