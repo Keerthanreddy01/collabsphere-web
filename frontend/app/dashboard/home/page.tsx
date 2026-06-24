@@ -199,7 +199,7 @@ function PostCard({
         </div>
 
         {/* ── Main Content ── */}
-        <div className="ml-12 sm:ml-[52px] mb-3">
+        <div className="ml-0 sm:ml-[52px] mb-3">
           <div className={`text-[14px] sm:text-[15px] leading-[1.6] sm:leading-relaxed font-medium text-black dark:text-white/95 whitespace-pre-wrap break-words ${!isExpanded ? 'line-clamp-3 sm:line-clamp-none' : ''}`}>
             {renderContentWithHashtags(displayContent)}
           </div>
@@ -244,7 +244,7 @@ function PostCard({
         </div>
 
         {/* ── Actions Dock ── */}
-        <div className="flex items-center justify-between ml-12 sm:ml-[52px] mr-0 sm:mr-2 pt-3 pb-1">
+        <div className="flex items-center justify-between ml-0 sm:ml-[52px] mr-0 sm:mr-2 pt-3 pb-1">
           {/* Comment */}
           <button
             onClick={handleFetchComments}
@@ -719,7 +719,7 @@ export default function DashboardHomePage() {
 
                     {/* Voice Recording / Audio Preview Blocks */}
                     {isRecording && (
-                      <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 px-4 py-2.5 rounded-xl mt-2 ml-12 sm:ml-[52px]">
+                      <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 px-4 py-2.5 rounded-xl mt-2 ml-0 sm:ml-[52px]">
                         <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />
                         <span className="text-[12px] font-mono text-red-500 font-bold shrink-0">
                           {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
@@ -749,7 +749,7 @@ export default function DashboardHomePage() {
                     )}
 
                     {audioBlob && (
-                      <div className="flex items-center justify-between gap-3 bg-neutral-900 border border-gray-200 dark:border-white/10 px-3 py-2 rounded-xl mt-2 ml-12 sm:ml-[52px]">
+                      <div className="flex items-center justify-between gap-3 bg-neutral-900 border border-gray-200 dark:border-white/10 px-3 py-2 rounded-xl mt-2 ml-0 sm:ml-[52px]">
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
@@ -782,7 +782,7 @@ export default function DashboardHomePage() {
                     )}
 
                     {/* Tags Quick Suggestions */}
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-12 sm:ml-[52px] pb-1 pr-4 sm:pr-0">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar sm:flex-wrap mt-3 ml-0 sm:ml-[52px] pb-1 pr-4 sm:pr-0">
                       {['nextjs', 'react', 'tailwind', 'typescript', 'ai'].map((tag) => (
                         <button
                           key={tag}
@@ -802,7 +802,7 @@ export default function DashboardHomePage() {
                     </div>
 
                     {/* Bottom Actions Row */}
-                    <div className="flex items-center justify-between gap-2 mt-2 sm:mt-3 ml-12 sm:ml-[52px]">
+                    <div className="flex items-center justify-between gap-2 mt-2 sm:mt-3 ml-0 sm:ml-[52px]">
                       {/* Left: Stack tags input + Media Buttons */}
                       <div className="flex items-center gap-2 sm:gap-3">
                         <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-black/10 dark:bg-white/10 text-gray-500 dark:text-neutral-400 hover:text-white dark:text-black dark:hover:text-black dark:text-white transition-colors cursor-pointer bg-transparent border-none" title="Attach Media">
