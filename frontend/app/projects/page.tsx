@@ -157,7 +157,7 @@ export default function ProjectsPage() {
             />
           </div>
 
-          <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-white dark:bg-black/20 dark:shadow-inner dark:shadow-black/10">
+          <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-black/20 dark:shadow-inner dark:shadow-black/10">
             <Search className="size-4 text-slate-400 dark:text-white/45" />
             <input
               type="text"
@@ -180,7 +180,7 @@ export default function ProjectsPage() {
                     className={cn(
                       'rounded-full border px-4 py-2 text-sm font-semibold transition',
                       active
-                        ? 'border-transparent bg-slate-950 text-black dark:text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] dark:bg-white dark:text-slate-950'
+                        ? 'border-transparent bg-slate-950 text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] dark:bg-white dark:text-slate-950'
                         : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white/75 dark:hover:bg-black/10 dark:bg-white/10 dark:hover:text-black dark:text-white',
                     )}
                   >

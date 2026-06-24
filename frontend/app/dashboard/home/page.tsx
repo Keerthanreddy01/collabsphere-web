@@ -134,7 +134,7 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-2 sm:mb-4 bg-white dark:bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-gray-50 dark:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full mb-2 sm:mb-4 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
@@ -235,7 +235,7 @@ function PostCard({
               </div>
               <button
                 onClick={() => handleCollabClick(post)}
-                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-white dark:bg-black text-black dark:text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none"
+                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none"
               >
                 Apply
               </button>
@@ -552,7 +552,7 @@ export default function DashboardHomePage() {
                 />
                 
                 {/* Pill */}
-                <div className="inline-flex items-center bg-gray-200 dark:bg-gray-50 dark:bg-gray-50 dark:bg-gray-50 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
+                <div className="inline-flex items-center bg-gray-200 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
                     className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-white dark:text-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 dark:text-[#999999] hover:text-white dark:text-black dark:hover:text-black dark:text-white'}`}
@@ -592,7 +592,7 @@ export default function DashboardHomePage() {
                     };
 
                 return (
-                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
+                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
@@ -634,7 +634,7 @@ export default function DashboardHomePage() {
                             <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
                           {showVisibilityMenu && (
-                            <div className="absolute top-full right-0 mt-1 w-36 bg-white dark:bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                            <div className="absolute top-full right-0 mt-1 w-36 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
                               <button
                                 onClick={() => { setPostVisibility('public'); setShowVisibilityMenu(false); }}
                                 className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors flex items-center gap-2 text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white bg-transparent border-none cursor-pointer"
@@ -662,7 +662,7 @@ export default function DashboardHomePage() {
                             <ChevronDown className="w-2.5 h-2.5 opacity-50" />
                           </button>
                           {showProjectMenu && (
-                            <div className="absolute top-full right-0 mt-1 w-44 bg-white dark:bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
+                            <div className="absolute top-full right-0 mt-1 w-44 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-1 z-50 shadow-xl">
                               <button
                                 onClick={() => { setSelectedProject(null); setShowProjectMenu(false); }}
                                 className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-500 dark:text-neutral-400 hover:text-white dark:text-black dark:hover:text-black dark:text-white bg-transparent border-none cursor-pointer"

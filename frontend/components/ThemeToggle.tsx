@@ -20,7 +20,7 @@ export function ThemeToggle() {
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   return (
-    <div className="fixed top-20 right-4 md:top-6 md:right-6 z-[110]">
+    <div className="fixed top-4 right-4 md:top-6 md:right-6 z-[110]">
       <motion.button
         onClick={() => setTheme(isDark ? "light" : "dark")}
         className={`

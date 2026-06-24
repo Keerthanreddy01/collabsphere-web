@@ -85,7 +85,7 @@ export default function PreRegisterMobilePromo() {
             {/* Centered Close Button */}
             <button
               onClick={() => setShowPromo(false)}
-              className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-white dark:text-black transition-transform active:scale-95 cursor-pointer outline-none z-20"
+              className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-black transition-transform active:scale-95 cursor-pointer outline-none z-20"
               aria-label="Close promotional popup"
             >
               <X className="w-6 h-6 stroke-[2.5]" />

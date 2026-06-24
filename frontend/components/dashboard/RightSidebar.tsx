@@ -198,12 +198,12 @@ export default function RightSidebar() {
 
 
       {/* 3. AI Co-builder Matchmaker Card - ULTRA PREMIUM DARK */}
-      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white dark:bg-[#0a0a0a] shrink-0 group hover:border-gray-200 dark:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0a0a0a] shrink-0 group hover:border-gray-200 dark:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
         
         {/* The "Poster" Graphic Area */}
         <div className="relative h-[160px] w-full overflow-hidden flex flex-col p-5">
           {/* Complex Glow Backgrounds */}
-          <div className="absolute inset-0 bg-gray-100 dark:bg-white dark:bg-[#050505] z-0"></div>
+          <div className="absolute inset-0 bg-gray-100 dark:bg-[#050505] z-0"></div>
           <div className="absolute top-[-50%] left-[-20%] w-[140%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.22)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0 transition-transform duration-1000 group-hover:scale-110"></div>
           <div className="absolute bottom-[-20%] right-[-20%] w-[100%] h-[100%] bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0"></div>
           
@@ -227,7 +227,7 @@ export default function RightSidebar() {
         </div>
 
         {/* Content Area */}
-        <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
+        <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
           <div className="flex flex-col gap-0.5 mb-4">
             <span className="text-black dark:text-white/95 font-medium text-[14px]">AI Co-builder Matches</span>
             <span className="text-black dark:text-white/40 text-[12px]">collabsphere.app/match</span>
@@ -257,9 +257,9 @@ export default function RightSidebar() {
       </section>
 
       {/* 4. Live Collab Rooms - ULTRA PREMIUM DARK */}
-      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white dark:bg-[#0a0a0a] shrink-0 group hover:border-gray-200 dark:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0a0a0a] shrink-0 group hover:border-gray-200 dark:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
         <div className="relative h-[160px] w-full overflow-hidden flex flex-col p-5">
-          <div className="absolute inset-0 bg-gray-100 dark:bg-white dark:bg-[#050505] z-0"></div>
+          <div className="absolute inset-0 bg-gray-100 dark:bg-[#050505] z-0"></div>
           <div className="absolute top-[-50%] left-[-20%] w-[140%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.18)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0 transition-transform duration-1000 group-hover:scale-110"></div>
           <div className="absolute bottom-[-20%] right-[-20%] w-[100%] h-[100%] bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.12)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0"></div>
           <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(150, 150, 150, 0.4) 1px, transparent 1px)', backgroundSize: '12px 12px' }}></div>
@@ -284,7 +284,7 @@ export default function RightSidebar() {
           </div>
         </div>
 
-        <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
+        <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
           <div className="flex flex-col gap-0.5 mb-4">
             <span className="text-black dark:text-white/95 font-medium text-[14px]">Collab Live Rooms</span>
             <span className="text-black dark:text-white/40 text-[12px]">collabsphere.app/live</span>
@@ -310,9 +310,9 @@ export default function RightSidebar() {
       </section>
 
       {/* 5. Top Ships of the Week - ULTRA PREMIUM DARK */}
-      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white dark:bg-[#0a0a0a] shrink-0 group hover:border-gray-200 dark:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+      <section className="relative flex flex-col rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0a0a0a] shrink-0 group hover:border-gray-200 dark:border-white/[0.12] transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
         <div className="relative h-[160px] w-full overflow-hidden flex flex-col p-5">
-          <div className="absolute inset-0 bg-gray-100 dark:bg-white dark:bg-[#050505] z-0"></div>
+          <div className="absolute inset-0 bg-gray-100 dark:bg-[#050505] z-0"></div>
           <div className="absolute top-[-50%] left-[-20%] w-[140%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.18)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0 transition-transform duration-1000 group-hover:scale-110"></div>
           <div className="absolute bottom-[-20%] right-[-20%] w-[100%] h-[100%] bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.12)_0%,rgba(0,0,0,0)_60%)] blur-[30px] z-0"></div>
           <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(150, 150, 150, 0.4) 1px, transparent 1px)', backgroundSize: '12px 12px' }}></div>
@@ -333,7 +333,7 @@ export default function RightSidebar() {
           </div>
         </div>
 
-        <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
+        <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
           <div className="flex flex-col gap-0.5 mb-4">
             <span className="text-black dark:text-white/95 font-medium text-[14px]">Top Ships of the Week</span>
             <span className="text-black dark:text-white/40 text-[12px]">collabsphere.app/ships</span>

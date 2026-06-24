@@ -117,7 +117,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                     <Icon
                       className={`
                         shrink-0 transition-colors duration-200
-                        ${isActive ? 'text-black dark:text-white drop-shadow-md dark:text-white' : 'text-gray-700 dark:text-neutral-400 group-hover/nav:text-white dark:text-black dark:group-hover/nav:text-neutral-200'}
+                        ${isActive ? 'text-black dark:text-white drop-shadow-md' : 'text-gray-700 dark:text-neutral-400 group-hover/nav:text-black dark:group-hover/nav:text-white'}
                       `}
                       size={22}
                       strokeWidth={isActive ? 2.5 : 2.2}
@@ -143,7 +143,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
 
                 {/* Tooltip for collapsed state */}
                 {!isExpanded && !isMobile && (
-                  <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 dark:bg-white text-black dark:text-white dark:text-black text-sm font-bold rounded-lg opacity-0 pointer-events-none group-hover/nav:opacity-100 whitespace-nowrap transition-all duration-200 shadow-xl z-50">
+                  <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-black text-sm font-bold rounded-lg opacity-0 pointer-events-none group-hover/nav:opacity-100 whitespace-nowrap transition-all duration-200 shadow-xl z-50">
                     {item.label}
                   </div>
                 )}

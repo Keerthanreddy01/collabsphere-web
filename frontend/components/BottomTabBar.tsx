@@ -62,13 +62,13 @@ export default function BottomTabBar() {
               <Icon 
                 size={18} 
                 className={`relative z-10 transition-colors duration-300 ${
-                  isActive ? "text-black dark:text-white" : "text-white dark:text-black/50 dark:text-white/40 group-hover:text-white dark:text-black/70 dark:group-hover:text-black dark:text-white/70"
+                  isActive ? "text-black dark:text-white" : "text-black/50 dark:text-white/40 group-hover:text-black dark:group-hover:text-white/70"
                 }`} 
                 strokeWidth={isActive ? 2.5 : 2}
               />
               <span 
                 className={`relative z-10 text-[8px] mt-0.5 font-medium tracking-tight transition-colors duration-300 ${
-                  isActive ? "text-black dark:text-white" : "text-white dark:text-black/50 dark:text-white/40 group-hover:text-white dark:text-black/70 dark:group-hover:text-black dark:text-white/70"
+                  isActive ? "text-black dark:text-white" : "text-black/50 dark:text-white/40 group-hover:text-black dark:group-hover:text-white/70"
                 }`}
               >
                 {tab.label}
