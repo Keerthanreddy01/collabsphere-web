@@ -20,8 +20,8 @@ export default function BottomTabBar() {
   ];
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex md:hidden w-[92vw] max-w-[380px] justify-center pointer-events-none">
-      <div className="flex items-center justify-between w-full bg-white/40 dark:bg-[#1c1c1e]/60 backdrop-blur-3xl border border-black/5 dark:border-white/10 p-1 rounded-full shadow-2xl dark:shadow-[0_8px_32px_rgba(0,0,0,0.6)] pointer-events-auto">
+    <nav className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[100] flex md:hidden w-[90vw] max-w-[360px] justify-center pointer-events-none">
+      <div className="flex items-center justify-between w-full bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-black/5 dark:border-white/10 p-1 rounded-full shadow-lg dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto">
         {tabs.map((tab) => {
           const isHomeTab = tab.href === "/dashboard/home";
           // We need a slightly smarter check for the "Post" tab which has query params
@@ -46,7 +46,7 @@ export default function BottomTabBar() {
             <Link 
               key={tab.href} 
               href={tab.href}
-              className="relative flex flex-col items-center justify-center flex-1 h-[44px] rounded-full z-10 group touch-manipulation"
+              className="relative flex flex-col items-center justify-center flex-1 h-[48px] rounded-full z-10 group touch-manipulation"
             >
               {isActive && (
                 <motion.div
@@ -60,19 +60,13 @@ export default function BottomTabBar() {
                 />
               )}
               <Icon 
-                size={18} 
+                size={20} 
                 className={`relative z-10 transition-colors duration-300 ${
                   isActive ? "text-black dark:text-white" : "text-black/50 dark:text-white/40 group-hover:text-black dark:group-hover:text-white/70"
                 }`} 
                 strokeWidth={isActive ? 2.5 : 2}
               />
-              <span 
-                className={`relative z-10 text-[8px] mt-0.5 font-medium tracking-tight transition-colors duration-300 ${
-                  isActive ? "text-black dark:text-white" : "text-black/50 dark:text-white/40 group-hover:text-black dark:group-hover:text-white/70"
-                }`}
-              >
-                {tab.label}
-              </span>
+              {/* Labels removed for a cleaner, modern app feel (like X, Threads) */}
             </Link>
           );
         })}

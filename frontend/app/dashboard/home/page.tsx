@@ -134,14 +134,14 @@ function PostCard({
   return (
     <article
       ref={ref}
-      className="group/post relative w-full mb-2 sm:mb-4 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/[0.08] rounded-[12px] sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden"
+      className="group/post relative w-full mb-0 sm:mb-4 bg-white dark:bg-[#0a0a0a] border-b sm:border border-gray-200 dark:border-white/[0.08] rounded-none sm:rounded-2xl transition-all duration-300 ease-out hover:bg-gray-50 dark:hover:bg-[#121212] overflow-hidden"
     >
       {/* Optional Top Accent Line for special posts */}
       {(isCollab || isMilestone) && (
         <div className={`absolute top-0 left-0 right-0 h-[1px] ${theme.bg} blur-[1px]`} />
       )}
 
-      <div className="p-[14px] sm:p-5">
+      <div className="p-4 sm:p-5">
         {/* ── Header Row ── */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -228,14 +228,14 @@ function PostCard({
 
           {/* ── Collab Apply Action Block ── */}
           {isCollab && (
-            <div className="mt-4 flex items-center justify-between border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] rounded-xl p-4 transition-all hover:bg-gray-100 dark:hover:bg-white/[0.04]">
-              <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-black dark:text-white">Open to Collaborators</span>
-                <span className="text-[13px] text-gray-500 dark:text-neutral-400 mt-0.5">The author is looking for team members.</span>
+            <div className="mt-4 flex items-center justify-between border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] rounded-2xl p-4 sm:p-5 transition-all hover:bg-gray-100 dark:hover:bg-white/[0.04]">
+              <div className="flex flex-col mr-4">
+                <span className="text-[14px] sm:text-[15px] font-bold text-black dark:text-white leading-tight">Open to Collaborators</span>
+                <span className="text-[13px] text-gray-500 dark:text-neutral-400 mt-1">The author is looking for team members.</span>
               </div>
               <button
                 onClick={() => handleCollabClick(post)}
-                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none"
+                className="px-5 py-2 rounded-full text-[13px] font-bold transition-all active:scale-95 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none shrink-0"
               >
                 Apply
               </button>
@@ -244,7 +244,7 @@ function PostCard({
         </div>
 
         {/* ── Actions Dock ── */}
-        <div className="flex items-center justify-between ml-0 sm:ml-[52px] mr-0 sm:mr-2 pt-3 pb-1">
+        <div className="flex items-center justify-between w-full sm:w-auto ml-0 sm:ml-[52px] mt-2 pt-2 pb-1 pr-2 sm:pr-0">
           {/* Comment */}
           <button
             onClick={handleFetchComments}
@@ -552,16 +552,16 @@ export default function DashboardHomePage() {
                 />
                 
                 {/* Pill */}
-                <div className="inline-flex items-center bg-gray-200 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
+                <div className="inline-flex items-center bg-gray-200 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 sm:gap-2 w-fit mx-auto pointer-events-auto shadow-sm dark:shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
+                    className={`relative rounded-full px-5 py-1.5 sm:py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
                   >
                     All Builds
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
+                    className={`relative rounded-full px-5 py-1.5 sm:py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
                   >
                     Collab Board
                   </button>
@@ -592,13 +592,13 @@ export default function DashboardHomePage() {
                     };
 
                 return (
-                  <div className={`flex flex-col p-[12px] sm:p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-[24px] overflow-hidden border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
+                  <div className={`flex flex-col p-4 relative shrink-0 transition-all duration-300 ease-out mx-0 sm:mx-4 mb-2 sm:mb-8 rounded-none sm:rounded-[24px] overflow-hidden border-y sm:border border-gray-200 dark:border-white/[0.08] ${isFocused ? 'bg-gray-50 dark:bg-[#121212] border-gray-200 dark:border-white/[0.15] shadow-xl max-h-none' : 'bg-white dark:bg-[#0a0a0a] max-h-[140px] sm:max-h-none shadow-none dark:shadow-none border-gray-200'}`}>
                     {/* Removed ambient glow for cleaner aesthetic */}
 
                     {/* Top Controls: Post Type & Metadata */}
-                    <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
+                    <div className="flex items-center justify-between gap-3 mb-3">
 
-                      <div className="flex items-center bg-gray-100 dark:bg-gray-100/80 dark:bg-neutral-950/80 p-1 rounded-xl border border-gray-200 dark:border-white/[0.06] shadow-inner">
+                      <div className="flex items-center bg-gray-100 dark:bg-gray-100/80 dark:bg-neutral-950/80 p-1 rounded-xl border border-gray-200 dark:border-white/[0.06] shadow-inner overflow-x-auto no-scrollbar shrink-0">
                         <button
                           onClick={() => setSelectedPostType('update')}
                           className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[11.5px] rounded-lg transition-colors font-semibold cursor-pointer border-none bg-transparent ${selectedPostType === 'update' ? 'text-black dark:text-white' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:text-neutral-300'}`}
