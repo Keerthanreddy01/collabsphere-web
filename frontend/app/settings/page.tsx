@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { Settings, User, Bell, Shield, LogOut, Mail, Key } from "lucide-react";
+import { Settings, User, Bell, Shield, LogOut, Mail, Key, Palette } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import { signOut } from "@/lib/auth";
 import { sanitizeShortText, sanitizeBio } from "@/lib/sanitize";
@@ -114,6 +115,7 @@ export default function SettingsPage() {
     { name: "Profile",       icon: User },
     { name: "Account",       icon: Settings },
     { name: "Notifications", icon: Bell },
+    { name: "Appearance",    icon: Palette },
     { name: "Security",      icon: Shield },
   ];
 
@@ -298,6 +300,20 @@ export default function SettingsPage() {
                       </label>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* ── Appearance Tab ── */}
+              {activeTab === "Appearance" && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium text-black dark:text-white mb-2">Appearance Settings</h3>
+                  <div className="p-4 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] rounded-[16px] space-y-4">
+                    <div>
+                      <h4 className="text-sm font-medium text-black dark:text-white">Theme Preference</h4>
+                      <p className="text-xs text-black dark:text-white/50 mt-1 mb-4">Choose how CollabSphere looks to you. Select light or dark mode.</p>
+                      <ThemeToggle inline={true} />
+                    </div>
+                  </div>
                 </div>
               )}
 

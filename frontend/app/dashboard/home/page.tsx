@@ -555,13 +555,13 @@ export default function DashboardHomePage() {
                 <div className="inline-flex items-center bg-gray-200 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 w-fit mx-auto pointer-events-auto shadow-none dark:shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-white dark:text-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 dark:text-[#999999] hover:text-white dark:text-black dark:hover:text-black dark:text-white'}`}
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
                   >
                     All Builds
                   </button>
                   <button
                     onClick={() => setActiveTab('collabs')}
-                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-white dark:text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-[#999999] hover:text-white dark:text-black dark:hover:text-black dark:text-white'}`}
+                    className={`relative rounded-full px-5 py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'collabs' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
                   >
                     Collab Board
                   </button>
