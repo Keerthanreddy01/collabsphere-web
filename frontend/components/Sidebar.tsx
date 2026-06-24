@@ -78,7 +78,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
           <div className="mx-4 h-px bg-gray-100 dark:bg-white/[0.06] mb-2" />
 
           {/* Navigation */}
-          <nav className="flex flex-col gap-1 w-full px-3 flex-1 overflow-y-auto no-scrollbar">
+          <nav className="flex flex-col gap-1 w-full px-3">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive =
@@ -141,8 +141,10 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
             })}
           </nav>
 
-          {/* Bottom Divider */}
-          <div className="mx-4 h-px bg-gray-100 dark:bg-white/[0.06] mt-2" />
+          {/* Bottom: user section pushed to bottom */}
+          <div className="mt-auto">
+            {/* Bottom Divider */}
+            <div className="mx-4 h-px bg-gray-100 dark:bg-white/[0.06] mt-3" />
 
           {/* User Profile at bottom */}
           <div className={`flex items-center py-4 ${isExpanded ? "px-4" : "px-0 justify-center"}`}>
@@ -175,6 +177,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
               </AnimatePresence>
             </Link>
           </div>
+          </div>{/* end mt-auto */}
 
         </div>
       </motion.aside>
