@@ -200,8 +200,8 @@ function PostCard({
             </button>
           </div>
 
-          {/* Main Content wrapper - Clickable */}
-          <Link href={`/dashboard/post/${post.id}`} className="block mt-2 text-[15px] sm:text-[16px] leading-snug sm:leading-normal font-normal text-[#0f1419] dark:text-[#e7e9ea] whitespace-pre-wrap break-words no-underline">
+          {/* Main Content wrapper */}
+          <div className="block mt-2 text-[15px] sm:text-[16px] leading-snug sm:leading-normal font-normal text-[#0f1419] dark:text-[#e7e9ea] whitespace-pre-wrap break-words no-underline">
             <div className={!isExpanded ? 'line-clamp-4 sm:line-clamp-none' : ''}>
               {renderContentWithHashtags(displayContent)}
             </div>
@@ -234,7 +234,7 @@ function PostCard({
                 )}
               </div>
             )}
-          </Link>
+          </div>
 
           {/* Tech Stack Tags */}
           {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
@@ -632,7 +632,7 @@ export default function DashboardHomePage() {
                     }
                     : {
                       accent: 'text-black dark:text-white',
-                      button: 'bg-white dark:bg-black text-black dark:text-white dark:bg-white hover:bg-gray-800 dark:hover:bg-neutral-200 dark:text-black font-bold',
+                      button: 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 font-bold',
                       btnText: 'Ship',
                       hint: 'Log a quick dev update'
                     };
