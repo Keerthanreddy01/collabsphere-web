@@ -194,25 +194,46 @@ function PostCard({
             </div>
 
             {/* More Menu */}
-            <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-[#1d9bf0] hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none shrink-0 -mt-1 -mr-2">
+            <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-neutral-500 hover:text-[#1d9bf0] hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors cursor-pointer bg-transparent border-none shrink-0 -mt-1 -mr-2 relative z-10">
               <MoreHorizontal className="w-4.5 h-4.5" />
             </button>
           </div>
 
-          {/* Main Text Content */}
-          <div className="mt-2 text-[15px] sm:text-[16px] leading-snug sm:leading-normal font-normal text-[#0f1419] dark:text-[#e7e9ea] whitespace-pre-wrap break-words">
+          {/* Main Content wrapper - Clickable */}
+          <Link href={`/dashboard/post/${post.id}`} className="block mt-2 text-[15px] sm:text-[16px] leading-snug sm:leading-normal font-normal text-[#0f1419] dark:text-[#e7e9ea] whitespace-pre-wrap break-words no-underline">
             <div className={!isExpanded ? 'line-clamp-4 sm:line-clamp-none' : ''}>
               {renderContentWithHashtags(displayContent)}
             </div>
             {isTruncated && !isExpanded && (
               <button
-                onClick={() => setIsExpanded(true)}
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsExpanded(true); }}
                 className="text-[#1d9bf0] hover:underline mt-1 text-[15px] font-medium bg-transparent border-none outline-none cursor-pointer p-0 inline-block"
               >
                 Show more
               </button>
             )}
-          </div>
+
+            {/* Attached Media */}
+            {post.mediaUrl && (
+              <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 dark:border-white/10 relative bg-gray-50 dark:bg-white/5">
+                {post.mediaUrl.endsWith('.mp4') || post.mediaUrl.endsWith('.webm') ? (
+                  <video src={post.mediaUrl} controls className="w-full max-h-[500px] object-contain" onClick={(e) => e.stopPropagation()} />
+                ) : post.mediaUrl.endsWith('.mp3') || post.mediaUrl.endsWith('.wav') ? (
+                  <div className="p-4 flex items-center gap-3">
+                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="w-10 h-10 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black">
+                      <Play className="w-5 h-5 ml-1" />
+                    </button>
+                    <div className="flex-1 h-2 bg-gray-200 dark:bg-white/20 rounded-full overflow-hidden">
+                      <div className="h-full bg-black dark:bg-white w-1/3" />
+                    </div>
+                  </div>
+                ) : (
+                  <img src={post.mediaUrl} alt="Post media" className="w-full max-h-[500px] object-cover" />
+                )}
+              </div>
+            )}
+          </Link>
 
           {/* Tech Stack Tags */}
           {Array.isArray(post.stack_tags) && post.stack_tags.length > 0 && (
@@ -230,13 +251,14 @@ function PostCard({
 
           {/* Collab Apply Action Block */}
           {isCollab && (
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900/50 rounded-xl p-4 transition-all hover:bg-gray-100 dark:hover:bg-neutral-900 cursor-pointer group/apply">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900/50 rounded-xl p-4 transition-all hover:bg-gray-100 dark:hover:bg-neutral-900 cursor-pointer group/apply" onClick={(e) => { e.stopPropagation(); handleCollabClick(post); }}>
               <div className="flex flex-col">
                 <span className="text-[15px] font-bold text-black dark:text-white leading-tight group-hover/apply:text-[#1d9bf0] transition-colors">Open to Collaborators</span>
                 <span className="text-[14px] text-gray-500 dark:text-neutral-400 mt-0.5">The author is looking for team members.</span>
               </div>
               <button
-                onClick={(e) => { e.stopPropagation(); handleCollabClick(post); }}
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCollabClick(post); }}
                 className="w-full sm:w-auto px-5 py-2 rounded-full text-[14px] font-bold transition-all active:scale-95 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-neutral-200 cursor-pointer border-none shrink-0"
               >
                 Apply Now
@@ -245,10 +267,11 @@ function PostCard({
           )}
 
           {/* Actions Dock */}
-          <div className="flex items-center justify-between w-full max-w-[425px] mt-3">
+          <div className="flex items-center justify-between w-full max-w-[425px] mt-3 relative z-10">
             {/* Comment */}
             <button
-              onClick={handleFetchComments}
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleFetchComments(); }}
               className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none"
             >
               <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center group-hover:bg-[#1d9bf0]/10 transition-colors">
@@ -260,7 +283,7 @@ function PostCard({
             </button>
 
             {/* Boost (Retweet equivalent) */}
-            <button className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
+            <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
               <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center group-hover:bg-[#00ba7c]/10 transition-colors">
                 <Rocket className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#00ba7c] transition-colors" strokeWidth={1.75} />
               </div>
@@ -268,22 +291,24 @@ function PostCard({
             </button>
 
             {/* Like */}
-            <ClickSpark sparkColor="#f91880" sparkSize={4} sparkRadius={12} sparkCount={6} duration={300}>
-              <button
-                onClick={() => handleLikeClick(post.id)}
-                className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none"
-              >
-                <div className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition-colors ${isLiked ? '' : 'group-hover:bg-[#f91880]/10'}`}>
-                  <Zap className={`w-[18px] h-[18px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`} fill={isLiked ? "#f91880" : "none"} strokeWidth={1.75} />
-                </div>
-                <span className={`text-[13px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`}>
-                  {likesCount > 0 ? likesCount : ''}
-                </span>
-              </button>
-            </ClickSpark>
+            <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLikeClick(post.id); }} className="cursor-pointer">
+              <ClickSpark sparkColor="#f91880" sparkSize={4} sparkRadius={12} sparkCount={6} duration={300}>
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none pointer-events-none"
+                >
+                  <div className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition-colors ${isLiked ? '' : 'group-hover:bg-[#f91880]/10'}`}>
+                    <Zap className={`w-[18px] h-[18px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`} fill={isLiked ? "#f91880" : "none"} strokeWidth={1.75} />
+                  </div>
+                  <span className={`text-[13px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`}>
+                    {likesCount > 0 ? likesCount : ''}
+                  </span>
+                </button>
+              </ClickSpark>
+            </div>
 
             {/* Views */}
-            <button className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
+            <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
               <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center group-hover:bg-[#1d9bf0]/10 transition-colors">
                 <Eye className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#1d9bf0] transition-colors" strokeWidth={1.75} />
               </div>
@@ -292,7 +317,7 @@ function PostCard({
 
             {/* Bookmark & Share */}
             <div className="flex items-center">
-              <button className="w-[34px] h-[34px] rounded-full flex items-center justify-center group cursor-pointer border-none bg-transparent hover:bg-[#1d9bf0]/10 transition-colors outline-none">
+              <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="w-[34px] h-[34px] rounded-full flex items-center justify-center group cursor-pointer border-none bg-transparent hover:bg-[#1d9bf0]/10 transition-colors outline-none">
                 <Bookmark className="w-[18px] h-[18px] text-gray-500 dark:text-neutral-500 group-hover:text-[#1d9bf0] transition-colors" strokeWidth={1.75} />
               </button>
             </div>
