@@ -44,14 +44,14 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
   ];
 
   return (
-    <div className="hidden md:flex sticky top-4 left-4 z-[60] h-[calc(100dvh-32px)] shrink-0 w-[80px] items-center">
+    <div className="hidden md:flex relative sticky top-4 left-4 z-[60] h-[calc(100dvh-32px)] shrink-0 w-[80px]">
       <motion.aside
         initial={false}
         animate={{ width: isExpanded ? 250 : 80 }}
         transition={{ type: "spring", stiffness: 400, damping: 30, mass: 0.8 }}
         onMouseEnter={() => !isMobile && setIsExpanded(true)}
         onMouseLeave={() => !isMobile && setIsExpanded(false)}
-        className="flex flex-col bg-white dark:bg-[#0c0c0e] border border-gray-200 dark:border-white/[0.08] rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] overflow-hidden"
+        className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col bg-white dark:bg-[#0c0c0e] border border-gray-200 dark:border-white/[0.08] rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] overflow-hidden"
       >
         <div className="flex flex-col">
 
