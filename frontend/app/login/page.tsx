@@ -237,7 +237,7 @@ export default function LoginPage() {
                   onChange={(e: any) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="w-full bg-gray-100 dark:bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black/40 dark:text-white/40 focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 outline-none transition-all text-sm"
+                  className="w-full bg-gray-100 dark:bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 outline-none transition-all text-sm"
                 />
                 <button
                   type="button"
@@ -322,7 +322,7 @@ function InputGroup({ label, placeholder, type, value, onChange, id, required }:
         onChange={onChange}
         required={required}
         autoComplete={id === "email" ? "email" : "off"}
-        className="w-full bg-gray-100 dark:bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black/40 dark:text-white/40 focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 outline-none transition-all text-sm"
+        className="w-full bg-gray-100 dark:bg-brand-gray border-none rounded-xl h-11 px-4 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20 outline-none transition-all text-sm"
       />
     </div>
   );
