@@ -254,7 +254,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || isLocked}
-              className="w-full h-14 bg-white text-white dark:text-black font-semibold rounded-xl hover:bg-white/90 active:scale-[0.98] mt-4 transition-all flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-14 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-xl hover:bg-black/90 dark:hover:bg-white/90 active:scale-[0.98] mt-4 transition-all flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
