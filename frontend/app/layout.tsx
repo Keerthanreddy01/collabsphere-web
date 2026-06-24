@@ -53,8 +53,8 @@ export default function RootLayout({
           }
         `}} />
       </head>
-      <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased bg-white dark:bg-black text-black dark:text-white`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased bg-white dark:bg-black text-black dark:text-white transition-colors duration-500 ease-in-out`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ThemeToggle />
           {children}
           <BottomTabBar />
