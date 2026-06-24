@@ -57,14 +57,14 @@ export function ThemeToggle({ inline = false }: { inline?: boolean }) {
         <motion.div
           layout
           className={`
-            w-6 h-6 rounded-full z-10 flex items-center justify-center
-            ${isDark ? 'bg-white dark:bg-black shadow-[0_2px_8px_rgba(0,0,0,0.5)]' : 'bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)]'}
+            w-6 h-6 rounded-full z-10 flex items-center justify-center bg-white
+            ${isDark ? 'shadow-[0_2px_8px_rgba(0,0,0,0.5)]' : 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]'}
           `}
           animate={{ x: isDark ? 32 : 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
           {isDark ? (
-            <Moon size={12} className="text-black dark:text-white" strokeWidth={2.5} />
+            <Moon size={12} className="text-black" strokeWidth={2.5} />
           ) : (
             <Sun size={12} className="text-yellow-500" strokeWidth={2.5} />
           )}
