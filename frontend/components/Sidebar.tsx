@@ -44,16 +44,16 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
   ];
 
   return (
-    <div className="hidden md:flex sticky top-4 left-4 z-[60] h-[calc(100dvh-32px)] shrink-0 w-[80px]">
+    <div className="hidden md:flex sticky top-4 left-4 z-[60] shrink-0 w-[80px] self-start">
       <motion.aside
         initial={false}
         animate={{ width: isExpanded ? 250 : 80 }}
         transition={{ type: "spring", stiffness: 400, damping: 30, mass: 0.8 }}
         onMouseEnter={() => !isMobile && setIsExpanded(true)}
         onMouseLeave={() => !isMobile && setIsExpanded(false)}
-        className="absolute top-0 left-0 flex flex-col h-full bg-white dark:bg-[#0c0c0e] border border-gray-200 dark:border-white/[0.08] rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] overflow-hidden"
+        className="absolute top-0 left-0 flex flex-col bg-white dark:bg-[#0c0c0e] border border-gray-200 dark:border-white/[0.08] rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] overflow-hidden"
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col">
 
           {/* Logo */}
           <div className={`flex items-center pt-5 pb-3 ${isExpanded ? "px-5" : "px-0 justify-center"}`}>
@@ -141,10 +141,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
             })}
           </nav>
 
-          {/* Bottom: user section pushed to bottom */}
-          <div className="mt-auto">
-            {/* Bottom Divider */}
-            <div className="mx-4 h-px bg-gray-100 dark:bg-white/[0.06] mt-3" />
+          {/* Bottom Divider */}
+          <div className="mx-4 h-px bg-gray-100 dark:bg-white/[0.06] mt-3" />
 
           {/* User Profile at bottom */}
           <div className={`flex items-center py-4 ${isExpanded ? "px-4" : "px-0 justify-center"}`}>
@@ -177,7 +175,6 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
               </AnimatePresence>
             </Link>
           </div>
-          </div>{/* end mt-auto */}
 
         </div>
       </motion.aside>
