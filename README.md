@@ -248,21 +248,6 @@ docs/<what-you-updated>              # documentation only
 For first contributions, look for issues labeled `good first issue`.
 
 ---
-
-## Screenshots
-
-> 📸 Add screenshots or a GIF demo here. Place images in `frontend/public/assets/demo/` and embed them below.
-
-| Feature | Preview |
-|---|---|
-| Dashboard | *(add screenshot)* |
-| Profile Page | *(add screenshot)* |
-| Hackathon Teambuilding | *(add screenshot)* |
-
-Live demo: **[collabsphereweb.vercel.app](https://collabsphereweb.vercel.app)**
-
----
-
 ## License
 
 Distributed under the [MIT License](LICENSE).
