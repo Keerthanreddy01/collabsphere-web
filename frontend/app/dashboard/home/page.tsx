@@ -292,21 +292,20 @@ function PostCard({
             </button>
 
             {/* Like */}
-            <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLikeClick(post.id); }} className="cursor-pointer">
-              <ClickSpark sparkColor="#f91880" sparkSize={4} sparkRadius={12} sparkCount={6} duration={300}>
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none pointer-events-none"
-                >
-                  <div className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition-colors ${isLiked ? '' : 'group-hover:bg-[#f91880]/10'}`}>
-                    <Zap className={`w-[18px] h-[18px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`} fill={isLiked ? "#f91880" : "none"} strokeWidth={1.75} />
-                  </div>
-                  <span className={`text-[13px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`}>
-                    {likesCount > 0 ? likesCount : ''}
-                  </span>
-                </button>
-              </ClickSpark>
-            </div>
+            <ClickSpark sparkColor="#f91880" sparkSize={4} sparkRadius={12} sparkCount={6} duration={300}>
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); handleLikeClick(post.id); }}
+                className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none"
+              >
+                <div className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition-colors ${isLiked ? '' : 'group-hover:bg-[#f91880]/10'}`}>
+                  <Zap className={`w-[18px] h-[18px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`} fill={isLiked ? "#f91880" : "none"} strokeWidth={1.75} />
+                </div>
+                <span className={`text-[13px] transition-colors ${isLiked ? 'text-[#f91880]' : 'text-gray-500 dark:text-neutral-500 group-hover:text-[#f91880]'}`}>
+                  {likesCount > 0 ? likesCount : ''}
+                </span>
+              </button>
+            </ClickSpark>
 
             {/* Views */}
             <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5 group cursor-pointer border-none bg-transparent outline-none">
