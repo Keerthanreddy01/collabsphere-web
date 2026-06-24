@@ -325,32 +325,31 @@ function PostCard({
 
           {/* Comments Section */}
           {showComments && (
-            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-neutral-800 flex flex-col gap-3">
-              <div className="flex items-start gap-3">
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08] flex flex-col gap-4 relative z-20">
+              <div className="flex gap-3">
                 <img
-                  src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`}
+                  src={user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.uid}`}
                   alt=""
                   className="w-8 h-8 rounded-full object-cover shrink-0 bg-gray-100 dark:bg-neutral-800"
                   referrerPolicy="no-referrer"
                 />
-                <div className="flex-1 flex flex-col gap-2">
+                <div className="flex-1 flex flex-col sm:flex-row gap-2 border border-gray-200 dark:border-white/[0.1] rounded-xl p-2 focus-within:border-[#1d9bf0] transition-colors bg-white dark:bg-black">
                   <input
                     type="text"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && submitComment()}
+                    onKeyDown={(e) => { e.stopPropagation(); if (e.key === 'Enter') submitComment(); }}
                     placeholder="Post your reply"
-                    className="w-full bg-transparent border-none outline-none text-[15px] text-black dark:text-white placeholder-gray-500 dark:placeholder-neutral-500 focus:ring-0 pt-1"
+                    className="flex-1 bg-transparent border-none outline-none text-[14px] text-black dark:text-white px-2 focus:ring-0 min-w-0"
                   />
-                  <div className="flex justify-end border-t border-gray-100 dark:border-neutral-800 pt-2">
-                    <button
-                      onClick={submitComment}
-                      disabled={!newComment.trim() || isCommenting}
-                      className="bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 rounded-full px-4 py-1.5 text-[14px] font-bold transition-all cursor-pointer border-none shrink-0"
-                    >
-                      Reply
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); submitComment(); }}
+                    disabled={!newComment.trim() || isCommenting}
+                    className="shrink-0 bg-[#1d9bf0] text-white hover:bg-[#1a8cd8] disabled:opacity-50 rounded-lg px-4 py-1.5 text-[13px] font-bold transition-all cursor-pointer border-none"
+                  >
+                    Reply
+                  </button>
                 </div>
               </div>
 
@@ -585,20 +584,10 @@ export default function DashboardHomePage() {
             <div className="w-full md:w-[680px] md:max-w-[680px] flex-1 flex flex-col h-full overflow-y-auto no-scrollbar relative pt-0 pb-[80px] md:pb-32">
 
               {/* Premium Sticky Tab Selector with Glass Fade */}
-              <div className="sticky top-0 z-40 flex justify-center w-full shrink-0 pt-[28px] sm:pt-[36px] pb-[8px] pointer-events-none mb-2">
-                {/* Fade Overlay */}
-                <div 
-                  className="absolute inset-x-0 top-0 h-[140px] pointer-events-none bg-gradient-to-b from-gray-50 dark:from-[#000000] via-gray-50/80 dark:via-[#000000]/80 to-transparent"
-                  style={{
-                    backdropFilter: 'blur(16px)',
-                    WebkitBackdropFilter: 'blur(16px)',
-                    maskImage: 'linear-gradient(to bottom, black 30%, transparent 100%)',
-                    WebkitMaskImage: 'linear-gradient(to bottom, black 30%, transparent 100%)',
-                  }}
-                />
+              <div className="sticky top-0 z-40 flex justify-center w-full shrink-0 pt-[28px] sm:pt-[36px] pb-[12px] bg-[#F8F9FA]/90 dark:bg-[#000000]/90 backdrop-blur-xl border-b border-gray-200/50 dark:border-white/[0.05] mb-4">
                 
                 {/* Pill */}
-                <div className="inline-flex items-center bg-gray-200 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 sm:gap-2 w-fit mx-auto pointer-events-auto shadow-sm dark:shadow-lg relative z-10">
+                <div className="inline-flex items-center bg-gray-200 dark:bg-[#111111] border border-gray-300 dark:border-[#222222] rounded-full p-1 gap-1 sm:gap-2 w-fit mx-auto shadow-sm dark:shadow-lg relative z-10">
                   <button
                     onClick={() => setActiveTab('all')}
                     className={`relative rounded-full px-5 py-1.5 sm:py-2 text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none outline-none ${activeTab === 'all' ? 'bg-white text-black dark:bg-[#2a2a2a] dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : 'bg-transparent text-gray-500 hover:text-black dark:text-[#999999] dark:hover:text-white'}`}
