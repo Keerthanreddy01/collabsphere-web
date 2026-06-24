@@ -536,8 +536,16 @@ export default function DashboardHomePage() {
     const isLiked = likes.includes(user.uid);
     const newLikes = isLiked ? likes.filter((id: string) => id !== user.uid) : [...likes, user.uid];
 
+    // Optimistic update
     setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: newLikes } : p));
-    await likePost(postId, user.uid);
+    
+    // Server update
+    const { error } = await likePost(postId, user.uid);
+    if (error) {
+      toast.error(error.message || "Failed to update like status");
+      // Revert optimistic update on failure
+      setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes } : p));
+    }
   };
 
   if (loading || !user) {
