@@ -11,6 +11,7 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import emailjs from "@emailjs/browser";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
@@ -152,7 +153,7 @@ function WaitlistContent() {
   return (
     <div className="flex flex-col items-center text-center px-4 w-full max-w-lg">
       <div className="mb-10">
-        <img src="/newlogo.png" alt="CollabSphere" className="w-8 h-8 invert opacity-80" />
+        <img src="/newlogo.png" alt="CollabSphere" className="w-8 h-8 opacity-80" />
       </div>
 
       <AnimatePresence mode="wait">
@@ -184,6 +185,15 @@ function WaitlistContent() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center w-full gap-6"
           >
+            
+            {/* Lottie Animation */}
+            <div className="w-full max-w-sm h-48 sm:h-64 mb-2 pointer-events-none">
+              <DotLottieReact
+                src="/Slideshow.lottie"
+                loop
+                autoplay
+              />
+            </div>
 
             {/* Email form */}
             <form onSubmit={handleSubmit} className="w-full max-w-sm">
@@ -260,7 +270,7 @@ export default function PreRegisterPage() {
       {/* Header */}
       <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-6 z-30">
         <Link href="/dashboard/home" className="flex items-center gap-2 group">
-          <img src="/newlogo.png" alt="CS" className="w-4 h-4 invert opacity-60 group-hover:opacity-100 transition-opacity" />
+          <img src="/newlogo.png" alt="CS" className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
           <span className="text-white/50 text-[13px] group-hover:text-white transition-colors">CollabSphere</span>
         </Link>
         {user ? (
