@@ -19,7 +19,9 @@ export function ThemeToggle({ inline = false }: { inline?: boolean }) {
     return null;
   }
 
-  if (pathname === "/") {
+  // Hide on marketing/landing pages that don't support theming
+  const HIDDEN_PATHS = new Set(["/", "/pre-register"]);
+  if (HIDDEN_PATHS.has(pathname)) {
     return null;
   }
 
