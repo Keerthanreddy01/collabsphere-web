@@ -8,7 +8,7 @@ export default function BottomTabBar() {
   const pathname = usePathname();
   
   // Hide the tab bar on auth/marketing pages and full-screen experiences
-  const HIDDEN_ROUTES = ["/", "/login", "/signup", "/pre-register", "/onboarding", "/locked"];
+  const HIDDEN_ROUTES = ["/", "/login", "/signup", "/pre-register", "/onboarding"];
   const isHiddenRoute = HIDDEN_ROUTES.some(r => pathname === r || pathname.startsWith(r + "/"));
   if (isHiddenRoute) return null;
 

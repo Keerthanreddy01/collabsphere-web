@@ -23,6 +23,16 @@ export default function SignupPage() {
 
   const checkAndRedirect = useCallback(async (uid: string) => {
     try {
+      const adminUids = (process.env.NEXT_PUBLIC_ADMIN_UIDS || "")
+        .split(',')
+        .map(u => u.trim())
+        .filter(Boolean);
+
+      if (!adminUids.includes(uid)) {
+        router.push("/pre-register");
+        return;
+      }
+
       const docRef = doc(db, "builder_profiles", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().onboarding_completed) {

@@ -3,13 +3,14 @@
 import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Loader2, Copy, CheckCheck } from "lucide-react";
+import { Check, Loader2, Copy, CheckCheck, LogOut } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, getCountFromServer } from "firebase/firestore";
 import { joinWaitlist, getWaitlistCount } from "@/lib/waitlist";
 import { Turnstile } from '@marsidev/react-turnstile';
 import emailjs from "@emailjs/browser";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
@@ -301,6 +302,8 @@ function WaitlistContent() {
 
 // ── Page shell ────────────────────────────────────────────────────────────────
 export default function PreRegisterPage() {
+  const { user, signOutAndClear } = useAuth();
+
   return (
     <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden">
 
@@ -324,7 +327,17 @@ export default function PreRegisterPage() {
           <img src="/newlogo.png" alt="CS" className="w-4 h-4 invert opacity-60 group-hover:opacity-100 transition-opacity" />
           <span className="text-white/50 text-[13px] group-hover:text-white transition-colors">CollabSphere</span>
         </Link>
-        <Link href="/login" className="text-[13px] text-neutral-600 hover:text-white transition-colors">Sign in →</Link>
+        {user ? (
+          <button 
+            onClick={signOutAndClear}
+            className="flex items-center gap-2 text-[13px] text-neutral-500 hover:text-white transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Sign out
+          </button>
+        ) : (
+          <Link href="/login" className="text-[13px] text-neutral-600 hover:text-white transition-colors">Sign in →</Link>
+        )}
       </header>
 
       {/* Center content */}

@@ -24,6 +24,19 @@ export function useAuth() {
         if (!getAuthCookieUid()) {
           setAuthCookie(firebaseUser.uid)
         }
+
+        // Client-side waitlist gate enforcement
+        const adminUids = (process.env.NEXT_PUBLIC_ADMIN_UIDS || "")
+          .split(',')
+          .map(uid => uid.trim())
+          .filter(Boolean);
+        
+        const isLockedPage = window.location.pathname === '/pre-register';
+        const isAuthRoute = ['/', '/login', '/signup'].includes(window.location.pathname);
+        
+        if (!adminUids.includes(firebaseUser.uid) && !isLockedPage && !isAuthRoute) {
+          router.push('/pre-register');
+        }
       }
       setUser(firebaseUser)
       setLoading(false)
