@@ -8,7 +8,7 @@ import { collection, query, getDocs, doc, getDoc, updateDoc, arrayUnion, arrayRe
 import { UserPlus, UserCheck, Loader2, Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function ConnectPage() {
   const { user } = useAuth();
