@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Loader2, ArrowRight, Users, Zap, Code2 } from "lucide-react";
+import { Check, Loader2, ArrowRight } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { joinWaitlist } from "@/lib/waitlist";
+import { collection, getDocs, query, where, getCountFromServer } from "firebase/firestore";
+import { joinWaitlist, getWaitlistCount } from "@/lib/waitlist";
 import { Turnstile } from '@marsidev/react-turnstile';
 import emailjs from "@emailjs/browser";
 import Link from "next/link";
@@ -18,11 +18,7 @@ const sendConfirmationEmail = async (email: string, platform: string) => {
     await emailjs.send(
       process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
       process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-      {
-        to_email: email,
-        user_name: email.split("@")[0],
-        platform: platform,
-      },
+      { to_email: email, user_name: email.split("@")[0], platform },
       process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
     );
   } catch {
@@ -30,31 +26,83 @@ const sendConfirmationEmail = async (email: string, platform: string) => {
   }
 };
 
-const STATS = [
-  { icon: Users, label: "Builders joined", value: "2,400+" },
-  { icon: Code2, label: "Projects launched", value: "180+" },
-  { icon: Zap, label: "Collabs formed",   value: "640+" },
-];
+// ── Real stats from Firestore ─────────────────────────────────────────────────
+interface LiveStats {
+  waitlistCount: number;     // people who pre-registered
+  buildersCount: number;     // registered builder_profiles
+  postsCount: number;        // total posts shipped
+}
 
+async function fetchLiveStats(): Promise<LiveStats> {
+  try {
+    const [waitlistCount, buildersSnap, postsSnap] = await Promise.all([
+      getWaitlistCount(),
+      getCountFromServer(collection(db, "builder_profiles")),
+      getCountFromServer(collection(db, "posts")),
+    ]);
+
+    return {
+      waitlistCount,
+      buildersCount: buildersSnap.data().count,
+      postsCount: postsSnap.data().count,
+    };
+  } catch {
+    return { waitlistCount: 0, buildersCount: 0, postsCount: 0 };
+  }
+}
+
+// ── Animated counter ──────────────────────────────────────────────────────────
+function AnimatedNumber({ value }: { value: number }) {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (value === 0) return;
+    const duration = 1200;
+    const steps = 40;
+    const stepTime = duration / steps;
+    let current = 0;
+    const increment = value / steps;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= value) {
+        setDisplay(value);
+        clearInterval(timer);
+      } else {
+        setDisplay(Math.floor(current));
+      }
+    }, stepTime);
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return <>{display.toLocaleString()}</>;
+}
+
+// ── Waitlist form ─────────────────────────────────────────────────────────────
 function WaitlistContent() {
   const searchParams = useSearchParams();
   const referredBy = searchParams.get("ref");
 
-  const [email, setEmail]               = useState("");
-  const [loading, setLoading]           = useState(false);
-  const [errorMsg, setErrorMsg]         = useState("");
-  const [success, setSuccess]           = useState(false);
-  const [position, setPosition]         = useState(0);
-  const [honeypot, setHoneypot]         = useState("");
-  const [focused, setFocused]           = useState(false);
+  const [email, setEmail]                   = useState("");
+  const [loading, setLoading]               = useState(false);
+  const [errorMsg, setErrorMsg]             = useState("");
+  const [success, setSuccess]               = useState(false);
+  const [position, setPosition]             = useState(0);
+  const [honeypot, setHoneypot]             = useState("");
+  const [focused, setFocused]               = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [stats, setStats]                   = useState<LiveStats | null>(null);
+  const [statsLoading, setStatsLoading]     = useState(true);
+
+  useEffect(() => {
+    fetchLiveStats().then((s) => {
+      setStats(s);
+      setStatsLoading(false);
+    });
+  }, []);
 
   const checkDuplicate = async (emailToCheck: string) => {
     if (!db) return false;
-    const q = query(
-      collection(db, 'app_waitlist'),
-      where('email', '==', emailToCheck.toLowerCase().trim())
-    );
+    const q = query(collection(db, 'app_waitlist'), where('email', '==', emailToCheck.toLowerCase().trim()));
     const snapshot = await getDocs(q);
     return !snapshot.empty;
   };
@@ -101,6 +149,8 @@ function WaitlistContent() {
         await sendConfirmationEmail(email, "both");
         setPosition(res.position);
         setSuccess(true);
+        // Refresh stats after joining
+        fetchLiveStats().then(setStats);
       } else {
         setErrorMsg(res.message);
       }
@@ -114,13 +164,11 @@ function WaitlistContent() {
   if (success) {
     return (
       <motion.div
-        key="success"
         initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col items-center text-center px-6"
       >
-        {/* Check circle */}
         <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
           <Check className="w-7 h-7 text-emerald-400 stroke-[1.5]" />
         </div>
@@ -144,13 +192,12 @@ function WaitlistContent() {
 
   return (
     <motion.div
-      key="form"
       initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       className="flex flex-col items-center text-center px-6 w-full max-w-2xl"
     >
-      {/* Tag line */}
+      {/* Status pill */}
       <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 rounded-full px-3 py-1">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
         <span className="text-[11px] text-neutral-400 font-medium tracking-wide uppercase">
@@ -166,18 +213,14 @@ function WaitlistContent() {
 
       {/* Sub-headline */}
       <p className="text-neutral-400 text-[16px] sm:text-[17px] max-w-md leading-relaxed mb-10">
-        CollabSphere is the social network for developers—find teammates, share builds, and grow your network.
+        CollabSphere is the social network for developers — find teammates, share builds, and grow your network.
       </p>
 
       {/* Email form */}
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <div
-          className={`flex items-center gap-2 bg-white/[0.04] border rounded-xl px-4 py-3 transition-all duration-200 ${
-            focused
-              ? "border-white/30 bg-white/[0.07]"
-              : "border-white/10 hover:border-white/20"
-          }`}
-        >
+        <div className={`flex items-center gap-2 bg-white/[0.04] border rounded-xl px-4 py-3 transition-all duration-200 ${
+          focused ? "border-white/30 bg-white/[0.07]" : "border-white/10 hover:border-white/20"
+        }`}>
           <input
             type="email"
             value={email}
@@ -193,26 +236,13 @@ function WaitlistContent() {
             disabled={loading || !email.trim()}
             className="flex items-center gap-1.5 bg-white text-black text-[13px] font-semibold px-4 py-2 rounded-lg transition-all hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
-            {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <>Join <ArrowRight className="w-3.5 h-3.5" /></>
-            )}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Join <ArrowRight className="w-3.5 h-3.5" /></>}
           </button>
         </div>
 
         {/* Honeypot */}
-        <input
-          type="text"
-          name="website"
-          style={{ display: "none" }}
-          tabIndex={-1}
-          autoComplete="off"
-          value={honeypot}
-          onChange={(e) => setHoneypot(e.target.value)}
-        />
+        <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
 
-        {/* Error */}
         <AnimatePresence>
           {errorMsg && (
             <motion.p
@@ -226,9 +256,7 @@ function WaitlistContent() {
           )}
         </AnimatePresence>
 
-        <p className="mt-3 text-neutral-600 text-[12px]">
-          No spam. Unsubscribe any time.
-        </p>
+        <p className="mt-3 text-neutral-600 text-[12px]">No spam. Unsubscribe any time.</p>
       </form>
 
       {/* Turnstile hidden */}
@@ -240,14 +268,32 @@ function WaitlistContent() {
         />
       </div>
 
-      {/* Stats */}
+      {/* Live stats from Firestore */}
       <div className="flex flex-wrap justify-center gap-x-10 gap-y-5 mt-14">
-        {STATS.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="flex flex-col items-center gap-1">
-            <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">{value}</span>
-            <span className="text-[12px] text-neutral-500">{label}</span>
-          </div>
-        ))}
+        {statsLoading ? (
+          <Loader2 className="w-5 h-5 animate-spin text-neutral-600" />
+        ) : (
+          <>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+                <AnimatedNumber value={stats?.waitlistCount ?? 0} />
+              </span>
+              <span className="text-[12px] text-neutral-500">On the waitlist</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+                <AnimatedNumber value={stats?.buildersCount ?? 0} />
+              </span>
+              <span className="text-[12px] text-neutral-500">Active builders</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+                <AnimatedNumber value={stats?.postsCount ?? 0} />
+              </span>
+              <span className="text-[12px] text-neutral-500">Builds shipped</span>
+            </div>
+          </>
+        )}
       </div>
     </motion.div>
   );
@@ -257,49 +303,22 @@ export default function PreRegisterPage() {
   return (
     <div className="fixed inset-0 w-full h-full bg-[#000000] text-white flex flex-col font-sans overflow-hidden">
 
-      {/* Subtle radial glow behind content */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 70%)",
-        }}
-      />
+      {/* Radial glow */}
+      <div className="absolute inset-0 pointer-events-none z-0" style={{ background: "radial-gradient(ellipse 80% 50% at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 70%)" }} />
 
       {/* Fine grid */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, white 1px, transparent 1px),
-            linear-gradient(to bottom, white 1px, transparent 1px)
-          `,
-          backgroundSize: "64px 64px",
-        }}
-      />
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]" style={{ backgroundImage: `linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)`, backgroundSize: "64px 64px" }} />
 
       {/* Header */}
       <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-7 z-30">
         <Link href="/dashboard/home" className="flex items-center gap-2.5 group">
-          <img
-            src="/newlogo.png"
-            alt="CollabSphere"
-            className="w-5 h-5 invert opacity-80 group-hover:opacity-100 transition-opacity"
-          />
-          <span className="text-white/60 text-[13px] font-medium group-hover:text-white transition-colors">
-            CollabSphere
-          </span>
+          <img src="/newlogo.png" alt="CollabSphere" className="w-5 h-5 invert opacity-80 group-hover:opacity-100 transition-opacity" />
+          <span className="text-white/60 text-[13px] font-medium group-hover:text-white transition-colors">CollabSphere</span>
         </Link>
-
-        <Link
-          href="/login"
-          className="text-[13px] text-neutral-500 hover:text-white transition-colors"
-        >
-          Sign in →
-        </Link>
+        <Link href="/login" className="text-[13px] text-neutral-500 hover:text-white transition-colors">Sign in →</Link>
       </header>
 
-      {/* Main: vertically centered */}
+      {/* Main */}
       <main className="flex-1 flex items-center justify-center z-20">
         <Suspense fallback={null}>
           <WaitlistContent />
@@ -308,17 +327,8 @@ export default function PreRegisterPage() {
 
       {/* Footer */}
       <footer className="absolute bottom-0 w-full flex justify-between items-end px-6 sm:px-10 py-7 z-30">
-        <span className="text-neutral-700 text-[11px]">
-          © 2026 CollabSphere
-        </span>
-        <a
-          href="https://twitter.com/collabsphere"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-neutral-700 text-[11px] hover:text-white transition-colors"
-        >
-          @collabsphere
-        </a>
+        <span className="text-neutral-700 text-[11px]">© 2026 CollabSphere</span>
+        <a href="https://twitter.com/collabsphere" target="_blank" rel="noopener noreferrer" className="text-neutral-700 text-[11px] hover:text-white transition-colors">@collabsphere</a>
       </footer>
     </div>
   );
