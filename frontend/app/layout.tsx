@@ -24,13 +24,26 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Collabsphere',
-  description: 'Deploy autonomous AI agents on distributed infrastructure. Offload complex tasks to intelligent workers that run 24/7.',
-  generator: 'v0.app',
+  title: 'CollabSphere — Build Together, Ship Faster',
+  description: 'CollabSphere is the social network for developers. Find teammates, share your builds, and grow your network with builders who ship.',
+  generator: 'next',
   icons: {
     icon: '/newlogo.png',
     apple: '/newlogo.png',
-  }
+  },
+  openGraph: {
+    title: 'CollabSphere — Build Together, Ship Faster',
+    description: 'The social network for developers. Find teammates, share your builds, and ship together.',
+    url: 'https://collabsphereweb.vercel.app',
+    siteName: 'CollabSphere',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CollabSphere — Build Together, Ship Faster',
+    description: 'The social network for developers. Find teammates, share your builds, and ship together.',
+    site: '@collabsphere',
+  },
 }
 
 export default function RootLayout({
