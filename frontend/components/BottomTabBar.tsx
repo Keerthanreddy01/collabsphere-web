@@ -7,9 +7,10 @@ import { motion } from "framer-motion";
 export default function BottomTabBar() {
   const pathname = usePathname();
   
-  // Hide the tab bar on auth pages and the pre-register landing page
-  const isAuthPage = pathname === "/" || pathname === "/login" || pathname === "/signup" || pathname === "/pre-register";
-  if (isAuthPage) return null;
+  // Hide the tab bar on auth/marketing pages and full-screen experiences
+  const HIDDEN_ROUTES = ["/", "/login", "/signup", "/pre-register", "/onboarding"];
+  const isHiddenRoute = HIDDEN_ROUTES.some(r => pathname === r || pathname.startsWith(r + "/"));
+  if (isHiddenRoute) return null;
 
   const tabs = [
     { href: "/dashboard/home", icon: LayoutDashboard, label: "Home" },
