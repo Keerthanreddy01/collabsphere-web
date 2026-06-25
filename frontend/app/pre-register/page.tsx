@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Loader2, ArrowRight } from "lucide-react";
+import { Check, Loader2, Copy, CheckCheck } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, getCountFromServer } from "firebase/firestore";
 import { joinWaitlist, getWaitlistCount } from "@/lib/waitlist";
@@ -21,17 +21,11 @@ const sendConfirmationEmail = async (email: string, platform: string) => {
       { to_email: email, user_name: email.split("@")[0], platform },
       process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
     );
-  } catch {
-    console.error("Email confirmation failed");
-  }
+  } catch { /* silent */ }
 };
 
-// ── Real stats from Firestore ─────────────────────────────────────────────────
-interface LiveStats {
-  waitlistCount: number;     // people who pre-registered
-  buildersCount: number;     // registered builder_profiles
-  postsCount: number;        // total posts shipped
-}
+// ── Real stats ────────────────────────────────────────────────────────────────
+interface LiveStats { waitlistCount: number; buildersCount: number; postsCount: number; }
 
 async function fetchLiveStats(): Promise<LiveStats> {
   try {
@@ -40,44 +34,90 @@ async function fetchLiveStats(): Promise<LiveStats> {
       getCountFromServer(collection(db, "builder_profiles")),
       getCountFromServer(collection(db, "posts")),
     ]);
-
-    return {
-      waitlistCount,
-      buildersCount: buildersSnap.data().count,
-      postsCount: postsSnap.data().count,
-    };
-  } catch {
-    return { waitlistCount: 0, buildersCount: 0, postsCount: 0 };
-  }
+    return { waitlistCount, buildersCount: buildersSnap.data().count, postsCount: postsSnap.data().count };
+  } catch { return { waitlistCount: 0, buildersCount: 0, postsCount: 0 }; }
 }
 
 // ── Animated counter ──────────────────────────────────────────────────────────
 function AnimatedNumber({ value }: { value: number }) {
   const [display, setDisplay] = useState(0);
-
   useEffect(() => {
-    if (value === 0) return;
-    const duration = 1200;
-    const steps = 40;
-    const stepTime = duration / steps;
-    let current = 0;
-    const increment = value / steps;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setDisplay(value);
-        clearInterval(timer);
-      } else {
-        setDisplay(Math.floor(current));
-      }
-    }, stepTime);
-    return () => clearInterval(timer);
+    if (!value) return;
+    const steps = 40; const stepTime = 1200 / steps; let cur = 0; const inc = value / steps;
+    const t = setInterval(() => { cur += inc; if (cur >= value) { setDisplay(value); clearInterval(t); } else setDisplay(Math.floor(cur)); }, stepTime);
+    return () => clearInterval(t);
   }, [value]);
-
   return <>{display.toLocaleString()}</>;
 }
 
-// ── Waitlist form ─────────────────────────────────────────────────────────────
+// ── Share helpers ─────────────────────────────────────────────────────────────
+function ShareButtons({ refUrl }: { refUrl: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(refUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { }
+  };
+
+  const shareText = encodeURIComponent("I just joined the CollabSphere waitlist — the social network for developers. Join me:");
+  const shareUrl  = encodeURIComponent(refUrl);
+
+  return (
+    <div className="w-full max-w-sm flex flex-col items-center gap-5">
+      {/* Referral link */}
+      <div className="w-full flex items-center gap-2 bg-white/[0.06] border border-white/10 rounded-full px-4 py-3">
+        <span className="flex-1 text-[13px] text-neutral-400 truncate font-mono">{refUrl}</span>
+        <button
+          onClick={copy}
+          className="shrink-0 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+        >
+          {copied ? <CheckCheck className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-white/70" />}
+        </button>
+      </div>
+
+      {/* Or divider */}
+      <div className="flex items-center gap-3 w-full">
+        <div className="flex-1 h-[1px] bg-white/10" />
+        <span className="text-neutral-600 text-[12px]">Or</span>
+        <div className="flex-1 h-[1px] bg-white/10" />
+      </div>
+
+      {/* Share buttons */}
+      <div className="flex gap-3 w-full justify-center flex-wrap">
+        {/* X / Twitter */}
+        <a
+          href={`https://twitter.com/intent/tweet?text=${shareText}%20${shareUrl}`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black text-[13px] font-semibold hover:bg-neutral-200 transition-all"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.258 5.626L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+          Share
+        </a>
+
+        {/* WhatsApp */}
+        <a
+          href={`https://wa.me/?text=${shareText}%20${shareUrl}`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white text-[13px] font-semibold hover:bg-[#20c45e] transition-all"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Share
+        </a>
+
+        {/* Facebook */}
+        <a
+          href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1877F2] text-white text-[13px] font-semibold hover:bg-[#1565d8] transition-all"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Share
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ── Main form ─────────────────────────────────────────────────────────────────
 function WaitlistContent() {
   const searchParams = useSearchParams();
   const referredBy = searchParams.get("ref");
@@ -87,238 +127,207 @@ function WaitlistContent() {
   const [errorMsg, setErrorMsg]             = useState("");
   const [success, setSuccess]               = useState(false);
   const [position, setPosition]             = useState(0);
+  const [refCode, setRefCode]               = useState("");
   const [honeypot, setHoneypot]             = useState("");
   const [focused, setFocused]               = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [stats, setStats]                   = useState<LiveStats | null>(null);
   const [statsLoading, setStatsLoading]     = useState(true);
+  const [copied, setCopied]                 = useState(false);
+
+  const refUrl = refCode
+    ? `${typeof window !== "undefined" ? window.location.origin : "https://collabsphereweb.vercel.app"}/pre-register?ref=${refCode}`
+    : "";
 
   useEffect(() => {
-    fetchLiveStats().then((s) => {
-      setStats(s);
-      setStatsLoading(false);
-    });
+    fetchLiveStats().then(s => { setStats(s); setStatsLoading(false); });
   }, []);
 
   const checkDuplicate = async (emailToCheck: string) => {
     if (!db) return false;
-    const q = query(collection(db, 'app_waitlist'), where('email', '==', emailToCheck.toLowerCase().trim()));
-    const snapshot = await getDocs(q);
-    return !snapshot.empty;
+    const snap = await getDocs(query(collection(db, 'app_waitlist'), where('email', '==', emailToCheck.toLowerCase().trim())));
+    return !snap.empty;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || loading) return;
-    if (honeypot) return;
+    if (!email.trim() || loading || honeypot) return;
 
     if (turnstileToken) {
       try {
-        const verifyRes = await fetch('/api/verify-turnstile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: turnstileToken }),
-        });
-        const verifyData = await verifyRes.json();
-        if (!verifyData.success) {
-          setErrorMsg('Security verification failed. Please refresh and try again.');
-          return;
-        }
-      } catch { /* non-blocking */ }
+        const r = await fetch('/api/verify-turnstile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: turnstileToken }) });
+        const d = await r.json();
+        if (!d.success) { setErrorMsg('Security check failed. Refresh and try again.'); return; }
+      } catch { }
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorMsg('Please enter a valid email address.');
-      return;
-    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErrorMsg('Please enter a valid email.'); return; }
 
-    setLoading(true);
-    setErrorMsg("");
+    setLoading(true); setErrorMsg("");
 
-    const alreadyExists = await checkDuplicate(email);
-    if (alreadyExists) {
-      setErrorMsg("You're already on the list! We'll reach out soon.");
-      setLoading(false);
-      return;
-    }
+    if (await checkDuplicate(email)) { setErrorMsg("You're already on the list!"); setLoading(false); return; }
 
     try {
       const res = await joinWaitlist(email, "both", referredBy);
       if (res.success) {
         await sendConfirmationEmail(email, "both");
         setPosition(res.position);
+        setRefCode(res.refCode);
         setSuccess(true);
-        // Refresh stats after joining
         fetchLiveStats().then(setStats);
       } else {
         setErrorMsg(res.message);
       }
-    } catch {
-      setErrorMsg("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    } catch { setErrorMsg("Something went wrong. Please try again."); }
+    finally { setLoading(false); }
   };
 
-  if (success) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="flex flex-col items-center text-center px-6"
-      >
-        <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
-          <Check className="w-7 h-7 text-emerald-400 stroke-[1.5]" />
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-2">
-          You're in.
-        </h2>
-        <p className="text-neutral-400 text-[15px] max-w-xs leading-relaxed">
-          You secured spot&nbsp;
-          <span className="text-white font-semibold">#{position.toLocaleString()}</span>.
-          We'll email you when access opens.
-        </p>
-        <Link
-          href="/dashboard/home"
-          className="mt-8 flex items-center gap-2 text-[13px] text-neutral-400 hover:text-white transition-colors"
-        >
-          Go to the app <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
-      </motion.div>
-    );
-  }
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col items-center text-center px-6 w-full max-w-2xl"
-    >
-      {/* Status pill */}
-      <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 rounded-full px-3 py-1">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-[11px] text-neutral-400 font-medium tracking-wide uppercase">
-          Early access — limited spots
-        </span>
-      </div>
-
-      {/* Headline */}
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white mb-5 leading-[1.1]">
-        Build together.<br />
-        <span className="text-neutral-500">Ship faster.</span>
-      </h1>
-
-      {/* Sub-headline */}
-      <p className="text-neutral-400 text-[16px] sm:text-[17px] max-w-md leading-relaxed mb-10">
-        CollabSphere is the social network for developers — find teammates, share builds, and grow your network.
-      </p>
-
-      {/* Email form */}
-      <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <div className={`flex items-center gap-2 bg-white/[0.04] border rounded-xl px-4 py-3 transition-all duration-200 ${
-          focused ? "border-white/30 bg-white/[0.07]" : "border-white/10 hover:border-white/20"
-        }`}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-600 min-w-0"
-            placeholder="your@email.com"
-            required
-          />
-          <button
-            type="submit"
-            disabled={loading || !email.trim()}
-            className="flex items-center gap-1.5 bg-white text-black text-[13px] font-semibold px-4 py-2 rounded-lg transition-all hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-          >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Join <ArrowRight className="w-3.5 h-3.5" /></>}
-          </button>
+    <div className="flex flex-col items-center text-center px-4 w-full max-w-lg">
+      {/* Logo circle */}
+      <div className="relative mb-6">
+        <div className="absolute inset-0 rounded-full bg-white/5 blur-xl scale-150" />
+        {/* decorative dashes */}
+        <div className="flex items-center gap-3 mb-0">
+          <div className="flex gap-1"><div className="w-6 h-[1px] bg-white/20"/><div className="w-1.5 h-1.5 rounded-full bg-white/40"/></div>
+          <div className="w-14 h-14 rounded-full border border-white/20 bg-[#111] flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
+            <img src="/newlogo.png" alt="CS" className="w-6 h-6 invert" />
+          </div>
+          <div className="flex gap-1"><div className="w-1.5 h-1.5 rounded-full bg-white/40"/><div className="w-6 h-[1px] bg-white/20"/></div>
         </div>
-
-        {/* Honeypot */}
-        <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
-
-        <AnimatePresence>
-          {errorMsg && (
-            <motion.p
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              className="mt-3 text-[13px] text-red-400 text-center"
-            >
-              {errorMsg}
-            </motion.p>
-          )}
-        </AnimatePresence>
-
-        <p className="mt-3 text-neutral-600 text-[12px]">No spam. Unsubscribe any time.</p>
-      </form>
-
-      {/* Turnstile hidden */}
-      <div className="absolute opacity-0 pointer-events-none">
-        <Turnstile
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-          onSuccess={(token) => setTurnstileToken(token)}
-          onError={() => setTurnstileToken(null)}
-        />
       </div>
 
-      {/* Live stats from Firestore */}
-      <div className="flex flex-wrap justify-center gap-x-10 gap-y-5 mt-14">
-        {statsLoading ? (
-          <Loader2 className="w-5 h-5 animate-spin text-neutral-600" />
+      <AnimatePresence mode="wait">
+        {success ? (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-center gap-5 w-full"
+          >
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-2">
+                You're on the waitlist
+              </h1>
+              <p className="text-neutral-400 text-[15px] leading-relaxed">
+                You've successfully secured spot <span className="text-white font-semibold">#{position.toLocaleString()}</span>.
+                <br className="hidden sm:block" /> Feel free to refer your friends!
+              </p>
+            </div>
+            <ShareButtons refUrl={refUrl} />
+            <Link href="/dashboard/home" className="text-[13px] text-neutral-600 hover:text-white transition-colors mt-2">
+              Go to the app →
+            </Link>
+          </motion.div>
         ) : (
-          <>
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
-                <AnimatedNumber value={stats?.waitlistCount ?? 0} />
-              </span>
-              <span className="text-[12px] text-neutral-500">On the waitlist</span>
+          <motion.div
+            key="form"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-center w-full gap-6"
+          >
+            {/* Status pill */}
+            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[11px] text-neutral-400 font-medium tracking-wide uppercase">Early access — limited spots</span>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
-                <AnimatedNumber value={stats?.buildersCount ?? 0} />
-              </span>
-              <span className="text-[12px] text-neutral-500">Active builders</span>
+
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-white mb-3 leading-[1.1]">
+                Build together.<br /><span className="text-neutral-500">Ship faster.</span>
+              </h1>
+              <p className="text-neutral-400 text-[15px] sm:text-[16px] max-w-sm mx-auto leading-relaxed">
+                The social network for developers — find teammates, share builds, grow your network.
+              </p>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
-                <AnimatedNumber value={stats?.postsCount ?? 0} />
-              </span>
-              <span className="text-[12px] text-neutral-500">Builds shipped</span>
+
+            {/* Email form */}
+            <form onSubmit={handleSubmit} className="w-full max-w-sm">
+              <div className={`flex items-center gap-2 bg-white/[0.04] border rounded-full px-4 py-3 transition-all duration-200 shadow-[0_0_40px_rgba(0,0,0,0.8)] ${focused ? "border-white/30 bg-white/[0.07]" : "border-white/10"}`}>
+                <input
+                  type="email" value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+                  className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-600 min-w-0"
+                  placeholder="Enter email address" required
+                />
+                <button
+                  type="submit" disabled={loading || !email.trim()}
+                  className="flex items-center gap-1.5 bg-white text-black text-[13px] font-semibold px-4 py-1.5 rounded-full transition-all hover:bg-neutral-200 disabled:opacity-40 shrink-0"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Join"}
+                </button>
+              </div>
+              <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" value={honeypot} onChange={e => setHoneypot(e.target.value)} />
+              <AnimatePresence>
+                {errorMsg && (
+                  <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-3 text-[13px] text-red-400">
+                    {errorMsg}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </form>
+
+            {/* Turnstile hidden */}
+            <div className="absolute opacity-0 pointer-events-none">
+              <Turnstile siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!} onSuccess={t => setTurnstileToken(t)} onError={() => setTurnstileToken(null)} />
             </div>
-          </>
+
+            {/* Live stats */}
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 pt-4 border-t border-white/[0.06] w-full">
+              {statsLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin text-neutral-600" />
+              ) : (
+                <>
+                  {[
+                    { val: stats?.waitlistCount ?? 0, label: "On waitlist" },
+                    { val: stats?.buildersCount ?? 0, label: "Active builders" },
+                    { val: stats?.postsCount ?? 0, label: "Builds shipped" },
+                  ].map(({ val, label }) => (
+                    <div key={label} className="flex flex-col items-center gap-0.5">
+                      <span className="text-lg sm:text-xl font-semibold text-white"><AnimatedNumber value={val} /></span>
+                      <span className="text-[11px] text-neutral-600">{label}</span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </motion.div>
         )}
-      </div>
-    </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 
+// ── Page shell ────────────────────────────────────────────────────────────────
 export default function PreRegisterPage() {
   return (
-    <div className="fixed inset-0 w-full h-full bg-[#000000] text-white flex flex-col font-sans overflow-hidden">
+    <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden">
 
-      {/* Radial glow */}
-      <div className="absolute inset-0 pointer-events-none z-0" style={{ background: "radial-gradient(ellipse 80% 50% at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 70%)" }} />
+      {/* Spotlight left */}
+      <div className="absolute top-0 left-0 w-[50vw] h-[70vh] pointer-events-none z-0"
+        style={{ background: "radial-gradient(ellipse at top left, rgba(180,0,120,0.28) 0%, transparent 65%)" }} />
+      {/* Spotlight right */}
+      <div className="absolute top-0 right-0 w-[50vw] h-[70vh] pointer-events-none z-0"
+        style={{ background: "radial-gradient(ellipse at top right, rgba(180,0,120,0.28) 0%, transparent 65%)" }} />
+      {/* Floor fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-[30vh] pointer-events-none z-0"
+        style={{ background: "linear-gradient(to top, rgba(60,0,40,0.15), transparent)" }} />
 
-      {/* Fine grid */}
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]" style={{ backgroundImage: `linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)`, backgroundSize: "64px 64px" }} />
+      {/* Subtle noise */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
 
       {/* Header */}
-      <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-7 z-30">
-        <Link href="/dashboard/home" className="flex items-center gap-2.5 group">
-          <img src="/newlogo.png" alt="CollabSphere" className="w-5 h-5 invert opacity-80 group-hover:opacity-100 transition-opacity" />
-          <span className="text-white/60 text-[13px] font-medium group-hover:text-white transition-colors">CollabSphere</span>
+      <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-6 z-30">
+        <Link href="/dashboard/home" className="flex items-center gap-2 group">
+          <img src="/newlogo.png" alt="CS" className="w-4 h-4 invert opacity-60 group-hover:opacity-100 transition-opacity" />
+          <span className="text-white/50 text-[13px] group-hover:text-white transition-colors">CollabSphere</span>
         </Link>
-        <Link href="/login" className="text-[13px] text-neutral-500 hover:text-white transition-colors">Sign in →</Link>
+        <Link href="/login" className="text-[13px] text-neutral-600 hover:text-white transition-colors">Sign in →</Link>
       </header>
 
-      {/* Main */}
+      {/* Center content */}
       <main className="flex-1 flex items-center justify-center z-20">
         <Suspense fallback={null}>
           <WaitlistContent />
@@ -326,9 +335,9 @@ export default function PreRegisterPage() {
       </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 w-full flex justify-between items-end px-6 sm:px-10 py-7 z-30">
-        <span className="text-neutral-700 text-[11px]">© 2026 CollabSphere</span>
-        <a href="https://twitter.com/collabsphere" target="_blank" rel="noopener noreferrer" className="text-neutral-700 text-[11px] hover:text-white transition-colors">@collabsphere</a>
+      <footer className="absolute bottom-0 w-full flex justify-between items-end px-6 sm:px-10 py-6 z-30">
+        <span className="text-neutral-800 text-[11px]">© 2026 CollabSphere</span>
+        <a href="https://twitter.com/collabsphere" target="_blank" rel="noopener noreferrer" className="text-neutral-800 text-[11px] hover:text-white transition-colors">@collabsphere</a>
       </footer>
     </div>
   );
