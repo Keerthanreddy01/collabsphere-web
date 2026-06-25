@@ -6,6 +6,9 @@ import {
 } from 'firebase/firestore'
 import { sanitizePost } from './sanitize'
 
+type PostResult<T = null> = { data: T; error: null } | { data: null; error: Error }
+type VoidResult = { error: null } | { error: Error }
+
 export async function createPost(post: {
   uid: string
   author_name: string
@@ -17,7 +20,7 @@ export async function createPost(post: {
   post_type: 'update' | 'looking_for' | 'build_log'
   visibility?: 'public' | 'collabs'
   project?: string | null
-}) {
+}): Promise<PostResult<{ id: string }>> {
   try {
     const user = auth.currentUser
     if (!user) {
@@ -43,8 +46,8 @@ export async function createPost(post: {
       }
     )
     return { data: { id: docRef.id }, error: null }
-  } catch (error) {
-    return { data: null, error }
+  } catch (err) {
+    return { data: null, error: err instanceof Error ? err : new Error(String(err)) }
   }
 }
 
@@ -66,12 +69,12 @@ export async function getAllPosts() {
   }
 }
 
-export async function likePost(postId: string, userId: string) {
+export async function likePost(postId: string, userId: string): Promise<VoidResult> {
   try {
     const postRef = doc(db, 'posts', postId)
     const postSnap = await getDoc(postRef)
     if (!postSnap.exists()) {
-      return { error: 'Post not found' }
+      return { error: new Error('Post not found') }
     }
     const data = postSnap.data()
     const likes = Array.isArray(data.likes) ? data.likes : []
@@ -86,20 +89,20 @@ export async function likePost(postId: string, userId: string) {
       })
     }
     return { error: null }
-  } catch (error) {
-    return { error }
+  } catch (err) {
+    return { error: err instanceof Error ? err : new Error(String(err)) }
   }
 }
 
-export async function incrementViews(postId: string) {
+export async function incrementViews(postId: string): Promise<VoidResult> {
   try {
     const postRef = doc(db, 'posts', postId)
     await updateDoc(postRef, {
       views_count: increment(1)
     })
     return { error: null }
-  } catch (error) {
-    return { error }
+  } catch (err) {
+    return { error: err instanceof Error ? err : new Error(String(err)) }
   }
 }
 
@@ -109,19 +112,23 @@ export async function addComment(postId: string, comment: {
   author_avatar: string
   author_username: string
   content: string
-}) {
+}): Promise<VoidResult> {
   try {
+    // Sanitize comment content before storing
+    const sanitizedContent = comment.content?.trim().slice(0, 1000) ?? ''
+    if (!sanitizedContent) return { error: new Error('Comment cannot be empty') }
     const commentsRef = collection(db, 'posts', postId, 'comments')
     await addDoc(commentsRef, {
       ...comment,
+      content: sanitizedContent,
       created_at: new Date().toISOString(),
     })
     await updateDoc(doc(db, 'posts', postId), {
       comments_count: increment(1)
     })
     return { error: null }
-  } catch (error) {
-    return { error }
+  } catch (err) {
+    return { error: err instanceof Error ? err : new Error(String(err)) }
   }
 }
 
