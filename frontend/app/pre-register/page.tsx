@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Loader2 } from "lucide-react";
+import { Check, Loader2, ArrowRight, Users, Zap, Code2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { joinWaitlist } from "@/lib/waitlist";
@@ -25,22 +25,28 @@ const sendConfirmationEmail = async (email: string, platform: string) => {
       },
       process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
     );
-  } catch (error) {
+  } catch {
     console.error("Email confirmation failed");
   }
 };
+
+const STATS = [
+  { icon: Users, label: "Builders joined", value: "2,400+" },
+  { icon: Code2, label: "Projects launched", value: "180+" },
+  { icon: Zap, label: "Collabs formed",   value: "640+" },
+];
 
 function WaitlistContent() {
   const searchParams = useSearchParams();
   const referredBy = searchParams.get("ref");
 
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [position, setPosition] = useState(0);
-  const [honeypot, setHoneypot] = useState("");
-  const [focused, setFocused] = useState(false);
+  const [email, setEmail]               = useState("");
+  const [loading, setLoading]           = useState(false);
+  const [errorMsg, setErrorMsg]         = useState("");
+  const [success, setSuccess]           = useState(false);
+  const [position, setPosition]         = useState(0);
+  const [honeypot, setHoneypot]         = useState("");
+  const [focused, setFocused]           = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const checkDuplicate = async (emailToCheck: string) => {
@@ -67,15 +73,15 @@ function WaitlistContent() {
         });
         const verifyData = await verifyRes.json();
         if (!verifyData.success) {
-          setErrorMsg('Verification failed.');
+          setErrorMsg('Security verification failed. Please refresh and try again.');
           return;
         }
-      } catch {}
+      } catch { /* non-blocking */ }
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setErrorMsg('Invalid email');
+      setErrorMsg('Please enter a valid email address.');
       return;
     }
 
@@ -84,7 +90,7 @@ function WaitlistContent() {
 
     const alreadyExists = await checkDuplicate(email);
     if (alreadyExists) {
-      setErrorMsg('Already registered');
+      setErrorMsg("You're already on the list! We'll reach out soon.");
       setLoading(false);
       return;
     }
@@ -98,172 +104,222 @@ function WaitlistContent() {
       } else {
         setErrorMsg(res.message);
       }
-    } catch (err: any) {
-      setErrorMsg("Error joining waitlist");
+    } catch {
+      setErrorMsg("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  if (success) {
+    return (
+      <motion.div
+        key="success"
+        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col items-center text-center px-6"
+      >
+        {/* Check circle */}
+        <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+          <Check className="w-7 h-7 text-emerald-400 stroke-[1.5]" />
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-2">
+          You're in.
+        </h2>
+        <p className="text-neutral-400 text-[15px] max-w-xs leading-relaxed">
+          You secured spot&nbsp;
+          <span className="text-white font-semibold">#{position.toLocaleString()}</span>.
+          We'll email you when access opens.
+        </p>
+        <Link
+          href="/dashboard/home"
+          className="mt-8 flex items-center gap-2 text-[13px] text-neutral-400 hover:text-white transition-colors"
+        >
+          Go to the app <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </motion.div>
+    );
+  }
+
   return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-auto z-20">
-      <AnimatePresence mode="wait">
-        {!success ? (
-          <motion.form
-            key="form"
-            onSubmit={handleSubmit}
-            initial={{ opacity: 0, filter: 'blur(10px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, filter: 'blur(10px)', scale: 0.95 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="relative flex flex-col items-center"
-          >
-            <div className="relative flex items-center bg-[#0d0d0d] rounded-full p-1 sm:p-2 pr-4 sm:pr-6 border border-gray-200 dark:border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)] transition-colors duration-500 hover:bg-gray-50 dark:bg-[#111111] w-full max-w-[95vw] sm:max-w-none">
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 text-black dark:text-white text-[16px] sm:text-[19px] tracking-tight font-sans font-medium transition-opacity hover:opacity-70 disabled:opacity-50 flex-shrink-0 z-10"
-              >
-                {loading ? <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" /> : <Plus className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.5]" />}
-                Join
-              </button>
-              
-              <div className="relative flex items-center h-full group flex-1 min-w-0">
-                {/* The Glowing Divider */}
-                <div className={`w-[2px] h-8 transition-all duration-700 z-20 ${focused || email.length > 0 ? 'bg-white shadow-[0_0_15px_3px_rgba(255,255,255,0.6)]' : 'bg-black/20 dark:bg-white/20'}`} />
-                
-                <input 
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setFocused(true)}
-                  onBlur={() => setFocused(false)}
-                  className="bg-transparent border-none outline-none text-black dark:text-white text-[16px] sm:text-[19px] tracking-tight pl-4 sm:pl-6 w-full sm:w-[320px] placeholder-white/30 z-10 relative font-sans text-ellipsis overflow-hidden whitespace-nowrap" 
-                  placeholder="Enter email address" 
-                  required
-                />
-                
-                {/* Honeypot */}
-                <input
-                  type="text"
-                  name="website"
-                  style={{ display: 'none' }}
-                  tabIndex={-1}
-                  autoComplete="off"
-                  value={honeypot}
-                  onChange={(e) => setHoneypot(e.target.value)}
-                />
-              </div>
-            </div>
+    <motion.div
+      key="form"
+      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col items-center text-center px-6 w-full max-w-2xl"
+    >
+      {/* Tag line */}
+      <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="text-[11px] text-neutral-400 font-medium tracking-wide uppercase">
+          Early access — limited spots
+        </span>
+      </div>
 
-            {/* Error Message */}
-            <div className="absolute top-full mt-6 w-[100vw] text-center">
-              <AnimatePresence>
-                {errorMsg && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-[#ff453a] text-[12px] sm:text-[13px] font-mono tracking-widest uppercase inline-block mx-auto"
-                  >
-                    {errorMsg}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </div>
+      {/* Headline */}
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white mb-5 leading-[1.1]">
+        Build together.<br />
+        <span className="text-neutral-500">Ship faster.</span>
+      </h1>
 
-            {/* Invisible Turnstile */}
-            <div className="absolute opacity-0 pointer-events-none">
-              <Turnstile
-                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                onSuccess={(token) => setTurnstileToken(token)}
-                onError={() => setTurnstileToken(null)}
-              />
-            </div>
-          </motion.form>
-        ) : (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, filter: 'blur(10px)', scale: 0.95 }}
-            animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center bg-[#0d0d0d] rounded-full p-2 pr-8 border border-gray-200 dark:border-white/5 shadow-[0_0_40px_rgba(0,0,0,1)]"
+      {/* Sub-headline */}
+      <p className="text-neutral-400 text-[16px] sm:text-[17px] max-w-md leading-relaxed mb-10">
+        CollabSphere is the social network for developers—find teammates, share builds, and grow your network.
+      </p>
+
+      {/* Email form */}
+      <form onSubmit={handleSubmit} className="w-full max-w-sm">
+        <div
+          className={`flex items-center gap-2 bg-white/[0.04] border rounded-xl px-4 py-3 transition-all duration-200 ${
+            focused
+              ? "border-white/30 bg-white/[0.07]"
+              : "border-white/10 hover:border-white/20"
+          }`}
+        >
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-600 min-w-0"
+            placeholder="your@email.com"
+            required
+          />
+          <button
+            type="submit"
+            disabled={loading || !email.trim()}
+            className="flex items-center gap-1.5 bg-white text-black text-[13px] font-semibold px-4 py-2 rounded-lg transition-all hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
-            <div className="flex items-center gap-3 px-6 py-3 text-black dark:text-white text-[19px] tracking-tight font-sans font-medium">
-              <Check className="w-6 h-6 stroke-[1.5] text-[#10b981]" />
-              Spot Secured
-            </div>
-            
-            <div className="relative flex items-center h-full">
-              <div className="w-[2px] h-8 bg-[#10b981] shadow-[0_0_15px_3px_rgba(16,185,129,0.6)] z-20" />
-              
-              <div className="text-black dark:text-white/60 text-[19px] tracking-tight pl-6 z-10 relative font-sans">
-                #{position.toLocaleString()}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>Join <ArrowRight className="w-3.5 h-3.5" /></>
+            )}
+          </button>
+        </div>
+
+        {/* Honeypot */}
+        <input
+          type="text"
+          name="website"
+          style={{ display: "none" }}
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
+
+        {/* Error */}
+        <AnimatePresence>
+          {errorMsg && (
+            <motion.p
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              className="mt-3 text-[13px] text-red-400 text-center"
+            >
+              {errorMsg}
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        <p className="mt-3 text-neutral-600 text-[12px]">
+          No spam. Unsubscribe any time.
+        </p>
+      </form>
+
+      {/* Turnstile hidden */}
+      <div className="absolute opacity-0 pointer-events-none">
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onSuccess={(token) => setTurnstileToken(token)}
+          onError={() => setTurnstileToken(null)}
+        />
+      </div>
+
+      {/* Stats */}
+      <div className="flex flex-wrap justify-center gap-x-10 gap-y-5 mt-14">
+        {STATS.map(({ icon: Icon, label, value }) => (
+          <div key={label} className="flex flex-col items-center gap-1">
+            <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">{value}</span>
+            <span className="text-[12px] text-neutral-500">{label}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
 export default function PreRegisterPage() {
   return (
-    <div className="fixed inset-0 w-full h-full bg-white dark:bg-black text-black dark:text-white flex flex-col font-sans overflow-hidden selection:bg-black/20 dark:bg-white/20 selection:text-black dark:text-white">
-      
-      {/* Base Noise Layer */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]"
+    <div className="fixed inset-0 w-full h-full bg-[#000000] text-white flex flex-col font-sans overflow-hidden">
+
+      {/* Subtle radial glow behind content */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          background:
+            "radial-gradient(ellipse 80% 50% at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 70%)",
         }}
       />
 
-      {/* Subtle Bottom Grid fading up */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-[60%] pointer-events-none z-0"
+      {/* Fine grid */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+            linear-gradient(to right, white 1px, transparent 1px),
+            linear-gradient(to bottom, white 1px, transparent 1px)
           `,
-          backgroundSize: '80px 80px',
-          maskImage: 'linear-gradient(to top, black 0%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, black 0%, transparent 100%)',
+          backgroundSize: "64px 64px",
         }}
       />
 
       {/* Header */}
-      <header className="absolute top-0 w-full flex justify-between items-center px-8 py-8 z-30 pointer-events-auto">
-        <Link href="/dashboard/home" className="flex items-center gap-3 group">
-          <img src="/newlogo.png" alt="Logo" className="w-5 h-5 opacity-90 invert group-hover:opacity-100 transition-opacity" />
+      <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-7 z-30">
+        <Link href="/dashboard/home" className="flex items-center gap-2.5 group">
+          <img
+            src="/newlogo.png"
+            alt="CollabSphere"
+            className="w-5 h-5 invert opacity-80 group-hover:opacity-100 transition-opacity"
+          />
+          <span className="text-white/60 text-[13px] font-medium group-hover:text-white transition-colors">
+            CollabSphere
+          </span>
         </Link>
-        
-        <div className="flex flex-col items-end text-right">
-          <span className="text-black dark:text-white/40 text-[11px] font-sans">Project</span>
-          <span className="text-black dark:text-white text-[13px] font-medium font-sans tracking-tight">CollabSphere</span>
-        </div>
+
+        <Link
+          href="/login"
+          className="text-[13px] text-neutral-500 hover:text-white transition-colors"
+        >
+          Sign in →
+        </Link>
       </header>
 
-      {/* Main Content */}
-      <Suspense fallback={null}>
-        <WaitlistContent />
-      </Suspense>
+      {/* Main: vertically centered */}
+      <main className="flex-1 flex items-center justify-center z-20">
+        <Suspense fallback={null}>
+          <WaitlistContent />
+        </Suspense>
+      </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 w-full flex justify-between items-end px-8 py-8 z-30 pointer-events-auto">
-        <div className="flex flex-col text-left">
-          <span className="text-black dark:text-white/40 text-[11px] font-sans">© CollabSphere,</span>
-          <span className="text-black dark:text-white/40 text-[11px] font-sans">All Rights Reserved</span>
-        </div>
-        
-        <div className="flex flex-col items-end text-right">
-          <a href="#" className="text-black dark:text-white/40 text-[11px] font-sans hover:text-black dark:text-white transition-colors">Twitter</a>
-          <a href="#" className="text-black dark:text-white text-[11px] font-bold font-sans hover:opacity-80 transition-opacity">@collabsphere</a>
-        </div>
+      <footer className="absolute bottom-0 w-full flex justify-between items-end px-6 sm:px-10 py-7 z-30">
+        <span className="text-neutral-700 text-[11px]">
+          © 2026 CollabSphere
+        </span>
+        <a
+          href="https://twitter.com/collabsphere"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-neutral-700 text-[11px] hover:text-white transition-colors"
+        >
+          @collabsphere
+        </a>
       </footer>
-
     </div>
   );
 }
