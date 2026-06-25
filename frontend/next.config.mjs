@@ -32,7 +32,7 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Scripts: self + Next.js inline + Firebase SDKs + EmailJS + Lottie WASM + Vercel
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://cdn.emailjs.com https://unpkg.com https://va.vercel-scripts.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://cdn.emailjs.com https://unpkg.com https://va.vercel-scripts.com",
       // Styles: self + inline (needed for Tailwind)
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts: self + Google Fonts
@@ -52,7 +52,7 @@ const securityHeaders = [
       // Form submissions only to self
       "form-action 'self'",
       // Workers: Lottie uses web workers for parsing sometimes
-      "worker-src 'self' blob:",
+      "worker-src 'self' blob: https://unpkg.com",
     ].join('; '),
   },
 ]

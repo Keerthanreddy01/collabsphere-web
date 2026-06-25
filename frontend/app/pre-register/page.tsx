@@ -189,7 +189,7 @@ function WaitlistContent() {
             {/* Lottie Animation */}
             <div className="w-full max-w-sm h-48 sm:h-64 mb-2 pointer-events-none">
               <DotLottieReact
-                src="/Slideshow.json"
+                src="/Slideshow.lottie"
                 loop
                 autoplay
               />
@@ -249,19 +249,6 @@ export default function PreRegisterPage() {
   return (
     <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden">
 
-      {/* Mouse Aurora effect */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
-        style={{ 
-          background: `radial-gradient(circle 800px at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 200, 255, 0.15) 0%, rgba(120, 0, 255, 0.08) 30%, transparent 60%)` 
-        }} 
-      />
-      
-      {/* Subtle static ambient glow */}
-      <div className="absolute top-0 right-0 w-[50vw] h-[50vh] pointer-events-none z-0 opacity-40"
-        style={{ background: "radial-gradient(ellipse at top right, rgba(0,200,255,0.05) 0%, transparent 60%)" }} />
-      <div className="absolute bottom-0 left-0 w-[50vw] h-[50vh] pointer-events-none z-0 opacity-40"
-        style={{ background: "radial-gradient(ellipse at bottom left, rgba(120,0,255,0.05) 0%, transparent 60%)" }} />
 
       {/* Subtle noise */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.02]"
