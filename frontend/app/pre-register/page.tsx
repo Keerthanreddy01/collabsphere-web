@@ -189,7 +189,7 @@ function WaitlistContent() {
             {/* Lottie Animation */}
             <div className="w-full max-w-sm h-48 sm:h-64 mb-2 pointer-events-none">
               <DotLottieReact
-                src="/Slideshow.lottie"
+                src="/Slideshow.json"
                 loop
                 autoplay
               />
