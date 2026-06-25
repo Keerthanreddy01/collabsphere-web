@@ -236,7 +236,7 @@ chore/<task>                         # maintenance
 docs/<what-you-updated>              # documentation only
 ```
 
-### PR Process
+### PR process
 
 1. Fork the repository
 2. Create a branch from `main`: `git checkout -b feature/your-feature`
