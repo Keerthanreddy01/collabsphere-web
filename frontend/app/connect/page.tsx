@@ -8,6 +8,7 @@ import { collection, query, getDocs, doc, getDoc, updateDoc, arrayUnion, arrayRe
 import { UserPlus, UserCheck, Loader2, Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 export default function ConnectPage() {
   const { user } = useAuth();
@@ -53,6 +54,12 @@ export default function ConnectPage() {
 
   const handleToggleFollow = async (targetUserId: string, isFollowing: boolean) => {
     if (!user) return;
+
+    // Security: prevent self-follow
+    if (targetUserId === user.uid) {
+      toast.error("You can't follow yourself.");
+      return;
+    }
     
     // Optimistic UI update
     setFollowingMap(prev => ({
@@ -68,13 +75,16 @@ export default function ConnectPage() {
         // Unfollow
         await updateDoc(meRef, { following: arrayRemove(targetUserId) });
         await updateDoc(targetRef, { followers: arrayRemove(user.uid) });
+        toast.success("Unfollowed.");
       } else {
         // Follow
         await updateDoc(meRef, { following: arrayUnion(targetUserId) });
         await updateDoc(targetRef, { followers: arrayUnion(user.uid) });
+        toast.success("You're now connected!");
       }
     } catch (error) {
       console.error("Error toggling follow:", error);
+      toast.error("Something went wrong. Please try again.");
       // Revert optimistic update on error
       setFollowingMap(prev => ({
         ...prev,
