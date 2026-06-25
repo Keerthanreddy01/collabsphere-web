@@ -542,7 +542,8 @@ export default function DashboardHomePage() {
     // Server update
     const { error } = await likePost(postId, user.uid);
     if (error) {
-      toast.error(error.message || "Failed to update like status");
+      const msg = error instanceof Error ? error.message : typeof error === 'string' ? error : "Failed to update like status";
+      toast.error(msg);
       // Revert optimistic update on failure
       setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes } : p));
     }
