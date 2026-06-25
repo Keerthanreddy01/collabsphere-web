@@ -1,5 +1,5 @@
 import { auth } from './firebase'
-import { 
+import {
   signInWithPopup,
   signInWithRedirect,
   GoogleAuthProvider, 
@@ -12,6 +12,7 @@ import {
   setPersistence
 } from 'firebase/auth'
 import { logSecurityEvent } from './security-logger'
+import { setAuthCookie } from './auth-cookie'
 
 const googleProvider = new GoogleAuthProvider()
 googleProvider.addScope('email')
@@ -103,6 +104,7 @@ export async function signInWithGoogle() {
       googleProvider,
       browserPopupRedirectResolver
     )
+    if (result.user) setAuthCookie(result.user.uid)
     return { user: result.user, error: null }
   } catch (error: any) {
     if (error.code === 'auth/popup-blocked') {
@@ -127,6 +129,7 @@ export async function signInWithEmail(email: string, password: string) {
     const result = await signInWithEmailAndPassword(auth, email, password)
     // Log successful sign-in for audit trail
     await logSecurityEvent({ uid: result.user.uid, event: 'sign_in_success', method: 'email' })
+    if (result.user) setAuthCookie(result.user.uid)
     return { data: { user: result.user }, error: null }
   } catch (error: any) {
     // Log failed attempt (no uid — user is unauthenticated)
@@ -140,6 +143,7 @@ export async function signUpWithEmail(email: string, password: string) {
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password)
     await logSecurityEvent({ uid: result.user.uid, event: 'sign_up_success', method: 'email' })
+    if (result.user) setAuthCookie(result.user.uid)
     return { data: { user: result.user }, error: null }
   } catch (error: any) {
     return { data: null, error: { message: mapAuthError(error.code), code: error.code } }

@@ -12,6 +12,28 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // ── Waitlist Gate ───────────────────────────────────────────────────────────
+  // We use the `cs_uid` cookie purely as a routing signal to know someone is 
+  // logged in. Actual authorization is handled by Firebase client-side.
+  const csUid = request.cookies.get('cs_uid')?.value;
+  
+  // Get admin UIDs from env, fallback to empty array
+  const adminUids = (process.env.NEXT_PUBLIC_ADMIN_UIDS || "")
+    .split(',')
+    .map(uid => uid.trim())
+    .filter(Boolean);
+
+  const isApi = pathname.startsWith('/api/');
+  const isStatic = pathname.startsWith('/_next/') || pathname === '/favicon.ico' || pathname.startsWith('/newlogo.png');
+  const isLockedPage = pathname === '/locked';
+
+  // If a user has the routing cookie AND is not an admin, lock them to /locked
+  if (csUid && !adminUids.includes(csUid)) {
+    if (!isLockedPage && !isApi && !isStatic) {
+      return NextResponse.redirect(new URL('/locked', request.url));
+    }
+  }
+
   // Add security headers to all responses
   const response = NextResponse.next();
 

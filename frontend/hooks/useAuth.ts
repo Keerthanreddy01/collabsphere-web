@@ -4,6 +4,7 @@ import { auth } from '@/lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { signOut } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
+import { setAuthCookie, clearAuthCookie, getAuthCookieUid } from '@/lib/auth-cookie'
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
@@ -17,6 +18,13 @@ export function useAuth() {
       return
     }
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // If the user is logged in but the routing cookie isn't set, set it now
+        // This ensures active sessions before the waitlist gate was deployed still get routed
+        if (!getAuthCookieUid()) {
+          setAuthCookie(firebaseUser.uid)
+        }
+      }
       setUser(firebaseUser)
       setLoading(false)
     })
@@ -34,6 +42,7 @@ export function useAuth() {
   const signOutAndClear = useCallback(async () => {
     try {
       await signOut()
+      clearAuthCookie()
       setUser(null)
       router.push('/login')
     } catch {
