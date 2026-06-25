@@ -153,7 +153,7 @@ function WaitlistContent() {
   return (
     <div className="flex flex-col items-center text-center px-4 w-full max-w-lg">
       <div className="mb-10">
-        <img src="/newlogo.png" alt="CollabSphere" className="w-8 h-8 opacity-80" />
+        <img src="/newlogo.png" alt="CollabSphere" className="w-16 h-16 opacity-90 mx-auto" />
       </div>
 
       <AnimatePresence mode="wait">
@@ -185,16 +185,15 @@ function WaitlistContent() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center w-full gap-6"
           >
-            
-            {/* Lottie Animation */}
-            <div className="w-full max-w-sm h-48 sm:h-64 mb-2 pointer-events-none">
-              <DotLottieReact
-                src="/Slideshow.lottie"
-                loop
-                autoplay
-              />
+            {/* Minimalistic Title */}
+            <div className="mb-4">
+              <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-2">
+                Join the waitlist
+              </h1>
+              <p className="text-neutral-400 text-[15px] leading-relaxed">
+                Be the first to know when we launch.
+              </p>
             </div>
-
             {/* Email form */}
             <form onSubmit={handleSubmit} className="w-full max-w-sm">
               <div className={`flex items-center gap-2 bg-white/[0.04] border rounded-full px-4 py-3 transition-all duration-200 shadow-[0_0_40px_rgba(0,0,0,0.8)] ${focused ? "border-white/30 bg-white/[0.07]" : "border-white/10"}`}>
