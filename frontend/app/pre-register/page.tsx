@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Loader2, Copy, CheckCheck, LogOut } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, where, getCountFromServer } from "firebase/firestore";
-import { joinWaitlist, getWaitlistCount } from "@/lib/waitlist";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { joinWaitlist } from "@/lib/waitlist";
 import { Turnstile } from '@marsidev/react-turnstile';
 import emailjs from "@emailjs/browser";
 import Link from "next/link";
@@ -24,32 +24,6 @@ const sendConfirmationEmail = async (email: string, platform: string) => {
     );
   } catch { /* silent */ }
 };
-
-// ── Real stats ────────────────────────────────────────────────────────────────
-interface LiveStats { waitlistCount: number; buildersCount: number; postsCount: number; }
-
-async function fetchLiveStats(): Promise<LiveStats> {
-  try {
-    const [waitlistCount, buildersSnap, postsSnap] = await Promise.all([
-      getWaitlistCount(),
-      getCountFromServer(collection(db, "builder_profiles")),
-      getCountFromServer(collection(db, "posts")),
-    ]);
-    return { waitlistCount, buildersCount: buildersSnap.data().count, postsCount: postsSnap.data().count };
-  } catch { return { waitlistCount: 0, buildersCount: 0, postsCount: 0 }; }
-}
-
-// ── Animated counter ──────────────────────────────────────────────────────────
-function AnimatedNumber({ value }: { value: number }) {
-  const [display, setDisplay] = useState(0);
-  useEffect(() => {
-    if (!value) return;
-    const steps = 40; const stepTime = 1200 / steps; let cur = 0; const inc = value / steps;
-    const t = setInterval(() => { cur += inc; if (cur >= value) { setDisplay(value); clearInterval(t); } else setDisplay(Math.floor(cur)); }, stepTime);
-    return () => clearInterval(t);
-  }, [value]);
-  return <>{display.toLocaleString()}</>;
-}
 
 // ── Share helpers ─────────────────────────────────────────────────────────────
 function ShareButtons({ refUrl }: { refUrl: string }) {
@@ -132,17 +106,10 @@ function WaitlistContent() {
   const [honeypot, setHoneypot]             = useState("");
   const [focused, setFocused]               = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [stats, setStats]                   = useState<LiveStats | null>(null);
-  const [statsLoading, setStatsLoading]     = useState(true);
-  const [copied, setCopied]                 = useState(false);
 
   const refUrl = refCode
     ? `${typeof window !== "undefined" ? window.location.origin : "https://collabsphereweb.vercel.app"}/pre-register?ref=${refCode}`
     : "";
-
-  useEffect(() => {
-    fetchLiveStats().then(s => { setStats(s); setStatsLoading(false); });
-  }, []);
 
   const checkDuplicate = async (emailToCheck: string) => {
     if (!db) return false;
@@ -175,7 +142,6 @@ function WaitlistContent() {
         setPosition(res.position);
         setRefCode(res.refCode);
         setSuccess(true);
-        fetchLiveStats().then(setStats);
       } else {
         setErrorMsg(res.message);
       }
@@ -185,17 +151,8 @@ function WaitlistContent() {
 
   return (
     <div className="flex flex-col items-center text-center px-4 w-full max-w-lg">
-      {/* Logo circle */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 rounded-full bg-white/5 blur-xl scale-150" />
-        {/* decorative dashes */}
-        <div className="flex items-center gap-3 mb-0">
-          <div className="flex gap-1"><div className="w-6 h-[1px] bg-white/20"/><div className="w-1.5 h-1.5 rounded-full bg-white/40"/></div>
-          <div className="w-14 h-14 rounded-full border border-white/20 bg-[#111] flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
-            <img src="/newlogo.png" alt="CS" className="w-6 h-6 invert" />
-          </div>
-          <div className="flex gap-1"><div className="w-1.5 h-1.5 rounded-full bg-white/40"/><div className="w-6 h-[1px] bg-white/20"/></div>
-        </div>
+      <div className="mb-10">
+        <img src="/newlogo.png" alt="CollabSphere" className="w-8 h-8 invert opacity-80" />
       </div>
 
       <AnimatePresence mode="wait">
@@ -227,20 +184,6 @@ function WaitlistContent() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center w-full gap-6"
           >
-            {/* Status pill */}
-            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[11px] text-neutral-400 font-medium tracking-wide uppercase">Early access — limited spots</span>
-            </div>
-
-            <div>
-              <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-white mb-3 leading-[1.1]">
-                Build together.<br /><span className="text-neutral-500">Ship faster.</span>
-              </h1>
-              <p className="text-neutral-400 text-[15px] sm:text-[16px] max-w-sm mx-auto leading-relaxed">
-                The social network for developers — find teammates, share builds, grow your network.
-              </p>
-            </div>
 
             {/* Email form */}
             <form onSubmit={handleSubmit} className="w-full max-w-sm">
@@ -273,26 +216,6 @@ function WaitlistContent() {
             <div className="absolute opacity-0 pointer-events-none">
               <Turnstile siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!} onSuccess={t => setTurnstileToken(t)} onError={() => setTurnstileToken(null)} />
             </div>
-
-            {/* Live stats */}
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 pt-4 border-t border-white/[0.06] w-full">
-              {statsLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin text-neutral-600" />
-              ) : (
-                <>
-                  {[
-                    { val: stats?.waitlistCount ?? 0, label: "On waitlist" },
-                    { val: stats?.buildersCount ?? 0, label: "Active builders" },
-                    { val: stats?.postsCount ?? 0, label: "Builds shipped" },
-                  ].map(({ val, label }) => (
-                    <div key={label} className="flex flex-col items-center gap-0.5">
-                      <span className="text-lg sm:text-xl font-semibold text-white"><AnimatedNumber value={val} /></span>
-                      <span className="text-[11px] text-neutral-600">{label}</span>
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -303,22 +226,35 @@ function WaitlistContent() {
 // ── Page shell ────────────────────────────────────────────────────────────────
 export default function PreRegisterPage() {
   const { user, signOutAndClear } = useAuth();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
     <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden">
 
-      {/* Spotlight left */}
-      <div className="absolute top-0 left-0 w-[50vw] h-[70vh] pointer-events-none z-0"
-        style={{ background: "radial-gradient(ellipse at top left, rgba(180,0,120,0.28) 0%, transparent 65%)" }} />
-      {/* Spotlight right */}
-      <div className="absolute top-0 right-0 w-[50vw] h-[70vh] pointer-events-none z-0"
-        style={{ background: "radial-gradient(ellipse at top right, rgba(180,0,120,0.28) 0%, transparent 65%)" }} />
-      {/* Floor fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-[30vh] pointer-events-none z-0"
-        style={{ background: "linear-gradient(to top, rgba(60,0,40,0.15), transparent)" }} />
+      {/* Mouse Aurora effect */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
+        style={{ 
+          background: `radial-gradient(circle 800px at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 200, 255, 0.15) 0%, rgba(120, 0, 255, 0.08) 30%, transparent 60%)` 
+        }} 
+      />
+      
+      {/* Subtle static ambient glow */}
+      <div className="absolute top-0 right-0 w-[50vw] h-[50vh] pointer-events-none z-0 opacity-40"
+        style={{ background: "radial-gradient(ellipse at top right, rgba(0,200,255,0.05) 0%, transparent 60%)" }} />
+      <div className="absolute bottom-0 left-0 w-[50vw] h-[50vh] pointer-events-none z-0 opacity-40"
+        style={{ background: "radial-gradient(ellipse at bottom left, rgba(120,0,255,0.05) 0%, transparent 60%)" }} />
 
       {/* Subtle noise */}
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.02]"
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
 
       {/* Header */}
