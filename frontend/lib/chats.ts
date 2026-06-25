@@ -1,9 +1,10 @@
 import { db } from "./firebase";
+import { auth } from "./firebase";
 import { 
   collection, addDoc, doc, updateDoc, query, orderBy, where, 
   onSnapshot, serverTimestamp, runTransaction 
 } from "firebase/firestore";
-import { sanitizeShortText } from "./sanitize";
+import { sanitizeText } from "./sanitize";
 
 export interface MessageData {
   chatId: string;
@@ -39,8 +40,18 @@ export async function createChat(participants: string[]) {
  * and updates the parent conversation using a transaction to manage unread counts.
  */
 export async function sendMessage(data: MessageData) {
+  // Auth guard: only authenticated users can send messages
+  const currentUser = auth.currentUser;
+  if (!currentUser || currentUser.uid !== data.senderId) {
+    return { data: null, error: 'Unauthorized: sender mismatch' };
+  }
+
   try {
-    const sanitizedText = sanitizeShortText(data.content);
+    // Sanitize and enforce message length (max 2000 chars)
+    const sanitizedText = sanitizeText(data.content, 2000);
+    if (!sanitizedText) {
+      return { data: null, error: 'Message cannot be empty' };
+    }
     
     // Subcollection path: messages/{conversationId}/messages/{messageId}
     const messagesCol = collection(db, "messages", data.chatId, "messages");
@@ -63,6 +74,12 @@ export async function sendMessage(data: MessageData) {
       
       const convData = convSnap.data();
       const participants = convData.participants || [];
+
+      // Verify the sender is actually a participant in this conversation
+      if (!participants.includes(data.senderId)) {
+        throw new Error('Forbidden: you are not a participant in this conversation');
+      }
+
       const recipientId = participants.find((uid: string) => uid !== data.senderId);
       
       const currentUnread = convData.unreadCount || {};
