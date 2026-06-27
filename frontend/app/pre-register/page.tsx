@@ -110,8 +110,11 @@ function SlideButton({ onComplete, disabled, loading }: { onComplete: () => void
 
   useEffect(() => {
     if (!loading && isSuccess) {
-      setIsSuccess(false);
-      controls.start({ x: 0, width: 90 });
+      const timer = setTimeout(() => {
+        setIsSuccess(false);
+        controls.start({ x: 0, width: 90 });
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [loading, isSuccess, controls]);
 
@@ -168,42 +171,66 @@ function WaitlistContent() {
     ? `${typeof window !== "undefined" ? window.location.origin : "https://collabsphereweb.vercel.app"}/pre-register?ref=${refCode}`
     : "";
 
-  const checkDuplicate = async (emailToCheck: string) => {
-    if (!db) return false;
-    const snap = await getDocs(query(collection(db, 'app_waitlist'), where('email', '==', emailToCheck.toLowerCase().trim())));
-    return !snap.empty;
-  };
-
   const handleSubmit = async (e?: React.FormEvent) => {
+    console.log("handleSubmit triggered!");
     if (e) e.preventDefault();
-    if (!email.trim() || loading || honeypot) return;
+    if (!email.trim() || loading || honeypot) {
+      console.log("Early return: email empty, already loading, or honeypot triggered");
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg("");
+    console.log("Loading set to true");
 
     if (turnstileToken) {
+      console.log("Verifying turnstile token...");
       try {
         const r = await fetch('/api/verify-turnstile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: turnstileToken }) });
         const d = await r.json();
-        if (!d.success) { setErrorMsg('Security check failed. Refresh and try again.'); return; }
-      } catch { }
+        console.log("Turnstile response:", d);
+        if (!d.success) { 
+          setErrorMsg('Security check failed. Refresh and try again.'); 
+          setLoading(false); 
+          return; 
+        }
+      } catch (err) {
+        console.error("Turnstile fetch error:", err);
+      }
+    } else {
+      console.log("No turnstile token present");
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErrorMsg('Please enter a valid email.'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { 
+      console.log("Invalid email format");
+      setErrorMsg('Please enter a valid email.'); 
+      setLoading(false); 
+      return; 
+    }
 
-    setLoading(true); setErrorMsg("");
-
-    if (await checkDuplicate(email)) { setErrorMsg("You're already on the list!"); setLoading(false); return; }
-
+    console.log("Calling joinWaitlist...");
     try {
       const res = await joinWaitlist(email, "both", referredBy);
+      console.log("joinWaitlist response:", res);
       if (res.success) {
+        console.log("Waitlist joined! Sending confirmation email...");
         await sendConfirmationEmail(email, "both");
+        console.log("Confirmation email sent (or skipped on error)");
         setPosition(res.position);
         setRefCode(res.refCode);
         setSuccess(true);
       } else {
+        console.warn("joinWaitlist returned success: false ->", res.message);
         setErrorMsg(res.message);
       }
-    } catch { setErrorMsg("Something went wrong. Please try again."); }
-    finally { setLoading(false); }
+    } catch (err) { 
+      console.error("Exception in handleSubmit:", err);
+      setErrorMsg("Something went wrong. Please try again."); 
+    }
+    finally { 
+      console.log("Setting loading to false");
+      setLoading(false); 
+    }
   };
 
   return (
@@ -264,7 +291,7 @@ function WaitlistContent() {
               
               <SlideButton 
                 onComplete={() => handleSubmit()} 
-                disabled={!email.toLowerCase().includes('@gmail.com')} 
+                disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || loading} 
                 loading={loading} 
               />
 

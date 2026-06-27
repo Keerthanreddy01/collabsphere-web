@@ -44,9 +44,7 @@ if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
     // ignore persistence errors during local/dev when auth is not fully configured
   }
   try {
-    db = initializeFirestore(app, {
-      experimentalForceLongPolling: true,
-    })
+    db = initializeFirestore(app, {})
   } catch (e) {
     db = getFirestore(app)
   }
