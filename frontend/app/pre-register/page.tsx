@@ -101,7 +101,7 @@ function SlideButton({ onComplete, disabled, loading }: { onComplete: () => void
   const handleDragEnd = async (event: any, info: any) => {
     if (info.offset.x > 120 && !disabled) {
       setIsSuccess(true);
-      await controls.start({ x: 0, width: 242, transition: { type: "spring", stiffness: 200, damping: 20 } });
+      controls.start({ x: 0, width: 242, transition: { type: "spring", stiffness: 200, damping: 20 } });
       onComplete();
     } else {
       controls.start({ x: 0, transition: { type: "spring", stiffness: 300, damping: 20 } });
@@ -172,65 +172,34 @@ function WaitlistContent() {
     : "";
 
   const handleSubmit = async (e?: React.FormEvent) => {
-    console.log("handleSubmit triggered!");
     if (e) e.preventDefault();
-    if (!email.trim() || loading || honeypot) {
-      console.log("Early return: email empty, already loading, or honeypot triggered");
-      return;
-    }
+    if (!email.trim() || loading || honeypot) return;
 
     setLoading(true);
     setErrorMsg("");
-    console.log("Loading set to true");
 
     if (turnstileToken) {
-      console.log("Verifying turnstile token...");
       try {
         const r = await fetch('/api/verify-turnstile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: turnstileToken }) });
         const d = await r.json();
-        console.log("Turnstile response:", d);
-        if (!d.success) { 
-          setErrorMsg('Security check failed. Refresh and try again.'); 
-          setLoading(false); 
-          return; 
-        }
-      } catch (err) {
-        console.error("Turnstile fetch error:", err);
-      }
-    } else {
-      console.log("No turnstile token present");
+        if (!d.success) { setErrorMsg('Security check failed. Refresh and try again.'); setLoading(false); return; }
+      } catch { }
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { 
-      console.log("Invalid email format");
-      setErrorMsg('Please enter a valid email.'); 
-      setLoading(false); 
-      return; 
-    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErrorMsg('Please enter a valid email.'); setLoading(false); return; }
 
-    console.log("Calling joinWaitlist...");
     try {
       const res = await joinWaitlist(email, "both", referredBy);
-      console.log("joinWaitlist response:", res);
       if (res.success) {
-        console.log("Waitlist joined! Sending confirmation email...");
         await sendConfirmationEmail(email, "both");
-        console.log("Confirmation email sent (or skipped on error)");
         setPosition(res.position);
         setRefCode(res.refCode);
         setSuccess(true);
       } else {
-        console.warn("joinWaitlist returned success: false ->", res.message);
         setErrorMsg(res.message);
       }
-    } catch (err) { 
-      console.error("Exception in handleSubmit:", err);
-      setErrorMsg("Something went wrong. Please try again."); 
-    }
-    finally { 
-      console.log("Setting loading to false");
-      setLoading(false); 
-    }
+    } catch { setErrorMsg("Something went wrong. Please try again."); }
+    finally { setLoading(false); }
   };
 
   return (
