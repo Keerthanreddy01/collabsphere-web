@@ -17,6 +17,7 @@ import { DevelopersSection } from "@/components/landing/developers-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FooterSection } from "@/components/landing/footer-section";
+import { PodcastSection } from "@/components/landing/podcast-section";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -71,6 +72,7 @@ export default function Home() {
       <IntegrationsSection />
       <DevelopersSection />
       <TestimonialsSection />
+      <PodcastSection />
       <CtaSection />
       <FooterSection />
     </main>
