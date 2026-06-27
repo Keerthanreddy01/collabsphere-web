@@ -376,10 +376,11 @@ export default function PreRegisterPage() {
         {user ? (
           <button 
             onClick={signOutAndClear}
-            className="flex items-center gap-2 text-[13px] text-neutral-500 hover:text-white transition-colors pointer-events-auto"
+            className="group relative flex items-center gap-2 text-[13px] font-medium px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-[#8FFF00]/50 text-neutral-400 hover:text-[#8FFF00] transition-all duration-300 pointer-events-auto overflow-hidden shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(143,255,0,0.2)]"
           >
-            <LogOut className="w-3.5 h-3.5" />
-            Sign out
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-[#8FFF00]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+            <LogOut className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform duration-300 relative z-10" />
+            <span className="relative z-10">Sign out</span>
           </button>
         ) : (
           <Link href="/login" className="text-[13px] text-neutral-600 hover:text-white transition-colors pointer-events-auto">Sign in →</Link>
