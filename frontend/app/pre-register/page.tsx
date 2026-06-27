@@ -221,7 +221,7 @@ function WaitlistContent() {
                 You're on the waitlist
               </h1>
               <p className="text-neutral-400 text-[15px] leading-relaxed">
-                You've successfully secured spot <span className="text-white font-semibold">#{position.toLocaleString()}</span>.
+                You've successfully secured spot <span className="text-[#8FFF00] font-bold text-lg drop-shadow-[0_0_10px_rgba(143,255,0,0.6)] mx-1">#{position.toLocaleString()}</span>.
                 <br className="hidden sm:block" /> Feel free to refer your friends!
               </p>
             </div>
