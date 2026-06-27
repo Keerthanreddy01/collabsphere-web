@@ -116,7 +116,7 @@ function SlideButton({ onComplete, disabled, loading }: { onComplete: () => void
   }, [loading, isSuccess, controls]);
 
   return (
-    <div className={`w-full max-w-[250px] mx-auto h-[65px] relative rounded-full overflow-hidden transition-all duration-500 ${disabled ? 'bg-[#111111] border border-white/5 opacity-50 grayscale' : 'bg-[#161616] border border-white/20 shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)]'}`}>
+    <div className={`w-full max-w-[250px] mx-auto h-[65px] relative rounded-full overflow-hidden backdrop-blur-sm transition-all duration-500 ${disabled ? 'bg-white/5 border border-white/10 opacity-80' : 'bg-white/10 border border-white/30 shadow-[inset_0_4px_20px_rgba(255,255,255,0.05)]'}`}>
        <motion.div style={{ opacity: textOpacity }} className="absolute inset-0 flex items-center justify-center pl-[50px] pointer-events-none">
           <span className="text-white font-medium text-[15px] select-none">Slide to join</span>
        </motion.div>
@@ -131,7 +131,7 @@ function SlideButton({ onComplete, disabled, loading }: { onComplete: () => void
          initial={{ width: 90 }}
          whileHover={(!disabled && !isSuccess) ? { scale: 1.02 } : {}}
          whileTap={(!disabled && !isSuccess) ? { scale: 0.95 } : {}}
-         className={`absolute top-[4px] left-[4px] bottom-[4px] rounded-full flex items-center justify-center z-10 ${disabled ? 'bg-white/10 text-white/30' : 'bg-[#8FFF00] text-black shadow-[0_0_15px_rgba(143,255,0,0.2)] cursor-grab active:cursor-grabbing'}`}
+         className={`absolute top-[4px] left-[4px] bottom-[4px] rounded-full flex items-center justify-center z-10 ${disabled ? 'bg-white/20 text-white/60' : 'bg-[#8FFF00] text-black shadow-[0_0_15px_rgba(143,255,0,0.2)] cursor-grab active:cursor-grabbing'}`}
        >
          <AnimatePresence mode="wait">
            {isSuccess ? (
@@ -207,7 +207,7 @@ function WaitlistContent() {
   };
 
   return (
-    <div className="flex flex-col items-center text-center px-4 w-full max-w-lg">
+    <div className="flex flex-col items-center text-center px-4 w-full max-w-lg pointer-events-auto">
       <div className="mb-10">
         <img src="/newlogo.png" alt="CollabSphere" className="w-16 h-16 opacity-90 mx-auto" />
       </div>
@@ -252,12 +252,12 @@ function WaitlistContent() {
             </div>
             {/* Email form */}
             <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-5">
-              <div className={`flex items-center w-full bg-white/[0.04] border rounded-full px-4 py-3 transition-all duration-200 shadow-[0_0_40px_rgba(0,0,0,0.8)] ${focused ? "border-white/30 bg-white/[0.07]" : "border-white/10"}`}>
+              <div className={`flex items-center w-full backdrop-blur-sm border rounded-full px-4 py-3 transition-all duration-200 shadow-xl ${focused ? "border-white/40 bg-white/10" : "border-white/20 bg-white/[0.08]"}`}>
                 <input
                   type="email" value={email}
                   onChange={e => setEmail(e.target.value)}
                   onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-                  className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-600 min-w-0 text-center"
+                  className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-400 min-w-0 text-center"
                   placeholder="Enter your email" required
                 />
               </div>
@@ -306,8 +306,17 @@ export default function PreRegisterPage() {
     <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden">
       
       {/* Background Dither */}
-      <div className="absolute inset-0 z-0 opacity-50">
-         <Dither waveColor={[0.1, 0.1, 0.1]} colorNum={4} pixelSize={3} />
+      <div className="absolute inset-0 z-0 opacity-25">
+         <Dither
+           waveColor={[0.5, 0.5, 0.5]}
+           disableAnimation={false}
+           enableMouseInteraction
+           mouseRadius={0.3}
+           colorNum={4.3}
+           waveAmplitude={0.3}
+           waveFrequency={3}
+           waveSpeed={0.5}
+         />
       </div>
 
       {/* Subtle noise */}
@@ -315,35 +324,35 @@ export default function PreRegisterPage() {
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
 
       {/* Header */}
-      <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-6 z-30">
-        <Link href="/dashboard/home" className="flex items-center gap-2 group">
+      <header className="absolute top-0 w-full flex justify-between items-center px-6 sm:px-10 py-6 z-30 pointer-events-none">
+        <Link href="/dashboard/home" className="flex items-center gap-2 group pointer-events-auto">
           <img src="/newlogo.png" alt="CS" className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
           <span className="text-white/50 text-[13px] group-hover:text-white transition-colors">CollabSphere</span>
         </Link>
         {user ? (
           <button 
             onClick={signOutAndClear}
-            className="flex items-center gap-2 text-[13px] text-neutral-500 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-[13px] text-neutral-500 hover:text-white transition-colors pointer-events-auto"
           >
             <LogOut className="w-3.5 h-3.5" />
             Sign out
           </button>
         ) : (
-          <Link href="/login" className="text-[13px] text-neutral-600 hover:text-white transition-colors">Sign in →</Link>
+          <Link href="/login" className="text-[13px] text-neutral-600 hover:text-white transition-colors pointer-events-auto">Sign in →</Link>
         )}
       </header>
 
       {/* Center content */}
-      <main className="flex-1 flex items-center justify-center z-20">
+      <main className="flex-1 flex items-center justify-center z-20 pointer-events-none">
         <Suspense fallback={null}>
           <WaitlistContent />
         </Suspense>
       </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 w-full flex justify-between items-end px-6 sm:px-10 py-6 z-30">
+      <footer className="absolute bottom-0 w-full flex justify-between items-end px-6 sm:px-10 py-6 z-30 pointer-events-none">
         <span className="text-neutral-800 text-[11px]">© 2026 CollabSphere</span>
-        <a href="https://twitter.com/collabsphere" target="_blank" rel="noopener noreferrer" className="text-neutral-800 text-[11px] hover:text-white transition-colors">@collabsphere</a>
+        <a href="https://twitter.com/collabsphere" target="_blank" rel="noopener noreferrer" className="text-neutral-800 text-[11px] hover:text-white transition-colors pointer-events-auto">@collabsphere</a>
       </footer>
     </div>
   );

@@ -279,7 +279,6 @@ function DitheredWaves({
         onPointerMove={handlePointerMove}
         position={[0, 0, 0.01]}
         scale={[viewport.width, viewport.height, 1]}
-        visible={false}
       >
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial transparent opacity={0} />
