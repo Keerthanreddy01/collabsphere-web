@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Check, Loader2, Copy, CheckCheck, LogOut } from "lucide-react";
+import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform } from "framer-motion";
+import Dither from "@/components/ui/Dither";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { joinWaitlist } from "@/lib/waitlist";
@@ -11,8 +11,7 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import emailjs from "@emailjs/browser";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
+import { CheckCheck, Copy, Loader2, LogOut } from "lucide-react";
 emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
 const sendConfirmationEmail = async (email: string, platform: string) => {
@@ -93,6 +92,63 @@ function ShareButtons({ refUrl }: { refUrl: string }) {
   );
 }
 
+function SlideButton({ onComplete, disabled, loading }: { onComplete: () => void, disabled: boolean, loading: boolean }) {
+  const controls = useAnimation();
+  const x = useMotionValue(0);
+  const textOpacity = useTransform(x, [0, 100], [0.4, 0]);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleDragEnd = async (event: any, info: any) => {
+    if (info.offset.x > 120 && !disabled) {
+      setIsSuccess(true);
+      await controls.start({ x: 0, width: 242, transition: { type: "spring", stiffness: 200, damping: 20 } });
+      onComplete();
+    } else {
+      controls.start({ x: 0, transition: { type: "spring", stiffness: 300, damping: 20 } });
+    }
+  };
+
+  useEffect(() => {
+    if (!loading && isSuccess) {
+      setIsSuccess(false);
+      controls.start({ x: 0, width: 90 });
+    }
+  }, [loading, isSuccess, controls]);
+
+  return (
+    <div className={`w-full max-w-[250px] mx-auto h-[65px] relative rounded-full overflow-hidden transition-all duration-500 ${disabled ? 'bg-[#111111] border border-white/5 opacity-50 grayscale' : 'bg-[#161616] border border-white/20 shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)]'}`}>
+       <motion.div style={{ opacity: textOpacity }} className="absolute inset-0 flex items-center justify-center pl-[50px] pointer-events-none">
+          <span className="text-white font-medium text-[15px] select-none">Slide to join</span>
+       </motion.div>
+
+       <motion.div
+         drag={(!disabled && !isSuccess) ? "x" : false}
+         dragConstraints={{ left: 0, right: 152 }}
+         dragElastic={0.05}
+         onDragEnd={handleDragEnd}
+         animate={controls}
+         style={{ x }}
+         initial={{ width: 90 }}
+         whileHover={(!disabled && !isSuccess) ? { scale: 1.02 } : {}}
+         whileTap={(!disabled && !isSuccess) ? { scale: 0.95 } : {}}
+         className={`absolute top-[4px] left-[4px] bottom-[4px] rounded-full flex items-center justify-center z-10 ${disabled ? 'bg-white/10 text-white/30' : 'bg-[#8FFF00] text-black shadow-[0_0_15px_rgba(143,255,0,0.2)] cursor-grab active:cursor-grabbing'}`}
+       >
+         <AnimatePresence mode="wait">
+           {isSuccess ? (
+             <motion.div key="loader" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}>
+               <Loader2 className="w-6 h-6 animate-spin" />
+             </motion.div>
+           ) : (
+             <motion.svg key="arrow" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+             </motion.svg>
+           )}
+         </AnimatePresence>
+       </motion.div>
+    </div>
+  )
+}
+
 // ── Main form ─────────────────────────────────────────────────────────────────
 function WaitlistContent() {
   const searchParams = useSearchParams();
@@ -118,8 +174,8 @@ function WaitlistContent() {
     return !snap.empty;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!email.trim() || loading || honeypot) return;
 
     if (turnstileToken) {
@@ -195,22 +251,23 @@ function WaitlistContent() {
               </p>
             </div>
             {/* Email form */}
-            <form onSubmit={handleSubmit} className="w-full max-w-sm">
-              <div className={`flex items-center gap-2 bg-white/[0.04] border rounded-full px-4 py-3 transition-all duration-200 shadow-[0_0_40px_rgba(0,0,0,0.8)] ${focused ? "border-white/30 bg-white/[0.07]" : "border-white/10"}`}>
+            <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-5">
+              <div className={`flex items-center w-full bg-white/[0.04] border rounded-full px-4 py-3 transition-all duration-200 shadow-[0_0_40px_rgba(0,0,0,0.8)] ${focused ? "border-white/30 bg-white/[0.07]" : "border-white/10"}`}>
                 <input
                   type="email" value={email}
                   onChange={e => setEmail(e.target.value)}
                   onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-                  className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-600 min-w-0"
-                  placeholder="Enter email address" required
+                  className="flex-1 bg-transparent border-none outline-none text-white text-[15px] placeholder-neutral-600 min-w-0 text-center"
+                  placeholder="Enter your email" required
                 />
-                <button
-                  type="submit" disabled={loading || !email.trim()}
-                  className="flex items-center gap-1.5 bg-white text-black text-[13px] font-semibold px-4 py-1.5 rounded-full transition-all hover:bg-neutral-200 disabled:opacity-40 shrink-0"
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Join"}
-                </button>
               </div>
+              
+              <SlideButton 
+                onComplete={() => handleSubmit()} 
+                disabled={!email.toLowerCase().includes('@gmail.com')} 
+                loading={loading} 
+              />
+
               <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" value={honeypot} onChange={e => setHoneypot(e.target.value)} />
               <AnimatePresence>
                 {errorMsg && (
@@ -247,7 +304,11 @@ export default function PreRegisterPage() {
 
   return (
     <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col font-sans overflow-hidden">
-
+      
+      {/* Background Dither */}
+      <div className="absolute inset-0 z-0 opacity-50">
+         <Dither waveColor={[0.1, 0.1, 0.1]} colorNum={4} pixelSize={3} />
+      </div>
 
       {/* Subtle noise */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.02]"
