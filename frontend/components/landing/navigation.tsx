@@ -142,43 +142,55 @@ export function Navigation() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 p-6 sm:p-8 md:p-12">
                 {/* Column 1 */}
                 <div>
-                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Our Products</h4>
+                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Platform</h4>
                   <div className="flex flex-col gap-4 md:gap-6">
-                    {["The Vault", "Page Transition Course", "Button Pack", "Community"].map((item) => (
-                      <a key={item} href="#" className="text-lg sm:text-xl md:text-2xl font-medium hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
-                        {item} 
-                        {item === "Button Pack" && (
+                    {[
+                      { name: "Dashboard", href: "/dashboard/home", isNew: false },
+                      { name: "Projects", href: "/projects", isNew: false },
+                      { name: "Hackathons", href: "/hackathons", isNew: true },
+                      { name: "Teams", href: "/teams", isNew: false }
+                    ].map((item) => (
+                      <Link key={item.name} href={item.href} className="text-lg sm:text-xl md:text-2xl font-medium hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
+                        {item.name} 
+                        {item.isNew && (
                           <span className="ml-3 text-[9px] font-bold bg-[#635BFF] px-2 py-0.5 rounded text-white tracking-widest">NEW</span>
                         )}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
                 
                 {/* Column 2 */}
                 <div>
-                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Explore</h4>
+                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Connect</h4>
                   <div className="flex flex-col gap-4 md:gap-6">
-                    {["CollabSphere Showcase", "Collection", "Pricing"].map((item) => (
-                      <a key={item} href="#" className="text-base sm:text-lg md:text-xl hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
-                        {item} 
-                        {item === "Collection" && <span className="text-[10px] text-white/40 ml-2 font-mono">190</span>}
-                      </a>
+                    {[
+                      { name: "Explore Builders", href: "/explore", extra: "" },
+                      { name: "Messages", href: "/messages", extra: "" },
+                      { name: "Bookmarks", href: "/bookmarks", extra: "12" }
+                    ].map((item) => (
+                      <Link key={item.name} href={item.href} className="text-base sm:text-lg md:text-xl hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
+                        {item.name} 
+                        {item.extra && <span className="text-[10px] text-white/40 ml-2 font-mono">{item.extra}</span>}
+                      </Link>
                     ))}
                   </div>
                 </div>
 
                 {/* Column 3 */}
-                <div className="bg-[#242424] rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden group cursor-pointer border border-white/5 mt-4 md:mt-0">
+                <div 
+                  onClick={() => router.push('/onboarding')}
+                  className="bg-[#242424] rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden group cursor-pointer border border-white/5 mt-4 md:mt-0"
+                >
                   <div className="absolute top-4 md:top-6 flex items-center gap-2 z-10">
-                    <span className="text-[10px] font-bold text-white tracking-widest">START</span>
-                    <span className="text-[10px] font-bold bg-[#635BFF] text-white px-2 py-0.5 rounded-full tracking-widest">LEARNING</span>
+                    <span className="text-[10px] font-bold text-white tracking-widest">GET</span>
+                    <span className="text-[10px] font-bold bg-red-500 text-white px-2 py-0.5 rounded-full tracking-widest">STARTED</span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl md:text-3xl font-medium mt-10 mb-6 md:mb-8 relative z-10 tracking-tight leading-tight">Page Transition<br/>Course</h3>
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-medium mt-10 mb-6 md:mb-8 relative z-10 tracking-tight leading-tight">Find Your<br/>Co-founder</h3>
                   <div className="w-full aspect-video bg-black/50 rounded-xl relative z-10 overflow-hidden transform group-hover:scale-105 transition-transform duration-500 shadow-2xl">
-                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900" />
-                     <div className="absolute inset-x-4 sm:inset-x-8 -bottom-4 top-8 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-t-xl shadow-2xl rotate-2" />
-                     <div className="absolute inset-x-4 sm:inset-x-8 -bottom-4 top-4 bg-gradient-to-br from-zinc-600 to-zinc-700 rounded-t-xl shadow-2xl -rotate-2 opacity-50" />
+                     <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-zinc-900" />
+                     <div className="absolute inset-x-4 sm:inset-x-8 -bottom-4 top-8 bg-gradient-to-br from-red-500/40 to-zinc-800 rounded-t-xl shadow-2xl rotate-2" />
+                     <div className="absolute inset-x-4 sm:inset-x-8 -bottom-4 top-4 bg-gradient-to-br from-red-500/60 to-zinc-700 rounded-t-xl shadow-2xl -rotate-2 opacity-50" />
                   </div>
                 </div>
               </div>
