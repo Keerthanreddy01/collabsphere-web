@@ -8,6 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useTheme } from "next-themes";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
+import { ProblemSection } from "@/components/landing/problem-section";
 import { ServicesSection } from "@/components/landing/services-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { InfrastructureSection } from "@/components/landing/infrastructure-section";
@@ -52,8 +53,8 @@ export default function Home() {
   // While checking auth, show a minimal dark loader so there's no flash
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
-        <div className="w-8 h-8 animate-spin rounded-full border-4 border-gray-200 dark:border-white/20 border-t-white" />
+      <div className="flex min-h-screen items-center justify-center bg-[#030303]">
+        <div className="w-6 h-6 rounded-full border-2 border-white/10 border-t-[#D4FF26] animate-spin" />
       </div>
     );
   }
@@ -63,9 +64,10 @@ export default function Home() {
 
   // Not logged in → show the landing page
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white dark:bg-black">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#030303]">
       <Navigation />
       <HeroSection />
+      <ProblemSection />
       <ServicesSection />
       <HowItWorksSection />
       <InfrastructureSection />
