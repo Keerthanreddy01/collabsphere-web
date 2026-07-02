@@ -8,11 +8,12 @@ import { doc, getDoc } from "firebase/firestore";
 import { useTheme } from "next-themes";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
-import { FeaturesSection } from "@/components/landing/features-section";
+import { ServicesSection } from "@/components/landing/services-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { InfrastructureSection } from "@/components/landing/infrastructure-section";
 import { MetricsSection } from "@/components/landing/metrics-section";
 import { IntegrationsSection } from "@/components/landing/integrations-section";
+import { CaseStudySection } from "@/components/landing/case-study-section";
 import { DevelopersSection } from "@/components/landing/developers-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { CtaSection } from "@/components/landing/cta-section";
@@ -65,11 +66,12 @@ export default function Home() {
     <main className="relative min-h-screen overflow-x-hidden bg-white dark:bg-black">
       <Navigation />
       <HeroSection />
-      <FeaturesSection />
+      <ServicesSection />
       <HowItWorksSection />
       <InfrastructureSection />
       <MetricsSection />
       <IntegrationsSection />
+      <CaseStudySection />
       <DevelopersSection />
       <TestimonialsSection />
       <PodcastSection />

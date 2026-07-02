@@ -1,5 +1,9 @@
 "use client";
 
+import { Space_Grotesk } from 'next/font/google';
+
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["700"] });
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -85,7 +89,7 @@ export function Navigation() {
 
           {/* Center: Logo */}
           <div className="hidden sm:flex absolute left-1/2 -translate-x-1/2 border border-white/20 rounded-full px-6 py-1 items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <span className="text-white font-black tracking-tighter text-2xl" style={{ fontFamily: 'Arial, sans-serif' }}>
+            <span className={`text-white tracking-tighter text-2xl ${spaceGrotesk.className}`}>
               COLLABSPHERE
             </span>
           </div>
@@ -142,19 +146,11 @@ export function Navigation() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 p-6 sm:p-8 md:p-12">
                 {/* Column 1 */}
                 <div>
-                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Platform</h4>
+                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Navigation</h4>
                   <div className="flex flex-col gap-4 md:gap-6">
-                    {[
-                      { name: "Dashboard", href: "/dashboard/home", isNew: false },
-                      { name: "Projects", href: "/projects", isNew: false },
-                      { name: "Hackathons", href: "/hackathons", isNew: true },
-                      { name: "Teams", href: "/teams", isNew: false }
-                    ].map((item) => (
-                      <Link key={item.name} href={item.href} className="text-lg sm:text-xl md:text-2xl font-medium hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
+                    {navLinks.slice(0, 3).map((item) => (
+                      <Link key={item.name} href={item.href} onClick={() => setIsMenuOpen(false)} className="text-lg sm:text-xl md:text-2xl font-medium hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
                         {item.name} 
-                        {item.isNew && (
-                          <span className="ml-3 text-[9px] font-bold bg-[#635BFF] px-2 py-0.5 rounded text-white tracking-widest">NEW</span>
-                        )}
                       </Link>
                     ))}
                   </div>
@@ -162,16 +158,11 @@ export function Navigation() {
                 
                 {/* Column 2 */}
                 <div>
-                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Connect</h4>
+                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Explore</h4>
                   <div className="flex flex-col gap-4 md:gap-6">
-                    {[
-                      { name: "Explore Builders", href: "/explore", extra: "" },
-                      { name: "Messages", href: "/messages", extra: "" },
-                      { name: "Bookmarks", href: "/bookmarks", extra: "12" }
-                    ].map((item) => (
-                      <Link key={item.name} href={item.href} className="text-base sm:text-lg md:text-xl hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
+                    {navLinks.slice(3).map((item) => (
+                      <Link key={item.name} href={item.href} onClick={() => setIsMenuOpen(false)} className="text-base sm:text-lg md:text-xl hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
                         {item.name} 
-                        {item.extra && <span className="text-[10px] text-white/40 ml-2 font-mono">{item.extra}</span>}
                       </Link>
                     ))}
                   </div>
