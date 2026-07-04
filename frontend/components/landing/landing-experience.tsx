@@ -2,7 +2,6 @@
 
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { HeroSection } from "@/components/landing/hero-section";
-import { StackingPanelsSection } from "@/components/landing/StackingPanelsSection";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { FeaturePanels } from "@/components/landing/feature-panels";
 import { FooterSection } from "@/components/landing/footer-section";
@@ -14,16 +13,13 @@ export function LandingExperience() {
         {/* 1 — Hero */}
         <HeroSection />
 
-        {/* 2 — Stacking Panels: POST → CONNECT → SHIP → CTA */}
-        <StackingPanelsSection />
-
-        {/* 3 — Problem Statement scrollytelling */}
+        {/* 2 — Problem Statement */}
         <ProblemSection />
 
-        {/* 4 — Feature Panels */}
+        {/* 3 — Feature Panels */}
         <FeaturePanels />
 
-        {/* 5 — Footer */}
+        {/* 4 — Footer */}
         <FooterSection />
       </main>
     </SmoothScroll>
