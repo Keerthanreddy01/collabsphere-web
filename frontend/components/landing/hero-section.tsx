@@ -2,109 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, MessageSquare, Flame, GitFork, Image, Tag, Code } from "lucide-react";
+import { ArrowRight, Image, Tag, Code, MessageSquare, Flame, GitFork } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-export function DotGridCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    };
-    window.addEventListener("resize", handleResize);
-
-    const mouse = { x: -1000, y: -1000 };
-    const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-
-    const spacing = 45;
-    const dots: { x: number; y: number; ox: number; oy: number; phase: number }[] = [];
-
-    const initDots = () => {
-      dots.length = 0;
-      const cols = Math.ceil(width / spacing) + 1;
-      const rows = Math.ceil(height / spacing) + 1;
-      for (let c = 0; c < cols; c++) {
-        for (let r = 0; r < rows; r++) {
-          const x = c * spacing;
-          const y = r * spacing;
-          dots.push({
-            x,
-            y,
-            ox: x,
-            oy: y,
-            phase: Math.random() * Math.PI * 2,
-          });
-        }
-      }
-    };
-
-    initDots();
-
-    let time = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-      time += 0.008;
-
-      dots.forEach((dot) => {
-        const driftX = Math.sin(time + dot.phase) * 2;
-        const driftY = Math.cos(time + dot.phase) * 2;
-        const targetX = dot.ox + driftX;
-        const targetY = dot.oy + driftY;
-
-        const dx = mouse.x - targetX;
-        const dy = mouse.y - targetY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        let finalX = targetX;
-        let finalY = targetY;
-        let opacity = 0.04;
-
-        if (dist < 200) {
-          const force = (200 - dist) / 200;
-          finalX -= (dx / dist) * force * 8;
-          finalY -= (dy / dist) * force * 8;
-          opacity = 0.04 + force * 0.16;
-        }
-
-        ctx.beginPath();
-        ctx.arc(finalX, finalY, 1.2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-        ctx.fill();
-      });
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />;
-}
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -187,22 +90,42 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-[#0a0a0a] text-white flex flex-col justify-between overflow-visible"
+      className="relative w-full min-h-screen bg-[#E83526] text-black flex flex-col justify-between overflow-visible"
     >
-      {/* Background Interactive Dot Grid */}
-      <DotGridCanvas />
-
-      {/* Gritty Noise Texture Overlay (Opacity 0.05 for reference image style) */}
+      {/* Gritty Noise Texture Overlay (matches the creative agency style) */}
       <div
-        className="absolute inset-0 pointer-events-none z-10 opacity-[0.05]"
+        className="absolute inset-0 pointer-events-none z-10 opacity-[0.06]"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
 
-      {/* Subtle bottom gradient glow */}
-      <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-gradient-to-t from-black to-transparent pointer-events-none z-0" />
+      {/* Custom Brutalist Top Navigation Header (styled like the agency screenshot) */}
+      <header className="absolute top-0 left-0 right-0 z-30 border-b-2 border-black flex justify-between items-stretch select-none h-16 bg-[#E83526]">
+        <div className="flex items-center px-6 md:px-10 border-r-2 border-black font-anton tracking-tight text-xl text-black">
+          COLLABSPHERE
+        </div>
+        <div className="hidden md:flex items-stretch text-xs font-anton tracking-widest uppercase text-black">
+          <Link href="#about" className="flex items-center px-6 border-r-2 border-black hover:bg-black hover:text-[#E83526] transition-colors">
+            About us
+          </Link>
+          <Link href="/builders" className="flex items-center px-6 border-r-2 border-black hover:bg-black hover:text-[#E83526] transition-colors">
+            Builders
+          </Link>
+          <Link href="/showcase" className="flex items-center px-6 border-r-2 border-black hover:bg-black hover:text-[#E83526] transition-colors">
+            Showcase
+          </Link>
+        </div>
+        <div className="flex items-stretch font-anton text-xs tracking-widest uppercase">
+          <Link href="/login" className="flex items-center px-6 border-l-2 border-black hover:bg-black hover:text-[#E83526] transition-colors">
+            Sign in
+          </Link>
+          <Link href="/pre-register" className="flex items-center px-6 border-l-2 border-black bg-black text-[#E83526] hover:bg-[#F4F1EA] hover:text-black transition-colors font-bold">
+            Join Waitlist
+          </Link>
+        </div>
+      </header>
 
       {/* Upper-center layout spacer */}
       <div className="h-28 sm:h-36 shrink-0" />
@@ -210,78 +133,61 @@ export function HeroSection() {
       {/* Main Content Area */}
       <div className="relative z-20 flex-1 flex flex-col items-center justify-start px-6 sm:px-12 md:px-16 max-w-7xl mx-auto w-full text-center">
         
-        {/* Layered Brutalist Typography Block */}
+        {/* Layered Brutalist Title Block (styled like "the STORYSELLING agency") */}
         <div
           ref={titleWrapperRef}
           style={{ opacity: 0 }}
           className="relative select-none my-12 w-full max-w-4xl mx-auto flex flex-col items-center"
         >
-          {/* Line 1: Cream-colored medium-size all-caps with sketched circle */}
-          <h2 className="font-anton uppercase tracking-wide text-[#F4F1EA] text-[clamp(1.8rem,5.2vw,4.5rem)] leading-none mb-[-2.4vw] relative z-20">
-            THE NETWORK{" "}
-            <span className="relative inline-block px-3">
-              SERIOUS
-              {/* Organic sketchy hand-drawn double-ellipse SVG loop */}
-              <svg className="absolute inset-y-[-42%] inset-x-[-12%] w-[124%] h-[184%] text-white/95 pointer-events-none" fill="none" viewBox="0 0 100 100">
-                <path
-                  d="M 5,50 C 5,18 95,18 95,50 C 95,82 5,82 8,50 C 10,25 90,25 87,48"
-                  stroke="currentColor"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+          {/* Cursive white "the" */}
+          <span className="absolute top-[-8%] left-[18%] sm:left-[28%] rotate-[-12deg] font-marker text-white text-3xl sm:text-4xl md:text-5xl tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] select-none">
+            the
+          </span>
+
+          {/* Mixed white/black "COLLABSPHERE" stack */}
+          <h1 className="font-anton leading-[0.76] uppercase tracking-tighter text-[clamp(4.2rem,13vw,11rem)] text-center flex flex-wrap justify-center items-baseline gap-x-2">
+            <span className="text-[#F4F1EA]">COLLAB</span>
+            <span className="text-black relative inline-block">
+              SPHERE
+              {/* Hand-drawn sketchy horizontal black mark under SPHERE */}
+              <svg className="absolute bottom-[-8%] left-0 w-full h-4 text-black pointer-events-none" fill="none" viewBox="0 0 100 10">
+                <path d="M 2,5 Q 50,8 98,3" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
               </svg>
             </span>
-          </h2>
-
-          {/* Line 2: Giant Red all-caps word */}
-          <h1 className="font-anton uppercase tracking-tighter text-[#E83526] text-[clamp(6rem,19vw,17.5rem)] leading-[0.8] relative z-10">
-            BUILDERS
           </h1>
 
-          {/* Line 3: Cream-colored medium-size all-caps with sketched underline */}
-          <h2 className="font-anton uppercase tracking-wide text-[#F4F1EA] text-[clamp(1.8rem,5.2vw,4.5rem)] leading-none mt-[-1.6vw] relative z-20 self-center md:self-end md:mr-[12%]">
-            <span className="relative inline-block px-1">
-              USE.
-              {/* Hand-drawn sketchy underline stroke */}
-              <svg className="absolute bottom-[-15%] left-0 w-full h-4 text-[#E83526] pointer-events-none" fill="none" viewBox="0 0 100 10">
-                <path
-                  d="M 3,5 C 35,7 65,8 97,4"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
+          {/* Sub-headline: Spaced, thin, black all-caps */}
+          <h2 className="font-anton uppercase tracking-[0.25em] text-black text-[clamp(1rem,2.8vw,2.2rem)] leading-none mt-6 relative z-20 select-none">
+            THE NETWORK FOR SERIOUS BUILDERS
           </h2>
         </div>
 
-        {/* Clean Modern Subtext */}
+        {/* Descriptor under the headline */}
         <p
           ref={subtextRef}
-          className="font-sans text-neutral-400 text-lg sm:text-xl max-w-2xl font-light leading-relaxed mb-10 text-center"
+          className="font-sans text-black/85 text-base sm:text-lg max-w-2xl font-medium leading-relaxed mb-10 text-center"
           style={{ opacity: 0 }}
         >
           Find your next co-builder. Share what you're shipping. Get
           discovered by people who want to build with you.
         </p>
 
-        {/* Signature Crimson CTA Button */}
+        {/* Primary CTA: Solid Black pill button with white text */}
         <div ref={ctaRef} style={{ opacity: 0 }} className="mb-20">
           <Link
             href="/pre-register"
-            className="group inline-flex items-center gap-3 px-10 py-5 rounded-full bg-[#E83526] text-white text-base sm:text-lg font-bold hover:bg-white hover:text-black transition-all shadow-[0_0_40px_rgba(232,53,38,0.25)] duration-300"
+            className="group inline-flex items-center gap-3 px-10 py-5 rounded-full bg-black text-[#E83526] hover:bg-[#F4F1EA] hover:text-black text-base sm:text-lg font-bold transition-all shadow-[0_10px_35px_rgba(0,0,0,0.35)] duration-300 border-2 border-black"
           >
             Get early access
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        {/* Mockup Container with Glow Behind It */}
-        <div className="relative w-full max-w-4xl mx-auto mb-24 perspective-1000">
+        {/* Mockup Container */}
+        <div className="relative w-full max-w-4xl mx-auto mb-28 perspective-1000">
           
-          {/* Crimson Red Glow Behind Mockup (matches brand color #E83526) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75%] h-[65%] rounded-full bg-[radial-gradient(circle,#E83526_0%,transparent_70%)] opacity-20 blur-[80px] pointer-events-none z-0" />
+          {/* Subtle radial shadow behind the mockup to pop it out from the red background */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[75%] rounded-full bg-black/35 opacity-40 blur-[85px] pointer-events-none z-0" />
 
           {/* High-Fidelity App Mockup */}
           <div
@@ -291,10 +197,10 @@ export function HeroSection() {
               transform: "perspective(1000px) rotateX(12deg)",
               transformOrigin: "top center",
             }}
-            className="relative z-10 w-full rounded-xl border border-white/10 bg-[#0c0c0c] shadow-[0_25px_60px_rgba(0,0,0,0.85)] overflow-hidden select-none text-left pointer-events-auto transform-style-3d hover:border-white/15 transition-colors duration-300"
+            className="relative z-10 w-full rounded-xl border-2 border-black bg-[#0c0c0c] shadow-[0_30px_70px_rgba(0,0,0,0.7)] overflow-hidden select-none text-left pointer-events-auto transform-style-3d transition-colors duration-300"
           >
             {/* Mock Window Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#121212] border-b border-white/5">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#121212] border-b-2 border-black">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40" />
                 <span className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
@@ -310,7 +216,7 @@ export function HeroSection() {
             <div className="grid grid-cols-12 min-h-[380px] bg-[#0c0c0c]">
               
               {/* Mock Left Sidebar Tabs */}
-              <div className="hidden md:block col-span-3 border-r border-white/5 p-4 space-y-2">
+              <div className="hidden md:block col-span-3 border-r-2 border-black p-4 space-y-2">
                 <div className="text-[10px] text-neutral-600 font-mono tracking-wider uppercase mb-3 px-2">
                   Navigation
                 </div>
@@ -403,37 +309,37 @@ export function HeroSection() {
 
       </div>
 
-      {/* Bottom Row: Stats and status */}
+      {/* Bottom Row: Solid black footer-style stats row */}
       <div
         ref={statsRef}
-        className="relative z-20 px-6 sm:px-12 md:px-16 lg:px-24 py-10 border-t border-white/[0.04] bg-black/40 backdrop-blur-sm w-full shrink-0"
+        className="relative z-20 px-6 sm:px-12 md:px-16 lg:px-24 py-10 border-t-2 border-black bg-black text-[#737373] w-full shrink-0"
         style={{ opacity: 0 }}
       >
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-[#737373] font-mono text-sm tracking-widest uppercase">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-6 font-mono text-sm tracking-widest uppercase">
           {/* Animated counter row */}
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
             <div className="flex items-center gap-2">
-              <span className="text-white font-bold text-lg tabular-nums">
+              <span className="text-[#E83526] font-bold text-lg tabular-nums">
                 {buildersCount.toString().padStart(2, "0")}
               </span>
               <span>builders</span>
             </div>
             <div className="h-1 w-1 rounded-full bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2">
-              <span className="text-white font-bold text-lg tabular-nums">
+              <span className="text-[#E83526] font-bold text-lg tabular-nums">
                 {buildsCount}
               </span>
               <span>builds shipped</span>
             </div>
             <div className="h-1 w-1 rounded-full bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2">
-              <span className="text-[#8FFF00] animate-pulse">●</span>
-              <span>early access open</span>
+              <span className="text-[#E83526] animate-pulse">●</span>
+              <span className="text-[#F4F1EA]">early access open</span>
             </div>
           </div>
 
           {/* Scroll directive indicator */}
-          <div className="text-[11px] text-[#404040] select-none pointer-events-none hidden md:block">
+          <div className="text-[11px] text-neutral-600 select-none pointer-events-none hidden md:block">
             scroll to explore ↓
           </div>
         </div>
