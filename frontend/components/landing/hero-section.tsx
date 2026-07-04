@@ -1,83 +1,15 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { usePlatformStats } from "@/hooks/usePlatformStats";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { ArrowRight, MessageSquare, Flame, GitFork, Star, Share2 } from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
-// ── Smooth animated counter ────────────────────────────────
-function AnimatedStat({ end, suffix = "+", label }: { end: number; suffix?: string; label: string }) {
-  const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number>(0);
+gsap.registerPlugin(useGSAP);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || hasStarted || end === 0) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setHasStarted(true);
-        const duration = 2000;
-        const start = performance.now();
-        const tick = (now: number) => {
-          const p = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - p, 4);
-          setCount(Math.floor(eased * end));
-          if (p < 1) rafRef.current = requestAnimationFrame(tick);
-        };
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    }, { threshold: 0.5 });
-    observer.observe(el);
-    return () => { observer.disconnect(); cancelAnimationFrame(rafRef.current); };
-  }, [end, hasStarted]);
-
-  return (
-    <div ref={ref} className="flex flex-col gap-1">
-      <span className="text-2xl lg:text-3xl font-display text-white tabular-nums">
-        {count.toLocaleString()}{suffix}
-      </span>
-      <span className="text-[11px] font-mono text-white/40 uppercase tracking-widest">{label}</span>
-    </div>
-  );
-}
-
-// ── Word-by-word reveal ────────────────────────────────────
-const HEADLINE_WORDS = ["Where", "Elite", "Builders", "Find", "Each", "Other."];
-
-function WordReveal() {
-  return (
-    <h1 className="text-left text-[clamp(2.8rem,7vw,8.5rem)] font-display leading-[0.88] tracking-tight text-white">
-      {HEADLINE_WORDS.map((word, i) => (
-        <motion.span
-          key={word}
-          className="inline-block mr-[0.25em] overflow-hidden"
-          initial={{ clipPath: "inset(0 100% 0 0)" }}
-          animate={{ clipPath: "inset(0 0% 0 0)" }}
-          transition={{
-            duration: 0.9,
-            delay: 0.3 + i * 0.12,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
-          {word}
-        </motion.span>
-      ))}
-    </h1>
-  );
-}
-
-// ── Mouse-reactive grid canvas ────────────────────────────
-function ReactiveGrid({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
+export function DotGridCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const targetRef = useRef({ x: 0.5, y: 0.5 });
-  const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    targetRef.current = { x: mouseX, y: mouseY };
-  }, [mouseX, mouseY]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -85,318 +17,337 @@ function ReactiveGrid({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
-      ctx.scale(dpr, dpr);
+    let animationFrameId: number;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     };
-    resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", handleResize);
 
-    const render = () => {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, w, h);
+    const mouse = { x: -1000, y: -1000 };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
 
-      // Smooth mouse interpolation
-      mouseRef.current.x += (targetRef.current.x - mouseRef.current.x) * 0.06;
-      mouseRef.current.y += (targetRef.current.y - mouseRef.current.y) * 0.06;
+    const spacing = 45;
+    const dots: { x: number; y: number; ox: number; oy: number; phase: number }[] = [];
 
-      const mx = mouseRef.current.x * w;
-      const my = mouseRef.current.y * h;
-      const gridSize = 60;
-
-      for (let x = 0; x <= w; x += gridSize) {
-        for (let y = 0; y <= h; y += gridSize) {
-          const dist = Math.sqrt((x - mx) ** 2 + (y - my) ** 2);
-          const influence = Math.max(0, 1 - dist / 350);
-          const alpha = 0.04 + influence * 0.2;
-          const size = 1 + influence * 3;
-
-          ctx.beginPath();
-          ctx.arc(x, y, size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(212, 255, 38, ${alpha})`;
-          ctx.fill();
+    const initDots = () => {
+      dots.length = 0;
+      const cols = Math.ceil(width / spacing) + 1;
+      const rows = Math.ceil(height / spacing) + 1;
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+          const x = c * spacing;
+          const y = r * spacing;
+          dots.push({
+            x,
+            y,
+            ox: x,
+            oy: y,
+            phase: Math.random() * Math.PI * 2,
+          });
         }
       }
-
-      // Draw grid lines with mouse influence
-      ctx.lineWidth = 0.5;
-      for (let x = 0; x <= w; x += gridSize) {
-        const dist = Math.abs(x - mx);
-        const alpha = 0.03 + Math.max(0, 1 - dist / 400) * 0.08;
-        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-      for (let y = 0; y <= h; y += gridSize) {
-        const dist = Math.abs(y - my);
-        const alpha = 0.03 + Math.max(0, 1 - dist / 400) * 0.08;
-        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-
-      rafRef.current = requestAnimationFrame(render);
     };
-    render();
 
-    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(rafRef.current); };
+    initDots();
+
+    let time = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      time += 0.008;
+
+      dots.forEach((dot) => {
+        const driftX = Math.sin(time + dot.phase) * 2;
+        const driftY = Math.cos(time + dot.phase) * 2;
+        const targetX = dot.ox + driftX;
+        const targetY = dot.oy + driftY;
+
+        const dx = mouse.x - targetX;
+        const dy = mouse.y - targetY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let finalX = targetX;
+        let finalY = targetY;
+        let opacity = 0.04;
+
+        if (dist < 200) {
+          const force = (200 - dist) / 200;
+          finalX -= (dx / dist) * force * 8;
+          finalY -= (dy / dist) * force * 8;
+          opacity = 0.04 + force * 0.16;
+        }
+
+        ctx.beginPath();
+        ctx.arc(finalX, finalY, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+        ctx.fill();
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />;
 }
 
-// ── Cursor glow ────────────────────────────────────────────
-function CursorGlow({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
-  const springConfig = { stiffness: 120, damping: 28, mass: 0.5 };
-  const x = useSpring(useMotionValue(mouseX), springConfig);
-  const y = useSpring(useMotionValue(mouseY), springConfig);
-
-  useEffect(() => { x.set(mouseX); }, [mouseX, x]);
-  useEffect(() => { y.set(mouseY); }, [mouseY, y]);
-
-  return (
-    <motion.div
-      className="absolute pointer-events-none z-10 rounded-full"
-      style={{
-        left: x,
-        top: y,
-        translateX: "-50%",
-        translateY: "-50%",
-        width: 500,
-        height: 500,
-        background: "radial-gradient(circle, rgba(212,255,38,0.04) 0%, transparent 70%)",
-      }}
-    />
-  );
-}
-
-// ── Magnetic CTA Button ────────────────────────────────────
-function MagneticButton({ href, children }: { href: string; children: React.ReactNode }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 200, damping: 20 });
-  const sy = useSpring(my, { stiffness: 200, damping: 20 });
-
-  const onMouseMove = (e: React.MouseEvent) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const dx = e.clientX - (rect.left + rect.width / 2);
-    const dy = e.clientY - (rect.top + rect.height / 2);
-    mx.set(dx * 0.3);
-    my.set(dy * 0.3);
-  };
-
-  const onMouseLeave = () => { mx.set(0); my.set(0); };
-
-  return (
-    <motion.a
-      ref={ref}
-      href={href}
-      style={{ x: sx, y: sy }}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      className="group relative inline-flex items-center gap-3 px-7 py-3.5 bg-[#D4FF26] text-black text-sm font-bold tracking-wide rounded-full overflow-hidden cursor-pointer select-none"
-      whileHover={{ scale: 1.04 }}
-      whileTap={{ scale: 0.96 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-    >
-      <span className="relative z-10">{children}</span>
-      <motion.span
-        className="relative z-10 text-lg"
-        initial={{ x: 0 }}
-        whileHover={{ x: 4 }}
-        transition={{ type: "spring", stiffness: 400 }}
-      >
-        →
-      </motion.span>
-      {/* Shimmer on hover */}
-      <motion.div
-        className="absolute inset-0 bg-white/30"
-        initial={{ x: "-100%", skewX: -15 }}
-        whileHover={{ x: "200%" }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      />
-    </motion.a>
-  );
-}
-
-// ── Main Hero Section ──────────────────────────────────────
 export function HeroSection() {
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-  const [rawMouse, setRawMouse] = useState({ x: -500, y: -500 });
-  const { stats, isLoading } = usePlatformStats();
-  const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtextRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setMousePos({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    });
-    setRawMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  }, []);
+  const [buildersCount, setBuildersCount] = useState(0);
+  const [buildsCount, setBuildsCount] = useState(0);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    el.addEventListener("mousemove", handleMouseMove);
-    return () => el.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-  // Parallax for video bg
-  const bgX = (mousePos.x - 0.5) * -20;
-  const bgY = (mousePos.y - 0.5) * -12;
+      tl.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1.2 }
+      )
+        .fromTo(
+          subtextRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 1.0 },
+          "-=0.8"
+        )
+        .fromTo(
+          ctaRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          "-=0.6"
+        )
+        .fromTo(
+          cardRef.current,
+          { opacity: 0, y: 40, rotateX: 15, rotateY: -15, scale: 0.95 },
+          { opacity: 1, y: 0, rotateX: 6, rotateY: -12, scale: 1, duration: 1.4, ease: "back.out(1.2)" },
+          "-=1.0"
+        )
+        .fromTo(
+          statsRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          "-=0.8"
+        );
+
+      // Gentle floating loop for the card
+      gsap.to(cardRef.current, {
+        y: "-=12",
+        duration: 3,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+
+      // Animated numbers for stats
+      const statsObj = { builders: 0, builds: 0 };
+      gsap.to(statsObj, {
+        builders: 8,
+        builds: 4,
+        duration: 2.2,
+        delay: 0.2,
+        ease: "power2.out",
+        onUpdate: () => {
+          setBuildersCount(Math.floor(statsObj.builders));
+          setBuildsCount(Math.floor(statsObj.builds));
+        },
+      });
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section
-      ref={sectionRef}
-      className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-[#030303]"
+      ref={containerRef}
+      className="relative w-full min-h-screen bg-[#0a0a0a] text-white flex flex-col justify-between overflow-hidden"
     >
-      {/* ── Background video with mouse parallax ── */}
-      <motion.div
-        className="absolute inset-[-4%] z-0"
-        animate={{ x: bgX, y: bgY }}
-        transition={{ type: "spring", stiffness: 60, damping: 30, mass: 1 }}
-      >
-        <video
-          autoPlay muted loop playsInline aria-hidden="true"
-          className="w-full h-full object-cover opacity-50"
-        >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bg-hero-0BnFGdr81Ifnj3WbBZoNt1KE4D5DMT.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030303]/80 via-[#030303]/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#030303]/40 via-transparent to-[#030303]/90" />
-      </motion.div>
+      {/* Background Interactive Dot Grid */}
+      <DotGridCanvas />
 
-      {/* ── Reactive grid canvas ── */}
-      <ReactiveGrid mouseX={mousePos.x} mouseY={mousePos.y} />
-
-      {/* ── Cursor glow ── */}
-      <CursorGlow mouseX={rawMouse.x} mouseY={rawMouse.y} />
-
-      {/* ── Noise texture overlay ── */}
+      {/* Subtle Noise Texture Overlay */}
       <div
-        className="absolute inset-0 pointer-events-none z-10 opacity-[0.025] mix-blend-overlay"
+        className="absolute inset-0 pointer-events-none z-10 opacity-[0.035]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: "200px",
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
 
-      {/* ── Main content ── */}
-      <div className="relative z-20 w-full max-w-[1400px] mx-auto px-6 lg:px-12 pt-36 pb-32">
+      {/* Subtle bottom gradient glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-gradient-to-t from-black to-transparent pointer-events-none z-0" />
 
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center gap-4 mb-10"
-        >
-          <span className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF26] animate-pulse" />
-            <span className="text-[#D4FF26]/70 text-[11px] font-mono tracking-[0.2em] uppercase">
-              The Builder Network
-            </span>
-          </span>
-          <span className="w-12 h-px bg-white/10" />
-          <span className="text-white/20 text-[11px] font-mono tracking-widest">v2.0</span>
-        </motion.div>
+      {/* Empty spacer for header height alignment */}
+      <div className="h-24 shrink-0" />
 
-        {/* Headline — word by word reveal */}
-        <div className="lg:max-w-[65%] mb-6">
-          <WordReveal />
-        </div>
-
-        {/* Sub line */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-white/50 text-lg lg:text-xl leading-relaxed max-w-[480px] mb-12 font-sans"
-        >
-          CollabSphere connects serious developers, designers, and founders.{" "}
-          <span className="text-white/80">No noise. Just builders.</span>
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.3, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center gap-4 mb-24"
-        >
-          <MagneticButton href="/pre-register">Find Your Co-Founder</MagneticButton>
-          <a
-            href="#about"
-            className="text-white/40 hover:text-white text-sm font-mono tracking-wide transition-colors duration-300 group flex items-center gap-2"
-          >
-            See how it works
-            <motion.span
-              animate={{ x: [0, 4, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      {/* Main Content Area: Responsive Grid */}
+      <div className="relative z-20 flex-1 flex items-center px-6 sm:px-12 md:px-16 lg:px-24 py-10 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
+          
+          {/* Left Column: Typography and CTA */}
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
+            {/* Main Headline */}
+            <h1
+              ref={titleRef}
+              className="text-[clamp(2.5rem,6.5vw,5.5rem)] leading-[0.9] tracking-[-0.04em] mb-8 font-sans font-extralight text-[#a3a3a3]"
+              style={{ opacity: 0 }}
             >
-              →
-            </motion.span>
-          </a>
-        </motion.div>
+              The network <br className="sm:hidden" />
+              <span className="font-bold text-white tracking-[-0.05em]">
+                serious builders
+              </span>{" "}
+              use.
+            </h1>
 
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.6 }}
-          className="flex items-start gap-8 lg:gap-16 pt-8 border-t border-white/[0.06]"
-        >
-          {!isLoading && (
-            <>
-              <AnimatedStat end={stats.activeBuilders} suffix="+" label="Active Builders" />
-              <div className="w-px h-8 bg-white/10 self-center" />
-              <AnimatedStat end={stats.projectsLaunched} suffix="+" label="Projects Launched" />
-              <div className="w-px h-8 bg-white/10 self-center" />
-              <AnimatedStat end={stats.openCollabRequests} suffix="+" label="Open Collabs" />
-            </>
-          )}
-          {isLoading && (
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
-              <span className="text-white/20 text-xs font-mono">Loading live data...</span>
+            {/* Subtext */}
+            <p
+              ref={subtextRef}
+              className="text-lg sm:text-xl md:text-2xl text-[#8a8a8a] max-w-xl font-light leading-relaxed mb-10"
+              style={{ opacity: 0 }}
+            >
+              Find your next co-builder. Share what you're shipping. Get
+              discovered by people who want to build with you.
+            </p>
+
+            {/* Larger, Prominent CTA Button */}
+            <div ref={ctaRef} style={{ opacity: 0 }}>
+              <Link
+                href="/pre-register"
+                className="group inline-flex items-center gap-3 px-10 py-5 rounded-full bg-white text-black text-base sm:text-lg font-bold hover:bg-[#8FFF00] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_40px_rgba(255,255,255,0.12)] hover:shadow-[0_0_50px_rgba(143,255,0,0.3)] duration-300"
+              >
+                Get early access
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
-          )}
-        </motion.div>
+          </div>
+
+          {/* Right Column: Floating Mockup Post Card */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end perspective-1000 py-8">
+            <div
+              ref={cardRef}
+              style={{ opacity: 0 }}
+              className="w-full max-w-[420px] rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)] select-none pointer-events-auto transform-style-3d hover:border-[#8FFF00]/30 transition-colors duration-300"
+            >
+              {/* Card Header */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#8FFF00]/30 to-[#eca8d6]/30 border border-white/15 flex items-center justify-center text-xs font-mono font-bold text-white">
+                    AR
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-sm text-white">Alex Rivera</span>
+                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-white/10 text-white/60">
+                        Rust Dev
+                      </span>
+                    </div>
+                    <span className="text-xs text-neutral-500 font-mono">@alex_r · 2h ago</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-[#8FFF00] text-xs font-mono px-2.5 py-1 rounded-full bg-[#8FFF00]/10 border border-[#8FFF00]/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#8FFF00] animate-pulse" />
+                  SHIPPING
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <p className="text-[14px] leading-relaxed text-neutral-300 mb-6 font-light">
+                Just pushed the initial commit for the Rust-based web socket gateway. It handles 50k concurrent developer sessions with 12ms latency. Looking for a React / Tailwind ninja to co-build the real-time collaboration canvas. DM if you want to ship this week!
+              </p>
+
+              {/* Specs Tagging */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-neutral-400 font-mono">
+                  #rust
+                </span>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-neutral-400 font-mono">
+                  #websockets
+                </span>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-neutral-400 font-mono">
+                  #realtime
+                </span>
+              </div>
+
+              {/* Divider */}
+              <div className="w-full h-px bg-white/10 mb-4" />
+
+              {/* Card Actions Mock */}
+              <div className="flex items-center justify-between text-neutral-500 text-xs font-mono">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                    <MessageSquare className="w-4 h-4" /> 14
+                  </span>
+                  <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                    <Flame className="w-4 h-4 text-orange-500/70" /> 42
+                  </span>
+                  <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                    <GitFork className="w-4 h-4" /> 3
+                  </span>
+                </div>
+                <span className="text-[#8FFF00]/90 font-mono text-[11px] uppercase tracking-wider">
+                  3 requests to build →
+                </span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
       </div>
 
-      {/* ── Scroll indicator ── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+      {/* Bottom Row: Stats and status */}
+      <div
+        ref={statsRef}
+        className="relative z-20 px-6 sm:px-12 md:px-16 lg:px-24 py-10 border-t border-white/[0.04] bg-black/40 backdrop-blur-sm w-full"
+        style={{ opacity: 0 }}
       >
-        <span className="text-white/20 text-[10px] font-mono tracking-widest uppercase">Scroll</span>
-        <motion.div
-          className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent"
-          animate={{ scaleY: [1, 0.3, 1], originY: 0 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </motion.div>
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-[#737373] font-mono text-sm tracking-widest uppercase">
+          {/* Animated counter row */}
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold text-lg tabular-nums">
+                {buildersCount.toString().padStart(2, "0")}
+              </span>
+              <span>builders</span>
+            </div>
+            <div className="h-1 w-1 rounded-full bg-white/20 hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold text-lg tabular-nums">
+                {buildsCount}
+              </span>
+              <span>builds shipped</span>
+            </div>
+            <div className="h-1 w-1 rounded-full bg-white/20 hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <span className="text-[#8FFF00] animate-pulse">●</span>
+              <span>early access open</span>
+            </div>
+          </div>
 
-      {/* ── Bottom vignette ── */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#030303] to-transparent z-20 pointer-events-none" />
+          {/* Scroll directive indicator */}
+          <div className="text-[11px] text-[#404040] select-none pointer-events-none hidden md:block">
+            scroll to explore ↓
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
