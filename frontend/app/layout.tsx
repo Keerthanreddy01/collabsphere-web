@@ -1,60 +1,64 @@
-import React from "react"
-import type { Metadata } from 'next'
-import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
-import BottomTabBar from '@/components/BottomTabBar'
-import { ThemeProvider } from '@/components/theme-provider'
-import { ThemeToggle } from '@/components/ThemeToggle'
+import React from "react";
+import type { Metadata } from "next";
+import { Fraunces, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+import BottomTabBar from "@/components/BottomTabBar";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
-const instrumentSans = Instrument_Sans({ 
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: '--font-instrument'
+  variable: "--font-space",
 });
 
-const instrumentSerif = Instrument_Serif({ 
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: "400",
-  variable: '--font-instrument-serif'
+  variable: "--font-fraunces",
 });
 
-const jetbrainsMono = JetBrains_Mono({ 
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: '--font-jetbrains'
+  variable: "--font-jetbrains",
 });
 
 export const metadata: Metadata = {
-  title: 'CollabSphere — Build Together, Ship Faster',
-  description: 'CollabSphere is the social network for developers. Find teammates, share your builds, and grow your network with builders who ship.',
-  generator: 'next',
+  title: "CollabSphere - Build together, ship faster",
+  description:
+    "CollabSphere is the developer network for builders. Find teammates, share your builds, and grow with people who ship.",
+  generator: "next",
   icons: {
-    icon: '/newlogo.png',
-    apple: '/newlogo.png',
+    icon: "/newlogo.png",
+    apple: "/newlogo.png",
   },
   openGraph: {
-    title: 'CollabSphere — Build Together, Ship Faster',
-    description: 'The social network for developers. Find teammates, share your builds, and ship together.',
-    url: 'https://collabsphereweb.vercel.app',
-    siteName: 'CollabSphere',
-    type: 'website',
+    title: "CollabSphere - Build together, ship faster",
+    description:
+      "The developer network for builders. Find teammates, share your builds, and ship together.",
+    url: "https://collabsphereweb.vercel.app",
+    siteName: "CollabSphere",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'CollabSphere — Build Together, Ship Faster',
-    description: 'The social network for developers. Find teammates, share your builds, and ship together.',
-    site: '@collabsphere',
+    card: "summary_large_image",
+    title: "CollabSphere - Build together, ship faster",
+    description:
+      "The developer network for builders. Find teammates, share your builds, and ship together.",
+    site: "@collabsphere",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <style dangerouslySetInnerHTML={{__html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           .no-scrollbar::-webkit-scrollbar,
           .scrollbar-hide::-webkit-scrollbar {
             display: none !important;
@@ -64,10 +68,19 @@ export default function RootLayout({
             -ms-overflow-style: none !important;
             scrollbar-width: none !important;
           }
-        `}} />
+        `,
+          }}
+        />
       </head>
-      <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased bg-white dark:bg-black text-black dark:text-white`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <body
+        className={`${spaceGrotesk.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased bg-white text-black dark:bg-black dark:text-white`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
           <ThemeToggle />
           {children}
           <BottomTabBar />
@@ -75,5 +88,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

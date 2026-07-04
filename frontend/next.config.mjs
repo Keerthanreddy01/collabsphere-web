@@ -58,6 +58,9 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  devIndicators: {
+    appIsrStatus: false,
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

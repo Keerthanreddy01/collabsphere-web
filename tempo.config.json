@@ -1,0 +1,11 @@
+{
+  "framework": "NEXT_JS_APP_ROUTER",
+  "packageManager": "npm",
+  "installCommand": "cd \"frontend\" && npm install",
+  "runCommand": "cd \"frontend\" && npm run dev",
+  "devServerPort": 3000,
+  "nextjs": {
+    "router": "app"
+  },
+  "projectSubpath": "frontend"
+}

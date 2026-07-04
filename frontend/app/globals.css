@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
-/* Scrollbar Hiding Utilities for Tailwind v4 */
 @utility no-scrollbar {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
@@ -31,6 +30,7 @@
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
 }
+
 :root {
   --background: oklch(0.06 0.008 260);
   --foreground: oklch(0.94 0.005 90);
@@ -68,11 +68,14 @@
 }
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-space), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  --font-anton: "Anton", sans-serif;
+  --font-serif-italic: "Playfair Display", serif;
+  --font-marker: "Permanent Marker", cursive;
   --color-brand-dark: #0a0a0a;
   --color-brand-gray: #1A1A1A;
-  --font-display: var(--font-instrument-serif), 'Instrument Serif', Georgia, serif;
+  --font-display: var(--font-fraunces), 'Fraunces', Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -272,4 +275,19 @@
 }
 .action-hover-repost:hover {
   color: #00ba7c !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

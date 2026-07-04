@@ -1,245 +1,111 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { usePlatformStats } from "@/hooks/usePlatformStats";
 
-// Static feature descriptions — values are injected at render time from live data
-const featureDescriptions = [
-  {
-    number: "01",
-    title: "Team Matching v4",
-    description: "Browse verified builders with real project history. No LinkedIn fluff, just world-class code audits.",
-    staticLabel: "verified builders",
-  },
-  {
-    number: "02",
-    title: "Build in Public",
-    description: "Share progress with the community and attract high-tier collaborators in real-time.",
-    staticLabel: "open collab requests",
-  },
-  {
-    number: "03",
-    title: "Project Incubator",
-    description: "The teams formed here are the CEOs of tomorrow. Start small, ship elite-grade software.",
-    staticLabel: "projects launched",
-  },
-  {
-    number: "04",
-    title: "Collab Rooms",
-    description: "Private spaces for your core team to coordinate without the noise of fragmented platforms.",
-    staticLabel: "team sync",
-    staticValue: "100%",
-  },
-];
-
-// Floating dot particles visualization
-function ParticleVisualization() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const frameRef = useRef(0);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current = {
-        x: (e.clientX - rect.left) / rect.width,
-        y: (e.clientY - rect.top) / rect.height,
-      };
-    };
-    canvas.addEventListener("mousemove", handleMouseMove);
-
-    // Generate stable particle positions
-    const COUNT = 70;
-    const particles = Array.from({ length: COUNT }, (_, i) => {
-      const seed = i * 1.618;
-      return {
-        bx: ((seed * 127.1) % 1),
-        by: ((seed * 311.7) % 1),
-        phase: seed * Math.PI * 2,
-        speed: 0.4 + (seed % 0.4),
-        radius: 1.2 + (seed % 2.2),
-      };
-    });
-
-    let time = 0;
-    const render = () => {
-      const rect = canvas.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
-
-      ctx.clearRect(0, 0, w, h);
-
-      const mx = mouseRef.current.x;
-      const my = mouseRef.current.y;
-
-      particles.forEach((p) => {
-        const flowX = Math.sin(time * p.speed * 0.4 + p.phase) * 38;
-        const flowY = Math.cos(time * p.speed * 0.3 + p.phase * 0.7) * 24;
-
-        const bx = p.bx * w;
-        const by = p.by * h;
-        const dx = p.bx - mx;
-        const dy = p.by - my;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const influence = Math.max(0, 1 - dist * 2.8);
-
-        const x = bx + flowX + influence * Math.cos(time + p.phase) * 36;
-        const y = by + flowY + influence * Math.sin(time + p.phase) * 36;
-
-        const pulse = Math.sin(time * p.speed + p.phase) * 0.5 + 0.5;
-        const alpha = 0.08 + pulse * 0.18 + influence * 0.3;
-
-        ctx.beginPath();
-        ctx.arc(x, y, p.radius + pulse * 0.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.fill();
-      });
-
-      time += 0.016;
-      frameRef.current = requestAnimationFrame(render);
-    };
-    render();
-
-    return () => {
-      window.removeEventListener("resize", resize);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(frameRef.current);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-auto"
-      style={{ width: "100%", height: "100%" }}
-    />
-  );
-}
+gsap.registerPlugin(ScrollTrigger);
 
 export function FeaturesSection() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeFeature, setActiveFeature] = useState(0);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
 
-  // ── Live stats from Firebase ──
   const { stats, isLoading } = usePlatformStats();
 
-  // Map live values to each feature card
-  const liveValues = [
-    isLoading ? "—" : stats.activeBuilders.toLocaleString() + "+",
-    isLoading ? "—" : stats.openCollabRequests.toLocaleString() + "+",
-    isLoading ? "—" : stats.projectsLaunched.toLocaleString() + "+",
-    "100%", // team sync stays static
-  ];
-
-  const features = featureDescriptions.map((f, i) => ({
-    ...f,
-    stats: { value: liveValues[i], label: f.staticLabel },
-  }));
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true);
+  useGSAP(() => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1.2,
       },
-      { threshold: 0.1 }
-    );
+    });
 
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+    // Translate the track horizontally
+    tl.to(titleRef.current, { x: "-20vw", opacity: 0, filter: "blur(5px)", ease: "none" }, 0)
+      .to(trackRef.current, { x: "-90vw", ease: "none" }, 0);
+      
+    // Parallax on cards inner elements during scroll
+    cardsRef.current.forEach((card, i) => {
+       if(!card) return;
+       tl.to(card, { rotationY: -5, rotationX: 2, scale: 0.95, ease: "none" }, 0);
+    });
+
+  }, { scope: containerRef });
 
   return (
-    <section
-      id="features"
-      ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
-    >
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        {/* Header - Full width with diagonal layout */}
-        <div className="relative mb-24 lg:mb-32">
-          <div className="grid lg:grid-cols-12 gap-8 items-end">
-            <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-3 text-sm font-mono text-muted-foreground mb-6">
-                <span className="w-12 h-px bg-foreground/30" />
-                CAPABILITY_MATRIX_2026
-              </span>
-              <h2
-                className={`text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] transition-all duration-1000 ${
-                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                }`}
-              >
-                EVERYTHING
-                <br />
-                <span className="text-muted-foreground">A BUILDER NEEDS.</span>
-              </h2>
-            </div>
-            <div className="lg:col-span-5 lg:pb-4">
-              <p className={`text-xl text-muted-foreground leading-relaxed transition-all duration-1000 delay-200 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}>
-                Find the perfect team for your business goals. No noise, just verified production history.
-              </p>
-            </div>
-          </div>
-        </div>
+    <section ref={containerRef} className="relative w-full h-[180vh] bg-[#050505] overflow-hidden">
+      <div className="sticky top-0 h-[100vh] w-full flex flex-col justify-center perspective-[1000px]">
+        
+        {/* Layer 1: Noise & Grid */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+             style={{ backgroundImage: "radial-gradient(circle at center, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
-        {/* Bento Grid Layout */}
-        <div className="grid lg:grid-cols-12 gap-4 lg:gap-6">
-          {/* Large feature card */}
-          <div 
-            className={`lg:col-span-12 relative bg-white dark:bg-black border border-foreground/10 min-h-[500px] overflow-hidden group transition-all duration-700 flex ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-            }`}
-            onMouseEnter={() => setActiveFeature(0)}
-          >
-            {/* Left: text content */}
-            <div className="relative flex-1 p-8 lg:p-12 bg-white dark:bg-black">
-              <ParticleVisualization />
-              <div className="relative z-10">
-                <span className="font-mono text-sm text-muted-foreground">{features[0].number} / NEURAL_LINK — TEAM MATCHING v4</span>
-                <h3 className="text-3xl lg:text-4xl font-display mt-4 mb-6 group-hover:translate-x-2 transition-transform duration-500">
-                  {features[0].title}
-                </h3>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8">
-                  {features[0].description}
-                </p>
-                <div>
-                  <span className="text-5xl lg:text-6xl font-display">{features[0].stats.value}</span>
-                  <span className="block text-sm text-muted-foreground font-mono mt-2">{features[0].stats.label}</span>
-                </div>
+        {/* Floating title */}
+        <h2 ref={titleRef} className="absolute left-8 md:left-24 top-24 md:top-32 font-anton text-6xl md:text-[8rem] text-white uppercase leading-none z-10 select-none drop-shadow-2xl mix-blend-difference">
+          THE<br/><span className="text-[#E83526]">COMMUNITY</span>
+        </h2>
+
+        {/* Horizontal Track */}
+        <div ref={trackRef} className="relative flex items-center gap-8 md:gap-16 pl-[20vw] md:pl-[45vw] mt-24 md:mt-32 w-[300vw] h-[600px] z-20">
+           
+           {/* Card 1 */}
+           <div ref={el => {if(el) cardsRef.current[0] = el}} className="w-[320px] md:w-[420px] h-[450px] md:h-[550px] shrink-0 bg-[#0a0a0a] border border-white/[0.08] rounded-3xl p-8 md:p-10 flex flex-col justify-between hover:bg-white/[0.02] transition-colors shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-sm">
+              <div>
+                 <span className="font-mono text-xs text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E83526]" />
+                    Global Network
+                 </span>
+                 <h3 className="font-anton text-3xl md:text-5xl text-white mt-6 uppercase leading-tight">Verified Builders</h3>
+                 <p className="text-neutral-400 mt-6 leading-relaxed font-sans text-sm md:text-base max-w-sm">No LinkedIn fluff. Connect with developers who have real production history and code audits. The network is curated for action.</p>
               </div>
-            </div>
+              <div className="pt-8 border-t border-white/[0.06] mt-8">
+                 <div className="text-5xl md:text-7xl font-anton text-[#E83526] tracking-tighter">{isLoading ? "—" : stats.activeBuilders.toLocaleString()}+</div>
+                 <div className="text-xs md:text-sm font-mono text-neutral-500 mt-3">Active Users</div>
+              </div>
+           </div>
 
-            {/* Right: mirrored image, full height */}
-            <div className="hidden lg:block relative w-[42%] shrink-0 overflow-hidden">
-              <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Upscaled%20Image%20%2812%29-ng3RrNnsPMJ5CrtOjcPTmhHg01W11q.png"
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover object-center"
-                style={{ transform: "scaleX(-1)" }}
-              />
-              {/* Fade left edge into black */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent" />
-            </div>
-          </div>
+           {/* Card 2 */}
+           <div ref={el => {if(el) cardsRef.current[1] = el}} className="w-[320px] md:w-[420px] h-[450px] md:h-[550px] shrink-0 bg-[#0a0a0a] border border-white/[0.08] rounded-3xl p-8 md:p-10 flex flex-col justify-between hover:bg-white/[0.02] transition-colors shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+              <div className="relative z-10">
+                 <span className="font-mono text-xs text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    Collaboration
+                 </span>
+                 <h3 className="font-anton text-3xl md:text-5xl text-white mt-6 uppercase leading-tight">Build in Public</h3>
+                 <p className="text-neutral-400 mt-6 leading-relaxed font-sans text-sm md:text-base max-w-sm">Share progress, attract high-tier collaborators, and build your reputation based on actual commits and shipped features.</p>
+              </div>
+              <div className="relative z-10 pt-8 border-t border-white/[0.06] mt-8">
+                 <div className="text-5xl md:text-7xl font-anton text-blue-500 tracking-tighter">{isLoading ? "—" : stats.openCollabRequests.toLocaleString()}+</div>
+                 <div className="text-xs md:text-sm font-mono text-neutral-500 mt-3">Open Requests</div>
+              </div>
+           </div>
+
+           {/* Card 3 */}
+           <div ref={el => {if(el) cardsRef.current[2] = el}} className="w-[320px] md:w-[420px] h-[450px] md:h-[550px] shrink-0 bg-[#0a0a0a] border border-white/[0.08] rounded-3xl p-8 md:p-10 flex flex-col justify-between hover:bg-white/[0.02] transition-colors shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-sm relative overflow-hidden">
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#8FFF00]/10 blur-[100px] rounded-full pointer-events-none" />
+              <div className="relative z-10">
+                 <span className="font-mono text-xs text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8FFF00]" />
+                    Incubator
+                 </span>
+                 <h3 className="font-anton text-3xl md:text-5xl text-white mt-6 uppercase leading-tight">Projects Launched</h3>
+                 <p className="text-neutral-400 mt-6 leading-relaxed font-sans text-sm md:text-base max-w-sm">The teams formed here are building the next generation of software. Start small, validate fast, and ship elite-grade products.</p>
+              </div>
+              <div className="relative z-10 pt-8 border-t border-white/[0.06] mt-8">
+                 <div className="text-5xl md:text-7xl font-anton text-[#8FFF00] tracking-tighter">{isLoading ? "—" : stats.projectsLaunched.toLocaleString()}+</div>
+                 <div className="text-xs md:text-sm font-mono text-neutral-500 mt-3">Successful Launches</div>
+              </div>
+           </div>
+
         </div>
+
       </div>
     </section>
   );

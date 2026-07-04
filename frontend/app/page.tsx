@@ -6,20 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useTheme } from "next-themes";
-import { Navigation } from "@/components/landing/navigation";
-import { HeroSection } from "@/components/landing/hero-section";
-import { ProblemSection } from "@/components/landing/problem-section";
-import { ServicesSection } from "@/components/landing/services-section";
-import { HowItWorksSection } from "@/components/landing/how-it-works-section";
-import { InfrastructureSection } from "@/components/landing/infrastructure-section";
-import { MetricsSection } from "@/components/landing/metrics-section";
-import { IntegrationsSection } from "@/components/landing/integrations-section";
-import { CaseStudySection } from "@/components/landing/case-study-section";
-import { DevelopersSection } from "@/components/landing/developers-section";
-import { TestimonialsSection } from "@/components/landing/testimonials-section";
-import { CtaSection } from "@/components/landing/cta-section";
-import { FooterSection } from "@/components/landing/footer-section";
-import { PodcastSection } from "@/components/landing/podcast-section";
+import { LandingExperience } from "@/components/landing/landing-experience";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -53,8 +40,8 @@ export default function Home() {
   // While checking auth, show a minimal dark loader so there's no flash
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#030303]">
-        <div className="w-6 h-6 rounded-full border-2 border-white/10 border-t-[#D4FF26] animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <div className="w-8 h-8 animate-spin rounded-full border-4 border-gray-200 dark:border-white/20 border-t-white" />
       </div>
     );
   }
@@ -62,23 +49,5 @@ export default function Home() {
   // Logged in — redirect is in progress, render nothing to avoid flash
   if (user) return null;
 
-  // Not logged in → show the landing page
-  return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#030303]">
-      <Navigation />
-      <HeroSection />
-      <ProblemSection />
-      <ServicesSection />
-      <HowItWorksSection />
-      <InfrastructureSection />
-      <MetricsSection />
-      <IntegrationsSection />
-      <CaseStudySection />
-      <DevelopersSection />
-      <TestimonialsSection />
-      <PodcastSection />
-      <CtaSection />
-      <FooterSection />
-    </main>
-  );
+  return <LandingExperience />;
 }
