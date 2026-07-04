@@ -2,12 +2,106 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Image, Tag, Code, MessageSquare, Flame, GitFork } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+export function DotGridCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
+    const mouse = { x: -1000, y: -1000 };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+
+    const spacing = 45;
+    const dots: { x: number; y: number; ox: number; oy: number; phase: number }[] = [];
+
+    const initDots = () => {
+      dots.length = 0;
+      const cols = Math.ceil(width / spacing) + 1;
+      const rows = Math.ceil(height / spacing) + 1;
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+          const x = c * spacing;
+          const y = r * spacing;
+          dots.push({
+            x,
+            y,
+            ox: x,
+            oy: y,
+            phase: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+    };
+
+    initDots();
+
+    let time = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      time += 0.008;
+
+      dots.forEach((dot) => {
+        const driftX = Math.sin(time + dot.phase) * 2;
+        const driftY = Math.cos(time + dot.phase) * 2;
+        const targetX = dot.ox + driftX;
+        const targetY = dot.oy + driftY;
+
+        const dx = mouse.x - targetX;
+        const dy = mouse.y - targetY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let finalX = targetX;
+        let finalY = targetY;
+        let opacity = 0.04;
+
+        if (dist < 200) {
+          const force = (200 - dist) / 200;
+          finalX -= (dx / dist) * force * 8;
+          finalY -= (dy / dist) * force * 8;
+          opacity = 0.04 + force * 0.16;
+        }
+
+        ctx.beginPath();
+        ctx.arc(finalX, finalY, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+        ctx.fill();
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />;
+}
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -15,7 +109,6 @@ export function HeroSection() {
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
-  const mockupRef = useRef<HTMLDivElement>(null);
 
   const [buildersCount, setBuildersCount] = useState(0);
   const [buildsCount, setBuildsCount] = useState(0);
@@ -42,33 +135,11 @@ export function HeroSection() {
           "-=0.7"
         )
         .fromTo(
-          mockupRef.current,
-          { opacity: 0, y: 50 },
-          { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" },
-          "-=0.6"
-        )
-        .fromTo(
           statsRef.current,
           { opacity: 0, y: 15 },
           { opacity: 1, y: 0, duration: 0.8 },
           "-=0.8"
         );
-
-      // Mockup perspective reveal on scroll
-      gsap.fromTo(
-        mockupRef.current,
-        { rotateX: 12, scale: 0.95 },
-        {
-          rotateX: 0,
-          scale: 1.0,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom center",
-            scrub: true,
-          },
-        }
-      );
 
       // Stats counters count-up loading
       const statsObj = { builders: 0, builds: 0 };
@@ -92,7 +163,7 @@ export function HeroSection() {
       ref={containerRef}
       className="relative w-full min-h-screen bg-[#E83526] text-black flex flex-col justify-between overflow-visible"
     >
-      {/* Gritty Noise Texture Overlay (matches the creative agency style) */}
+      {/* Gritty Noise Texture Overlay */}
       <div
         className="absolute inset-0 pointer-events-none z-10 opacity-[0.06]"
         style={{
@@ -101,7 +172,10 @@ export function HeroSection() {
         }}
       />
 
-      {/* Custom Brutalist Top Navigation Header (styled like the agency screenshot) */}
+      {/* Subtle bottom gradient glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-gradient-to-t from-black to-transparent pointer-events-none z-0" />
+
+      {/* Custom Brutalist Top Navigation Header */}
       <header className="absolute top-0 left-0 right-0 z-30 border-b-2 border-black flex justify-between items-stretch select-none h-16 bg-[#E83526]">
         <div className="flex items-center px-6 md:px-10 border-r-2 border-black font-anton tracking-tight text-xl text-black">
           COLLABSPHERE
@@ -128,19 +202,19 @@ export function HeroSection() {
       </header>
 
       {/* Upper-center layout spacer */}
-      <div className="h-28 sm:h-36 shrink-0" />
+      <div className="h-36 sm:h-44 shrink-0" />
 
       {/* Main Content Area */}
-      <div className="relative z-20 flex-1 flex flex-col items-center justify-start px-6 sm:px-12 md:px-16 max-w-7xl mx-auto w-full text-center">
+      <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-6 sm:px-12 md:px-16 max-w-7xl mx-auto w-full text-center py-10">
         
-        {/* Layered Brutalist Title Block (styled like "the STORYSELLING agency") */}
+        {/* Layered Brutalist Title Block */}
         <div
           ref={titleWrapperRef}
           style={{ opacity: 0 }}
-          className="relative select-none my-12 w-full max-w-4xl mx-auto flex flex-col items-center"
+          className="relative select-none my-10 w-full max-w-4xl mx-auto flex flex-col items-center"
         >
           {/* Cursive white "the" */}
-          <span className="absolute top-[-8%] left-[18%] sm:left-[28%] rotate-[-12deg] font-marker text-white text-3xl sm:text-4xl md:text-5xl tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] select-none">
+          <span className="absolute top-[-10%] left-[18%] sm:left-[28%] rotate-[-12deg] font-marker text-white text-3xl sm:text-4xl md:text-5xl tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] select-none">
             the
           </span>
 
@@ -173,7 +247,7 @@ export function HeroSection() {
         </p>
 
         {/* Primary CTA: Solid Black pill button with white text */}
-        <div ref={ctaRef} style={{ opacity: 0 }} className="mb-20">
+        <div ref={ctaRef} style={{ opacity: 0 }} className="mb-10">
           <Link
             href="/pre-register"
             className="group inline-flex items-center gap-3 px-10 py-5 rounded-full bg-black text-[#E83526] hover:bg-[#F4F1EA] hover:text-black text-base sm:text-lg font-bold transition-all shadow-[0_10px_35px_rgba(0,0,0,0.35)] duration-300 border-2 border-black"
@@ -181,130 +255,6 @@ export function HeroSection() {
             Get early access
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
-        </div>
-
-        {/* Mockup Container */}
-        <div className="relative w-full max-w-4xl mx-auto mb-28 perspective-1000">
-          
-          {/* Subtle radial shadow behind the mockup to pop it out from the red background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[75%] rounded-full bg-black/35 opacity-40 blur-[85px] pointer-events-none z-0" />
-
-          {/* High-Fidelity App Mockup */}
-          <div
-            ref={mockupRef}
-            style={{
-              opacity: 0,
-              transform: "perspective(1000px) rotateX(12deg)",
-              transformOrigin: "top center",
-            }}
-            className="relative z-10 w-full rounded-xl border-2 border-black bg-[#0c0c0c] shadow-[0_30px_70px_rgba(0,0,0,0.7)] overflow-hidden select-none text-left pointer-events-auto transform-style-3d transition-colors duration-300"
-          >
-            {/* Mock Window Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#121212] border-b-2 border-black">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40" />
-                <span className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
-                <span className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/40" />
-              </div>
-              <div className="text-[11px] text-neutral-500 font-mono tracking-widest uppercase">
-                collabsphere.app/feed
-              </div>
-              <div className="w-12" />
-            </div>
-
-            {/* Mock Layout Grid */}
-            <div className="grid grid-cols-12 min-h-[380px] bg-[#0c0c0c]">
-              
-              {/* Mock Left Sidebar Tabs */}
-              <div className="hidden md:block col-span-3 border-r-2 border-black p-4 space-y-2">
-                <div className="text-[10px] text-neutral-600 font-mono tracking-wider uppercase mb-3 px-2">
-                  Navigation
-                </div>
-                <div className="px-3 py-2 rounded-lg bg-white/5 text-white text-xs font-medium">
-                  ⚡ Feed
-                </div>
-                <div className="px-3 py-2 rounded-lg text-neutral-500 hover:text-neutral-300 text-xs transition-colors">
-                  📁 Projects
-                </div>
-                <div className="px-3 py-2 rounded-lg text-neutral-500 hover:text-neutral-300 text-xs transition-colors">
-                  👥 Builders
-                </div>
-                <div className="px-3 py-2 rounded-lg text-neutral-500 hover:text-neutral-300 text-xs transition-colors">
-                  💬 Collabs
-                </div>
-              </div>
-
-              {/* Mock Main Feed */}
-              <div className="col-span-12 md:col-span-9 p-4 sm:p-5 space-y-4 overflow-hidden">
-                
-                {/* Tab switcher */}
-                <div className="flex gap-4 border-b border-white/5 pb-3">
-                  <span className="text-xs font-semibold text-white border-b border-white pb-2 px-1">
-                    Trending Builds
-                  </span>
-                  <span className="text-xs text-neutral-500 hover:text-neutral-300 pb-2 px-1 cursor-pointer transition-colors">
-                    Recent
-                  </span>
-                  <span className="text-xs text-neutral-500 hover:text-neutral-300 pb-2 px-1 cursor-pointer transition-colors">
-                    Looking for Team
-                  </span>
-                </div>
-
-                {/* What are you shipping composer */}
-                <div className="rounded-xl border border-white/5 bg-[#121212] p-4 flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-[10px] font-bold text-white shrink-0 border border-white/10">
-                    ME
-                  </div>
-                  <div className="flex-1 space-y-3">
-                    <div className="text-neutral-500 text-xs py-1">What are you shipping today?</div>
-                    <div className="flex items-center justify-between border-t border-white/5 pt-3">
-                      <div className="flex gap-3 text-neutral-500">
-                        <Image className="w-4 h-4 hover:text-white cursor-pointer" />
-                        <Tag className="w-4 h-4 hover:text-white cursor-pointer" />
-                        <Code className="w-4 h-4 hover:text-white cursor-pointer" />
-                      </div>
-                      <button className="px-3 py-1.5 rounded-full bg-white text-black font-semibold text-[11px] hover:bg-neutral-200">
-                        Ship it
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Feed Post Card */}
-                <div className="rounded-xl border border-white/5 bg-[#121212] p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-rose-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-[9px] font-bold text-white">
-                        KR
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5 text-xs">
-                          <span className="font-semibold text-white">Keerthan Reddy</span>
-                          <span className="text-[9px] font-mono text-[#8FFF00] uppercase bg-[#8FFF00]/10 border border-[#8FFF00]/20 px-1 py-0.5 rounded">
-                            Founder
-                          </span>
-                        </div>
-                        <div className="text-[10px] text-neutral-500">@keerthan · 1h ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-xs text-neutral-300 leading-relaxed font-light">
-                    Shipped the real-time matchmaking algorithm for co-founders today! Evaluates tech stack overlap and active shipping frequency. Try it out in the matching dashboard.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-neutral-400 font-mono border border-white/10">#algorithms</span>
-                    <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-neutral-400 font-mono border border-white/10">#nextjs</span>
-                  </div>
-                  <div className="flex gap-4 text-neutral-500 text-[10px] pt-1">
-                    <span className="flex items-center gap-1"><MessageSquare className="w-3.5 h-3.5" /> 12</span>
-                    <span className="flex items-center gap-1 text-orange-500/60"><Flame className="w-3.5 h-3.5" /> 38</span>
-                    <span className="flex items-center gap-1"><GitFork className="w-3.5 h-3.5" /> 2</span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
         </div>
 
       </div>

@@ -2,6 +2,7 @@
 
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { HeroSection } from "@/components/landing/hero-section";
+import { MarqueeSection } from "@/components/landing/MarqueeSection";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { FeaturePanels } from "@/components/landing/feature-panels";
 import { FooterSection } from "@/components/landing/footer-section";
@@ -33,6 +34,9 @@ export function LandingExperience() {
 
         {/* Hero Section */}
         <HeroSection />
+
+        {/* Marquee Ticker Section */}
+        <MarqueeSection />
 
         {/* Problem Section */}
         <ProblemSection />
