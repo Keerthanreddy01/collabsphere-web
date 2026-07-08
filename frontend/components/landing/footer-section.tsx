@@ -43,11 +43,11 @@ export function FooterSection() {
           
           <motion.div 
             style={{ x: collabX }}
-            className="mt-8 mb-4 lg:mb-2 shrink-0 will-change-transform w-full"
+            className="mt-8 mb-4 lg:mb-2 shrink-0 will-change-transform w-full z-10"
           >
-            <h1 className="font-anton leading-[0.85] uppercase tracking-normal text-[#E83526]" style={{ fontSize: "clamp(2.5rem, 11vw, 13rem)" }}>
-              COLLABSPHERE
-            </h1>
+              <h1 className="font-anton leading-[0.85] uppercase tracking-normal text-[#E83526]" style={{ fontSize: "clamp(2.5rem, 11vw, 13rem)" }}>
+                COLLABSPHERE
+              </h1>
           </motion.div>
 
           <motion.div 

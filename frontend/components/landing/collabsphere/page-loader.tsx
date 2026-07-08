@@ -3,99 +3,101 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useCollabsphere } from "./collabsphere-context";
+import { TennisMark } from "./collabsphere-shared";
 
-function easeInOutCubic(t: number) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
-export function PageLoader() {
-  const [progress, setProgress] = useState(0);
-  const [isDone, setIsDone] = useState(false);
-  const [isRemoved, setIsRemoved] = useState(false);
+export function CollabsphereLoader() {
   const { setReady } = useCollabsphere();
+  const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
 
   useEffect(() => {
     // stop scroll
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.height = "100%";
 
-    const duration = 1300;
-    const start = performance.now();
+    const MIN_VISIBLE_MS = 1400;
+    const MAX_VISIBLE_MS = 2600;
+    const EXIT_MS = 850;
+    
+    // Check if user prefers reduced motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const minWait = prefersReduced ? 200 : MIN_VISIBLE_MS;
+    const exitTime = prefersReduced ? 0 : EXIT_MS;
 
-    let rafId: number;
+    let startTime = performance.now();
+    let isMounted = true;
+    let fallbackTimer: NodeJS.Timeout;
 
-    function tick(now: number) {
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      const eased = easeInOutCubic(t);
-      setProgress(Math.round(eased * 100));
+    const startExit = () => {
+      if (!isMounted) return;
+      setReady(true);
+      setPhase("exiting");
+      document.documentElement.style.removeProperty("overflow");
+      document.documentElement.style.removeProperty("height");
+      
+      setTimeout(() => {
+        if (isMounted) setPhase("done");
+      }, exitTime);
+    };
 
-      if (t < 1) {
-        rafId = requestAnimationFrame(tick);
+    const attemptExit = () => {
+      const elapsed = performance.now() - startTime;
+      if (elapsed >= minWait) {
+        startExit();
       } else {
-        setIsDone(true);
+        setTimeout(startExit, minWait - elapsed);
       }
+    };
+
+    if (document.readyState === "complete") {
+      attemptExit();
+    } else {
+      window.addEventListener("load", attemptExit);
+      fallbackTimer = setTimeout(attemptExit, MAX_VISIBLE_MS);
     }
-    rafId = requestAnimationFrame(tick);
 
-    return () => cancelAnimationFrame(rafId);
-  }, []);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("load", attemptExit);
+      clearTimeout(fallbackTimer);
+    };
+  }, [setReady]);
 
-  if (isRemoved) return null;
+  if (phase === "done") return null;
 
   return (
     <motion.div
-      className="fixed inset-0 z-[120] flex flex-col items-center justify-center gap-[2rem] bg-[#0a0a0a] text-white rounded-b-[2rem]"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-[2rem] bg-[var(--brand-deep)] text-white"
       initial={{ y: "0%" }}
-      animate={isDone ? { y: "-100%" } : { y: "0%" }}
+      animate={phase === "exiting" ? { y: "-105%" } : { y: "0%" }}
       transition={{
-        type: "spring",
-        stiffness: 220,
-        damping: 30,
-        delay: 0.1, // brief pause at 100
-      }}
-      onAnimationComplete={(def) => {
-        if (def && (def as any).y === "-100%") {
-          setIsRemoved(true);
-          setReady(true);
-          document.documentElement.style.removeProperty("overflow");
-          document.documentElement.style.removeProperty("height");
-        }
+        duration: 0.85,
+        ease: [0.645, 0.045, 0.355, 1], // close to easeInOutCubic
       }}
     >
       <motion.div
-        className="flex flex-col items-center gap-[1.25rem]"
-        animate={isDone ? { opacity: 0, y: -12 } : { opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 260, damping: 26 }}
+        className="flex items-center gap-[0.5rem]"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 200, damping: 22 }}
       >
-        <div className="font-semibold text-[1.5rem] sm:text-[1.875rem] flex items-center gap-2">
-          <svg viewBox="0 0 48 48" className="w-[1.875rem] h-[1.875rem] fill-[#FF3B30]">
-            <path d="M24 2c2.2 13.8 7.9 19.6 22 22-14.1 2.4-19.8 8.2-22 22-2.2-13.8-7.9-19.6-22-22 14.1-2.4 19.8-8.2 22-22Z" />
-          </svg>
+        <TennisMark className="w-[1.75rem] h-[1.75rem]" />
+        <span className="text-[1.5rem] sm:text-[1.875rem] font-medium uppercase tracking-[0.2em]">
           Collabsphere
-        </div>
-        <p className="max-w-[24ch] text-[0.875rem] text-white/55 text-center">
-          Bold ideas, shipped with quiet precision.
-        </p>
+        </span>
       </motion.div>
 
-      <motion.div
-        className="w-[min(22rem,72vw)] flex flex-col gap-[0.75rem]"
-        animate={isDone ? { opacity: 0 } : { opacity: 1 }}
-      >
-        <div className="h-[1px] w-full bg-white/15 relative overflow-hidden">
-          <div
-            className="h-full bg-[#FF3B30] transition-all duration-100 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-[0.75rem] font-medium uppercase tracking-[0.05em] text-white/45">
-          <span>Loading</span>
-          <span className="text-white/80 tabular-nums">
-            {progress.toString().padStart(3, "0")}
-          </span>
-        </div>
-      </motion.div>
+      <div className="w-[10rem] h-[1px] rounded-[var(--radius-pill)] bg-white/20 overflow-hidden">
+        <motion.div
+          className="h-full bg-white origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{
+            delay: 0.12,
+            duration: 1.28,
+            ease: [0.645, 0.045, 0.355, 1] // easeInOutCubic
+          }}
+        />
+      </div>
     </motion.div>
   );
 }

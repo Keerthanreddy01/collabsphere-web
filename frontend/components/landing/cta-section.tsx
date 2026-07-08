@@ -26,24 +26,24 @@ export function CtaSection() {
 
     // Animate the huge text scaling down/blurring and the CTA button appearing
     tl.to(textRef.current, { scale: 0.8, opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
-      .fromTo(ctaRef.current, 
-         { y: 150, opacity: 0, scale: 0.9 }, 
-         { y: 0, opacity: 1, scale: 1, ease: "none" }, 0.2);
+      .fromTo(ctaRef.current,
+        { y: 150, opacity: 0, scale: 0.9 },
+        { y: 0, opacity: 1, scale: 1, ease: "none" }, 0.2);
 
   }, { scope: containerRef });
 
   return (
     <section ref={containerRef} className="relative w-full h-[150vh] bg-[#050505]">
       <div className="sticky top-0 h-[100vh] w-full flex flex-col items-center justify-center overflow-hidden">
-        
+
         {/* Layer 1: Noise */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
-             style={{ backgroundImage: "radial-gradient(circle at center, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+          style={{ backgroundImage: "radial-gradient(circle at center, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
         {/* Layer 2: Massive Text */}
         <div ref={textRef} className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
           <h2 className="font-anton text-[15vw] leading-none uppercase text-white tracking-tighter text-center mix-blend-difference">
-            READY<br/>TO BUILD?
+            READY<br />TO BUILD?
           </h2>
         </div>
 

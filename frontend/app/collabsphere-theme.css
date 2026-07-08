@@ -1,36 +1,45 @@
 @layer utilities {
-  .is-collabsphere {
-    /* Adaptive rem scaling as requested by Collabsphere prompt */
+  .is-baseline {
+    /* Adaptive rem scaling as requested by Baseline prompt */
     @media (max-width: 1920px) { font-size: 0.833333vw !important; }
     @media (max-width: 1440px) { font-size: 1.111111vw !important; }
     @media (max-width: 1024px) { font-size: 1.5625vw !important; }
     @media (max-width: 640px) { font-size: 4.444444vw !important; }
   }
 
-  .collabsphere-shell {
-    max-width: 88rem;
-    margin-inline: auto;
+  /* Font reset for Baseline layout */
+  .baseline-font {
+    font-family: 'Onest', system-ui, sans-serif;
   }
 
-  /* Collabsphere custom transitions and animations */
-  .collabsphere-clip-reveal {
-    clip-path: inset(0 100% 0 0);
+  .baseline-shell {
+    width: 100%;
+    overflow-x: clip;
+    padding: 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .baseline-shell {
+      padding: 0.75rem;
+    }
   }
 
-  /* Collabsphere Colors mapped to Collabsphere Dark Theme */
-  .collabsphere-theme {
-    --collabsphere-bg: #111111;
-    --collabsphere-fg: #fffddb;
-    --collabsphere-ink: #0a0a0a;
-    --collabsphere-muted: rgba(255, 255, 255, 0.55);
-    --collabsphere-subtle: rgba(255, 255, 255, 0.35);
-    --collabsphere-line: rgba(255, 255, 255, 0.1);
-    --collabsphere-surface: rgba(255, 255, 255, 0.05);
-    --collabsphere-surface-2: rgba(255, 255, 255, 0.1);
-    --collabsphere-accent: #FF3B30;
-    --collabsphere-accent-from: #FF3B30;
-    --collabsphere-accent-to: #c22920;
-    --collabsphere-hero-from: #1a1a1a;
-    --collabsphere-hero-to: #111111;
+  .baseline-theme {
+    --background: #ffffff;
+    --foreground: #0a0a0a;
+    --brand: #dc2626;
+    --brand-deep: #7f1d1d;
+    --brand-light: #ef4444;
+    --accent-teal: #991b1b;
+    --surface: #f4f4f4;
+    --surface-card: #ffffff;
+    --ink: #0a0a0a;
+    --ink-soft: #717784;
+    --ghost: #d7dae1;
+    --hairline: #e6e8ec;
+    --on-brand: #ffffff;
+    
+    --radius-card: 1.5rem;
+    --radius-card-lg: 2rem;
+    --radius-pill: 62.5rem;
   }
 }

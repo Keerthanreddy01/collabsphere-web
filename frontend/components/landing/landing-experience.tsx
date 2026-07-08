@@ -1,34 +1,54 @@
 "use client";
 
-import { useEffect } from "react";
-import { FooterSection } from "@/components/landing/footer-section";
+import { useEffect, useRef } from "react";
+import Lenis from "lenis";
 import { CollabsphereProvider } from "./collabsphere/collabsphere-context";
-import { PageLoader } from "./collabsphere/page-loader";
-import { CollabsphereHeader } from "./collabsphere/collabsphere-header";
+import { CollabsphereLoader } from "./collabsphere/page-loader";
 import { CollabsphereHero } from "./collabsphere/collabsphere-hero";
-import { CollabsphereAbout } from "./collabsphere/collabsphere-about";
-import { CollabsphereBandsAndPortfolio } from "./collabsphere/collabsphere-bands-and-portfolio";
-import { CollabsphereServicesAndStats } from "./collabsphere/collabsphere-services-and-stats";
+import { CollabsphereTrust } from "./collabsphere/collabsphere-trust";
+import { CollabspherePrograms } from "./collabsphere/collabsphere-programs";
+import { CollabsphereFacilities } from "./collabsphere/collabsphere-facilities";
+import { CollabsphereStats } from "./collabsphere/collabsphere-stats";
+import { CollabsphereTestimonials } from "./collabsphere/collabsphere-testimonials";
+import { FooterSection } from "@/components/landing/footer-section";
 import { CollabsphereOverlays } from "./collabsphere/collabsphere-overlays";
 
 export function LandingExperience() {
+  const requestRef = useRef<number>(null);
+
   useEffect(() => {
-    // Add adaptive scaling
-    document.documentElement.classList.add("is-collabsphere");
+    // Adaptive sizing
+    document.documentElement.classList.add("is-baseline");
+
+    // Lenis Smooth Scroll
+    const lenis = new Lenis({
+      smoothWheel: true,
+      lerp: 0.1
+    });
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestRef.current = requestAnimationFrame(raf);
+    };
+    requestRef.current = requestAnimationFrame(raf);
+
     return () => {
-      document.documentElement.classList.remove("is-collabsphere");
+      document.documentElement.classList.remove("is-baseline");
+      lenis.destroy();
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
   }, []);
 
   return (
     <CollabsphereProvider>
-      <main className="collabsphere-theme relative bg-[var(--collabsphere-bg)] text-[var(--collabsphere-fg)] min-h-screen w-full selection:bg-[var(--collabsphere-accent)] selection:text-white antialiased font-sans">
-        <PageLoader />
-        <CollabsphereHeader />
+      <main className="baseline-theme baseline-font bg-[var(--background)] text-[var(--foreground)] w-full overflow-x-clip p-[0.5rem] sm:p-[0.75rem]">
+        <CollabsphereLoader />
         <CollabsphereHero />
-        <CollabsphereAbout />
-        <CollabsphereBandsAndPortfolio />
-        <CollabsphereServicesAndStats />
+        <CollabsphereTrust />
+        <CollabspherePrograms />
+        <CollabsphereFacilities />
+        <CollabsphereStats />
+        <CollabsphereTestimonials />
         <FooterSection />
         <CollabsphereOverlays />
       </main>

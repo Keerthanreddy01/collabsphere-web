@@ -1,226 +1,154 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useCollabsphere } from "./collabsphere-context";
-import { LiquidReveal } from "./liquid-reveal";
-import { Star, CircleDot, ArrowRight, scrollToId } from "./collabsphere-shared";
+import { CollabsphereHeader } from "./collabsphere-header";
+import { CarouselDots } from "./collabsphere-shared";
 
 export function CollabsphereHero() {
   const { ready } = useCollabsphere();
-  const [activeItem, setActiveItem] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const yParallax = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+
+  const titleWords = ["Collabsphere"].join(" ").split(" "); // just one word for now, or "Build Together"
+  // Actually, let's use "Build Together" to show off the word-by-word reveal
+  const title = "Build Together";
+  const words = title.split(" ");
   
-  const items = [
-    { caption: "Conversion design", title: "Crafted to convert." },
-    { caption: "Engineering", title: "Built to scale." },
-    { caption: "Brand systems", title: "Designed to last." },
+  const tagline = ["Ship Fast,", "Scale Up"];
+
+  // Slider State
+  const [activeSlide, setActiveSlide] = useState(0);
+  const slides = [
+    { img: "https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/2.webp", brand: "Engineering", title: "Scale Your Stack", cta: "See tech →" },
+    { img: "https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/3.webp", brand: "Product Design", title: "Craft Interfaces", cta: "View work →" },
+    { img: "https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/5.webp", brand: "Consulting", title: "Strategic Growth", cta: "Learn how →" }
   ];
 
-  const handleNext = () => setActiveItem((p) => (p + 1) % items.length);
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveItem((p) => (p - 1 + items.length) % items.length);
-  };
-
-  const lines = [
-    "Helping builders",
-    "find their team",
-    "and ship products."
-  ];
-
-  const partners = ["Kaido", "Northpeak", "Vellum", "Orbit", "Brightline", "Cobalt", "Mesa"];
+  useEffect(() => {
+    if (!ready) return;
+    const interval = setInterval(() => {
+      setActiveSlide(p => (p + 1) % slides.length);
+    }, 3800);
+    return () => clearInterval(interval);
+  }, [ready]);
 
   return (
-    <section id="home" className="relative isolate overflow-hidden rounded-b-[2rem] bg-[var(--collabsphere-hero-to)] min-h-[100lvh] flex flex-col pt-[7rem] md:pt-[9rem]">
-      
-      {/* Background Liquid Reveal */}
-      <LiquidReveal 
-        beforeSrc="https://api.getlayers.ai/storage/v1/object/public/public/assets/collabsphere-e8b711fc68/hero/after.jpg" 
-        afterSrc="https://api.getlayers.ai/storage/v1/object/public/public/assets/collabsphere-e8b711fc68/hero/before.jpg" 
-      />
-
-      {/* Legibility Vignette */}
-      <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-[var(--collabsphere-bg)]/60 via-transparent to-[var(--collabsphere-bg)]/80" />
-
-      {/* Watermark */}
+    <section 
+      id="home"
+      ref={sectionRef} 
+      className="relative isolate overflow-hidden rounded-[var(--radius-card-lg)] flex flex-col bg-[var(--brand-deep)] text-white"
+      style={{ height: "calc(100svh - 1rem)", minHeight: "36rem" }}
+    >
+      {/* Background Plate */}
       <motion.div 
-        className="pointer-events-none absolute left-0 right-0 bottom-[7rem] z-[1] text-center font-bold leading-none text-[13rem] text-[var(--collabsphere-fg)]/10 select-none"
-        initial={{ opacity: 0, y: 20 }}
-        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ type: "spring", stiffness: 120, damping: 30, delay: 0.3 }}
+        className="absolute left-0 right-0 top-[-16%] h-[132%] w-full z-[-10] pointer-events-none"
+        style={{ y: yParallax }}
       >
-        COLLABSPHERE
+        <img 
+          src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/hero/hero-court.webp" 
+          alt="Background" 
+          className="absolute inset-0 w-full h-full object-cover" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2f63]/65 via-[#0f2f63]/35 to-[#0f2f63]/75" />
       </motion.div>
 
-      {/* Content Grid */}
-      <div className="collabsphere-shell relative z-20 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-[2.5rem] px-[1.25rem] sm:px-[2rem] pb-[7rem]">
+      <CollabsphereHeader />
+
+      {/* Giant Title */}
+      <div className="pt-[1rem] px-[1.5rem] sm:px-[2.5rem] mt-[5rem] sm:mt-[6rem]">
+        <h1 className="flex flex-wrap text-[12.5vw] font-medium uppercase leading-[0.85] tracking-[-0.02em] whitespace-nowrap">
+          {words.map((word, i) => (
+            <span key={i} className="overflow-hidden pb-[0.14em] mr-[0.2em]">
+              <motion.span
+                className="block"
+                initial={{ y: "115%", opacity: 0 }}
+                animate={ready ? { y: "0%", opacity: 1 } : { y: "115%", opacity: 0 }}
+                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: i * 0.14 }} // easeOutExpo
+              >
+                {word}
+              </motion.span>
+            </span>
+          ))}
+        </h1>
+      </div>
+
+      {/* Bottom Row */}
+      <div className="mt-auto px-[1.5rem] pb-[2rem] sm:px-[2.5rem] sm:pb-[2.5rem] flex flex-col sm:flex-row sm:justify-between sm:items-end gap-[1.5rem]">
         
-        {/* Left Column */}
-        <div className="lg:col-span-7 flex flex-col gap-[1.75rem]">
-          
-          <motion.div 
-            className="text-[0.875rem] font-medium text-[var(--collabsphere-fg)]/70 inline-flex items-center gap-[0.5rem]"
-            initial={{ opacity: 0, y: 10 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            transition={{ delay: 0.2 }}
-          >
-            <span className="w-[0.375rem] h-[0.375rem] bg-[var(--collabsphere-fg)]/50 rounded-full" />
-            Creative Platform
-          </motion.div>
-
-          <h1 className="max-w-[18ch] text-[2.25rem] sm:text-[3rem] md:text-[3.75rem] font-semibold leading-[0.98] tracking-[-0.02em] text-[var(--collabsphere-fg)]">
-            {lines.map((line, i) => (
-              <span key={i} className="block overflow-hidden pb-1">
-                <motion.span
-                  className="block"
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={ready ? { y: "0%", opacity: 1 } : { y: "100%", opacity: 0 }}
-                  transition={{
-                    duration: 0.9,
-                    ease: [0.215, 0.61, 0.355, 1],
-                    delay: 0.25 + (i * 0.12)
-                  }}
-                >
-                  {line}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-
-          <motion.div 
-            className="flex items-center gap-[0.75rem]"
-            initial={{ opacity: 0, y: 10 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            transition={{ delay: 0.65 }}
-          >
-            <span className="text-[var(--collabsphere-accent)] flex gap-[0.125rem]">
-              {[1, 2, 3, 4, 5].map(n => <Star key={n} className="w-[1rem] h-[1rem]" />)}
+        {/* Tagline */}
+        <div className="text-[2.4rem] font-medium uppercase leading-[0.95] tracking-[-0.02em] text-white/85">
+          {tagline.map((line, i) => (
+            <span key={i} className="block overflow-hidden pb-[0.14em]">
+              <motion.span
+                className="block"
+                initial={{ y: "115%", opacity: 0 }}
+                animate={ready ? { y: "0%", opacity: 1 } : { y: "115%", opacity: 0 }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.35 + (i * 0.11) }}
+              >
+                {line}
+              </motion.span>
             </span>
-            <span className="text-[0.875rem] font-medium text-[var(--collabsphere-fg)]/70">
-              Trusted by 10,000+ builders
-            </span>
-          </motion.div>
-
-          <motion.div 
-            className="flex flex-wrap gap-[0.75rem] mt-[0.5rem]"
-            initial={{ opacity: 0, y: 10 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            transition={{ delay: 0.75 }}
-          >
-            <button 
-              onClick={() => window.dispatchEvent(new CustomEvent('open-collabsphere-modal'))}
-              className="group flex items-center gap-[0.75rem] bg-[var(--collabsphere-fg)] text-[var(--collabsphere-bg)] rounded-full py-[0.375rem] pl-[1.5rem] pr-[0.375rem] text-[0.875rem] font-medium"
-            >
-              Let's Talk
-              <div className="w-[2.25rem] h-[2.25rem] bg-[var(--collabsphere-bg)] text-[var(--collabsphere-fg)] rounded-full flex items-center justify-center group-hover:bg-[var(--collabsphere-accent)] transition-colors">
-                <ArrowRight className="w-[1rem] h-[1rem] transition-transform group-hover:translate-x-[3px]" />
-              </div>
-            </button>
-            <button 
-              onClick={() => scrollToId('works')}
-              className="flex items-center px-[1.75rem] py-[0.875rem] border border-[var(--collabsphere-line)] rounded-full text-[0.875rem] font-medium text-[var(--collabsphere-fg)] hover:bg-white/5 transition-colors"
-            >
-              View Work
-            </button>
-          </motion.div>
+          ))}
         </div>
 
-        {/* Right Column */}
-        <div className="lg:col-span-5 flex flex-col items-start lg:items-end gap-[2rem]">
+        {/* Right Cluster */}
+        <div className="flex items-end gap-[1rem]">
           
+          {/* Collection Slider */}
           <motion.div 
-            className="w-full max-w-[24rem] lg:max-w-[19rem] rounded-[1.25rem] bg-white/5 p-[0.5rem] shadow-sm ring-1 ring-[var(--collabsphere-line)] backdrop-blur-[12px]"
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
-            animate={ready ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 16, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 200, damping: 24, delay: 0.4 }}
+            className="hidden md:flex flex-col w-[16rem] gap-[0.75rem]"
+            initial={{ opacity: 0, y: 28 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            transition={{ type: "spring", stiffness: 200, damping: 26, delay: 0.65 }}
           >
-            <div onClick={handleNext} className="flex gap-[0.5rem] cursor-pointer rounded-[0.875rem]">
-              <div className="aspect-square w-[6rem] grid place-items-center rounded-[0.875rem] bg-[#0a0a0a] text-white">
-                <span className="text-[var(--collabsphere-accent)] text-[1.875rem] font-serif italic">C</span>
-              </div>
-              <div className="flex-1 rounded-[0.875rem] bg-[var(--collabsphere-surface)] p-[0.75rem] flex flex-col justify-between">
-                <div className="relative min-h-[3.25rem] overflow-hidden">
-                  <AnimatePresence mode="popLayout">
-                    <motion.div
-                      key={activeItem}
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -14 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 28 }}
-                      className="absolute inset-0"
-                    >
-                      <div className="text-[0.65rem] font-medium uppercase tracking-[0.05em] text-[var(--collabsphere-fg)]/45">
-                        {items[activeItem].caption}
-                      </div>
-                      <div className="max-w-[8rem] text-[0.875rem] font-medium leading-[1.35] text-[var(--collabsphere-fg)] mt-1">
-                        {items[activeItem].title}
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-[0.25rem]">
-                    {items.map((_, i) => (
-                      <div 
-                        key={i} 
-                        className={`h-[0.25rem] rounded-full transition-all duration-300 ${i === activeItem ? 'w-[1rem] bg-[var(--collabsphere-fg)]' : 'w-[0.375rem] bg-[var(--collabsphere-fg)]/20'}`}
-                      />
-                    ))}
+            <div className="relative rounded-[var(--radius-card)] border border-white/15 bg-white/10 p-[0.75rem] shadow-[0_4px_24px_rgba(15,47,99,0.2)] backdrop-blur">
+              <AnimatePresence mode="popLayout">
+                <motion.div
+                  key={activeSlide}
+                  initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                  transition={{ type: "spring", stiffness: 210, damping: 24 }}
+                  className="flex gap-[0.75rem]"
+                >
+                  <img src={slides[activeSlide].img} alt="" className="w-[3.5rem] h-[3.5rem] rounded-[var(--radius-xl)] object-cover" />
+                  <div className="flex flex-col justify-center">
+                    <span className="text-[0.7rem] font-medium uppercase tracking-wide">{slides[activeSlide].brand}</span>
+                    <span className="text-[0.7rem] uppercase opacity-80">{slides[activeSlide].title}</span>
+                    <span className="text-[0.65rem] underline underline-offset-2 mt-1">{slides[activeSlide].cta}</span>
                   </div>
-                  <div className="flex gap-1">
-                    <button onClick={handlePrev} className="w-[1.75rem] h-[1.75rem] rounded-full bg-[var(--collabsphere-fg)] text-[var(--collabsphere-bg)] grid place-items-center hover:scale-105 transition-transform">
-                      <ArrowRight className="w-3 h-3 rotate-180" />
-                    </button>
-                    <button className="w-[1.75rem] h-[1.75rem] rounded-full bg-[var(--collabsphere-fg)] text-[var(--collabsphere-bg)] grid place-items-center hover:scale-105 transition-transform">
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="flex justify-center">
+              <CarouselDots count={slides.length} active={activeSlide} tone="light" onClick={setActiveSlide} />
             </div>
           </motion.div>
 
-          <motion.div 
-            className="w-full max-w-[24rem] lg:max-w-[19rem]"
-            initial={{ opacity: 0, y: 14 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-            transition={{ type: "spring", stiffness: 200, damping: 24, delay: 0.55 }}
+          {/* Membership Card */}
+          <motion.article 
+            className="w-full sm:w-auto max-w-[20rem] sm:max-w-[15rem] flex gap-[0.75rem] rounded-[var(--radius-card)] border border-white/15 bg-white/10 p-[0.75rem] shadow-[0_4px_24px_rgba(15,47,99,0.2)] backdrop-blur"
+            initial={{ opacity: 0, y: 28 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            transition={{ type: "spring", stiffness: 200, damping: 26, delay: 0.78 }}
           >
-            <div className="mb-[0.75rem] text-[0.75rem] font-medium text-[var(--collabsphere-fg)]/45 text-left lg:text-right">
-              Trusted by
+            <div className="flex flex-col justify-between">
+              <span className="text-[1.875rem] font-medium leading-none">9K+</span>
+              <div className="flex -space-x-2 my-2">
+                {["#5790e6", "#c2e029", "#0b6e97", "#ffffff"].map((color, i) => (
+                  <div key={i} className="w-[1.25rem] h-[1.25rem] rounded-full border border-[#0f2f63]/40" style={{ backgroundColor: color }} />
+                ))}
+              </div>
+              <span className="text-[0.65rem] opacity-80">Projects delivered</span>
             </div>
-            <div className="grid grid-cols-4 gap-x-[1rem] gap-y-[0.75rem]">
-              {partners.map(p => (
-                <motion.div 
-                  key={p} 
-                  className="flex items-center gap-[0.375rem] text-[0.75rem] text-[var(--collabsphere-fg)]/70 opacity-70 cursor-default"
-                  whileHover={{ y: -2, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 320, damping: 20 }}
-                >
-                  <CircleDot className="w-[0.875rem] h-[0.875rem] text-[var(--collabsphere-fg)]/40" />
-                  {p}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+            <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp" alt="" className="w-[4rem] aspect-[3/4] rounded-[var(--radius-xl)] object-cover ml-auto" />
+          </motion.article>
 
         </div>
       </div>
-
-      {/* Bottom Status Bar */}
-      <motion.div 
-        className="absolute bottom-0 left-0 right-0 collabsphere-shell flex items-center justify-between gap-[0.75rem] border-t border-[var(--collabsphere-line)] p-[1.25rem] sm:px-[2rem] text-[0.75rem] font-medium uppercase tracking-[0.025em] text-[var(--collabsphere-fg)]/60 z-20"
-        initial={{ opacity: 0 }}
-        animate={ready ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ delay: 0.9 }}
-      >
-        <div>Working since 2024</div>
-        <div className="hidden sm:block">Remote-first, worldwide</div>
-        <div className="inline-flex items-center gap-[0.5rem]">
-          Scroll to explore <span className="text-[var(--collabsphere-fg)]">↓</span>
-        </div>
-      </motion.div>
-
     </section>
   );
 }
