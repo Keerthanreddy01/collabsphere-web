@@ -48,6 +48,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SmoothScroll } from "@/components/landing/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -81,10 +83,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ThemeToggle />
-          {children}
-          <BottomTabBar />
-          <Analytics />
+          <SmoothScroll>
+            <ThemeToggle />
+            {children}
+            <BottomTabBar />
+            <Analytics />
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

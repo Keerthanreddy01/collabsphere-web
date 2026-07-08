@@ -1,12 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './collabsphere-theme.css';
 
 @custom-variant dark (&:is(.dark *));
 
 @utility no-scrollbar {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
+
   &::-webkit-scrollbar {
     display: none !important;
   }
@@ -15,6 +17,7 @@
 @utility scrollbar-hide {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
+
   &::-webkit-scrollbar {
     display: none !important;
   }
@@ -25,6 +28,7 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none !important;
 }
+
 .no-scrollbar,
 .scrollbar-hide {
   -ms-overflow-style: none !important;
@@ -67,15 +71,19 @@
   --sidebar-ring: oklch(0.55 0.015 90);
 }
 
-@theme inline {
+@theme {
   --font-sans: var(--font-space), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --font-anton: "Anton", sans-serif;
   --font-serif-italic: "Playfair Display", serif;
   --font-marker: "Permanent Marker", cursive;
+  --font-display: "DM Serif Display", "Playfair Display", var(--font-fraunces), Georgia, serif;
+  /* Griflan Agency Theme Colors */
+  --color-griflan-bg: #111111;
+  --color-griflan-text: #F4F4F0;
+  --color-griflan-accent: #FF3B30; /* Bold red accent */
   --color-brand-dark: #0a0a0a;
   --color-brand-gray: #1A1A1A;
-  --font-display: var(--font-fraunces), 'Fraunces', Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -118,80 +126,110 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply font-sans bg-white text-black dark:bg-[#000000] dark:text-white antialiased;
   }
+
   html {
-    scroll-behavior: smooth;
     color-scheme: dark;
+  }
+
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
   }
 }
 
 @layer utilities {
-  .font-display {
-    font-family: var(--font-display);
-  }
-  
   .text-stroke {
     -webkit-text-stroke: 1.5px currentColor;
     -webkit-text-fill-color: transparent;
   }
-  
+
   .marquee {
     animation: marquee 30s linear infinite;
   }
-  
+
   .marquee-reverse {
     animation: marquee-reverse 25s linear infinite;
   }
 
   @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
   }
-  
+
   @keyframes marquee-reverse {
-    0% { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
   }
-  
+
   .line-reveal {
     clip-path: inset(0 100% 0 0);
     animation: line-reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
   }
-  
+
   @keyframes line-reveal {
-    to { clip-path: inset(0 0 0 0); }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
   }
-  
+
   .hover-lift {
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-4px);
   }
-  
+
   .letter-spin {
     display: inline-block;
     transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  
+
   .letter-spin:hover {
     transform: rotateY(360deg);
   }
-  
+
   .animate-char-in {
     animation: char-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     opacity: 0;
     transform: translateY(60%);
   }
-  
+
   @keyframes char-in {
     0% {
       opacity: 0;
       transform: translateY(60%);
     }
+
     100% {
       opacity: 1;
       transform: translateY(0);
@@ -201,7 +239,7 @@
   .noise-overlay {
     position: relative;
   }
-  
+
   .noise-overlay::after {
     content: '';
     position: absolute;
@@ -211,20 +249,18 @@
     pointer-events: none;
     z-index: 1;
   }
-  
+
   .how-it-works-bg {
     background-color: oklch(0.10 0.008 260);
   }
 
   .word-gradient {
-    background: linear-gradient(
-      45deg,
-      #eca8d6 0%,
-      #a78bfa 25%,
-      #67e8f9 50%,
-      #fbbf24 75%,
-      #eca8d6 100%
-    );
+    background: linear-gradient(45deg,
+        #eca8d6 0%,
+        #a78bfa 25%,
+        #67e8f9 50%,
+        #fbbf24 75%,
+        #eca8d6 100%);
     background-size: 300% 300%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -233,9 +269,17 @@
   }
 
   @keyframes gradient-shift {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
 
@@ -244,13 +288,16 @@
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #2f3336;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #3e4144;
 }
@@ -259,6 +306,7 @@
 .action-hover-like {
   transition: color 0.2s ease;
 }
+
 .action-hover-like:hover {
   color: #f91880 !important;
 }
@@ -266,6 +314,7 @@
 .action-hover-comment {
   transition: color 0.2s ease;
 }
+
 .action-hover-comment:hover {
   color: #1d9bf0 !important;
 }
@@ -273,6 +322,7 @@
 .action-hover-repost {
   transition: color 0.2s ease;
 }
+
 .action-hover-repost:hover {
   color: #00ba7c !important;
 }
