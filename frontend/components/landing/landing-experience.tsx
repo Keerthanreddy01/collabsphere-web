@@ -5,11 +5,11 @@ import Lenis from "lenis";
 import { CollabsphereProvider } from "./collabsphere/collabsphere-context";
 import { CollabsphereLoader } from "./collabsphere/page-loader";
 import { CollabsphereHero } from "./collabsphere/collabsphere-hero";
+import { CollabsphereVideoReveal } from "./collabsphere/collabsphere-video-reveal";
+import { CollabsphereWorkAbout } from "./collabsphere/collabsphere-work-about";
 import { CollabsphereTrust } from "./collabsphere/collabsphere-trust";
-import { CollabspherePrograms } from "./collabsphere/collabsphere-programs";
-import { CollabsphereFacilities } from "./collabsphere/collabsphere-facilities";
 import { CollabsphereStats } from "./collabsphere/collabsphere-stats";
-import { CollabsphereTestimonials } from "./collabsphere/collabsphere-testimonials";
+import { CollabsphereClientConfessions } from "./collabsphere/collabsphere-client-confessions";
 import { FooterSection } from "@/components/landing/footer-section";
 import { CollabsphereOverlays } from "./collabsphere/collabsphere-overlays";
 
@@ -44,11 +44,11 @@ export function LandingExperience() {
       <main className="baseline-theme baseline-font bg-[var(--background)] text-[var(--foreground)] w-full overflow-x-clip p-[0.5rem] sm:p-[0.75rem]">
         <CollabsphereLoader />
         <CollabsphereHero />
+        <CollabsphereVideoReveal />
         <CollabsphereTrust />
-        <CollabspherePrograms />
-        <CollabsphereFacilities />
+        <CollabsphereWorkAbout />
         <CollabsphereStats />
-        <CollabsphereTestimonials />
+        <CollabsphereClientConfessions />
         <FooterSection />
         <CollabsphereOverlays />
       </main>
