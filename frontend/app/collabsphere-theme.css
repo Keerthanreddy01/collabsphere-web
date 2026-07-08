@@ -1,0 +1,36 @@
+@layer utilities {
+  .is-collabsphere {
+    /* Adaptive rem scaling as requested by Collabsphere prompt */
+    @media (max-width: 1920px) { font-size: 0.833333vw !important; }
+    @media (max-width: 1440px) { font-size: 1.111111vw !important; }
+    @media (max-width: 1024px) { font-size: 1.5625vw !important; }
+    @media (max-width: 640px) { font-size: 4.444444vw !important; }
+  }
+
+  .collabsphere-shell {
+    max-width: 88rem;
+    margin-inline: auto;
+  }
+
+  /* Collabsphere custom transitions and animations */
+  .collabsphere-clip-reveal {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  /* Collabsphere Colors mapped to Collabsphere Dark Theme */
+  .collabsphere-theme {
+    --collabsphere-bg: #111111;
+    --collabsphere-fg: #fffddb;
+    --collabsphere-ink: #0a0a0a;
+    --collabsphere-muted: rgba(255, 255, 255, 0.55);
+    --collabsphere-subtle: rgba(255, 255, 255, 0.35);
+    --collabsphere-line: rgba(255, 255, 255, 0.1);
+    --collabsphere-surface: rgba(255, 255, 255, 0.05);
+    --collabsphere-surface-2: rgba(255, 255, 255, 0.1);
+    --collabsphere-accent: #FF3B30;
+    --collabsphere-accent-from: #FF3B30;
+    --collabsphere-accent-to: #c22920;
+    --collabsphere-hero-from: #1a1a1a;
+    --collabsphere-hero-to: #111111;
+  }
+}
