@@ -41,7 +41,7 @@ export function LandingExperience() {
 
   return (
     <CollabsphereProvider>
-      <main className="baseline-theme baseline-font bg-[var(--background)] text-[var(--foreground)] w-full overflow-x-clip p-[0.5rem] sm:p-[0.75rem]">
+      <main className="baseline-theme baseline-font bg-[var(--background)] text-[var(--foreground)] w-full overflow-x-clip p-[0.5rem] sm:p-[0.75rem] flex flex-col gap-[0.5rem] sm:gap-[0.75rem]">
         <CollabsphereLoader />
         <CollabsphereHero />
         <CollabsphereVideoReveal />

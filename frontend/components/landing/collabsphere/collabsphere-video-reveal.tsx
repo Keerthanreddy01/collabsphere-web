@@ -17,7 +17,7 @@ export function CollabsphereVideoReveal() {
   const textBlur = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [10, 0, 0, 10]);
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-[120vh] bg-[#0a0a0a] overflow-hidden flex flex-col items-center pt-24 pb-32">
+    <section ref={containerRef} className="relative w-full min-h-[120vh] bg-[#0a0a0a] rounded-[var(--radius-card-lg)] overflow-hidden flex flex-col items-center pt-24 pb-32">
       
       {/* Big Top Text */}
       <motion.h2 

@@ -16,13 +16,19 @@ export function CollabsphereStats() {
       
       {/* Header */}
       <Eyebrow text="By the numbers" tone="light" />
-      <h2 className="mt-[1rem] text-[3rem] font-medium leading-[0.95] tracking-tight">
+      <motion.h2 
+        className="mt-[1rem] text-[3rem] font-medium leading-[0.95] tracking-tight"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
         <span className="block overflow-hidden pb-[0.14em]">
           <motion.span
             className="block"
-            initial={{ y: "115%", opacity: 0 }}
-            whileInView={{ y: "0%", opacity: 1 }}
-            viewport={{ once: true }}
+            variants={{
+              hidden: { y: "115%", opacity: 0 },
+              visible: { y: "0%", opacity: 1 }
+            }}
             transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
           >
             A team that
@@ -31,15 +37,16 @@ export function CollabsphereStats() {
         <span className="block overflow-hidden pb-[0.14em]">
           <motion.span
             className="block"
-            initial={{ y: "115%", opacity: 0 }}
-            whileInView={{ y: "0%", opacity: 1 }}
-            viewport={{ once: true }}
+            variants={{
+              hidden: { y: "115%", opacity: 0 },
+              visible: { y: "0%", opacity: 1 }
+            }}
             transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
           >
             keeps score
           </motion.span>
         </span>
-      </h2>
+      </motion.h2>
 
       {/* Grid */}
       <dl className="mt-[4rem] grid grid-cols-2 lg:grid-cols-4 gap-x-[2rem] gap-y-[3rem]">
