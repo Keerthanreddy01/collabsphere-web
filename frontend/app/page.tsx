@@ -5,8 +5,18 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { Navigation } from "@/components/landing/navigation";
+import { HeroSection } from "@/components/landing/hero-section";
+import { FeaturesSection } from "@/components/landing/features-section";
+import { HowItWorksSection } from "@/components/landing/how-it-works-section";
+import { InfrastructureSection } from "@/components/landing/infrastructure-section";
+import { MetricsSection } from "@/components/landing/metrics-section";
+import { IntegrationsSection } from "@/components/landing/integrations-section";
+import { DevelopersSection } from "@/components/landing/developers-section";
+import { TestimonialsSection } from "@/components/landing/testimonials-section";
+import { CtaSection } from "@/components/landing/cta-section";
+import { FooterSection } from "@/components/landing/footer-section";
 import { useTheme } from "next-themes";
-import { LandingExperience } from "@/components/landing/landing-experience";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -40,8 +50,8 @@ export default function Home() {
   // While checking auth, show a minimal dark loader so there's no flash
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
-        <div className="w-8 h-8 animate-spin rounded-full border-4 border-gray-200 dark:border-white/20 border-t-white" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="w-8 h-8 animate-spin rounded-full border-4 border-white/20 border-t-white" />
       </div>
     );
   }
@@ -49,5 +59,20 @@ export default function Home() {
   // Logged in — redirect is in progress, render nothing to avoid flash
   if (user) return null;
 
-  return <LandingExperience />;
+  // Not logged in → show the landing page
+  return (
+    <main className="relative min-h-screen overflow-x-hidden bg-black">
+      <Navigation />
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <InfrastructureSection />
+      <MetricsSection />
+      <IntegrationsSection />
+      <DevelopersSection />
+      <TestimonialsSection />
+      <CtaSection />
+      <FooterSection />
+    </main>
+  );
 }

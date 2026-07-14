@@ -275,8 +275,8 @@ export function InfrastructureSection() {
             <div
               key={region.name}
               className={`p-6 border transition-all duration-300 cursor-default ${activeRegion === index
-                ? "border-foreground/30 bg-foreground/[0.04]"
-                : "border-foreground/10"
+                  ? "border-foreground/30 bg-foreground/[0.04]"
+                  : "border-foreground/10"
                 }`}
             >
               <div className="flex items-center gap-2 mb-3">

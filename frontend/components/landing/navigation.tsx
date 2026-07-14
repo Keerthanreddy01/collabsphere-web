@@ -1,9 +1,5 @@
 "use client";
 
-import { Space_Grotesk } from 'next/font/google';
-
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["700"] });
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -13,7 +9,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { name: "ABOUT US",      href: "#about"         },
@@ -25,7 +20,7 @@ const navLinks = [
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -58,179 +53,177 @@ export function Navigation() {
   }, []);
 
   return (
-    <header className="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center">
-      <motion.div 
-        layout
-        animate={{ 
-          maxWidth: isMenuOpen ? "1400px" : "800px",
-        }}
-        transition={{ type: "spring", stiffness: 400, damping: 40, mass: 0.8 }}
-        className="w-full flex flex-col shadow-2xl overflow-hidden will-change-[max-width]"
-        style={{ borderRadius: "12px" }}
+    <header
+      className={`fixed z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "top-4 left-4 right-4" 
+          : "top-0 left-0 right-0"
+      }`}
+    >
+      <nav 
+        className={`mx-auto transition-all duration-500 ${
+          isScrolled || isMobileMenuOpen
+            ? "bg-background/80 backdrop-blur-xl border border-foreground/10 rounded-2xl shadow-lg max-w-[1200px]"
+            : "bg-transparent max-w-[1400px]"
+        }`}
       >
-        {/* Top Dark Bar */}
-        <div className="bg-[#1c1c1c] px-4 py-3 flex items-center justify-between z-20 relative">
-          
-          {/* Left: Menu */}
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center gap-3 text-white hover:opacity-70 transition-opacity"
-          >
-            {isMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <div className="flex flex-col gap-1.5 w-5">
-                <div className="w-full h-px bg-white/80" />
-                <div className="w-full h-px bg-white/80" />
-              </div>
-            )}
-            <span className="font-medium text-sm tracking-wide">Menu</span>
-          </button>
+        <div 
+          className={`flex items-center justify-between transition-all duration-500 px-6 lg:px-8 ${
+            isScrolled ? "h-14" : "h-20"
+          }`}
+        >
+          {/* Logo */}
+          <a href="#" className="flex items-center gap-2.5 group">
+            <img src="/newlogo.png" alt="CollabSphere Logo" className="w-8 h-8 rounded-full object-cover" />
+            <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>COLLABSPHERE™</span>
+          </a>
 
-          {/* Center: Logo */}
-          <div className="hidden sm:flex absolute left-1/2 -translate-x-1/2 border border-white/20 rounded-full px-6 py-1 items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <span className={`text-white tracking-tighter text-2xl ${spaceGrotesk.className}`}>
-              COLLABSPHERE
-            </span>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-12">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className={`text-sm transition-colors duration-300 relative group ${isScrolled ? "text-foreground/70 hover:text-foreground" : "text-white/70 hover:text-white"}`}
+              >
+                {link.name}
+                <span className={`absolute -bottom-1 left-0 w-0 h-px transition-all duration-300 group-hover:w-full ${isScrolled ? "bg-foreground" : "bg-white"}`} />
+              </a>
+            ))}
           </div>
 
-          {/* Right: Auth Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-4">
             {!user ? (
+              <button
+                onClick={() => router.push('/login')}
+                className={`rounded-full transition-all duration-500 ${isScrolled ? "bg-foreground hover:bg-foreground/90 text-background px-4 h-8 text-xs" : "bg-white hover:bg-white/90 text-black px-6"}`}
+              >
+                LOGIN
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <a
+                  href="/dashboard/home"
+                  onClick={handleDashboardClick}
+                  className={`text-sm transition-colors duration-300 cursor-pointer ${
+                    isScrolled
+                      ? "text-foreground/70 hover:text-foreground"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  DASHBOARD
+                </a>
+                <button
+                  onClick={async () => {
+                    await signOut()
+                    // After sign-out, replace history with landing page
+                    router.replace('/')
+                  }}
+                  className="w-8 h-8 rounded-full 
+                  bg-pink-500 flex items-center 
+                  justify-center text-white text-sm
+                  font-bold"
+                >
+                  {user.email?.[0].toUpperCase()}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`md:hidden p-2 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? "text-foreground" : "text-white"}`}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
+
+      </nav>
+      
+      {/* Mobile Menu - Full Screen Overlay */}
+      <div
+        className={`md:hidden fixed inset-0 bg-background z-40 transition-all duration-500 ${
+          isMobileMenuOpen 
+            ? "opacity-100 pointer-events-auto" 
+            : "opacity-0 pointer-events-none"
+        }`}
+        style={{ top: 0 }}
+      >
+        <div className="flex flex-col h-full px-8 pt-28 pb-8">
+          {/* Navigation Links */}
+          <div className="flex-1 flex flex-col justify-center gap-8">
+            {navLinks.map((link, i) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`text-5xl font-display text-foreground hover:text-muted-foreground transition-all duration-500 ${
+                  isMobileMenuOpen 
+                    ? "opacity-100 translate-y-0" 
+                    : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: isMobileMenuOpen ? `${i * 75}ms` : "0ms" }}
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
+          
+          {/* Bottom CTAs */}
+          <div
+            className={`flex flex-col gap-3 pt-8 border-t border-foreground/10 transition-all duration-500 ${
+              isMobileMenuOpen 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-4"
+            }`}
+            style={{ transitionDelay: isMobileMenuOpen ? "300ms" : "0ms" }}
+          >
+            {user ? (
               <>
-                <button 
-                  onClick={() => router.push('/login')}
-                  className="bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg transition-colors"
+                <Button
+                  className="flex-1 bg-foreground text-background rounded-full h-14 text-base font-bold"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleDashboardClick({ preventDefault: () => {} } as any);
+                  }}
                 >
-                  Login
-                </button>
-                <button 
-                  onClick={() => router.push('/login')}
-                  className="bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg transition-colors"
+                  GO TO DASHBOARD ↗
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-full h-12 text-base border-foreground/20"
+                  onClick={async () => {
+                    await signOut();
+                    setIsMobileMenuOpen(false);
+                    router.replace("/");
+                  }}
                 >
-                  Join
-                </button>
+                  SIGN OUT
+                </Button>
               </>
             ) : (
               <>
-                <button 
-                  onClick={handleDashboardClick}
-                  className="bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg transition-colors"
-                >
-                  Dashboard
-                </button>
-                <button 
-                  onClick={async () => {
-                    await signOut()
-                    router.replace('/')
+                <Button
+                  className="flex-1 bg-foreground text-background rounded-full h-14 text-base font-bold"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/login");
                   }}
-                  className="bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg transition-colors"
                 >
-                  Sign Out
-                </button>
+                  LOGIN / SIGN UP ↗
+                </Button>
               </>
             )}
           </div>
         </div>
-
-        {/* Mega Menu Dropdown */}
-        <AnimatePresence mode="wait">
-          {isMenuOpen && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 400, damping: 40, mass: 0.8 }}
-              className="bg-[#1c1c1c] text-white border-t border-white/10 overflow-y-auto overflow-x-hidden will-change-[height] max-h-[85vh] md:max-h-[80vh] scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 p-6 sm:p-8 md:p-12">
-                {/* Column 1 */}
-                <div>
-                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Navigation</h4>
-                  <div className="flex flex-col gap-4 md:gap-6">
-                    {navLinks.slice(0, 3).map((item) => (
-                      <Link key={item.name} href={item.href} onClick={() => setIsMenuOpen(false)} className="text-lg sm:text-xl md:text-2xl font-medium hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
-                        {item.name} 
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Column 2 */}
-                <div>
-                  <h4 className="text-[10px] text-white/40 tracking-widest uppercase mb-4 md:mb-6 font-mono">Explore</h4>
-                  <div className="flex flex-col gap-4 md:gap-6">
-                    {navLinks.slice(3).map((item) => (
-                      <Link key={item.name} href={item.href} onClick={() => setIsMenuOpen(false)} className="text-base sm:text-lg md:text-xl hover:text-white/70 transition-colors border-b border-white/10 pb-3 md:pb-4 last:border-0 flex items-center">
-                        {item.name} 
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Column 3 */}
-                <div 
-                  onClick={() => router.push('/onboarding')}
-                  className="bg-[#242424] rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden group cursor-pointer border border-white/5 mt-4 md:mt-0"
-                >
-                  <div className="absolute top-4 md:top-6 flex items-center gap-2 z-10">
-                    <span className="text-[10px] font-bold text-white tracking-widest">GET</span>
-                    <span className="text-[10px] font-bold bg-red-500 text-white px-2 py-0.5 rounded-full tracking-widest">STARTED</span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl md:text-3xl font-medium mt-10 mb-6 md:mb-8 relative z-10 tracking-tight leading-tight">Find Your<br/>Co-founder</h3>
-                  <div className="w-full aspect-video bg-black/50 rounded-xl relative z-10 overflow-hidden transform group-hover:scale-105 transition-transform duration-500 shadow-2xl">
-                     <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-zinc-900" />
-                     <div className="absolute inset-x-4 sm:inset-x-8 -bottom-4 top-8 bg-gradient-to-br from-red-500/40 to-zinc-800 rounded-t-xl shadow-2xl rotate-2" />
-                     <div className="absolute inset-x-4 sm:inset-x-8 -bottom-4 top-4 bg-gradient-to-br from-red-500/60 to-zinc-700 rounded-t-xl shadow-2xl -rotate-2 opacity-50" />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Bottom Red Ticker Bar (Hidden when menu is open) */}
-        <AnimatePresence>
-          {!isMenuOpen && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 400, damping: 40, mass: 0.8 }}
-              className="bg-red-500 overflow-hidden py-1 border-t border-[#1c1c1c]/10 will-change-[height] flex"
-            >
-              <div className="flex whitespace-nowrap text-[10px] font-mono font-bold tracking-widest text-white">
-                <div className="flex gap-8 px-4 shrink-0" style={{ animation: 'marquee 25s linear infinite' }}>
-                  <span className="flex items-center gap-8 shrink-0">
-                    <span>FIND YOUR CO-FOUNDER</span><span>*</span>
-                    <span>DISCOVER NEW BUILDERS</span><span>*</span>
-                    <span>JOIN THE COMMUNITY</span><span>*</span>
-                    <span>SHIP FASTER TOGETHER</span><span>*</span>
-                    <span>BUILD THE FUTURE</span><span>*</span>
-                  </span>
-                </div>
-                <div className="flex gap-8 px-4 shrink-0" style={{ animation: 'marquee 25s linear infinite' }} aria-hidden="true">
-                  <span className="flex items-center gap-8 shrink-0">
-                    <span>FIND YOUR CO-FOUNDER</span><span>*</span>
-                    <span>DISCOVER NEW BUILDERS</span><span>*</span>
-                    <span>JOIN THE COMMUNITY</span><span>*</span>
-                    <span>SHIP FASTER TOGETHER</span><span>*</span>
-                    <span>BUILD THE FUTURE</span><span>*</span>
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
-      {/* Global CSS for marquee */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-100%); }
-        }
-      `}} />
+      </div>
     </header>
   );
 }

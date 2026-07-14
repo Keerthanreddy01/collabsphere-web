@@ -1,63 +1,98 @@
 "use client";
 
-import { useRef } from "react";
-import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
 export function CtaSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1.2,
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
       },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
     });
-
-    // Animate the huge text scaling down/blurring and the CTA button appearing
-    tl.to(textRef.current, { scale: 0.8, opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
-      .fromTo(ctaRef.current,
-        { y: 150, opacity: 0, scale: 0.9 },
-        { y: 0, opacity: 1, scale: 1, ease: "none" }, 0.2);
-
-  }, { scope: containerRef });
+  };
 
   return (
-    <section ref={containerRef} className="relative w-full h-[150vh] bg-[#050505]">
-      <div className="sticky top-0 h-[100vh] w-full flex flex-col items-center justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+        <div
+          className={`relative border border-foreground transition-all duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+          onMouseMove={handleMouseMove}
+        >
+          {/* Spotlight effect */}
+          <div 
+            className="absolute inset-0 opacity-10 pointer-events-none transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(600px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(0,0,0,0.15), transparent 40%)`
+            }}
+          />
+          
+          <div className="relative z-10 px-8 lg:px-16 py-16 lg:py-24">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+              {/* Left content */}
+              <div className="flex-1">
+                <h2 className="text-6xl md:text-7xl lg:text-[72px] font-display tracking-tight mb-8 leading-[0.95]">
+                  READY TO SHIP?
+                </h2>
 
-        {/* Layer 1: Noise */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
-          style={{ backgroundImage: "radial-gradient(circle at center, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+                <form className="mb-12 flex flex-col sm:flex-row gap-3 max-w-xl">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="flex-1 px-6 py-4 bg-background border border-foreground/20 rounded-full text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/50"
+                  />
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="bg-foreground hover:bg-foreground/90 text-background px-8 h-14 text-base rounded-full group"
+                  >
+                    JOIN →
+                  </Button>
+                </form>
 
-        {/* Layer 2: Massive Text */}
-        <div ref={textRef} className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-          <h2 className="font-anton text-[15vw] leading-none uppercase text-white tracking-tighter text-center mix-blend-difference">
-            READY<br />TO BUILD?
-          </h2>
+                <p className="text-sm text-muted-foreground font-mono">
+                  Join {isLoading ? "thousands of" : `${stats.activeBuilders.toLocaleString()}+`} builders shipping elite projects.
+                </p>
+              </div>
+
+              {/* Right image */}
+              <div className="hidden lg:flex items-end justify-center w-[600px] h-[650px] -mr-16">
+                <img
+                  src="/images/bridge.png"
+                  alt="Two trees connected by glowing arcs"
+                  className="w-full h-full object-contain object-bottom"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Decorative corner */}
+          <div className="absolute top-0 right-0 w-32 h-32 border-b border-l border-foreground/10" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 border-t border-r border-foreground/10" />
         </div>
-
-        {/* Layer 3: CTA Box */}
-        <div ref={ctaRef} className="relative z-20 flex flex-col items-center">
-          <div className="w-[1px] h-24 bg-gradient-to-b from-transparent to-[#E83526] mb-8" />
-          <Link href="/pre-register" className="group relative inline-flex items-center justify-center gap-4 px-12 py-6 rounded-full bg-[#E83526] text-white font-anton text-3xl uppercase tracking-wider overflow-hidden transition-transform hover:scale-105 shadow-[0_20px_50px_rgba(232,53,38,0.3)]">
-            <div className="absolute inset-0 bg-white/20 translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-            <span className="relative z-10">Join the Waitlist</span>
-            <ArrowRight className="w-8 h-8 relative z-10 group-hover:translate-x-2 transition-transform" />
-          </Link>
-          <p className="mt-8 font-mono text-neutral-500 text-sm uppercase tracking-widest">Early access opening soon</p>
-        </div>
-
       </div>
     </section>
   );

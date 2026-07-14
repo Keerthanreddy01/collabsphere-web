@@ -1,102 +1,245 @@
 "use client";
 
-import { useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useState, useRef } from "react";
+import { usePlatformStats } from "@/hooks/usePlatformStats";
 
-gsap.registerPlugin(ScrollTrigger);
+const words = ["BUILD", "SHIP", "SCALE"];
 
-export function HeroSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+function BlurWord({ word, trigger }: { word: string; trigger: number }) {
+  const letters = (word || "").split("");
+  const STAGGER = 45;      // ms between each letter
+  const DURATION = 500;    // blur+opacity fade duration per letter
+  const GRADIENT_HOLD = STAGGER * letters.length + DURATION + 200;
 
-  useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+  const [letterStates, setLetterStates] = useState<{ opacity: number; blur: number }[]>(
+    letters.map(() => ({ opacity: 0, blur: 20 }))
+  );
+  const [showGradient, setShowGradient] = useState(true);
+  const framesRef = useRef<number[]>([]);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-    // Animate Text
-    tl.fromTo(
-      textRef.current?.children as unknown as Element[],
-      { y: 50, opacity: 0, filter: "blur(10px)" },
-      { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, stagger: 0.15 },
-      0.2
-    );
+  useEffect(() => {
+    // reset
+    framesRef.current.forEach(cancelAnimationFrame);
+    timersRef.current.forEach(clearTimeout);
+    framesRef.current = [];
+    timersRef.current = [];
 
-    // Animate Cards
-    tl.fromTo(
-      cardsRef.current?.children as unknown as Element[],
-      { y: 200, opacity: 0, rotation: (i) => [-6, 2, -3, 5][i] * 2 },
-      { y: 0, opacity: 1, duration: 1.5, stagger: 0.1, rotation: (i) => [-6, 2, -3, 5][i] },
-      0.4
-    );
-  }, { scope: containerRef });
+    setLetterStates(letters.map(() => ({ opacity: 0, blur: 20 })));
+    setShowGradient(true);
+
+    // stagger each letter
+    letters.forEach((_, i) => {
+      const t = setTimeout(() => {
+        const start = performance.now();
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / DURATION, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setLetterStates(prev => {
+            const next = [...prev];
+            next[i] = { opacity: eased, blur: 20 * (1 - eased) };
+            return next;
+          });
+          if (progress < 1) {
+            const id = requestAnimationFrame(tick);
+            framesRef.current.push(id);
+          }
+        };
+        const id = requestAnimationFrame(tick);
+        framesRef.current.push(id);
+      }, i * STAGGER);
+      timersRef.current.push(t);
+    });
+
+    // remove gradient once all letters are settled
+    const gt = setTimeout(() => setShowGradient(false), GRADIENT_HOLD);
+    timersRef.current.push(gt);
+
+    return () => {
+      framesRef.current.forEach(cancelAnimationFrame);
+      timersRef.current.forEach(clearTimeout);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trigger]);
+
+  // gradient colours cycling across letter positions
+  const gradientColors = ["#eca8d6", "#a78bfa", "#67e8f9", "#fbbf24", "#eca8d6"];
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-screen bg-[#FDF8F0] overflow-hidden flex flex-col font-sans select-none">
-      {/* Navbar */}
-      <header className="w-full flex items-center justify-between px-6 md:px-12 py-6 relative z-50">
-        <Link href="/" className="font-anton tracking-tight text-3xl text-black uppercase hover:text-neutral-600 transition-colors">
-          CollabSphere
-        </Link>
-        <div className="hidden md:flex items-center gap-8 bg-white rounded-full px-8 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-neutral-100">
-          <Link href="#features" className="text-sm font-bold text-neutral-800 hover:text-black">Features</Link>
-          <Link href="#projects" className="text-sm font-bold text-neutral-800 hover:text-black">Projects</Link>
-          <Link href="#community" className="text-sm font-bold text-neutral-800 hover:text-black">Community</Link>
-          <Link href="#about" className="text-sm font-bold text-neutral-800 hover:text-black">About</Link>
-        </div>
-        <Link href="/pre-register" className="bg-[#F8B4D9] text-black px-6 py-3 rounded-full font-bold text-sm hover:bg-[#f39bc9] transition-colors flex items-center gap-2 shadow-sm">
-          Join Waitlist <span className="text-lg">🔥</span>
-        </Link>
-      </header>
+    <>
+      {letters.map((char, i) => {
+        const colorIndex = (i / Math.max(letters.length - 1, 1)) * (gradientColors.length - 1);
+        const lower = Math.floor(colorIndex);
+        const upper = Math.min(lower + 1, gradientColors.length - 1);
+        const t = colorIndex - lower;
 
-      {/* Hero Content */}
-      <div ref={textRef} className="relative z-40 flex flex-col items-start px-6 md:px-12 mt-12 md:mt-16 max-w-5xl pointer-events-none">
-        <h1 className="font-sans font-extrabold text-[#111111] leading-[1.05] tracking-tight text-6xl md:text-[6.5rem]">
-          Where Builders. <br />
-          Connect. <br />
-          Ship Faster.
-        </h1>
-        <p className="mt-8 text-xl md:text-2xl text-neutral-700 font-medium max-w-2xl">
-          Tired of building side projects alone? Find your next co-builder and ship incredible products together.
-        </p>
+        // lerp hex colours
+        const hex2rgb = (hex: string) => {
+          const r = parseInt(hex.slice(1, 3), 16);
+          const g = parseInt(hex.slice(3, 5), 16);
+          const b = parseInt(hex.slice(5, 7), 16);
+          return [r, g, b];
+        };
+        const [r1, g1, b1] = hex2rgb(gradientColors[lower]);
+        const [r2, g2, b2] = hex2rgb(gradientColors[upper]);
+        const r = Math.round(r1 + (r2 - r1) * t);
+        const g = Math.round(g1 + (g2 - g1) * t);
+        const b = Math.round(b1 + (b2 - b1) * t);
+
+        return (
+          <span
+            key={i}
+            style={{
+              display: "inline-block",
+              opacity: letterStates[i]?.opacity ?? 0,
+              filter: `blur(${letterStates[i]?.blur ?? 20}px)`,
+              color: showGradient ? `rgb(${r},${g},${b})` : "white",
+              transition: "color 0.4s ease",
+            }}
+          >
+            {char}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+export function HeroSection() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [wordIndex, setWordIndex] = useState(0);
+
+  // ── Live stats from Firebase ──
+  const { stats, isLoading } = usePlatformStats();
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % words.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-black">
+      {/* Background video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          className="w-full h-full object-cover object-center opacity-80"
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bg-hero-0BnFGdr81Ifnj3WbBZoNt1KE4D5DMT.mp4" type="video/mp4" />
+        </video>
+        {/* Subtle overlay to ensure text readability on the left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
       </div>
 
-      {/* Staggered Cards */}
-      <div ref={cardsRef} className="absolute bottom-[-150px] left-1/2 -translate-x-1/2 w-[120%] h-[500px] flex items-end justify-center gap-4 md:gap-6 z-20 pointer-events-auto">
+      {/* Subtle grid lines */}
+      <div className="absolute inset-0 z-[2] overflow-hidden pointer-events-none opacity-20">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={`h-${i}`}
+            className="absolute h-px bg-white/10"
+            style={{
+              top: `${12.5 * (i + 1)}%`,
+              left: 0,
+              right: 0,
+            }}
+          />
+        ))}
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={`v-${i}`}
+            className="absolute w-px bg-white/10"
+            style={{
+              left: `${8.33 * (i + 1)}%`,
+              top: 0,
+              bottom: 0,
+            }}
+          />
+        ))}
+      </div>
+      
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 py-32 lg:py-40">
+        <div className="lg:max-w-[55%]">
+        {/* Eyebrow */}
+        <div 
+          className={`mb-8 transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+        >
+          <span className="inline-flex items-center gap-3 text-sm font-mono text-white/60">
+            <span className="w-8 h-px bg-white/30" />
+            BUILD IN PUBLIC
+          </span>
+        </div>
         
-        {/* Card 1: Blue Stats */}
-        <div className="w-[280px] md:w-[320px] h-[350px] bg-[#007BFF] rounded-[40px] flex items-start justify-start p-8 shrink-0 rotate-[-6deg] hover:-translate-y-4 hover:rotate-[-4deg] transition-all duration-300 shadow-[0_20px_50px_rgba(0,0,0,0.15)] cursor-pointer">
-          <span className="text-6xl md:text-7xl font-extrabold text-black tracking-tight">10K+</span>
+        {/* Main headline */}
+        <div className="mb-12">
+          <h1 
+            className={`text-left text-[clamp(2rem,6vw,7rem)] font-display leading-[0.92] tracking-tight text-white transition-all duration-1000 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+          >
+            <span className="block whitespace-nowrap">BUILD YOUR DREAM TEAM</span>
+            <span className="block whitespace-nowrap">
+              /with{" "}
+              <span className="relative inline-block">
+                <BlurWord word={words[wordIndex]} trigger={wordIndex} />
+              </span>
+              {" "}ELITE BUILDERS
+            </span>
+          </h1>
         </div>
-
-        {/* Card 2: Image 1 */}
-        <div className="w-[300px] md:w-[360px] h-[400px] bg-neutral-200 rounded-[40px] flex items-start justify-start overflow-hidden shrink-0 rotate-[2deg] hover:-translate-y-4 hover:rotate-[0deg] transition-all duration-300 shadow-[0_20px_50px_rgba(0,0,0,0.15)] cursor-pointer relative">
-          <Image src="/poster.jpeg" alt="Builder" fill className="object-cover" />
         </div>
-
-        {/* Card 3: Green Stats */}
-        <div className="w-[280px] md:w-[320px] h-[450px] bg-[#20C997] rounded-[40px] flex items-start justify-start p-8 shrink-0 rotate-[-3deg] hover:-translate-y-4 hover:rotate-[-1deg] transition-all duration-300 shadow-[0_20px_50px_rgba(0,0,0,0.15)] cursor-pointer">
-          <span className="text-6xl md:text-7xl font-extrabold text-black tracking-tight">500+</span>
+      </div>
+      
+      {/* Stats — 3 metrics static, no auto-scroll */}
+      <div 
+        className={`absolute bottom-12 left-0 right-0 px-6 lg:px-12 transition-all duration-700 delay-500 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="max-w-[1400px] mx-auto flex items-start gap-10 lg:gap-20">
+          {[
+            {
+              value: isLoading ? "—" : stats.activeBuilders.toLocaleString() + "+",
+              label: "Active Builders",
+            },
+            {
+              value: isLoading ? "—" : stats.projectsLaunched.toLocaleString() + "+",
+              label: "Projects Launched",
+            },
+            {
+              value: isLoading ? "—" : stats.openCollabRequests.toLocaleString() + "+",
+              label: "Open Collab Requests",
+            },
+          ].map((stat) => (
+            <div key={stat.label} className="flex flex-col gap-2">
+              <span
+                className={`text-3xl lg:text-4xl font-display text-white tabular-nums transition-all duration-500 ${
+                  isLoading ? "opacity-40" : "opacity-100"
+                }`}
+              >
+                {stat.value}
+              </span>
+              <span className="text-xs text-white/50 leading-tight">
+                {stat.label}
+              </span>
+            </div>
+          ))}
         </div>
-
-        {/* Card 4: Image 2 */}
-        <div className="w-[340px] md:w-[420px] h-[480px] bg-neutral-800 rounded-[40px] flex items-start justify-start overflow-hidden shrink-0 rotate-[5deg] hover:-translate-y-4 hover:rotate-[3deg] transition-all duration-300 shadow-[0_20px_50px_rgba(0,0,0,0.15)] cursor-pointer relative">
-           <Image src="/landing/keyboard.png" alt="Workspace" fill className="object-cover opacity-90" />
-        </div>
-
       </div>
 
-      {/* Floating Action button (Green like in the screenshot) */}
-      <a href="#" className="fixed bottom-8 right-8 z-50 group">
-         <div className="w-16 h-16 bg-[#25D366] rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(37,211,102,0.4)] group-hover:scale-110 transition-transform cursor-pointer">
-           <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-2.639-1.136-4.331-4.136-4.463-4.312-.132-.177-1.066-1.417-1.066-2.703 0-1.287.673-1.918.918-2.167.245-.25.534-.312.711-.312.178 0 .356.001.511.008.156.007.368-.061.575.437.207.498.711 1.737.775 1.865.064.127.106.275.018.453-.089.178-.133.289-.266.444-.132.155-.279.336-.395.449-.133.129-.272.271-.122.529.15.258.673 1.111 1.444 1.802.996.892 1.848 1.176 2.1 1.299.252.124.398.106.549-.063.151-.168.65-0.751.828-1.009.178-.258.356-.215.589-.129.233.086 1.472.694 1.724.821.252.127.42.189.481.294.062.106.062.613-.082 1.018z"/>
-           </svg>
-         </div>
-      </a>
+      {/* Scroll indicator */}
 
     </section>
   );

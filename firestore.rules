@@ -119,6 +119,13 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // SPACES
+    match /spaces/{spaceId} {
+      allow read: if true;
+      // Allow authenticated users to create/update spaces for now
+      allow write: if isAuth();
+    }
+
     // BLOCK EVERYTHING ELSE
     match /{document=**} {
       allow read, write: if false;
