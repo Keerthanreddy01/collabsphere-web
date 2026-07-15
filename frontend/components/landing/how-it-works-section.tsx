@@ -105,18 +105,21 @@ export function HowItWorksSection() {
             </h2>
           </div>
 
-          {/* Image cerisier — se colle en bas sur les blocs */}
-          <div className={`relative h-[320px] lg:h-[640px] overflow-hidden transition-all duration-1000 delay-200 ${
-            isVisible ? "opacity-100" : "opacity-0"
+          {/* Right Side Image Box */}
+          <div className={`relative w-full h-[320px] lg:h-[640px] rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl transition-all duration-1000 delay-200 group ${
+            isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
           }`}>
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/tree-uAia6REvB137CQyHFCf0za3O6h2zKO.png"
-              alt=""
-              aria-hidden="true"
-              className="absolute bottom-0 left-0 w-full h-full object-contain object-bottom"
+              src="/hero-bg.png"
+              alt="The Process"
+              className="absolute inset-0 w-full h-full object-cover object-center mix-blend-luminosity opacity-80 group-hover:opacity-100 group-hover:mix-blend-normal transition-all duration-700"
             />
-            {/* Fade sur le bord gauche */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.09_0.01_260)] via-transparent to-transparent pointer-events-none" />
+            
+            {/* Premium Clean Fades */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#E83526]/20 via-transparent to-transparent mix-blend-overlay pointer-events-none group-hover:opacity-50 transition-opacity duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2rem] pointer-events-none" />
           </div>
         </div>
 

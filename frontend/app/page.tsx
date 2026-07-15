@@ -12,8 +12,9 @@ import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { InfrastructureSection } from "@/components/landing/infrastructure-section";
 import { MetricsSection } from "@/components/landing/metrics-section";
 import { IntegrationsSection } from "@/components/landing/integrations-section";
-import { DevelopersSection } from "@/components/landing/developers-section";
+import { UniqueEffectsSection } from "@/components/landing/unique-effects-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
+import { ScrollingRevealSection } from "@/components/landing/scrolling-reveal-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { useTheme } from "next-themes";
@@ -66,10 +67,11 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <ScrollingRevealSection />
       <InfrastructureSection />
       <MetricsSection />
       <IntegrationsSection />
-      <DevelopersSection />
+      <UniqueEffectsSection />
       <TestimonialsSection />
       <CtaSection />
       <FooterSection />
