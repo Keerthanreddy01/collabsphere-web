@@ -86,10 +86,9 @@ export function HowItWorksSection() {
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-white/[0.02] blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12">
-        {/* Header — titre + image cerisier */}
-        <div className="relative mb-0 lg:mb-0 grid lg:grid-cols-2 gap-4 lg:gap-12 items-end">
-          {/* Titre colonne gauche */}
-          <div className="overflow-hidden pb-0 lg:pb-32">
+        {/* Header */}
+        <div className="relative mb-16 lg:mb-24">
+          <div className="overflow-hidden pb-0">
             <div className={`transition-all duration-1000 ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-12 opacity-0"}`}>
               <span className="inline-flex items-center gap-3 text-sm font-mono text-white/40 mb-8">
                 <span className="w-12 h-px bg-white/20" />
@@ -103,23 +102,6 @@ export function HowItWorksSection() {
               <span className="block">THE PROCESS</span>
               <span className="block text-white/30">ENGINE SYSTEM</span>
             </h2>
-          </div>
-
-          {/* Right Side Image Box */}
-          <div className={`relative w-full h-[320px] lg:h-[640px] rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl transition-all duration-1000 delay-200 group ${
-            isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
-          }`}>
-            <img
-              src="/hero-bg.png"
-              alt="The Process"
-              className="absolute inset-0 w-full h-full object-cover object-center mix-blend-luminosity opacity-80 group-hover:opacity-100 group-hover:mix-blend-normal transition-all duration-700"
-            />
-            
-            {/* Premium Clean Fades */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#E83526]/20 via-transparent to-transparent mix-blend-overlay pointer-events-none group-hover:opacity-50 transition-opacity duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2rem] pointer-events-none" />
           </div>
         </div>
 
