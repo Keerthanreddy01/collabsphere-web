@@ -10,8 +10,6 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { CollabsphereSmashSection } from "@/components/landing/collabsphere/collabsphere-smash-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
-import { InfrastructureSection } from "@/components/landing/infrastructure-section";
-import { MetricsSection } from "@/components/landing/metrics-section";
 import { IntegrationsSection } from "@/components/landing/integrations-section";
 import { UniqueEffectsSection } from "@/components/landing/unique-effects-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
@@ -67,8 +65,6 @@ export default function Home() {
       <FeaturesSection />
       <HowItWorksSection />
       <ScrollingRevealSection />
-      <InfrastructureSection />
-      <MetricsSection />
       <IntegrationsSection />
       <UniqueEffectsSection />
       <TestimonialsSection />
