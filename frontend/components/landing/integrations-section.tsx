@@ -36,7 +36,7 @@ export function IntegrationsSection() {
             <span className="w-12 h-px bg-white/20" />
           </span>
 
-          <h2 className="text-6xl md:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] text-white">
+          <h2 className="text-5xl sm:text-7xl lg:text-[128px] font-display tracking-tight leading-[0.9] text-white">
             Connect
             <br />
             <span className="text-white/60">everything.</span>

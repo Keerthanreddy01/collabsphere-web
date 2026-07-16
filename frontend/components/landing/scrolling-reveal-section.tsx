@@ -99,7 +99,7 @@ function RevealWord({ word, progress, start, end }: { word: string, progress: an
   return (
     <motion.span 
       style={{ opacity, color }}
-      className="font-anton text-5xl sm:text-7xl lg:text-[6rem] uppercase tracking-wide"
+      className="font-anton text-3xl sm:text-6xl lg:text-[6.5rem] uppercase tracking-wide"
     >
       {word}
     </motion.span>

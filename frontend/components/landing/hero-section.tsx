@@ -189,8 +189,8 @@ export function HeroSection() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
-            <span className="block whitespace-nowrap">BUILD YOUR DREAM TEAM</span>
-            <span className="block whitespace-nowrap">
+            <span className="block sm:whitespace-nowrap whitespace-normal">BUILD YOUR DREAM TEAM</span>
+            <span className="block sm:whitespace-nowrap whitespace-normal">
               /with{" "}
               <span className="relative inline-block">
                 <BlurWord word={words[wordIndex]} trigger={wordIndex} />
@@ -208,7 +208,7 @@ export function HeroSection() {
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="max-w-[1400px] mx-auto flex items-start gap-10 lg:gap-20">
+        <div className="max-w-[1400px] mx-auto flex flex-wrap items-start gap-6 sm:gap-10 lg:gap-20">
           {[
             {
               value: isLoading ? "—" : stats.activeBuilders.toLocaleString() + "+",
@@ -223,9 +223,9 @@ export function HeroSection() {
               label: "Open Collab Requests",
             },
           ].map((stat) => (
-            <div key={stat.label} className="flex flex-col gap-2">
+            <div key={stat.label} className="flex flex-col gap-2 min-w-[120px]">
               <span
-                className={`text-3xl lg:text-4xl font-display text-white tabular-nums transition-all duration-500 ${
+                className={`text-2xl sm:text-3xl lg:text-4xl font-display text-white tabular-nums transition-all duration-500 ${
                   isLoading ? "opacity-40" : "opacity-100"
                 }`}
               >
