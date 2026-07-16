@@ -65,6 +65,7 @@ export default function Home() {
       <FeaturesSection />
       <HowItWorksSection />
       <ScrollingRevealSection />
+      <div className="h-24 sm:h-36 bg-black w-full" />
       <IntegrationsSection />
       <UniqueEffectsSection />
       <TestimonialsSection />
