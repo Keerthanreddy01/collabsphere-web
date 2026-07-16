@@ -25,15 +25,8 @@ export function proxy(request: NextRequest) {
 
   const isApi = pathname.startsWith('/api/');
   const isStatic = pathname.startsWith('/_next/') || pathname === '/favicon.ico' || pathname.startsWith('/newlogo.png');
-  const isLockedPage = pathname === '/pre-register';
-  const isAllowedPath = isLockedPage || pathname === '/';
-
-  // If a user has the routing cookie AND is not an admin, lock them to /pre-register
-  if (csUid && !adminUids.includes(csUid)) {
-    if (!isAllowedPath && !isApi && !isStatic) {
-      return NextResponse.redirect(new URL('/pre-register', request.url));
-    }
-  }
+  // ── Waitlist Gate Disabled ─────────────────────────────────────────────────
+  // Redirect logic removed to allow full application navigation.
 
   // Add security headers to all responses
   const response = NextResponse.next();
