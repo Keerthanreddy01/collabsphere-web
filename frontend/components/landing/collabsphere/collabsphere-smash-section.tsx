@@ -87,29 +87,16 @@ export function CollabsphereSmashSection() {
           The platform built to scale your vision across the globe. Join the network today.
         </motion.p>
 
-        {/* Layer 3: Button with scroll-reactive expanding glow halo */}
+        {/* Layer 3: Button */}
         <motion.div 
           style={{ y: btnY }}
           className="mt-10 flex flex-wrap items-center justify-center gap-6 relative z-30"
         >
-          <div className="relative">
-            {/* Scroll-Reactive expanding halo */}
-            <motion.div
-              style={{
-                scale: btnGlowScale,
-                opacity: btnGlowOpacity
-              }}
-              className="absolute -inset-4 bg-gradient-to-r from-red-600 via-rose-500 to-red-600 rounded-full blur-[25px] -z-10 pointer-events-none"
-            />
-            
-            <Link href="/pre-register">
-              <button className="rounded-full bg-[#dc2626] hover:bg-[#991b1b] px-10 py-[16px] text-[18px] font-black text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_10px_40px_-10px_rgba(220,38,38,0.6)] border border-red-500/20 uppercase tracking-wider relative overflow-hidden group">
-                {/* Button slide-shine overlay */}
-                <div className="absolute inset-0 w-[50%] h-full bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12 -translate-x-[150%] group-hover:translate-x-[250%] transition-transform duration-1000 ease-out" />
-                JOIN NOW
-              </button>
-            </Link>
-          </div>
+          <Link href="/pre-register">
+            <button className="rounded-full bg-[#dc2626] hover:bg-[#991b1b] px-10 py-[16px] text-[18px] font-black text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_10px_40px_-10px_rgba(220,38,38,0.4)] border border-red-500/20">
+              JOIN NOW
+            </button>
+          </Link>
         </motion.div>
       </div>
 
