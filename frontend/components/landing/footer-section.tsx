@@ -79,8 +79,8 @@ export function FooterSection() {
               <div className="flex flex-col gap-4">
                 <h3 className="font-anton text-2xl tracking-wide uppercase text-[#E83526]">Contact</h3>
                 <div className="flex flex-col gap-1 text-xl lg:text-2xl font-serif-italic text-[#E83526]">
-                  <a href="mailto:hello@collabsphere.dev" className="hover:opacity-60 transition-opacity">hello@collabsphere.dev</a>
-                  <p>CollabSphere HQ</p>
+                  <a href="mailto:collabsphereapp@gmail.com" className="hover:opacity-60 transition-opacity">collabsphereapp@gmail.com</a>
+                  <p>collabsphereofficial</p>
                 </div>
               </div>
 
