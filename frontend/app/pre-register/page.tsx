@@ -335,7 +335,7 @@ function WaitlistContent() {
 
 // ── Page shell ────────────────────────────────────────────────────────────────
 export default function PreRegisterPage() {
-  const { user, signOutAndClear } = useAuth();
+  const { user, loading, signOutAndClear } = useAuth();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -389,9 +389,32 @@ export default function PreRegisterPage() {
 
       {/* Center content */}
       <main className="flex-1 flex items-center justify-center z-20 pointer-events-none">
-        <Suspense fallback={null}>
-          <WaitlistContent />
-        </Suspense>
+        {loading ? (
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="w-8 h-8 animate-spin text-[#8FFF00]" />
+            <span className="text-white/50 text-[13px]">Checking session...</span>
+          </div>
+        ) : !user ? (
+          <div className="flex flex-col items-center justify-center p-8 sm:p-10 bg-neutral-900/40 border border-white/10 rounded-2xl max-w-sm w-[90%] text-center pointer-events-auto shadow-2xl backdrop-blur-md">
+            <img src="/newlogo.png" alt="CollabSphere" className="w-16 h-16 opacity-90 mx-auto mb-6" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 text-white">Join the Waitlist</h2>
+            <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
+              Please sign in or create an account to pre-register and reserve your spot.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+              <Link href="/login" className="flex-1 px-5 py-3 rounded-full bg-white text-black font-semibold text-center hover:bg-neutral-200 transition-all text-sm">
+                Sign In
+              </Link>
+              <Link href="/signup" className="flex-1 px-5 py-3 rounded-full bg-white/10 text-white font-semibold text-center border border-white/20 hover:bg-white/20 transition-all text-sm">
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <Suspense fallback={null}>
+            <WaitlistContent />
+          </Suspense>
+        )}
       </main>
 
       {/* Footer */}

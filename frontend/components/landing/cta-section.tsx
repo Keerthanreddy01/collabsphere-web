@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { usePlatformStats } from "@/hooks/usePlatformStats";
@@ -58,20 +59,16 @@ export function CtaSection() {
                   READY TO SHIP?
                 </h2>
 
-                <form className="mb-12 flex flex-col sm:flex-row gap-3 max-w-xl">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 px-6 py-4 bg-background border border-foreground/20 rounded-full text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/50"
-                  />
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="bg-foreground hover:bg-foreground/90 text-background px-8 h-14 text-base rounded-full group"
-                  >
-                    JOIN →
-                  </Button>
-                </form>
+                <div className="mb-12">
+                  <Link href="/pre-register">
+                    <Button
+                      size="lg"
+                      className="bg-foreground hover:bg-foreground/90 text-background px-12 h-14 text-base rounded-full group"
+                    >
+                      JOIN →
+                    </Button>
+                  </Link>
+                </div>
 
                 <p className="text-sm text-muted-foreground font-mono">
                   Join {isLoading ? "thousands of" : `${stats.activeBuilders.toLocaleString()}+`} builders shipping elite projects.

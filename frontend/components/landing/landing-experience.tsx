@@ -12,6 +12,7 @@ import { CollabsphereStats } from "./collabsphere/collabsphere-stats";
 import { CollabsphereClientConfessions } from "./collabsphere/collabsphere-client-confessions";
 import { FooterSection } from "@/components/landing/footer-section";
 import { CollabsphereOverlays } from "./collabsphere/collabsphere-overlays";
+import { WiseEarthSection } from "./collabsphere/wise-earth-section";
 
 export function LandingExperience() {
   const requestRef = useRef<number>(null);
@@ -44,6 +45,7 @@ export function LandingExperience() {
       <main className="baseline-theme baseline-font bg-[var(--background)] text-[var(--foreground)] w-full overflow-x-clip p-[0.5rem] sm:p-[0.75rem] flex flex-col gap-[0.5rem] sm:gap-[0.75rem]">
         <CollabsphereLoader />
         <CollabsphereHero />
+        <WiseEarthSection />
         <CollabsphereVideoReveal />
         <CollabsphereTrust />
         <CollabsphereWorkAbout />

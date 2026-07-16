@@ -31,8 +31,8 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      // Scripts: self + Next.js inline + Firebase SDKs + EmailJS + Lottie WASM + Vercel
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://cdn.emailjs.com https://unpkg.com https://va.vercel-scripts.com",
+      // Scripts: self + Next.js inline + Firebase SDKs + EmailJS + Lottie WASM + Vercel + Turnstile
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://cdn.emailjs.com https://unpkg.com https://va.vercel-scripts.com https://challenges.cloudflare.com",
       // Styles: self + inline (needed for Tailwind)
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts: self + Google Fonts
@@ -43,8 +43,8 @@ const securityHeaders = [
       "media-src 'self' https://*.cloudfront.net",
       // Connect (API calls): self + Firebase + Google APIs + EmailJS + Lottie WASM fetching
       "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com https://api.emailjs.com https://unpkg.com",
-      // Frames: self + Google auth popup
-      "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com",
+      // Frames: self + Google auth popup + Turnstile
+      "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com https://challenges.cloudflare.com",
       // No plugins
       "object-src 'none'",
       // Base URI restriction

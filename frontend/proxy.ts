@@ -26,10 +26,11 @@ export function proxy(request: NextRequest) {
   const isApi = pathname.startsWith('/api/');
   const isStatic = pathname.startsWith('/_next/') || pathname === '/favicon.ico' || pathname.startsWith('/newlogo.png');
   const isLockedPage = pathname === '/pre-register';
+  const isAllowedPath = isLockedPage || pathname === '/';
 
   // If a user has the routing cookie AND is not an admin, lock them to /pre-register
   if (csUid && !adminUids.includes(csUid)) {
-    if (!isLockedPage && !isApi && !isStatic) {
+    if (!isAllowedPath && !isApi && !isStatic) {
       return NextResponse.redirect(new URL('/pre-register', request.url));
     }
   }
