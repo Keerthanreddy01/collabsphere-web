@@ -75,7 +75,7 @@ export function CollabsphereSmashSection() {
 
           <h1 className="font-elegant text-[clamp(48px,8vw,100px)] leading-[0.95] text-[#0e0f0c]">
             Collaborate here,<br className="hidden sm:block" />
-            there and <span className="text-[#dc2626] italic font-normal">everywhere.</span>
+            there and <span className="text-[#dc2626] italic font-light">everywhere.</span>
           </h1>
         </motion.div>
 
