@@ -36,6 +36,7 @@ export function CollabsphereSmashSection() {
     >
       <style dangerouslySetInnerHTML={{
         __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,500&display=swap');
         .wise-section {
           --color-forest-ink: #163300;
           --color-lime-voltage: #9fe870;
@@ -44,6 +45,10 @@ export function CollabsphereSmashSection() {
           font-family: var(--font-fraunces), serif;
           font-weight: 500;
           letter-spacing: -0.02em;
+        }
+        .font-playfair-italic {
+          font-family: 'Playfair Display', serif;
+          font-style: italic;
         }
       `}} />
 
@@ -64,18 +69,9 @@ export function CollabsphereSmashSection() {
         
         {/* Layer 1: Headline */}
         <motion.div style={{ y: textY }} className="relative w-full max-w-[900px] mx-auto">
-          {/* Side Info Tagline (Desktop) */}
-          <div className="absolute top-[20%] -left-[10%] xl:-left-[20%] hidden lg:flex flex-col items-start text-left max-w-[160px] opacity-80">
-            <div className="w-10 h-[2px] bg-[#dc2626] mb-4"></div>
-            <span className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#dc2626] mb-2">Global Scale</span>
-            <p className="text-[13px] font-sans text-[#454745] leading-relaxed">
-              Connect with the top 1% of builders and engineers worldwide.
-            </p>
-          </div>
-
           <h1 className="font-elegant text-[clamp(48px,8vw,100px)] leading-[0.95] text-[#0e0f0c]">
             Collaborate here,<br className="hidden sm:block" />
-            there and <span className="text-[#dc2626] italic font-light">everywhere.</span>
+            there and <span className="text-[#dc2626] font-playfair-italic font-normal">everywhere.</span>
           </h1>
         </motion.div>
 
