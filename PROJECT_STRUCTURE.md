@@ -9,9 +9,13 @@
 
 ```
 collabsphere/
-├── frontend/          ← Next.js 16 client app
-├── backend/           ← Express REST API
-└── README.md          ← Monorepo overview
+├── frontend/          ← Next.js client application (App Router, Tailwind CSS, shadcn/ui)
+├── backend/           ← Express REST API (TypeScript, Firebase Admin SDK)
+├── scripts/           ← Centralized monorepo utility, test, and migration scripts
+├── docker-compose.yml ← Orchestration for production and local containerized deployment
+├── firestore.rules    ← Production Security Rules for Firebase Firestore
+├── README.md          ← Monorepo overview and deployment quickstart
+└── PROJECT_STRUCTURE.md ← Architectural tree reference
 ```
 
 

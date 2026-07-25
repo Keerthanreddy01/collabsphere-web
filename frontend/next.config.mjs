@@ -1,3 +1,8 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 /** @type {import('next').NextConfig} */
 
 const securityHeaders = [
@@ -58,6 +63,9 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  turbopack: {
+    root: path.resolve(__dirname, '..'),
+  },
   devIndicators: {
     appIsrStatus: false,
   },
