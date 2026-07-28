@@ -31,7 +31,7 @@ export function CollabsphereSmashSection() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-[#ffffff] pt-24 sm:pt-32 pb-20 flex flex-col items-center"
+      className="folio-to-smash relative w-full overflow-hidden pt-28 sm:pt-32 pb-20 flex flex-col items-center"
       style={{ perspective: "1000px" }}
     >
       <style dangerouslySetInnerHTML={{
@@ -49,6 +49,20 @@ export function CollabsphereSmashSection() {
         .font-playfair-italic {
           font-family: 'Playfair Display', serif;
           font-style: italic;
+        }
+        .folio-to-smash {
+          background: #ffffff;
+        }
+        .folio-to-smash::before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          top: 0;
+          right: 0;
+          left: 0;
+          height: 28px;
+          pointer-events: none;
+          background: linear-gradient(180deg, #151515 0%, rgba(21,21,21,.55) 42%, rgba(255,255,255,0) 100%);
         }
       `}} />
 

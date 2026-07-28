@@ -124,7 +124,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-black">
+    <section id="landing-hero" className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-black will-change-[transform,opacity]">
       {/* Background video */}
       <div className="absolute inset-0 z-0">
         <video

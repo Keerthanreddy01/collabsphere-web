@@ -12,6 +12,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     if (typeof window === "undefined") return;
 
     const lenis = new Lenis({
+      autoRaf: false,
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
@@ -25,9 +26,10 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     // Without this, sticky + pin scroll positions are wrong
     lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const onGsapTick = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(onGsapTick);
 
     gsap.ticker.lagSmoothing(0);
 
@@ -36,7 +38,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      gsap.ticker.remove(onGsapTick);
     };
   }, []);
 

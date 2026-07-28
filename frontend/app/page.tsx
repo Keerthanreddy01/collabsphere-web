@@ -8,12 +8,12 @@ import { doc, getDoc } from "firebase/firestore";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
 import { BuilderFolioSection } from "@/components/landing/builder-folio-section";
+import { HeroFolioTransition } from "@/components/landing/hero-folio-transition";
 import { CollabsphereSmashSection } from "@/components/landing/collabsphere/collabsphere-smash-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { IntegrationsSection } from "@/components/landing/integrations-section";
 import { UniqueEffectsSection } from "@/components/landing/unique-effects-section";
-import { CosmosOrbitGallery } from "@/components/landing/cosmos-orbit-gallery";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { ScrollingRevealSection } from "@/components/landing/scrolling-reveal-section";
 import { CtaSection } from "@/components/landing/cta-section";
@@ -64,6 +64,7 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <BuilderFolioSection />
+      <HeroFolioTransition />
       <CollabsphereSmashSection />
       <FeaturesSection />
       <HowItWorksSection />
@@ -71,7 +72,6 @@ export default function Home() {
       <div className="h-24 sm:h-36 bg-black w-full" />
       <IntegrationsSection />
       <UniqueEffectsSection />
-      <CosmosOrbitGallery />
       <TestimonialsSection />
       <CtaSection />
       <FooterSection />

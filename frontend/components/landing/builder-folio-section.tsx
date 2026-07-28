@@ -1,12 +1,48 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Code2, Sparkles, UsersRound } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import "./builder-folio-section.css";
 
 const railMarks = ["✦", "◉", "↗", "⌘", "✳", "◌", "✦", "◎", "↗", "⌘", "✳", "◌"];
 
+const storyLines = [
+  <>Great software<br />feels <em>shared.</em></>,
+  <>A bright idea<br />needs a <em>crew.</em></>,
+  <>Make the next<br />thing <em>together.</em></>,
+  <>Your people are<br />out <em>there.</em></>,
+];
+
 export function BuilderFolioSection() {
+  const [storyIndex, setStoryIndex] = useState(0);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+
+  useGSAP(() => {
+    const headline = headlineRef.current;
+    if (!headline || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.fromTo(headline, { autoAlpha: 0, y: 20, rotate: -1.5 }, {
+      autoAlpha: 1, y: 0, rotate: 0, duration: 0.7, ease: "power3.out",
+    });
+  }, { dependencies: [storyIndex], scope: headlineRef });
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const headline = headlineRef.current;
+      if (!headline || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setStoryIndex((current) => (current + 1) % storyLines.length);
+        return;
+      }
+      gsap.to(headline, {
+        autoAlpha: 0, y: -18, rotate: 1.25, duration: 0.28, ease: "power2.in",
+        onComplete: () => setStoryIndex((current) => (current + 1) % storyLines.length),
+      });
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
     <section className="builder-folio" aria-labelledby="builder-folio-title">
       <div className="builder-folio__rail builder-folio__rail--left" aria-hidden="true">
@@ -29,7 +65,9 @@ export function BuilderFolioSection() {
           <div className="builder-folio__page builder-folio__page--top">
             <div className="builder-folio__copy">
               <p className="builder-folio__eyebrow">CollabSphere presents</p>
-              <h2 id="builder-folio-title">Great software<br />feels <em>shared.</em></h2>
+              <h2 ref={headlineRef} id="builder-folio-title" className={`builder-folio__headline builder-folio__headline--${storyIndex}`}>
+                {storyLines[storyIndex]}
+              </h2>
               <p className="builder-folio__location">Every timezone · One builder network</p>
             </div>
 
