@@ -59,6 +59,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
           <div className={`flex items-center pt-5 pb-3 ${isExpanded ? "px-5" : "px-0 justify-center"}`}>
             <Link
               href="/dashboard/home"
+              aria-label="Go to dashboard home"
               className="flex items-center hover:opacity-80 transition-opacity cursor-pointer outline-none shrink-0"
             >
               {isExpanded ? (
@@ -90,6 +91,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                 <Link
                   key={item.key}
                   href={item.route}
+                  aria-label={item.label}
                   className="group/nav relative block outline-none"
                 >
                   <div
@@ -146,7 +148,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
 
           {/* User Profile at bottom */}
           <div className={`flex items-center py-4 ${isExpanded ? "px-4" : "px-0 justify-center"}`}>
-            <Link href="/profile" className="flex items-center gap-3 group/avatar outline-none">
+            <Link href="/profile" aria-label="Open your profile" className="flex items-center gap-3 group/avatar outline-none">
               <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 ring-2 ring-gray-200 dark:ring-white/10 group-hover/avatar:ring-gray-400 dark:group-hover/avatar:ring-white/30 transition-all">
                 {profile?.profilePhotoUrl ? (
                   <img src={profile.profilePhotoUrl} alt="You" className="w-full h-full object-cover" />
