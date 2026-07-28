@@ -15,13 +15,20 @@ function NavMenu() {
 
   useEffect(() => {
     if (!isOpen) return;
+    const previousOverflow = document.documentElement.style.overflow;
+    const previousHeight = document.documentElement.style.height;
+
+    const restoreScrollState = () => {
+      document.documentElement.style.overflow = previousOverflow;
+      document.documentElement.style.height = previousHeight;
+    };
+
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.height = "100%";
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsOpen(false); };
     window.addEventListener('keydown', onKeyDown);
     return () => {
-      document.documentElement.style.removeProperty("overflow");
-      document.documentElement.style.removeProperty("height");
+      restoreScrollState();
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [isOpen]);
@@ -127,6 +134,14 @@ function ContactModal() {
 
   useEffect(() => {
     if (!isOpen) return;
+    const previousOverflow = document.documentElement.style.overflow;
+    const previousHeight = document.documentElement.style.height;
+
+    const restoreScrollState = () => {
+      document.documentElement.style.overflow = previousOverflow;
+      document.documentElement.style.height = previousHeight;
+    };
+
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.height = "100%";
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsOpen(false); };
@@ -138,8 +153,7 @@ function ContactModal() {
     }, 120);
 
     return () => {
-      document.documentElement.style.removeProperty("overflow");
-      document.documentElement.style.removeProperty("height");
+      restoreScrollState();
       window.removeEventListener('keydown', onKeyDown);
       clearTimeout(timer);
     };

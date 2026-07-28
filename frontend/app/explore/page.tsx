@@ -127,18 +127,50 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans overflow-x-hidden relative selection:bg-black/20 dark:bg-white/20 selection:text-black dark:text-white">
-      <div className="flex w-full max-w-[1250px] min-h-screen relative">
+    <div className="flex justify-center min-h-screen bg-white text-black dark:bg-[#050505] dark:text-white font-sans overflow-x-hidden relative selection:bg-black/20 dark:selection:bg-white/20 selection:text-black dark:selection:text-black">
+      <div className="flex w-full max-w-[1250px] min-h-screen relative lg:h-[calc(100dvh-2rem)] lg:overflow-hidden lg:my-4">
         {/* Ambient background (Removed blobs to fix mobile overlap) */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden hidden md:block">
-          <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.06)_0,transparent_60%)]" />
-          <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0,transparent_60%)]" />
+          <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.12)_0,transparent_60%)]" />
+          <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.08)_0,transparent_60%)]" />
         </div>
 
         <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
-        <main className="flex-1 flex justify-center min-h-screen overflow-y-visible relative z-10 min-w-0">
-          <div className="w-full max-w-[600px] flex flex-col pb-[80px] md:pb-0 overflow-x-hidden border-r border-l border-gray-200 dark:border-white/[0.06]">
+        <main className="flex-1 flex justify-center min-h-screen lg:min-h-0 lg:h-full overflow-visible lg:overflow-y-auto relative z-10 min-w-0 scrollbar-hide">
+          <div className="w-full max-w-[640px] flex flex-col pb-[96px] md:pb-0 overflow-x-hidden border-r border-l border-gray-200/80 dark:border-white/[0.06] bg-white/80 dark:bg-[#08090c]/95 backdrop-blur-xl lg:min-h-full">
+
+            <div className="px-6 pt-7 pb-5 border-b border-gray-200/80 dark:border-white/[0.06]">
+              <div className="flex items-start justify-between gap-6">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-black/35 dark:text-white/35">Discover</p>
+                  <h1 className="mt-3 text-[32px] md:text-[40px] font-semibold tracking-tight text-black dark:text-white leading-[0.95] max-w-[10ch]">
+                    Find the builders, topics, and ships worth following.
+                  </h1>
+                  <p className="mt-4 max-w-[46rem] text-[15px] leading-6 text-black/55 dark:text-white/42">
+                    A tighter feed for what is active right now: trends, people to follow, and posts from builders who are actually shipping.
+                  </p>
+                </div>
+
+                <div className="hidden md:grid grid-cols-3 gap-3 shrink-0">
+                  <div className="rounded-[20px] border border-gray-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] px-4 py-3 min-w-[110px] shadow-sm">
+                    <div className="text-[11px] uppercase tracking-[0.18em] text-black/35 dark:text-white/30">Live</div>
+                    <div className="mt-2 text-[22px] font-semibold text-black dark:text-white">24</div>
+                    <div className="text-[12px] text-black/45 dark:text-white/35">fresh posts</div>
+                  </div>
+                  <div className="rounded-[20px] border border-gray-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] px-4 py-3 min-w-[110px] shadow-sm">
+                    <div className="text-[11px] uppercase tracking-[0.18em] text-black/35 dark:text-white/30">Hot</div>
+                    <div className="mt-2 text-[22px] font-semibold text-black dark:text-white">8</div>
+                    <div className="text-[12px] text-black/45 dark:text-white/35">topics now</div>
+                  </div>
+                  <div className="rounded-[20px] border border-gray-200 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.03] px-4 py-3 min-w-[110px] shadow-sm">
+                    <div className="text-[11px] uppercase tracking-[0.18em] text-black/35 dark:text-white/30">Builders</div>
+                    <div className="mt-2 text-[22px] font-semibold text-black dark:text-white">3</div>
+                    <div className="text-[12px] text-black/45 dark:text-white/35">suggestions</div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* ── Sticky Search + Category Header ─────────────────────────────── */}
             <div className="sticky top-0 z-30 bg-white dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/[0.06]">
@@ -148,16 +180,16 @@ export default function ExplorePage() {
                 <motion.div
                   animate={{ scale: searchFocused ? 1.01 : 1 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex items-center gap-4 bg-[#15171a] border border-gray-200 dark:border-white/[0.04] rounded-[16px] px-5 h-[46px] transition-all duration-200 ${searchFocused ? "bg-white dark:bg-black border-[#6366f1]/50 shadow-[0_0_20px_rgba(99,102,241,0.15)]" : "focus-within:bg-[#000]"}`}
+                    className={`flex items-center gap-4 bg-[#f4f5f7] dark:bg-[#15171a] border border-gray-200 dark:border-white/[0.04] rounded-[16px] px-5 h-[46px] transition-all duration-200 ${searchFocused ? "bg-white dark:bg-black border-[#6366f1]/50 shadow-[0_0_20px_rgba(99,102,241,0.15)]" : "focus-within:bg-[#f8f8f8] dark:focus-within:bg-[#000]"}`}
                 >
-                  <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-[#6366f1]" : "text-black dark:text-white/40"}`} />
+                  <Search className={`w-5 h-5 shrink-0 transition-colors duration-200 ${searchFocused ? "text-[#6366f1]" : "text-black/45 dark:text-white/40"}`} />
                   <input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
                     placeholder="Search builders, projects, topics…"
-                    className="flex-1 bg-transparent text-[14px] text-black dark:text-white placeholder-white/30 outline-none h-full"
+                    className="flex-1 bg-transparent text-[14px] text-black dark:text-white placeholder-black/30 dark:placeholder-white/30 outline-none h-full"
                   />
                   <AnimatePresence>
                     {searchQuery && (
@@ -179,7 +211,7 @@ export default function ExplorePage() {
                   <button
                     key={label}
                     onClick={() => setActiveCategory(label)}
-                    className={`relative flex-1 flex items-center justify-center h-[53px] px-4 text-[15px] font-bold whitespace-nowrap transition-colors duration-200 hover:bg-white/[0.03] outline-none border-none cursor-pointer bg-transparent ${activeCategory === label
+                      className={`relative flex-1 flex items-center justify-center h-[53px] px-4 text-[15px] font-bold whitespace-nowrap transition-colors duration-200 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] outline-none border-none cursor-pointer bg-transparent ${activeCategory === label
                         ? "text-black dark:text-white"
                         : "text-[#71767b]"
                       }`}
@@ -190,7 +222,7 @@ export default function ExplorePage() {
                       {activeCategory === label && (
                         <motion.div 
                           layoutId="exploreTabIndicator"
-                          className="absolute bottom-0 left-0 right-0 h-[4px] bg-white rounded-t-full"
+                          className="absolute bottom-0 left-0 right-0 h-[4px] bg-black dark:bg-white rounded-t-full"
                         />
                       )}
                     </div>
@@ -285,7 +317,7 @@ export default function ExplorePage() {
                         onClick={() => handleToggleFollow(builder.id, !!followed[builder.id])}
                         className={`shrink-0 px-5 py-2 rounded-full text-[14px] font-bold transition-all duration-200 border ${followed[builder.id]
                             ? "bg-transparent border-gray-200 dark:border-white/20 text-black dark:text-white/60 hover:border-red-500/40 hover:text-red-400"
-                            : "bg-white border-black/20 dark:border-white text-white dark:text-black hover:bg-white/90"
+                              : "bg-black text-white border-black/20 dark:bg-white dark:text-black dark:border-white hover:bg-black/90 dark:hover:bg-white/90"
                           }`}
                       >
                         {followed[builder.id] ? "Following" : "Follow"}
@@ -317,7 +349,7 @@ export default function ExplorePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => router.push("/create")}
-                        className="px-8 py-3 bg-white text-white dark:text-black text-[15px] font-bold rounded-full hover:bg-white/90 transition-colors"
+                        className="px-8 py-3 bg-black text-white dark:bg-white dark:text-black text-[15px] font-bold rounded-full hover:bg-black/90 dark:hover:bg-white/90 transition-colors"
                       >
                         Post something
                       </motion.button>

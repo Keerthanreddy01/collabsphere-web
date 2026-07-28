@@ -10,7 +10,16 @@ export function CollabsphereLoader() {
   const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
 
   useEffect(() => {
-    // stop scroll
+    // Stop scroll while the loader is visible, but always restore the
+    // previous document styles so route changes cannot leave the app locked.
+    const previousOverflow = document.documentElement.style.overflow;
+    const previousHeight = document.documentElement.style.height;
+
+    const restoreScrollState = () => {
+      document.documentElement.style.overflow = previousOverflow;
+      document.documentElement.style.height = previousHeight;
+    };
+
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.height = "100%";
 
@@ -31,8 +40,7 @@ export function CollabsphereLoader() {
       if (!isMounted) return;
       setReady(true);
       setPhase("exiting");
-      document.documentElement.style.removeProperty("overflow");
-      document.documentElement.style.removeProperty("height");
+      restoreScrollState();
       
       setTimeout(() => {
         if (isMounted) setPhase("done");
@@ -59,6 +67,7 @@ export function CollabsphereLoader() {
       isMounted = false;
       window.removeEventListener("load", attemptExit);
       clearTimeout(fallbackTimer);
+      restoreScrollState();
     };
   }, [setReady]);
 
