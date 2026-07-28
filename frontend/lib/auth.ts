@@ -12,7 +12,7 @@ import {
   setPersistence
 } from 'firebase/auth'
 import { logSecurityEvent } from './security-logger'
-import { setAuthCookie } from './auth-cookie'
+import { setAuthCookie, clearAuthCookie } from './auth-cookie'
 
 const googleProvider = new GoogleAuthProvider()
 googleProvider.addScope('email')
@@ -141,6 +141,10 @@ export async function signInWithEmail(email: string, password: string) {
 
 export async function signUpWithEmail(email: string, password: string) {
   try {
+    const strength = checkPasswordStrength(password)
+    if (strength.score < 4) {
+      return { data: null, error: { message: `Password needs: ${strength.errors.join(', ')}.` } }
+    }
     const result = await createUserWithEmailAndPassword(auth, email, password)
     await logSecurityEvent({ uid: result.user.uid, event: 'sign_up_success', method: 'email' })
     if (result.user) setAuthCookie(result.user.uid)
@@ -153,8 +157,9 @@ export async function signUpWithEmail(email: string, password: string) {
 export async function signOut() {
   try {
     const uid = auth.currentUser?.uid
-    await firebaseSignOut(auth)
     if (uid) await logSecurityEvent({ uid, event: 'sign_out' })
+    await firebaseSignOut(auth)
+    clearAuthCookie()
     return { error: null }
   } catch (error: any) {
     return { error: { message: 'Failed to sign out. Please try again.' } }

@@ -31,7 +31,6 @@ export async function createProfile(profile: {
     // Sanitize user-supplied fields before storing
     const safeProfile = {
       uid:        profile.uid,
-      email:      profile.email || '',
       full_name:  sanitizeShortText(profile.full_name),
       avatar_url: sanitizeUrl(profile.avatar_url),
       username:   sanitizeShortText(profile.username),
@@ -87,6 +86,9 @@ export async function getAllProfiles() {
 
 export async function connectToBuilder(followerId: string, followingId: string) {
   try {
+    if (!followerId || !followingId || followerId === followingId) {
+      throw new Error('Invalid connection')
+    }
     const connId = `${followerId}_${followingId}`
     const docRef = doc(db, 'connections', connId)
     await setDoc(docRef, {

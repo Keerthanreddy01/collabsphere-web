@@ -4,8 +4,6 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform } from "framer-motion";
 import Dither from "@/components/ui/Dither";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { joinWaitlist } from "@/lib/waitlist";
 import { Turnstile } from '@marsidev/react-turnstile';
 import emailjs from "@emailjs/browser";
@@ -197,18 +195,10 @@ function WaitlistContent() {
     setLoading(true);
     setErrorMsg("");
 
-    if (turnstileToken) {
-      try {
-        const r = await fetch('/api/verify-turnstile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: turnstileToken }) });
-        const d = await r.json();
-        if (!d.success) { setErrorMsg('Security check failed. Refresh and try again.'); setLoading(false); return; }
-      } catch { }
-    }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErrorMsg('Please enter a valid email.'); setLoading(false); return; }
 
     try {
-      const res = await joinWaitlist(email, "both", referredBy);
+      const res = await joinWaitlist(email, "both", referredBy, turnstileToken);
       if (res.success) {
         await sendConfirmationEmail(email, "both");
         setPosition(res.position);

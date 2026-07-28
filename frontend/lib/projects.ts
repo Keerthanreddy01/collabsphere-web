@@ -8,7 +8,7 @@ import {
 import { sanitizeShortText, sanitizeBio } from "./sanitize";
 
 export interface ProjectData {
-  uid: string;
+  owner_uid: string;
   name: string;
   tagline: string;
   description: string;
@@ -63,7 +63,7 @@ export async function getUserProjects(userId: string) {
     const querySnapshot = await getDocs(
       query(
         collection(db, 'projects'),
-        where('uid', '==', userId),
+        where('owner_uid', '==', userId),
         orderBy('created_at', 'desc')
       )
     )

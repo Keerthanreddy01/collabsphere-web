@@ -1,133 +1,120 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper functions
-    function isAuth() {
-      return request.auth != null;
-    }
-    
-    function isOwner(uid) {
-      return isAuth() && request.auth.uid == uid;
-    }
-    
-    function validEmail(email) {
-      return email.matches('^[^@]+@[^@]+\\.[^@]+$');
-    }
-    
-    function notTooLong(text, maxLen) {
-      return text.size() <= maxLen;
+    function isAuth() { return request.auth != null; }
+    function isOwner(uid) { return isAuth() && request.auth.uid == uid; }
+    function isConversationParticipant(conversationId) {
+      return isAuth()
+        && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
     }
 
-    // POSTS
     match /posts/{postId} {
       allow read: if true;
-      allow create: if isAuth()
-        && isOwner(request.resource.data.uid)
+      allow create: if isOwner(request.resource.data.uid)
         && request.resource.data.content is string
         && request.resource.data.content.size() > 0
-        && request.resource.data.content.size() < 2000;
-      allow update: if isOwner(resource.data.uid)
-        && !request.resource.data.diff(resource.data)
-           .affectedKeys()
-           .hasAny(['uid', 'created_at', 'author_username']);
-      allow delete: if isOwner(resource.data.uid);
+        && request.resource.data.content.size() <= 2000;
+      allow update, delete: if isOwner(resource.data.uid);
+
+      match /likes/{userId} {
+        allow read: if true;
+        allow create: if isOwner(userId)
+          && request.resource.data.uid == request.auth.uid;
+        allow delete: if isOwner(userId);
+        allow update: if false;
+      }
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isOwner(request.resource.data.author_uid)
+          && request.resource.data.content is string
+          && request.resource.data.content.size() > 0
+          && request.resource.data.content.size() <= 1000;
+        allow delete: if isOwner(resource.data.author_uid);
+        allow update: if false;
+      }
     }
 
-    // COMMENTS subcollection
-    match /posts/{postId}/comments/{commentId} {
-      allow read: if true;
-      allow create: if isAuth()
-        && isOwner(request.resource.data.author_uid)
-        && request.resource.data.content.size() > 0
-        && request.resource.data.content.size() < 500;
-      allow delete: if isAuth() && 
-        isOwner(resource.data.author_uid);
-    }
-
-    // BUILDER PROFILES
     match /builder_profiles/{userId} {
-      allow read: if true;
+      // Profiles may contain legacy email fields. Require authentication until
+      // those records have been migrated to remove PII.
+      allow read: if isAuth();
       allow create: if isOwner(userId);
       allow update: if isOwner(userId)
-        && !request.resource.data.diff(resource.data)
-           .affectedKeys().hasAny(['uid', 'created_at']);
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'created_at', 'email']);
       allow delete: if false;
     }
 
-    // APP WAITLIST
+    // Waitlist records contain PII and are accessed only by the Admin SDK route.
     match /app_waitlist/{docId} {
-      // SECURITY: read is intentionally false — email addresses are PII.
-      // Reads must go through the backend using Firebase Admin SDK,
-      // which bypasses these client-side rules entirely.
-      // TEMPORARY FIX: Allowed read for development because admin SDK is not configured
-      allow read: if true;
-      allow create: if 
-        request.resource.data.email is string
-        && validEmail(request.resource.data.email)
-        && request.resource.data.platform in 
-           ['android', 'ios', 'both']
-        && request.resource.data.keys().hasAll([
-             'email', 'platform', 'joined_at',
-             'position', 'ref_code'
-           ]);
-      allow update, delete: if false;
+      allow read, write: if false;
     }
 
-    // MESSAGES (subcollection: messages/{conversationId}/messages/{messageId})
-    match /messages/{conversationId}/messages/{messageId} {
-      allow read: if isAuth();
+    match /conversations/{conversationId} {
+      allow read: if isAuth() && request.auth.uid in resource.data.participants;
       allow create: if isAuth()
+        && request.resource.data.participants is list
+        && request.resource.data.participants.size() == 2
+        && request.auth.uid in request.resource.data.participants;
+      allow update: if isAuth()
+        && request.auth.uid in resource.data.participants
+        && request.resource.data.participants == resource.data.participants
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['lastMessage', 'lastMessageTime', 'unreadCount']);
+      allow delete: if false;
+    }
+
+    match /messages/{conversationId}/messages/{messageId} {
+      allow read: if isConversationParticipant(conversationId);
+      allow create: if isConversationParticipant(conversationId)
         && isOwner(request.resource.data.senderId)
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0
-        && request.resource.data.text.size() < 1000;
-      // SECURITY: update restricted to the message sender only.
-      // Previously `if isAuth()` allowed ANY authenticated user to tamper
-      // with any message — this closes that gap.
-      allow update: if isAuth() && isOwner(resource.data.senderId);
-      allow delete: if false;
-    }
-
-    // CONVERSATIONS
-    match /conversations/{convId} {
-      allow read: if isAuth() && 
-        request.auth.uid in resource.data.participants;
-      allow create: if isAuth() &&
-        request.auth.uid in 
-        request.resource.data.participants;
-      allow update: if isAuth() &&
-        request.auth.uid in resource.data.participants;
-    }
-
-    // PROJECTS
-    match /projects/{projectId} {
-      allow read: if true;
-      allow create: if isAuth()
-        && isOwner(request.resource.data.owner_uid);
-      allow update: if isAuth()
-        && isOwner(resource.data.owner_uid);
-      allow delete: if isAuth()
-        && isOwner(resource.data.owner_uid);
-    }
-
-    // AUTH EVENTS - read only
-    match /auth_events/{eventId} {
-      allow read: if isAuth() && 
-        resource.data.uid == request.auth.uid;
-      allow create: if isAuth()
-        && isOwner(request.resource.data.uid);
+        && request.resource.data.text.size() <= 1000;
       allow update, delete: if false;
     }
 
-    // SPACES
-    match /spaces/{spaceId} {
+    match /projects/{projectId} {
       allow read: if true;
-      // Allow authenticated users to create/update spaces for now
-      allow write: if isAuth();
+      allow create: if isOwner(request.resource.data.owner_uid);
+      allow update, delete: if isOwner(resource.data.owner_uid);
     }
 
-    // BLOCK EVERYTHING ELSE
+    match /connections/{connectionId} {
+      allow read: if isAuth() && (
+        request.auth.uid == resource.data.follower_id || request.auth.uid == resource.data.following_id
+      );
+      allow create: if isOwner(request.resource.data.follower_id)
+        && request.resource.data.follower_id != request.resource.data.following_id;
+      allow delete: if isOwner(resource.data.follower_id);
+      allow update: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.actorId)
+        && request.resource.data.userId != request.resource.data.actorId;
+      allow update: if isOwner(resource.data.userId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    match /auth_events/{eventId} {
+      allow read: if isOwner(resource.data.uid);
+      allow create: if isOwner(request.resource.data.uid);
+      allow update, delete: if false;
+    }
+
+    match /spaces/{spaceId} {
+      allow read: if isAuth();
+      allow create: if isOwner(request.resource.data.created_by);
+      allow update, delete: if isOwner(resource.data.created_by);
+    }
+
+    match /_system/{documentId} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

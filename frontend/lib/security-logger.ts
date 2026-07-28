@@ -38,6 +38,9 @@ export async function logSecurityEvent(payload: AuthEventPayload): Promise<void>
     const { db } = await import('./firebase')
     if (!db) return // Firebase not initialized (e.g., missing env vars in dev)
 
+    const { auth } = await import('./firebase')
+    if (!payload.uid || auth?.currentUser?.uid !== payload.uid) return
+
     const { collection, addDoc } = await import('firebase/firestore')
 
     const entry = {

@@ -40,7 +40,7 @@ export default function CreateProjectPage() {
     const stackArray = formData.stack.split(",").map(s => s.trim()).filter(Boolean);
 
     const result = await createProject({
-      uid: user.uid,
+      owner_uid: user.uid,
       name: formData.name,
       tagline: formData.tagline,
       description: formData.description,

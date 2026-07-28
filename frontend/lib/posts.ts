@@ -1,10 +1,9 @@
 import { db, auth } from './firebase'
-import { 
-  collection, addDoc, getDocs,
-  query, orderBy, doc, updateDoc,
-  increment, getDoc, arrayUnion, arrayRemove
+import {
+  collection, addDoc, getDocs, getCountFromServer,
+  query, orderBy, doc, getDoc, deleteDoc, setDoc
 } from 'firebase/firestore'
-import { sanitizePost } from './sanitize'
+import { sanitizePost, sanitizeText } from './sanitize'
 
 type PostResult<T = null> = { data: T; error: null } | { data: null; error: Error }
 type VoidResult = { error: null } | { error: Error }
@@ -23,7 +22,7 @@ export async function createPost(post: {
 }): Promise<PostResult<{ id: string }>> {
   try {
     const user = auth.currentUser
-    if (!user) {
+    if (!user || user.uid !== post.uid) {
       throw new Error('Must be logged in to post')
     }
     if (!post.content || post.content.trim().length === 0) {
@@ -39,9 +38,6 @@ export async function createPost(post: {
       collection(db, 'posts'),
       {
         ...safePost,
-        likes: [],
-        comments_count: 0,
-        views: 0,
         created_at: new Date().toISOString(),
       }
     )
@@ -59,9 +55,17 @@ export async function getAllPosts() {
         orderBy('created_at', 'desc')
       )
     )
-    const posts = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+    const posts = await Promise.all(querySnapshot.docs.map(async (postDoc) => {
+      const [likesSnapshot, commentsSnapshot] = await Promise.all([
+        getDocs(collection(db, 'posts', postDoc.id, 'likes')),
+        getCountFromServer(collection(db, 'posts', postDoc.id, 'comments')),
+      ])
+      return {
+        id: postDoc.id,
+        ...postDoc.data(),
+        likes: likesSnapshot.docs.map((likeDoc) => likeDoc.id),
+        comments_count: commentsSnapshot.data().count,
+      }
     }))
     return { data: posts, error: null }
   } catch (error) {
@@ -71,23 +75,10 @@ export async function getAllPosts() {
 
 export async function likePost(postId: string, userId: string): Promise<VoidResult> {
   try {
-    const postRef = doc(db, 'posts', postId)
-    const postSnap = await getDoc(postRef)
-    if (!postSnap.exists()) {
-      return { error: new Error('Post not found') }
-    }
-    const data = postSnap.data()
-    const likes = Array.isArray(data.likes) ? data.likes : []
-    
-    if (likes.includes(userId)) {
-      await updateDoc(postRef, {
-        likes: arrayRemove(userId)
-      })
-    } else {
-      await updateDoc(postRef, {
-        likes: arrayUnion(userId)
-      })
-    }
+    if (auth.currentUser?.uid !== userId) return { error: new Error('Unauthorized') }
+    const likeRef = doc(db, 'posts', postId, 'likes', userId)
+    if ((await getDoc(likeRef)).exists()) await deleteDoc(likeRef)
+    else await setDoc(likeRef, { uid: userId, created_at: new Date().toISOString() })
     return { error: null }
   } catch (err) {
     return { error: err instanceof Error ? err : new Error(String(err)) }
@@ -95,15 +86,10 @@ export async function likePost(postId: string, userId: string): Promise<VoidResu
 }
 
 export async function incrementViews(postId: string): Promise<VoidResult> {
-  try {
-    const postRef = doc(db, 'posts', postId)
-    await updateDoc(postRef, {
-      views_count: increment(1)
-    })
-    return { error: null }
-  } catch (err) {
-    return { error: err instanceof Error ? err : new Error(String(err)) }
-  }
+  // A browser-controlled counter is forgeable. Add trusted aggregation before
+  // enabling view metrics again.
+  void postId
+  return { error: null }
 }
 
 export async function addComment(postId: string, comment: {
@@ -115,16 +101,17 @@ export async function addComment(postId: string, comment: {
 }): Promise<VoidResult> {
   try {
     // Sanitize comment content before storing
-    const sanitizedContent = comment.content?.trim().slice(0, 1000) ?? ''
+    if (auth.currentUser?.uid !== comment.uid) return { error: new Error('Unauthorized') }
+    const sanitizedContent = sanitizeText(comment.content, 1000)
     if (!sanitizedContent) return { error: new Error('Comment cannot be empty') }
     const commentsRef = collection(db, 'posts', postId, 'comments')
     await addDoc(commentsRef, {
-      ...comment,
+      author_uid: comment.uid,
+      author_name: comment.author_name,
+      author_avatar: comment.author_avatar,
+      author_username: comment.author_username,
       content: sanitizedContent,
       created_at: new Date().toISOString(),
-    })
-    await updateDoc(doc(db, 'posts', postId), {
-      comments_count: increment(1)
     })
     return { error: null }
   } catch (err) {

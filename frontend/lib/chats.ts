@@ -17,13 +17,18 @@ export interface MessageData {
  */
 export async function createChat(participants: string[]) {
   try {
+    const currentUser = auth.currentUser;
+    const uniqueParticipants = [...new Set(participants)];
+    if (!currentUser || uniqueParticipants.length !== 2 || !uniqueParticipants.includes(currentUser.uid)) {
+      return { data: null, error: 'A conversation must contain you and exactly one other user.' };
+    }
     const unreadCount: Record<string, number> = {};
-    participants.forEach((p) => {
+    uniqueParticipants.forEach((p) => {
       unreadCount[p] = 0;
     });
     
     const docRef = await addDoc(collection(db, "conversations"), {
-      participants,
+      participants: uniqueParticipants,
       lastMessage: "",
       lastMessageTime: serverTimestamp(),
       unreadCount,
@@ -48,7 +53,7 @@ export async function sendMessage(data: MessageData) {
 
   try {
     // Sanitize and enforce message length (max 2000 chars)
-    const sanitizedText = sanitizeText(data.content, 2000);
+    const sanitizedText = sanitizeText(data.content, 1000);
     if (!sanitizedText) {
       return { data: null, error: 'Message cannot be empty' };
     }
