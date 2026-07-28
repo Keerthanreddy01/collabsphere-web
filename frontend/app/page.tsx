@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
+import { BuilderFolioSection } from "@/components/landing/builder-folio-section";
 import { CollabsphereSmashSection } from "@/components/landing/collabsphere/collabsphere-smash-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
@@ -62,6 +63,7 @@ export default function Home() {
     <main className="relative min-h-screen overflow-x-hidden bg-black">
       <Navigation />
       <HeroSection />
+      <BuilderFolioSection />
       <CollabsphereSmashSection />
       <FeaturesSection />
       <HowItWorksSection />
