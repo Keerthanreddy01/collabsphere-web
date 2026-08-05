@@ -200,29 +200,28 @@ export function HeroSection() {
             </span>
           </h1>
 
+          {/* Full-width style TextLoop ribbon directly under headline */}
+          <div className="mt-6 -mx-6 sm:-mx-12 lg:-mr-[80%] overflow-hidden pointer-events-auto">
+            <TextLoop
+              text="BUILD ✦ COLLAB ✦ SHIP ✦ SCALE"
+              shape="wave"
+              speed={80}
+              direction="forward"
+              separator="✦"
+              curviness={35}
+              fontSize={18}
+              fontWeight={800}
+              letterSpacing={2}
+              uppercase
+              color="#ffffff"
+              ribbon
+              ribbonColor="rgba(82, 39, 255, 0.85)"
+              ribbonWidth={40}
+              pauseOnHover
+            />
+          </div>
         </div>
         </div>
-      </div>
-
-      {/* Full-width Animated TextLoop ribbon */}
-      <div className="relative z-10 w-full overflow-hidden my-4 pointer-events-auto">
-        <TextLoop
-          text="BUILD ✦ COLLAB ✦ SHIP ✦ SCALE"
-          shape="wave"
-          speed={80}
-          direction="forward"
-          separator="✦"
-          curviness={40}
-          fontSize={20}
-          fontWeight={800}
-          letterSpacing={2}
-          uppercase
-          color="#ffffff"
-          ribbon
-          ribbonColor="rgba(82, 39, 255, 0.85)"
-          ribbonWidth={44}
-          pauseOnHover
-        />
       </div>
       
       {/* Stats — 3 metrics static, no auto-scroll */}
