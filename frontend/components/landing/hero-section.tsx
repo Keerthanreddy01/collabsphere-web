@@ -201,6 +201,7 @@ export function HeroSection() {
           </h1>
 
         </div>
+        </div>
       </div>
 
       {/* Full-width Animated TextLoop ribbon */}
@@ -260,8 +261,6 @@ export function HeroSection() {
           ))}
         </div>
       </div>
-
-      {/* Scroll indicator */}
 
     </section>
   );
