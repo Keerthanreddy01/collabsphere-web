@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePlatformStats } from "@/hooks/usePlatformStats";
+import TextLoop from "@/components/ui/TextLoop";
 
 const words = ["BUILD", "SHIP", "SCALE"];
 
@@ -198,6 +199,27 @@ export function HeroSection() {
               {" "}ELITE BUILDERS
             </span>
           </h1>
+
+          {/* Animated TextLoop ribbon */}
+          <div className="mt-8 -mx-6 sm:-mx-12 overflow-hidden pointer-events-auto">
+            <TextLoop
+              text="BUILD ✦ COLLAB ✦ SHIP ✦ SCALE"
+              shape="wave"
+              speed={80}
+              direction="forward"
+              separator="✦"
+              curviness={50}
+              fontSize={24}
+              fontWeight={800}
+              letterSpacing={3}
+              uppercase
+              color="#ffffff"
+              ribbon
+              ribbonColor="rgba(82, 39, 255, 0.75)"
+              ribbonWidth={48}
+              pauseOnHover
+            />
+          </div>
         </div>
         </div>
       </div>
