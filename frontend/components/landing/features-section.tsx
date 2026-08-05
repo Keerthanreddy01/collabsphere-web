@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePlatformStats } from "@/hooks/usePlatformStats";
+import MorphSlider from "@/components/ui/MorphSlider";
 
 // Static feature descriptions — values are injected at render time from live data
 const featureDescriptions = [
@@ -226,17 +227,33 @@ export function FeaturesSection() {
               </div>
             </div>
 
-            {/* Right: mirrored image, full height */}
-            <div className="hidden lg:block relative w-[42%] shrink-0 overflow-hidden">
-              <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Upscaled%20Image%20%2812%29-ng3RrNnsPMJ5CrtOjcPTmhHg01W11q.png"
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover object-center"
-                style={{ transform: "scaleX(-1)" }}
+            {/* Right: MorphSlider WebGL component */}
+            <div className="hidden lg:block relative flex-1 shrink-0 overflow-hidden min-h-[500px] self-stretch">
+              <MorphSlider
+                items={[
+                  {
+                    image: '/imagesnew/1.png'
+                  },
+                  {
+                    image: '/imagesnew/2.png'
+                  },
+                  {
+                    image: '/imagesnew/3.png'
+                  }
+                ]}
+                transition="melt"
+                intensity={0.4}
+                aberration={0.2}
+                drift={0.3}
+                overlayColor="#000000"
+                showCaptions={false}
+                autoplay
+                autoplayDelay={4}
+                radius={0}
+                className="w-full h-full"
               />
-              {/* Fade left edge into black */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent" />
+              {/* Subtle fade left edge into card background */}
+              <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-black via-black/30 to-transparent pointer-events-none z-10 w-24" />
             </div>
           </div>
         </div>
