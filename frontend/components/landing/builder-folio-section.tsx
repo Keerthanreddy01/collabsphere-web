@@ -54,7 +54,6 @@ export function BuilderFolioSection() {
 
       <div className="builder-folio__doodle builder-folio__doodle--cup" aria-hidden="true">◒</div>
       <div className="builder-folio__doodle builder-folio__doodle--orbit" aria-hidden="true">◌</div>
-      <div className="builder-folio__doodle builder-folio__doodle--spark" aria-hidden="true">✦</div>
 
       <div className="builder-folio__inner">
         <div className="builder-folio__nav" aria-hidden="true">
