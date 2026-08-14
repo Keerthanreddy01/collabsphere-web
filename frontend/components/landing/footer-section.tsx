@@ -25,7 +25,7 @@ export function FooterSection() {
   const linksY = useTransform(scrollYProgress, [0, 1], [30, 0]);
 
   return (
-    <footer ref={containerRef} className="relative w-full bg-[#1c1c1c] px-4 sm:px-6 md:px-8 pb-8 pt-12 sm:pt-20 font-sans overflow-hidden perspective-1000">
+    <footer id="contact" ref={containerRef} className="relative w-full bg-[#1c1c1c] px-4 sm:px-6 md:px-8 pb-8 pt-12 sm:pt-20 font-sans overflow-hidden perspective-1000">
       
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@1,500&display=swap');

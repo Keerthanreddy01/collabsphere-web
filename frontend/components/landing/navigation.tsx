@@ -15,7 +15,7 @@ const navLinks = [
   { name: "CASE STUDY",    href: "#case-study"    },
   { name: "SERVICE",       href: "#service"       },
   { name: "PAGE",          href: "#page"          },
-  { name: "BUILDERS",      href: "/builders"      },
+  { name: "CONTACT",       href: "#contact"       },
 ];
 
 export function Navigation() {
@@ -23,6 +23,18 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      } else {
+        router.push(`/${href}`);
+      }
+    }
+  };
 
   const handleDashboardClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -84,6 +96,7 @@ export function Navigation() {
               <a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-sm transition-colors duration-300 relative group ${isScrolled ? "text-foreground/70 hover:text-foreground" : "text-white/70 hover:text-white"}`}
               >
                 {link.name}
@@ -163,7 +176,10 @@ export function Navigation() {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                  handleNavClick(e, link.href);
+                }}
                 className={`text-5xl font-display text-foreground hover:text-muted-foreground transition-all duration-500 ${
                   isMobileMenuOpen 
                     ? "opacity-100 translate-y-0" 
