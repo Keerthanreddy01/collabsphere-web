@@ -15,7 +15,7 @@ type Confession = {
 
 const confessions: Confession[] = [
   {
-    text: "The team at Collabsphere has been epic to work with. Their creativity is not just aesthetically impressive, it drives business value.",
+    text: "The team at Squibl has been epic to work with. Their creativity is not just aesthetically impressive, it drives business value.",
     author: "Jeff Mziray",
     role: "DashQ, CEO",
     theme: "cream",
@@ -23,7 +23,7 @@ const confessions: Confession[] = [
     yOffset: 0
   },
   {
-    text: "Collabsphere is the best design team we have worked with. Their work immediately brought more credibility and authenticity to our long term goal of building community.",
+    text: "Squibl is the best design team we have worked with. Their work immediately brought more credibility and authenticity to our long term goal of building community.",
     author: "@phobosdei",
     role: "Dogelon Mars",
     theme: "red",
@@ -31,7 +31,7 @@ const confessions: Confession[] = [
     yOffset: 40
   },
   {
-    text: "Collabsphere's team is wildly creative, professional in all the right ways, and made the whole process of rebranding our company fun and effortless. They helped us Elevate our brand into something that finally feels like us, giving our company a fresh identity that's already driving momentum.",
+    text: "Squibl's team is wildly creative, professional in all the right ways, and made the whole process of rebranding our company fun and effortless. They helped us Elevate our brand into something that finally feels like us, giving our company a fresh identity that's already driving momentum.",
     author: "Ryan Keisel",
     role: "Elevate, CEO",
     theme: "cream",
@@ -39,7 +39,7 @@ const confessions: Confession[] = [
     yOffset: 20
   },
   {
-    text: "We loved working with Collabsphere. They took the time to really understand who we are and brought our vision to life.",
+    text: "We loved working with Squibl. They took the time to really understand who we are and brought our vision to life.",
     author: "Alex Rivera",
     role: "TechNova",
     theme: "red",
@@ -48,7 +48,7 @@ const confessions: Confession[] = [
   }
 ];
 
-export function CollabsphereClientConfessions() {
+export function SquiblClientConfessions() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,

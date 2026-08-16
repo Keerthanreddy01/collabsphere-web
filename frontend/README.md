@@ -1,4 +1,4 @@
-# 🪐 Collabsphere
+# 🪐 Squibl
 
 > 🚧 **Hold up... let him cook.** 🚧
 

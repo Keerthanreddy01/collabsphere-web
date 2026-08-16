@@ -19,7 +19,7 @@ const testimonials = [
     metric: { value: "1h", label: "Response Time" },
   },
   {
-    quote: "Collabsphere is what LinkedIn wishes it was for developers. No noise, just builders.",
+    quote: "Squibl is what LinkedIn wishes it was for developers. No noise, just builders.",
     author: "James O.",
     role: "Indie Hacker",
     company: "Solo Builder",

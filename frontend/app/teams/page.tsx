@@ -53,7 +53,7 @@ export default function TeamsPage() {
             </button>
             <div className="flex items-center gap-1">
               <span className="text-lg font-black text-white dark:text-black select-none leading-none">*</span>
-              <span className="font-bold text-white dark:text-black text-sm">collabsphere</span>
+              <span className="font-bold text-white dark:text-black text-sm">squibl</span>
             </div>
             <div className="w-8 h-8 rounded-full bg-gray-200" />
           </div>

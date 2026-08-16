@@ -76,7 +76,7 @@ export default function FeaturedPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-gray-200 dark:border-white/5 bg-white dark:bg-black/80 backdrop-blur-md">
         <Link href="/" className="inline-flex items-center gap-3 text-black dark:text-white/60 hover:text-black dark:text-white transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-mono">COLLABSPHERE™</span>
+          <span className="text-sm font-mono">SQUIBL™</span>
         </Link>
         <span className="text-xs font-mono text-black dark:text-white/30 tracking-widest">FEATURED BUILDERS</span>
       </nav>

@@ -259,7 +259,7 @@ export default function ProjectsPage() {
                   <ProjectCard
                     key={project.id}
                     title={title}
-                    description={project.description || "A shipped build from the Collabsphere community."}
+                    description={project.description || "A shipped build from the Squibl community."}
                     stack={stack}
                     builder={builder}
                     date={formatDate(project.created_at)}

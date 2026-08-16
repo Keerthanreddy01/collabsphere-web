@@ -1,4 +1,4 @@
-# Backend — CollabSphere API
+# Backend — Squibl API
 
 Express + TypeScript REST API that connects the Next.js frontend to Firebase/Firestore.
 

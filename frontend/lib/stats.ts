@@ -119,7 +119,7 @@ export async function fetchPlatformStats(): Promise<PlatformStats> {
       countriesRepresented,
     }
   } catch (error) {
-    console.error('[CollabSphere] Failed to fetch platform stats:', error)
+    console.error('[Squibl] Failed to fetch platform stats:', error)
     return {
       activeBuilders: 0,
       projectsLaunched: 0,

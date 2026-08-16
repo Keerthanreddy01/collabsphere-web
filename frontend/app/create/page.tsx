@@ -94,7 +94,7 @@ export default function CreateProjectPage() {
               Launch Your Project
             </h1>
             <p className="text-[#A8A8A8] text-[16px] max-w-lg mx-auto">
-              Showcase what you've built to the CollabSphere community. Get feedback, find users, and inspire others.
+              Showcase what you've built to the Squibl community. Get feedback, find users, and inspire others.
             </p>
           </motion.div>
 
@@ -137,7 +137,7 @@ export default function CreateProjectPage() {
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         className="w-full bg-gray-100 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-black dark:text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="e.g. CollabSphere"
+                        placeholder="e.g. Squibl"
                       />
                     </div>
                     <div className="space-y-2">

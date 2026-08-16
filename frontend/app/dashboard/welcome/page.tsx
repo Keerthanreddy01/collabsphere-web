@@ -23,7 +23,7 @@ export default function WelcomePage() {
     <div className="relative w-full h-screen bg-white dark:bg-black overflow-hidden flex flex-col items-center justify-center">
       <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 text-center pointer-events-none">
         <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-4 animate-fade-in">
-          Welcome to CollabSphere
+          Welcome to Squibl
         </h1>
         <p className="text-[#A8A8A8] text-xl">
           {user.displayName || "Builder"}, your ID card is ready.

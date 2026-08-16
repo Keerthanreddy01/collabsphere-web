@@ -22,7 +22,7 @@ function MockFeed() {
           <span className="w-3 h-3 rounded-full bg-yellow-500/25 border border-yellow-500/40" />
           <span className="w-3 h-3 rounded-full bg-green-500/25 border border-green-500/40" />
         </div>
-        <span className="text-[10px] text-neutral-600 font-mono">collabsphere.app/feed</span>
+        <span className="text-[10px] text-neutral-600 font-mono">squibl.app/feed</span>
         <div className="w-12" />
       </div>
       <div className="flex gap-4 border-b border-white/[0.05] px-5 pt-3 pb-2">

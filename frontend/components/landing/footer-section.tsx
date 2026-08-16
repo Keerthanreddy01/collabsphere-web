@@ -46,7 +46,7 @@ export function FooterSection() {
             className="mt-8 mb-4 lg:mb-2 shrink-0 will-change-transform w-full z-10"
           >
               <h1 className="font-anton leading-[0.85] uppercase tracking-normal text-[#E83526]" style={{ fontSize: "clamp(2.5rem, 11vw, 13rem)" }}>
-                COLLABSPHERE
+                SQUIBL
               </h1>
           </motion.div>
 
@@ -79,8 +79,8 @@ export function FooterSection() {
               <div className="flex flex-col gap-4">
                 <h3 className="font-anton text-2xl tracking-wide uppercase text-[#E83526]">Contact</h3>
                 <div className="flex flex-col gap-1 text-xl lg:text-2xl font-serif-italic text-[#E83526]">
-                  <a href="mailto:collabsphereapp@gmail.com" className="hover:opacity-60 transition-opacity">collabsphereapp@gmail.com</a>
-                  <p>collabsphereofficial</p>
+                  <a href="mailto:squiblapp@gmail.com" className="hover:opacity-60 transition-opacity">squiblapp@gmail.com</a>
+                  <p>squiblofficial</p>
                 </div>
               </div>
 
@@ -120,7 +120,7 @@ export function FooterSection() {
             <span className="hover:text-[#E83526] transition-colors cursor-pointer">Privacy Policy</span>
             <span className="hover:text-[#E83526] transition-colors cursor-pointer">Terms & Conditions</span>
           </div>
-          <span className="hover:text-[#E83526] transition-colors cursor-pointer">© 2026 CollabSphere</span>
+          <span className="hover:text-[#E83526] transition-colors cursor-pointer">© 2026 Squibl</span>
         </div>
 
       </motion.div>

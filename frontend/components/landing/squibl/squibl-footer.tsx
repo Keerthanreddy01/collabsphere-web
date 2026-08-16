@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Eyebrow, PillButton, TennisMark } from "./collabsphere-shared";
+import { Eyebrow, PillButton, TennisMark } from "./squibl-shared";
 
-export function CollabsphereFooter() {
-  const openModal = () => window.dispatchEvent(new CustomEvent("open-collabsphere-modal"));
+export function SquiblFooter() {
+  const openModal = () => window.dispatchEvent(new CustomEvent("open-squibl-modal"));
 
   return (
     <footer id="contact" className="bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] mt-[0.75rem] px-[1.5rem] py-[3.5rem] sm:px-[2.5rem] sm:py-[4rem]">
@@ -55,13 +55,13 @@ export function CollabsphereFooter() {
         <div className="max-w-[20rem]">
           <div className="flex items-center gap-[0.5rem] text-[1.125rem] font-medium uppercase tracking-[0.2em]">
             <TennisMark className="w-[1.25rem] h-[1.25rem]" />
-            Collabsphere
+            Squibl
           </div>
           <p className="mt-[1rem] text-[0.875rem] text-white/65">
             A creative engineering studio where focused architecture meets championship products.
           </p>
           <address className="mt-[1.5rem] not-italic text-[0.875rem] text-white/80 flex flex-col gap-1">
-            <a href="mailto:hello@collabsphere.com" className="hover:text-white transition-colors">hello@collabsphere.com</a>
+            <a href="mailto:hello@squibl.com" className="hover:text-white transition-colors">hello@squibl.com</a>
             <a href="tel:+12125550148" className="hover:text-white transition-colors">+1 (212) 555-0148</a>
             <span className="text-white/55 mt-1">120 Tech Lane, New York</span>
           </address>
@@ -102,7 +102,7 @@ export function CollabsphereFooter() {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/15 pt-[2rem] text-[0.875rem] text-white/60 flex flex-col sm:flex-row justify-between items-center gap-[1.25rem]">
-        <div>© 2026 Collabsphere. All rights reserved.</div>
+        <div>© 2026 Squibl. All rights reserved.</div>
         <div className="flex gap-[1.25rem]">
           <a href="#" className="hover:text-white transition-colors">Instagram</a>
           <a href="#" className="hover:text-white transition-colors">X</a>

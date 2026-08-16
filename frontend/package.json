@@ -1,8 +1,8 @@
 {
-  "name": "collabsphere-frontend",
+  "name": "squibl-frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "CollabSphere — Next.js 16 frontend (App Router, TypeScript, Firebase, Tailwind CSS v4)",
+  "description": "Squibl — Next.js 16 frontend (App Router, TypeScript, Firebase, Tailwind CSS v4)",
   "engines": {
     "node": ">=18"
   },

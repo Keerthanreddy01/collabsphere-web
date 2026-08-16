@@ -159,7 +159,7 @@ export default function LoginPage() {
           className="relative z-10 text-center select-none"
         >
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white flex items-center justify-center font-sans">
-            CollabSphere<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
+            Squibl<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
           </h1>
         </motion.div>
       </div>
@@ -220,7 +220,7 @@ export default function LoginPage() {
             {/* Email Address */}
             <InputGroup 
               label="Email" 
-              placeholder="ex. name@collabsphere.io" 
+              placeholder="ex. name@squibl.io" 
               id="email" 
               value={email} 
               onChange={(e: any) => setEmail(e.target.value)} 
@@ -283,7 +283,7 @@ export default function LoginPage() {
               </Link>
             </p>
             <p className="text-[11px] text-black dark:text-white/20">
-              Contact: <span className="text-black dark:text-white/40 lowercase tracking-normal">collabsphereapp@gmail.com</span>
+              Contact: <span className="text-black dark:text-white/40 lowercase tracking-normal">squiblapp@gmail.com</span>
             </p>
           </div>
         </motion.div>

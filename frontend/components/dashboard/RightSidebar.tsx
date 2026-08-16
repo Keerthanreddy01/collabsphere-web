@@ -147,7 +147,7 @@ export default function RightSidebar() {
 
         {/* Top Header */}
         <h3 className="font-syncopate text-black dark:text-white text-[13px] uppercase tracking-widest mb-3 relative z-10 font-bold">
-          CollabSphere
+          Squibl
         </h3>
         
         {/* Pill */}
@@ -182,7 +182,7 @@ export default function RightSidebar() {
           <div className="mt-8 text-center flex flex-col items-center">
             <div className="text-white dark:text-black text-[12px] font-medium mb-1 font-sans">Join the wait list</div>
             <div className="text-[#063CB9] text-[10px] font-medium font-sans border-b border-[#063CB9]/40 pb-[1px] hover:border-[#063CB9] transition-colors">
-              collabsphere.app/mobile
+              squibl.app/mobile
             </div>
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function RightSidebar() {
         <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
           <div className="flex flex-col gap-0.5 mb-4">
             <span className="text-black dark:text-white/95 font-medium text-[14px]">AI Co-builder Matches</span>
-            <span className="text-black dark:text-white/40 text-[12px]">collabsphere.app/match</span>
+            <span className="text-black dark:text-white/40 text-[12px]">squibl.app/match</span>
           </div>
 
           <div className="flex flex-col gap-2.5">
@@ -287,7 +287,7 @@ export default function RightSidebar() {
         <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
           <div className="flex flex-col gap-0.5 mb-4">
             <span className="text-black dark:text-white/95 font-medium text-[14px]">Collab Live Rooms</span>
-            <span className="text-black dark:text-white/40 text-[12px]">collabsphere.app/live</span>
+            <span className="text-black dark:text-white/40 text-[12px]">squibl.app/live</span>
           </div>
 
           <div className="flex flex-col gap-2.5">
@@ -336,7 +336,7 @@ export default function RightSidebar() {
         <div className="relative z-10 flex flex-col p-5 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-white/[0.04]">
           <div className="flex flex-col gap-0.5 mb-4">
             <span className="text-black dark:text-white/95 font-medium text-[14px]">Top Ships of the Week</span>
-            <span className="text-black dark:text-white/40 text-[12px]">collabsphere.app/ships</span>
+            <span className="text-black dark:text-white/40 text-[12px]">squibl.app/ships</span>
           </div>
 
           <div className="flex flex-col gap-2.5">
@@ -372,7 +372,7 @@ export default function RightSidebar() {
         <span className="hover:underline cursor-pointer transition-colors">Privacy Policy</span>
         <span className="hover:underline cursor-pointer transition-colors">Cookie Policy</span>
         <span className="hover:underline cursor-pointer transition-colors">Developer Rules</span>
-        <span className="w-full mt-1">© 2026 CollabSphere Corp.</span>
+        <span className="w-full mt-1">© 2026 Squibl Corp.</span>
       </div>
 
     </div>

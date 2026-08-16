@@ -55,7 +55,7 @@ new_ui = """  return (
             <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#FF512F] to-[#F09819] text-white font-black shadow-[0_0_20px_rgba(255,81,47,0.3)] group-hover:shadow-[0_0_30px_rgba(255,81,47,0.5)] transition-all">
               <Sparkles className="w-4 h-4" />
             </div>
-            <span className="text-xl font-black tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">CollabSphere</span>
+            <span className="text-xl font-black tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">Squibl</span>
           </div>
 
           {/* Stepper progress */}

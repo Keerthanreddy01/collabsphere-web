@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import './collabsphere-theme.css';
+@import './squibl-theme.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -82,7 +82,8 @@
   /* Griflan Agency Theme Colors */
   --color-griflan-bg: #111111;
   --color-griflan-text: #F4F4F0;
-  --color-griflan-accent: #FF3B30; /* Bold red accent */
+  --color-griflan-accent: #FF3B30;
+  /* Bold red accent */
   --color-brand-dark: #0a0a0a;
   --color-brand-gray: #1A1A1A;
   --color-background: var(--background);
@@ -136,7 +137,8 @@
     color-scheme: dark;
   }
 
-  html.lenis, html.lenis body {
+  html.lenis,
+  html.lenis body {
     height: auto;
   }
 

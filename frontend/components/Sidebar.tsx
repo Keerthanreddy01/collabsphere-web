@@ -66,7 +66,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen, onMobileCreat
                 <div className="flex items-center">
                   <img src="/newlogo.png" alt="Logo" className="w-8 h-8 mr-3 rounded-xl drop-shadow-sm" />
                   <span className="text-[17px] font-bold text-black dark:text-white tracking-tight whitespace-nowrap">
-                    CollabSphere
+                    Squibl
                   </span>
                 </div>
               ) : (

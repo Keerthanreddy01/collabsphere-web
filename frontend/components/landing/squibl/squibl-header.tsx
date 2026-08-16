@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TennisMark, scrollToId } from "./collabsphere-shared";
+import { TennisMark, scrollToId } from "./squibl-shared";
 
-export function CollabsphereHeader() {
-  const openModal = () => window.dispatchEvent(new CustomEvent("open-collabsphere-modal"));
-  const openMenu = () => window.dispatchEvent(new CustomEvent("open-collabsphere-menu"));
+export function SquiblHeader() {
+  const openModal = () => window.dispatchEvent(new CustomEvent("open-squibl-modal"));
+  const openMenu = () => window.dispatchEvent(new CustomEvent("open-squibl-menu"));
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-[1.5rem] pt-[1.5rem] sm:px-[2.5rem] sm:pt-[2rem] text-[0.75rem] text-white">
@@ -36,7 +36,7 @@ export function CollabsphereHeader() {
           className="flex items-center gap-[0.5rem] text-[1rem] font-medium uppercase tracking-[0.2em]"
         >
           <TennisMark className="w-[1.25rem] h-[1.25rem]" />
-          Collabsphere
+          Squibl
         </a>
       </div>
 

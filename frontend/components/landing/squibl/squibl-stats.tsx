@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Eyebrow } from "./collabsphere-shared";
+import { Eyebrow } from "./squibl-shared";
 
-export function CollabsphereStats() {
+export function SquiblStats() {
   const stats = [
     { value: "24", label: "Specialized experts" },
     { value: "12", label: "Core technologies" },

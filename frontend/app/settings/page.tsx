@@ -235,7 +235,7 @@ export default function SettingsPage() {
                     <h3 className="text-lg font-medium text-black dark:text-white flex items-center gap-2">
                       <Mail className="w-5 h-5 text-black dark:text-white/50" /> Email Address
                     </h3>
-                    <p className="text-sm text-black dark:text-white/50">Your email address is used to sign in to CollabSphere.</p>
+                    <p className="text-sm text-black dark:text-white/50">Your email address is used to sign in to Squibl.</p>
                     <input
                       type="email"
                       value={user?.email || ""}
@@ -272,7 +272,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-black dark:text-white/50">Permanently delete your account and all associated data. This cannot be undone.</p>
                     <button
                       type="button"
-                      onClick={() => setMessage({ type: 'error', text: 'To delete your account, please contact support@collabsphere.dev. We require identity verification before deletion.' })}
+                      onClick={() => setMessage({ type: 'error', text: 'To delete your account, please contact support@squibl.dev. We require identity verification before deletion.' })}
                       className="px-6 py-2.5 bg-red-500/10 text-red-400 font-semibold rounded-full border border-red-500/20 hover:bg-red-500/20 transition-all text-sm active:scale-[0.98]"
                     >
                       Delete Account
@@ -287,7 +287,7 @@ export default function SettingsPage() {
                   <h3 className="text-lg font-medium text-black dark:text-white mb-2">Notification Preferences</h3>
                   {[
                     { title: "Email Notifications", desc: "Receive weekly digests and updates via email." },
-                    { title: "In-App Notifications", desc: "Receive notifications inside CollabSphere." },
+                    { title: "In-App Notifications", desc: "Receive notifications inside Squibl." },
                   ].map(({ title, desc }) => (
                     <div key={title} className="flex items-center justify-between p-4 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] rounded-[16px]">
                       <div>
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                   <div className="p-4 bg-white/[0.02] border border-gray-200 dark:border-white/[0.05] rounded-[16px] space-y-4">
                     <div>
                       <h4 className="text-sm font-medium text-black dark:text-white">Theme Preference</h4>
-                      <p className="text-xs text-black dark:text-white/50 mt-1 mb-4">Choose how CollabSphere looks to you. Select light or dark mode.</p>
+                      <p className="text-xs text-black dark:text-white/50 mt-1 mb-4">Choose how Squibl looks to you. Select light or dark mode.</p>
                       <ThemeToggle inline={true} />
                     </div>
                   </div>

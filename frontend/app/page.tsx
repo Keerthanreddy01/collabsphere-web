@@ -9,7 +9,7 @@ import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
 import { BuilderFolioSection } from "@/components/landing/builder-folio-section";
 import { HeroFolioTransition } from "@/components/landing/hero-folio-transition";
-import { CollabsphereSmashSection } from "@/components/landing/collabsphere/collabsphere-smash-section";
+import { SquiblSmashSection } from "@/components/landing/squibl/squibl-smash-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { IntegrationsSection } from "@/components/landing/integrations-section";
@@ -65,7 +65,7 @@ export default function Home() {
       <HeroSection />
       <BuilderFolioSection />
       <HeroFolioTransition />
-      <CollabsphereSmashSection />
+      <SquiblSmashSection />
       <FeaturesSection />
       <HowItWorksSection />
       <ScrollingRevealSection />

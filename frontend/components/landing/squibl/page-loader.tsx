@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useCollabsphere } from "./collabsphere-context";
-import { TennisMark } from "./collabsphere-shared";
+import { useSquibl } from "./squibl-context";
+import { TennisMark } from "./squibl-shared";
 
-export function CollabsphereLoader() {
-  const { setReady } = useCollabsphere();
+export function SquiblLoader() {
+  const { setReady } = useSquibl();
   const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export function CollabsphereLoader() {
       >
         <TennisMark className="w-[1.75rem] h-[1.75rem]" />
         <span className="text-[1.5rem] sm:text-[1.875rem] font-medium uppercase tracking-[0.2em]">
-          Collabsphere
+          Squibl
         </span>
       </motion.div>
 

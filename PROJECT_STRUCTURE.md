@@ -1,4 +1,4 @@
-# CollabSphere — Project Structure Reference
+# Squibl — Project Structure Reference
 
 > **Follow this document every time you build a new feature.**
 > It tells you exactly where every file should live and why.
@@ -8,7 +8,7 @@
 ## 📁 Root Layout
 
 ```
-collabsphere/
+squibl/
 ├── frontend/          ← Next.js client application (App Router, Tailwind CSS, shadcn/ui)
 ├── backend/           ← Express REST API (TypeScript, Firebase Admin SDK)
 ├── scripts/           ← Centralized monorepo utility, test, and migration scripts

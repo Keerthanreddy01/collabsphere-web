@@ -26,7 +26,7 @@ const projects = [
     team: ["S. RIVERS", "LIAM_T"],
     status: "LIVE",
     highlight: false,
-    description: "Unified API layer for cross-chain data retrieval. Built in 3 weeks by a 2-person team from Collabsphere.",
+    description: "Unified API layer for cross-chain data retrieval. Built in 3 weeks by a 2-person team from Squibl.",
   },
   {
     id: "03",
@@ -114,7 +114,7 @@ export default function ShowcasePage() {
             <button className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
               <Rocket className="w-5 h-5 text-black dark:text-white" />
             </button>
-            <span className="text-sm font-mono">COLLABSPHERE™</span>
+            <span className="text-sm font-mono">SQUIBL™</span>
           </div>
           <span className="text-xs font-mono text-black dark:text-white/30 tracking-widest">PROJECT SHOWCASE</span>
         </nav>
@@ -132,7 +132,7 @@ export default function ShowcasePage() {
             <span className="text-black dark:text-white/20">HERE.</span>
           </h1>
           <p className="text-xl text-black dark:text-white/50 max-w-lg leading-relaxed">
-            Real projects. Real teams. Real impact. Every project here was built by a team that found each other on Collabsphere.
+            Real projects. Real teams. Real impact. Every project here was built by a team that found each other on Squibl.
           </p>
         </div>
       </section>

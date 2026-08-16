@@ -23,7 +23,7 @@ export function validateEnv(): void {
 
   if (missing.length > 0) {
     const message = [
-      '[CollabSphere] Missing required environment variables:',
+      '[Squibl] Missing required environment variables:',
       ...missing.map((k) => `  - ${k}`),
       '',
       'Copy .env.example to .env.local and fill in your Firebase credentials.',
@@ -44,7 +44,7 @@ export function getEnv(key: (typeof REQUIRED_ENV_VARS)[number]): string {
   const value = process.env[key]
   if (!value || value.trim() === '') {
     throw new Error(
-      `[CollabSphere] Environment variable "${key}" is not set. ` +
+      `[Squibl] Environment variable "${key}" is not set. ` +
       `Copy .env.example to .env.local and fill in your credentials.`
     )
   }

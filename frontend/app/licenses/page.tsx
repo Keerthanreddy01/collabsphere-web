@@ -8,7 +8,7 @@ const licenses = [
   {
     name: "MIT License",
     badge: "OPEN",
-    description: "The core Collabsphere platform is open source under the MIT License. Free to use, fork, and extend. Attribution appreciated but not required.",
+    description: "The core Squibl platform is open source under the MIT License. Free to use, fork, and extend. Attribution appreciated but not required.",
     permissions: ["Commercial use", "Modification", "Distribution", "Private use"],
     conditions: ["License and copyright notice"],
     limitations: ["No liability", "No warranty"],
@@ -24,7 +24,7 @@ const licenses = [
   {
     name: "Brand Assets",
     badge: "RESTRICTED",
-    description: "The Collabsphere™ name, logo, and brand assets are proprietary. Usage requires explicit written permission from The Galaxy Corp.",
+    description: "The Squibl™ name, logo, and brand assets are proprietary. Usage requires explicit written permission from The Galaxy Corp.",
     permissions: ["View"],
     conditions: ["Written approval required", "No modifications"],
     limitations: ["No redistribution", "No commercial use"],
@@ -33,7 +33,7 @@ const licenses = [
 
 const faq = [
   {
-    q: "Can I use Collabsphere code in my own product?",
+    q: "Can I use Squibl code in my own product?",
     a: "Yes. The MIT License allows commercial use. Just keep the copyright notice in your source.",
   },
   {
@@ -41,7 +41,7 @@ const faq = [
     a: "Absolutely. That's what open source is for. We'd love to hear what you build.",
   },
   {
-    q: "Can I use the Collabsphere name in my project?",
+    q: "Can I use the Squibl name in my project?",
     a: "Only with prior written permission. Reach out to hi@collab.tech for brand usage requests.",
   },
   {
@@ -71,7 +71,7 @@ export default function LicensesPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6 flex items-center justify-between border-b border-gray-200 dark:border-white/5 bg-white dark:bg-black/80 backdrop-blur-md">
         <Link href="/" className="inline-flex items-center gap-3 text-black dark:text-white/60 hover:text-black dark:text-white transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-mono">COLLABSPHERE™</span>
+          <span className="text-sm font-mono">SQUIBL™</span>
         </Link>
         <span className="text-xs font-mono text-black dark:text-white/30 tracking-widest">LICENSES</span>
       </nav>

@@ -124,7 +124,7 @@ export default function SignupPage() {
           className="relative z-10 text-center select-none"
         >
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white flex items-center justify-center font-sans">
-            CollabSphere<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
+            Squibl<span className="text-xl font-light relative -top-3 left-0.5 select-none">™</span>
           </h1>
         </motion.div>
       </div>

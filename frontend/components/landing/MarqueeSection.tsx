@@ -69,7 +69,7 @@ const topRowCards: CardData[] = [
     avatar: "KB",
     username: "@kevin_b",
     badge: "MILESTONE",
-    text: "first collaboration team formed on CollabSphere!",
+    text: "first collaboration team formed on Squibl!",
     comments: 18,
     boosts: 72,
     views: 280,

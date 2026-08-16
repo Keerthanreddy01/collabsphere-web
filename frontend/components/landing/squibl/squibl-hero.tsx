@@ -2,11 +2,11 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useCollabsphere } from "./collabsphere-context";
-import { CollabsphereHeader } from "./collabsphere-header";
+import { useSquibl } from "./squibl-context";
+import { SquiblHeader } from "./squibl-header";
 
-export function CollabsphereHero() {
-  const { ready } = useCollabsphere();
+export function SquiblHero() {
+  const { ready } = useSquibl();
   const sectionRef = useRef<HTMLElement>(null);
   
   // Parallax calculations
@@ -21,7 +21,7 @@ export function CollabsphereHero() {
       className="relative isolate overflow-hidden rounded-[var(--radius-card-lg)] flex flex-col bg-[#050505] text-white"
       style={{ height: "calc(100svh - 1rem)", minHeight: "45rem" }}
     >
-      <CollabsphereHeader />
+      <SquiblHeader />
 
       {/* Massive Background Text Layer (z-10) */}
       <motion.div 

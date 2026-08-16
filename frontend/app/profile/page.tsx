@@ -146,7 +146,7 @@ export default function ProfilePage() {
                   <div className="space-y-2 mb-6">
                     <div className="flex items-center gap-2 text-[14px] text-black dark:text-white/90">
                       <span className="w-5 text-center">🚀</span>
-                      <span>Building <span className="font-semibold text-black dark:text-white">CollabSphere</span></span>
+                      <span>Building <span className="font-semibold text-black dark:text-white">Squibl</span></span>
                     </div>
                     <div className="flex items-center gap-2 text-[14px] text-black dark:text-white/90">
                       <span className="w-5 text-center text-[#777]"><Briefcase className="w-4 h-4 inline-block" /></span>

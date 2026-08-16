@@ -23,28 +23,28 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CollabSphere - Build together, ship faster",
+  title: "Squibl - Build together, ship faster",
   description:
-    "CollabSphere is the developer network for builders. Find teammates, share your builds, and grow with people who ship.",
+    "Squibl is the developer network for builders. Find teammates, share your builds, and grow with people who ship.",
   generator: "next",
   icons: {
     icon: "/newlogo.png",
     apple: "/newlogo.png",
   },
   openGraph: {
-    title: "CollabSphere - Build together, ship faster",
+    title: "Squibl - Build together, ship faster",
     description:
       "The developer network for builders. Find teammates, share your builds, and ship together.",
-    url: "https://collabsphereweb.vercel.app",
-    siteName: "CollabSphere",
+    url: "https://squibl.vercel.app",
+    siteName: "Squibl",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "CollabSphere - Build together, ship faster",
+    title: "Squibl - Build together, ship faster",
     description:
       "The developer network for builders. Find teammates, share your builds, and ship together.",
-    site: "@collabsphere",
+    site: "@squibl",
   },
 };
 

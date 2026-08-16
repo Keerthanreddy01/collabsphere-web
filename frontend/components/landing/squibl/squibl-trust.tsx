@@ -2,9 +2,9 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowButton, CarouselDots } from "./collabsphere-shared";
+import { ArrowButton, CarouselDots } from "./squibl-shared";
 
-export function CollabsphereTrust() {
+export function SquiblTrust() {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
 

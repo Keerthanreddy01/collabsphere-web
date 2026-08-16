@@ -1,6 +1,6 @@
 /**
  * lib/security-logger.ts
- * Lightweight security audit trail for CollabSphere.
+ * Lightweight security audit trail for Squibl.
  *
  * Writes auth events to Firestore `auth_events` collection so administrators
  * can detect suspicious patterns (repeated failed logins, unusual sign-in

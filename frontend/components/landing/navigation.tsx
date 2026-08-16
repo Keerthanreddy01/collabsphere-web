@@ -86,8 +86,8 @@ export function Navigation() {
         >
           {/* Logo */}
           <a href="#" className="flex items-center gap-2.5 group">
-            <img src="/newlogo.png" alt="CollabSphere Logo" className="w-8 h-8 rounded-full object-cover" />
-            <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>COLLABSPHERE™</span>
+            <img src="/newlogo.png" alt="Squibl Logo" className="w-8 h-8 rounded-full object-cover" />
+            <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>SQUIBL™</span>
           </a>
 
           {/* Desktop Navigation */}

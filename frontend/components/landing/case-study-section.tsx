@@ -124,7 +124,7 @@ export function CaseStudySection() {
         <h2 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-medium tracking-tighter">Made</h2>
         <h2 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-medium tracking-tighter">with</h2>
         <div className="relative">
-          <h2 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-medium tracking-tighter">CollabSphere</h2>
+          <h2 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-medium tracking-tighter">Squibl</h2>
           
           {/* Arrow & handwritten text */}
           <div className="absolute -top-12 -left-4 sm:-top-16 sm:-left-24 flex flex-col items-end rotate-[-5deg] z-20 hidden md:flex">
@@ -177,7 +177,7 @@ export function CaseStudySection() {
 
       {/* Footer Tags */}
       <div className="absolute bottom-12 flex gap-8 z-30">
-        <span className="text-white/30 text-xs tracking-[0.2em] font-mono">@COLLABSPHERE</span>
+        <span className="text-white/30 text-xs tracking-[0.2em] font-mono">@SQUIBL</span>
         <span className="text-white/30 text-xs tracking-[0.2em] font-mono">@BUILDERS</span>
       </div>
 

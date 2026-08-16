@@ -1,6 +1,6 @@
 # scripts/
 
-Monorepo utility, migration, and development testing scripts for CollabSphere.
+Monorepo utility, migration, and development testing scripts for Squibl.
 
 ## Contents
 

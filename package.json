@@ -1,8 +1,8 @@
 {
-  "name": "collabsphere",
+  "name": "squibl",
   "version": "1.0.0",
   "private": true,
-  "description": "CollabSphere monorepo — Next.js frontend + Express/Node.js backend",
+  "description": "Squibl monorepo — Next.js frontend + Express/Node.js backend",
   "engines": {
     "node": ">=18"
   },
@@ -29,7 +29,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Keerthanreddy01/collabsphere-web.git"
+    "url": "https://github.com/Keerthanreddy01/squibl-web.git"
   },
   "license": "MIT"
 }

@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 
-export function CollabsphereSmashSection() {
+export function SquiblSmashSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -123,7 +123,7 @@ export function CollabsphereSmashSection() {
       >
         <img 
           src="/smash-image.png" 
-          alt="Collabsphere Smash" 
+          alt="Squibl Smash" 
           className="w-full md:w-[110%] h-auto object-cover object-center drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)]" 
           style={{
             maskImage: 'linear-gradient(to right, black 92%, transparent 99%)',

@@ -11,7 +11,7 @@ const works = [
   { name: "eBill", id: "ebill" }
 ];
 
-export function CollabsphereWorkAbout() {
+export function SquiblWorkAbout() {
   const [hoveredWork, setHoveredWork] = useState<string | null>(null);
 
   return (
@@ -24,7 +24,7 @@ export function CollabsphereWorkAbout() {
           animate={{ x: [0, -1000] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
-          {Array(8).fill("✦ Collabsphere 📍 New York").map((text, i) => (
+          {Array(8).fill("✦ Squibl 📍 New York").map((text, i) => (
             <span key={i}>{text}</span>
           ))}
         </motion.div>

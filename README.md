@@ -1,24 +1,24 @@
 <div align="center">
 
-# CollabSphere
+# Squibl
 
-**The developer network built for builders — find your team, ship your project.**
+**Squibl — Where developers find teammates, build projects, and grow together**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-collabsphereweb.vercel.app-success?style=flat-square&logo=vercel)](https://collabsphereweb.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-squibl.vercel.app-success?style=flat-square&logo=vercel)](https://squibl.vercel.app)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-12-orange?style=flat-square&logo=firebase)](https://firebase.google.com/)
 [![Express](https://img.shields.io/badge/Express-4-grey?style=flat-square&logo=express)](https://expressjs.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/Keerthanreddy01/collabsphere-web?style=flat-square)](https://github.com/Keerthanreddy01/collabsphere-web/stargazers)
+[![Stars](https://img.shields.io/github/stars/Keerthanreddy01/squibl-web?style=flat-square)](https://github.com/Keerthanreddy01/squibl-web/stargazers)
 
 </div>
 
 ---
 
-## What is CollabSphere?
+## What is Squibl?
 
-CollabSphere is a platform engineered for software developers, designers, and tech professionals to connect, form teams, and build together. It combines a real-time social feed, professional portfolios, project showcases, and hackathon team-building workflows into a single hub — think LinkedIn meets GitHub meets Devpost.
+Squibl is a platform engineered for software developers, designers, and tech professionals to connect, form teams, and build together. It combines a real-time social feed, professional portfolios, project showcases, and hackathon team-building workflows into a single hub — think LinkedIn meets GitHub meets Devpost.
 
 The project is a **monorepo** with two independently deployable services: a **Next.js 16 frontend** (deployed on Vercel) and an **Express/Node.js backend API** (Firebase-backed).
 
@@ -107,8 +107,8 @@ The project is a **monorepo** with two independently deployable services: a **Ne
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Keerthanreddy01/collabsphere-web.git
-cd collabsphere-web
+git clone https://github.com/Keerthanreddy01/squibl-web.git
+cd squibl-web
 ```
 
 ### 2. Set Up the Frontend
@@ -156,7 +156,7 @@ firebase deploy --only firestore:rules
 ## Folder Structure
 
 ```
-collabsphere/                   ← Monorepo root
+squibl/                   ← Monorepo root
 ├── frontend/                   ← Next.js 16 client (deployed to Vercel)
 │   ├── app/                    ← App Router pages (23 routes)
 │   ├── components/             ← Reusable UI components + shadcn/ui

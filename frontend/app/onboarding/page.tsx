@@ -331,7 +331,7 @@ export default function OnboardingPage() {
 
         {/* Copyright Footer */}
         <div className="absolute bottom-8 left-0 right-0 w-full text-center text-[#444444] text-xs font-medium">
-          © CollabSphere {new Date().getFullYear()}
+          © Squibl {new Date().getFullYear()}
         </div>
       </div>
 

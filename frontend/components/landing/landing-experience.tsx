@@ -2,17 +2,17 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
-import { CollabsphereProvider } from "./collabsphere/collabsphere-context";
-import { CollabsphereLoader } from "./collabsphere/page-loader";
-import { CollabsphereHero } from "./collabsphere/collabsphere-hero";
-import { CollabsphereVideoReveal } from "./collabsphere/collabsphere-video-reveal";
-import { CollabsphereWorkAbout } from "./collabsphere/collabsphere-work-about";
-import { CollabsphereTrust } from "./collabsphere/collabsphere-trust";
-import { CollabsphereStats } from "./collabsphere/collabsphere-stats";
-import { CollabsphereClientConfessions } from "./collabsphere/collabsphere-client-confessions";
+import { SquiblProvider } from "./squibl/squibl-context";
+import { SquiblLoader } from "./squibl/page-loader";
+import { SquiblHero } from "./squibl/squibl-hero";
+import { SquiblVideoReveal } from "./squibl/squibl-video-reveal";
+import { SquiblWorkAbout } from "./squibl/squibl-work-about";
+import { SquiblTrust } from "./squibl/squibl-trust";
+import { SquiblStats } from "./squibl/squibl-stats";
+import { SquiblClientConfessions } from "./squibl/squibl-client-confessions";
 import { FooterSection } from "@/components/landing/footer-section";
-import { CollabsphereOverlays } from "./collabsphere/collabsphere-overlays";
-import { WiseEarthSection } from "./collabsphere/wise-earth-section";
+import { SquiblOverlays } from "./squibl/squibl-overlays";
+import { WiseEarthSection } from "./squibl/wise-earth-section";
 
 export function LandingExperience() {
   const requestRef = useRef<number>(null);
@@ -41,19 +41,19 @@ export function LandingExperience() {
   }, []);
 
   return (
-    <CollabsphereProvider>
+    <SquiblProvider>
       <main className="baseline-theme baseline-font bg-[var(--background)] text-[var(--foreground)] w-full overflow-x-clip p-[0.5rem] sm:p-[0.75rem] flex flex-col gap-[0.5rem] sm:gap-[0.75rem]">
-        <CollabsphereLoader />
-        <CollabsphereHero />
+        <SquiblLoader />
+        <SquiblHero />
         <WiseEarthSection />
-        <CollabsphereVideoReveal />
-        <CollabsphereTrust />
-        <CollabsphereWorkAbout />
-        <CollabsphereStats />
-        <CollabsphereClientConfessions />
+        <SquiblVideoReveal />
+        <SquiblTrust />
+        <SquiblWorkAbout />
+        <SquiblStats />
+        <SquiblClientConfessions />
         <FooterSection />
-        <CollabsphereOverlays />
+        <SquiblOverlays />
       </main>
-    </CollabsphereProvider>
+    </SquiblProvider>
   );
 }

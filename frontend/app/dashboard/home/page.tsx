@@ -714,11 +714,11 @@ export default function DashboardHomePage() {
                                 None (General Post)
                               </button>
                               <button
-                                onClick={() => { setSelectedProject('CollabSphere'); setShowProjectMenu(false); }}
+                                onClick={() => { setSelectedProject('Squibl'); setShowProjectMenu(false); }}
                                 className="w-full text-left px-2.5 py-2 text-[11px] rounded-lg hover:bg-white dark:bg-white/5 transition-colors text-gray-600 dark:text-neutral-300 hover:text-white dark:text-black dark:hover:text-black dark:text-white flex items-center gap-2 bg-transparent border-none cursor-pointer"
                               >
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                CollabSphere
+                                Squibl
                               </button>
                               <button
                                 onClick={() => { setSelectedProject('SaaS Dashboard'); setShowProjectMenu(false); }}

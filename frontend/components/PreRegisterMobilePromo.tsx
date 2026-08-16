@@ -96,7 +96,7 @@ export default function PreRegisterMobilePromo() {
               <Link href="/pre-register" onClick={() => setShowPromo(false)} className="block w-full h-full">
                 <img
                   src="/poster.jpeg"
-                  alt="CollabSphere Promotional Poster"
+                  alt="Squibl Promotional Poster"
                   className="w-full h-auto object-cover block"
                 />
               </Link>

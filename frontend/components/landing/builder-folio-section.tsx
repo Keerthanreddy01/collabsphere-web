@@ -63,7 +63,7 @@ export function BuilderFolioSection() {
         <div className="builder-folio__book">
           <div className="builder-folio__page builder-folio__page--top">
             <div className="builder-folio__copy">
-              <p className="builder-folio__eyebrow">CollabSphere presents</p>
+              <p className="builder-folio__eyebrow">Squibl presents</p>
               <h2 ref={headlineRef} id="builder-folio-title" className={`builder-folio__headline builder-folio__headline--${storyIndex}`}>
                 {storyLines[storyIndex]}
               </h2>

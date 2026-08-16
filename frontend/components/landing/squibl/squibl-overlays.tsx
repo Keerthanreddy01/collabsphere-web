@@ -2,15 +2,15 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TennisMark, XSVG, CheckSVG, Eyebrow, PillButton, scrollToId } from "./collabsphere-shared";
+import { TennisMark, XSVG, CheckSVG, Eyebrow, PillButton, scrollToId } from "./squibl-shared";
 
 function NavMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const onOpen = () => setIsOpen(true);
-    window.addEventListener('open-collabsphere-menu', onOpen);
-    return () => window.removeEventListener('open-collabsphere-menu', onOpen);
+    window.addEventListener('open-squibl-menu', onOpen);
+    return () => window.removeEventListener('open-squibl-menu', onOpen);
   }, []);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ function NavMenu() {
     setIsOpen(false);
     setTimeout(() => {
       if (id === 'contact') {
-        window.dispatchEvent(new CustomEvent('open-collabsphere-modal'));
+        window.dispatchEvent(new CustomEvent('open-squibl-modal'));
       } else {
         scrollToId(id);
       }
@@ -74,7 +74,7 @@ function NavMenu() {
             <div className="flex justify-between items-center px-[1rem] pt-[1rem] sm:pt-[1.25rem]">
               <div className="flex items-center gap-[0.5rem] text-[1rem] font-medium uppercase tracking-[0.2em]">
                 <TennisMark className="w-[1.25rem] h-[1.25rem]" />
-                Collabsphere
+                Squibl
               </div>
               <motion.button 
                 onClick={() => setIsOpen(false)}
@@ -128,8 +128,8 @@ function ContactModal() {
 
   useEffect(() => {
     const onOpen = () => { setIsOpen(true); setStatus("idle"); };
-    window.addEventListener('open-collabsphere-modal', onOpen);
-    return () => window.removeEventListener('open-collabsphere-modal', onOpen);
+    window.addEventListener('open-squibl-modal', onOpen);
+    return () => window.removeEventListener('open-squibl-modal', onOpen);
   }, []);
 
   useEffect(() => {
@@ -266,7 +266,7 @@ function ContactModal() {
   );
 }
 
-export function CollabsphereOverlays() {
+export function SquiblOverlays() {
   return (
     <>
       <NavMenu />
